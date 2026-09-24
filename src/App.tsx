@@ -20,10 +20,12 @@ import ComparisonTab from '@/features/comparison/ComparisonTab';
 import StoryToMatrixTab from '@/features/story-to-matrix/StoryToMatrixTab';
 import TemplateSelectorModal from '@/components/layout/TemplateSelectorModal';
 import ResetProjectButton from '@/features/project/ResetProjectButton';
+import useUrlTabSync from '@/features/shared/useUrlTabSync';
 import { Sparkles, FolderOpen } from 'lucide-react';
 import type { MethodId } from '@/types/domain';
 
 export default function App() {
+  useUrlTabSync();
   const { activeTab, setActiveTab } = useUiStore();
   const { title, setTitle, alternatives, updateCellValue, loadProjectState } = useProjectStore();
   const criteria = useNormalizedCriteria();
