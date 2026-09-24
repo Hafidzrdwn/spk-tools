@@ -2,7 +2,7 @@ import React from 'react';
 import { CASE_TEMPLATES, type CaseTemplate } from '@/core/constants/caseTemplates';
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
-import { Sparkles, X, Check, ArrowRight } from 'lucide-react';
+import { Sparkles, X, ArrowRight } from 'lucide-react';
 
 export interface TemplateSelectorModalProps {
   isOpen: boolean;
@@ -41,26 +41,26 @@ export const TemplateSelectorModal: React.FC<TemplateSelectorModalProps> = ({
         </div>
 
         {/* Template List */}
-        <div className="p-6 overflow-y-auto space-y-3.5 divide-y divide-slate-100">
+        <div className="p-6 overflow-y-auto space-y-3.5">
           {CASE_TEMPLATES.map((tpl) => (
             <div
               key={tpl.id}
-              className="pt-3.5 first:pt-0 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3.5 rounded-xl border border-slate-200/70 hover:border-indigo-200 hover:bg-indigo-50/20 transition-all group"
+              className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5 rounded-xl border border-slate-200/80 bg-white hover:border-indigo-300 hover:bg-indigo-50/15 hover:shadow-xs transition-all"
             >
-              <div className="space-y-1.5 max-w-md">
+              <div className="space-y-2 max-w-md">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-bold text-slate-800 group-hover:text-accent-primary transition-colors">
+                  <span className="text-sm font-bold text-slate-800">
                     {tpl.name}
                   </span>
                   <Badge variant="primary" size="sm">
                     {tpl.badge}
                   </Badge>
                 </div>
-                <p className="text-xs text-slate-500 leading-relaxed">
+                <p className="text-xs text-slate-600 leading-relaxed">
                   {tpl.description}
                 </p>
-                <div className="flex flex-wrap items-center gap-1.5 text-[11px] text-slate-400 pt-1">
-                  <span className="font-mono bg-slate-100 px-1.5 py-0.5 rounded text-slate-600">
+                <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-500 pt-0.5">
+                  <span className="font-mono bg-slate-100 px-2 py-0.5 rounded text-slate-700">
                     {tpl.dimension}
                   </span>
                   <span>•</span>
@@ -71,9 +71,9 @@ export const TemplateSelectorModal: React.FC<TemplateSelectorModalProps> = ({
               </div>
 
               <Button
-                variant="secondary"
+                variant="primary"
                 size="sm"
-                className="shrink-0 group-hover:bg-accent-primary group-hover:text-white transition-all"
+                className="shrink-0 font-medium shadow-xs"
                 onClick={() => {
                   onSelect(tpl);
                   onClose();
@@ -87,7 +87,7 @@ export const TemplateSelectorModal: React.FC<TemplateSelectorModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-3 border-t border-slate-100 bg-slate-50/70 flex items-center justify-between text-xs text-slate-500">
+        <div className="px-6 py-3.5 border-t border-slate-100 bg-slate-50/70 flex items-center justify-between text-xs text-slate-500">
           <span>Data dapat disesuaikan kembali setelah dimuat.</span>
           <Button variant="ghost" size="sm" onClick={onClose}>
             Tutup
