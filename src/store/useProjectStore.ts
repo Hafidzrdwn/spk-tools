@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import { nanoid } from 'nanoid';
 import type { DecisiProjectState, Criterion, Alternative, MethodId } from '@/types/domain';
@@ -30,124 +31,136 @@ const defaultInitialState: DecisiProjectState = {
 };
 
 export const useProjectStore = create<ProjectStore>()(
-  immer((set) => ({
-    ...defaultInitialState,
+  persist(
+    immer((set) => ({
+      ...defaultInitialState,
 
-    addCriterion: (initialData) => {
-      set((state) => {
-        const id = initialData?.id ?? `crit_${nanoid(6)}`;
-        const name = initialData?.name ?? `Kriteria ${state.criteria.length + 1}`;
-        const type = initialData?.type ?? 'BENEFIT';
-        const weight = initialData?.weight ?? 1;
+      addCriterion: (initialData) => {
+        set((state) => {
+          const id = initialData?.id ?? `crit_${nanoid(6)}`;
+          const name = initialData?.name ?? `Kriteria ${state.criteria.length + 1}`;
+          const type = initialData?.type ?? 'BENEFIT';
+          const weight = initialData?.weight ?? 1;
 
-        state.criteria.push({
-          id,
-          name,
-          type,
-          weight,
-          normalizedWeight: 0,
+          state.criteria.push({
+            id,
+            name,
+            type,
+            weight,
+            normalizedWeight: 0,
+          });
+
+          state.alternatives.forEach((alt) => {
+            if (alt.values[id] === undefined) {
+              alt.values[id] = 0;
+            }
+          });
         });
+      },
 
-        // Inisialisasi nilai kriteria baru di seluruh alternatif yang ada
-        state.alternatives.forEach((alt) => {
-          if (alt.values[id] === undefined) {
-            alt.values[id] = 0;
+      removeCriterion: (id) => {
+        set((state) => {
+          state.criteria = state.criteria.filter((c) => c.id !== id);
+          state.alternatives.forEach((alt) => {
+            delete alt.values[id];
+          });
+        });
+      },
+
+      updateCriterion: (id, patch) => {
+        set((state) => {
+          const crit = state.criteria.find((c) => c.id === id);
+          if (crit) {
+            Object.assign(crit, patch);
           }
         });
-      });
-    },
+      },
 
-    removeCriterion: (id) => {
-      set((state) => {
-        state.criteria = state.criteria.filter((c) => c.id !== id);
-        state.alternatives.forEach((alt) => {
-          delete alt.values[id];
+      autoDistributeWeights: () => {
+        set((state) => {
+          if (state.criteria.length === 0) return;
+          state.criteria.forEach((crit) => {
+            crit.weight = 1;
+          });
         });
-      });
-    },
+      },
 
-    updateCriterion: (id, patch) => {
-      set((state) => {
-        const crit = state.criteria.find((c) => c.id === id);
-        if (crit) {
-          Object.assign(crit, patch);
-        }
-      });
-    },
+      addAlternative: (initialData) => {
+        set((state) => {
+          const id = initialData?.id ?? `alt_${nanoid(6)}`;
+          const name = initialData?.name ?? `Alternatif ${state.alternatives.length + 1}`;
+          const values: Record<string, number> = { ...(initialData?.values ?? {}) };
 
-    autoDistributeWeights: () => {
-      set((state) => {
-        const n = state.criteria.length;
-        if (n === 0) return;
-        state.criteria.forEach((crit) => {
-          crit.weight = 1;
+          state.criteria.forEach((crit) => {
+            if (values[crit.id] === undefined) {
+              values[crit.id] = 0;
+            }
+          });
+
+          state.alternatives.push({
+            id,
+            name,
+            values,
+          });
         });
-      });
-    },
+      },
 
-    addAlternative: (initialData) => {
-      set((state) => {
-        const id = initialData?.id ?? `alt_${nanoid(6)}`;
-        const name = initialData?.name ?? `Alternatif ${state.alternatives.length + 1}`;
-        const values: Record<string, number> = { ...(initialData?.values ?? {}) };
+      removeAlternative: (id) => {
+        set((state) => {
+          state.alternatives = state.alternatives.filter((alt) => alt.id !== id);
+        });
+      },
 
-        state.criteria.forEach((crit) => {
-          if (values[crit.id] === undefined) {
-            values[crit.id] = 0;
+      updateCellValue: (alternativeId, criterionId, value) => {
+        set((state) => {
+          const alt = state.alternatives.find((a) => a.id === alternativeId);
+          if (alt) {
+            alt.values[criterionId] = value;
           }
         });
+      },
 
-        state.alternatives.push({
-          id,
-          name,
-          values,
+      setTitle: (title) => {
+        set((state) => {
+          state.title = title;
         });
-      });
-    },
+      },
 
-    removeAlternative: (id) => {
-      set((state) => {
-        state.alternatives = state.alternatives.filter((alt) => alt.id !== id);
-      });
-    },
+      setActiveMethod: (method) => {
+        set((state) => {
+          state.activeMethod = method;
+        });
+      },
 
-    updateCellValue: (alternativeId, criterionId, value) => {
-      set((state) => {
-        const alt = state.alternatives.find((a) => a.id === alternativeId);
-        if (alt) {
-          alt.values[criterionId] = value;
-        }
-      });
-    },
+      loadProjectState: (newState) => {
+        set((state) => {
+          state.title = newState.title;
+          state.activeMethod = newState.activeMethod;
+          state.criteria = newState.criteria;
+          state.alternatives = newState.alternatives;
+        });
+      },
 
-    setTitle: (title) => {
-      set((state) => {
-        state.title = title;
-      });
-    },
-
-    setActiveMethod: (method) => {
-      set((state) => {
-        state.activeMethod = method;
-      });
-    },
-
-    loadProjectState: (newState) => {
-      set((state) => {
-        state.title = newState.title;
-        state.activeMethod = newState.activeMethod;
-        state.criteria = newState.criteria;
-        state.alternatives = newState.alternatives;
-      });
-    },
-
-    resetProject: () => {
-      set((state) => {
-        state.title = defaultInitialState.title;
-        state.activeMethod = defaultInitialState.activeMethod;
-        state.criteria = JSON.parse(JSON.stringify(defaultInitialState.criteria));
-        state.alternatives = JSON.parse(JSON.stringify(defaultInitialState.alternatives));
-      });
-    },
-  }))
+      resetProject: () => {
+        useProjectStore.persist?.clearStorage();
+        set((state) => {
+          state.title = defaultInitialState.title;
+          state.activeMethod = defaultInitialState.activeMethod;
+          state.criteria = JSON.parse(JSON.stringify(defaultInitialState.criteria));
+          state.alternatives = JSON.parse(JSON.stringify(defaultInitialState.alternatives));
+        });
+      },
+    })),
+    {
+      name: 'decisigraph-project-state',
+      version: 1,
+      partialize: (state) => ({
+        title: state.title,
+        activeMethod: state.activeMethod,
+        criteria: state.criteria,
+        alternatives: state.alternatives,
+      }),
+      // TODO: migrate: (persisted, version) => persisted, // siapkan slot ini untuk breaking change di masa depan
+    }
+  )
 );
