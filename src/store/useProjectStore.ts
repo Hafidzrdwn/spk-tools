@@ -1,0 +1,159 @@
+import { create } from 'zustand';
+import { immer } from 'zustand/middleware/immer';
+import { nanoid } from 'nanoid';
+import type { DecisiProjectState, Criterion, Alternative, MethodId } from '@/types/domain';
+
+export interface ProjectStore extends DecisiProjectState {
+  // Actions Kriteria
+  addCriterion: (initialData?: Partial<Criterion>) => void;
+  removeCriterion: (id: string) => void;
+  updateCriterion: (id: string, patch: Partial<Criterion>) => void;
+  autoDistributeWeights: () => void;
+
+  // Actions Alternatif
+  addAlternative: (initialData?: Partial<Alternative>) => void;
+  removeAlternative: (id: string) => void;
+  updateCellValue: (alternativeId: string, criterionId: string, value: number) => void;
+
+  // Actions Proyek & Navigasi
+  setTitle: (title: string) => void;
+  setActiveMethod: (method: MethodId) => void;
+  loadProjectState: (state: DecisiProjectState) => void;
+  resetProject: () => void;
+}
+
+const defaultInitialState: DecisiProjectState = {
+  title: 'Proyek SPK Baru',
+  activeMethod: 'SAW',
+  criteria: [
+    { id: 'c1', name: 'Kriteria 1', type: 'BENEFIT', weight: 1, normalizedWeight: 0.5 },
+    { id: 'c2', name: 'Kriteria 2', type: 'COST', weight: 1, normalizedWeight: 0.5 },
+  ],
+  alternatives: [
+    { id: 'a1', name: 'Alternatif 1', values: { c1: 0, c2: 0 } },
+    { id: 'a2', name: 'Alternatif 2', values: { c1: 0, c2: 0 } },
+  ],
+};
+
+export const useProjectStore = create<ProjectStore>()(
+  immer((set) => ({
+    ...defaultInitialState,
+
+    addCriterion: (initialData) => {
+      set((state) => {
+        const id = initialData?.id ?? `crit_${nanoid(6)}`;
+        const name = initialData?.name ?? `Kriteria ${state.criteria.length + 1}`;
+        const type = initialData?.type ?? 'BENEFIT';
+        const weight = initialData?.weight ?? 1;
+
+        state.criteria.push({
+          id,
+          name,
+          type,
+          weight,
+          normalizedWeight: 0,
+        });
+
+        // Inisialisasi nilai kriteria baru di seluruh alternatif yang ada
+        state.alternatives.forEach((alt) => {
+          if (alt.values[id] === undefined) {
+            alt.values[id] = 0;
+          }
+        });
+      });
+    },
+
+    removeCriterion: (id) => {
+      set((state) => {
+        state.criteria = state.criteria.filter((c) => c.id !== id);
+        state.alternatives.forEach((alt) => {
+          delete alt.values[id];
+        });
+      });
+    },
+
+    updateCriterion: (id, patch) => {
+      set((state) => {
+        const crit = state.criteria.find((c) => c.id === id);
+        if (crit) {
+          Object.assign(crit, patch);
+        }
+      });
+    },
+
+    autoDistributeWeights: () => {
+      set((state) => {
+        const n = state.criteria.length;
+        if (n === 0) return;
+        state.criteria.forEach((crit) => {
+          crit.weight = 1;
+        });
+      });
+    },
+
+    addAlternative: (initialData) => {
+      set((state) => {
+        const id = initialData?.id ?? `alt_${nanoid(6)}`;
+        const name = initialData?.name ?? `Alternatif ${state.alternatives.length + 1}`;
+        const values: Record<string, number> = { ...(initialData?.values ?? {}) };
+
+        state.criteria.forEach((crit) => {
+          if (values[crit.id] === undefined) {
+            values[crit.id] = 0;
+          }
+        });
+
+        state.alternatives.push({
+          id,
+          name,
+          values,
+        });
+      });
+    },
+
+    removeAlternative: (id) => {
+      set((state) => {
+        state.alternatives = state.alternatives.filter((alt) => alt.id !== id);
+      });
+    },
+
+    updateCellValue: (alternativeId, criterionId, value) => {
+      set((state) => {
+        const alt = state.alternatives.find((a) => a.id === alternativeId);
+        if (alt) {
+          alt.values[criterionId] = value;
+        }
+      });
+    },
+
+    setTitle: (title) => {
+      set((state) => {
+        state.title = title;
+      });
+    },
+
+    setActiveMethod: (method) => {
+      set((state) => {
+        state.activeMethod = method;
+      });
+    },
+
+    loadProjectState: (newState) => {
+      set((state) => {
+        state.title = newState.title;
+        state.activeMethod = newState.activeMethod;
+        state.criteria = newState.criteria;
+        state.alternatives = newState.alternatives;
+      });
+    },
+
+    resetProject: () => {
+      set((state) => {
+        state.title = defaultInitialState.title;
+        state.activeMethod = defaultInitialState.activeMethod;
+        state.criteria = JSON.parse(JSON.stringify(defaultInitialState.criteria));
+        state.alternatives = JSON.parse(JSON.stringify(defaultInitialState.alternatives));
+      });
+    },
+  }))
+);
