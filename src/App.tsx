@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import AppShell from '@/components/layout/AppShell';
 import Tabs from '@/components/ui/Tabs';
@@ -22,6 +22,8 @@ import TemplateSelectorModal from '@/components/layout/TemplateSelectorModal';
 import ResetProjectButton from '@/features/project/ResetProjectButton';
 import useUrlTabSync from '@/features/shared/useUrlTabSync';
 import GlossaryTerm from '@/features/glossary/GlossaryTerm';
+import WelcomeModal from '@/features/tour/WelcomeModal';
+import { useTourStore } from '@/store/useTourStore';
 import { Sparkles, FolderOpen } from 'lucide-react';
 import type { MethodId } from '@/types/domain';
 
@@ -32,6 +34,14 @@ export default function App() {
   const criteria = useNormalizedCriteria();
   const [activeEditorSection, setActiveEditorSection] = useState<'matrix' | 'criteria' | 'alternatives'>('matrix');
   const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
+  const hasSeenWelcome = useTourStore((s) => s.hasSeenWelcome);
+  const [isWelcomeOpen, setIsWelcomeOpen] = useState(false);
+
+  useEffect(() => {
+    if (!hasSeenWelcome) {
+      setIsWelcomeOpen(true);
+    }
+  }, [hasSeenWelcome]);
 
   const currentRoute = ROUTES.find((r) => r.id === activeTab) || ROUTES[0];
 
@@ -189,6 +199,12 @@ export default function App() {
         isOpen={isTemplateModalOpen}
         onClose={() => setIsTemplateModalOpen(false)}
         onSelect={(tpl) => loadProjectState(tpl.state)}
+      />
+
+      {/* Modal Sambutan & Panduan Awal */}
+      <WelcomeModal
+        isOpen={isWelcomeOpen}
+        onClose={() => setIsWelcomeOpen(false)}
       />
     </AppShell>
   );
