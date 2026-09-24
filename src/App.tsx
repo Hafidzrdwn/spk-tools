@@ -23,6 +23,7 @@ import ResetProjectButton from '@/features/project/ResetProjectButton';
 import useUrlTabSync from '@/features/shared/useUrlTabSync';
 import GlossaryTerm from '@/features/glossary/GlossaryTerm';
 import WelcomeModal from '@/features/tour/WelcomeModal';
+import TourRunner from '@/features/tour/TourRunner';
 import { useTourStore } from '@/store/useTourStore';
 import { Sparkles, FolderOpen } from 'lucide-react';
 import type { MethodId } from '@/types/domain';
@@ -170,7 +171,7 @@ export default function App() {
             ) : activeTab === 'AUTO' ? (
               <StoryToMatrixTab />
             ) : (
-              <Card className="min-h-[280px] flex flex-col justify-center items-center text-center p-8 border-dashed border-2 border-slate-200/90 bg-white/60">
+              <Card className="min-h-70 flex flex-col justify-center items-center text-center p-8 border-dashed border-2 border-slate-200/90 bg-white/60">
                 <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-accent-primary flex items-center justify-center mb-3 shadow-xs">
                   {currentRoute.icon}
                 </div>
@@ -206,6 +207,9 @@ export default function App() {
         isOpen={isWelcomeOpen}
         onClose={() => setIsWelcomeOpen(false)}
       />
+
+      {/* Interactive Tour Engine Runner */}
+      <TourRunner />
     </AppShell>
   );
 }

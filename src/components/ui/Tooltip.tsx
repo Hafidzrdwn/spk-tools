@@ -119,7 +119,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
             opacity: coords ? 1 : 0,
           }}
           className={cn(
-            'fixed z-[9999] px-3 py-2 text-xs text-white bg-slate-900/95 backdrop-blur-md rounded-xl shadow-2xl border border-slate-700/60 max-w-[calc(100vw-24px)] break-words',
+            'fixed z-9999 px-3 py-2 text-xs text-white bg-slate-900/95 backdrop-blur-md rounded-xl shadow-2xl border border-slate-700/60 max-w-[calc(100vw-24px)] wrap-break-word',
             'transition-opacity duration-150',
             coords ? 'animate-in fade-in zoom-in-95' : 'pointer-events-none',
             interactive ? 'pointer-events-auto' : 'pointer-events-none',

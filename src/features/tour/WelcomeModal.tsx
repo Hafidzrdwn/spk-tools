@@ -50,6 +50,7 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
   onStartTour,
 }) => {
   const setHasSeenWelcome = useTourStore((s) => s.setHasSeenWelcome);
+  const startTour = useTourStore((s) => s.startTour);
 
   const handleStartTour = () => {
     setHasSeenWelcome(true);
@@ -57,7 +58,7 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
     if (onStartTour) {
       onStartTour('general');
     } else {
-      console.info('[Tour] Placeholder startTour("general") dipanggil.');
+      startTour('general');
     }
   };
 
