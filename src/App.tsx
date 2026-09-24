@@ -19,12 +19,13 @@ import AhpTab from '@/features/ahp/AhpTab';
 import ComparisonTab from '@/features/comparison/ComparisonTab';
 import StoryToMatrixTab from '@/features/story-to-matrix/StoryToMatrixTab';
 import TemplateSelectorModal from '@/components/layout/TemplateSelectorModal';
-import { Sparkles, RefreshCw, FolderOpen } from 'lucide-react';
+import ResetProjectButton from '@/features/project/ResetProjectButton';
+import { Sparkles, FolderOpen } from 'lucide-react';
 import type { MethodId } from '@/types/domain';
 
 export default function App() {
   const { activeTab, setActiveTab } = useUiStore();
-  const { title, setTitle, alternatives, updateCellValue, resetProject, loadProjectState } = useProjectStore();
+  const { title, setTitle, alternatives, updateCellValue, loadProjectState } = useProjectStore();
   const criteria = useNormalizedCriteria();
   const [activeEditorSection, setActiveEditorSection] = useState<'matrix' | 'criteria' | 'alternatives'>('matrix');
   const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
@@ -55,9 +56,7 @@ export default function App() {
               <FolderOpen className="w-3.5 h-3.5 text-accent-primary" />
               <span>Muat Contoh Kasus</span>
             </Button>
-            <Button variant="ghost" size="sm" onClick={resetProject} title="Reset seluruh data ke kondisi awal kosong">
-              <RefreshCw className="w-3.5 h-3.5 text-slate-500" />
-            </Button>
+            <ResetProjectButton />
           </div>
         ),
       }}
