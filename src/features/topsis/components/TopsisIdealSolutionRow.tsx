@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Criterion, Alternative } from '@/types/domain';
 import Badge from '@/components/ui/Badge';
+import { TraceableCell } from '@/features/inspector';
 import { Sparkles, AlertOctagon, CheckCircle2 } from 'lucide-react';
 
 export interface TopsisIdealSolutionRowProps {
@@ -63,9 +64,13 @@ export const TopsisIdealSolutionRow: React.FC<TopsisIdealSolutionRowProps> = ({
                   </div>
                 </td>
                 {criteria.map((crit, critIdx) => (
-                  <td key={crit.id} className="py-2.5 px-3 border-r border-slate-100 last:border-r-0 text-right font-mono text-slate-600">
+                  <TraceableCell
+                    key={crit.id}
+                    cellId={`topsis-${alt.id}-${crit.id}-WEIGHTED`}
+                    className="py-2.5 px-3 border-r border-slate-100 last:border-r-0 text-right font-mono text-slate-600"
+                  >
                     {(weightedMatrix[altIdx]?.[critIdx] ?? 0).toFixed(4)}
-                  </td>
+                  </TraceableCell>
                 ))}
               </tr>
             ))}

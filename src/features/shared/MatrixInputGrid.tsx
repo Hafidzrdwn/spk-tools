@@ -82,7 +82,11 @@ export const MatrixInputGrid: React.FC<MatrixInputGridProps> = ({
               {criteria.map((crit) => {
                 const cellValue = alt.values[crit.id] ?? 0;
                 return (
-                  <td key={crit.id} className="py-2 px-3 border-r border-slate-100 last:border-r-0">
+                  <td
+                    key={crit.id}
+                    data-cell-id={`saw-${alt.id}-${crit.id}-RAW topsis-${alt.id}-${crit.id}-RAW wp-${alt.id}-${crit.id}-RAW raw-${alt.id}-${crit.id}`}
+                    className="py-2 px-3 border-r border-slate-100 last:border-r-0 transition-all duration-150"
+                  >
                     {readOnly ? (
                       <div className="font-mono text-xs py-1.5 px-2 bg-slate-50/80 rounded border border-slate-200/60 text-slate-700 text-right">
                         {cellValue}

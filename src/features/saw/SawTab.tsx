@@ -3,6 +3,7 @@ import useSawViewModel from './useSawViewModel';
 import MatrixInputGrid from '@/features/shared/MatrixInputGrid';
 import SawNormalizationTable from './components/SawNormalizationTable';
 import SawRankingTable from './components/SawRankingTable';
+import { FormulaFloatingCard } from '@/features/inspector';
 import Card, { CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
 import { ArrowRight, Trophy, Calculator, Table, BarChart2 } from 'lucide-react';
@@ -16,6 +17,7 @@ export const SawTab: React.FC = () => {
     bestAlternative,
     updateCellValue,
     hasData,
+    formulaSteps,
   } = useSawViewModel();
 
   const [activeStep, setActiveStep] = useState<1 | 2 | 3>(1);
@@ -133,6 +135,9 @@ export const SawTab: React.FC = () => {
           )}
         </div>
       )}
+
+      {/* Floating Inspector Portal for Live Formula Tracing */}
+      <FormulaFloatingCard formulaSteps={formulaSteps} />
     </div>
   );
 };

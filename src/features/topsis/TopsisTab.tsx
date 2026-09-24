@@ -5,24 +5,17 @@ import TopsisIdealSolutionRow from './components/TopsisIdealSolutionRow';
 import TopsisDistanceCard from './components/TopsisDistanceCard';
 import TopsisRadarChart from './components/TopsisRadarChart';
 import TopsisRankingTable from './components/TopsisRankingTable';
+import { FormulaFloatingCard } from '@/features/inspector';
 import Card, { CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
 import { ArrowRight, Trophy, Compass, Table, BarChart2 } from 'lucide-react';
 
 export const TopsisTab: React.FC = () => {
   const {
-    criteria,
-    alternatives,
-    hasData,
-    weightedMatrix,
-    idealPositive,
-    idealNegative,
-    distances,
-    finalRanking,
-    bestAlternative,
-    radarData,
-    radarAlternativeKeys,
-    updateCellValue,
+    criteria, alternatives, hasData, weightedMatrix,
+    idealPositive, idealNegative, distances, finalRanking,
+    bestAlternative, radarData, radarAlternativeKeys, updateCellValue,
+    formulaSteps,
   } = useTopsisViewModel();
 
   const [activeStep, setActiveStep] = useState<1 | 2 | 3>(1);
@@ -142,6 +135,9 @@ export const TopsisTab: React.FC = () => {
           )}
         </div>
       )}
+
+      {/* Floating Inspector Portal for Live Formula Tracing */}
+      <FormulaFloatingCard formulaSteps={formulaSteps} />
     </div>
   );
 };

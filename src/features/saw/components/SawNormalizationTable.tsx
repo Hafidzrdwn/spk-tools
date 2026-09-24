@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Criterion, Alternative } from '@/types/domain';
 import Badge from '@/components/ui/Badge';
+import { TraceableCell } from '@/features/inspector';
 
 export interface SawNormalizationTableProps {
   criteria: Criterion[];
@@ -60,11 +61,15 @@ export const SawNormalizationTable: React.FC<SawNormalizationTableProps> = ({
                 {criteria.map((crit, critIdx) => {
                   const val = rowValues[critIdx] ?? 0;
                   return (
-                    <td key={crit.id} className="py-2.5 px-3 border-r border-slate-100 last:border-r-0">
+                    <TraceableCell
+                      key={crit.id}
+                      cellId={`saw-${alt.id}-${crit.id}-NORMALIZED`}
+                      className="py-2.5 px-3 border-r border-slate-100 last:border-r-0"
+                    >
                       <div className="font-mono text-xs py-1 px-2 rounded bg-slate-50 border border-slate-200/60 text-slate-800 text-right font-medium">
                         {val.toFixed(4)}
                       </div>
-                    </td>
+                    </TraceableCell>
                   );
                 })}
               </tr>
