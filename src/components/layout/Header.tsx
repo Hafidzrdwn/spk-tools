@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { cn } from '@/utils/cn';
 import Badge from '@/components/ui/Badge';
 import Logo from './Logo';
 import EditableProjectTitle from '@/features/project/EditableProjectTitle';
+import GlossaryDrawer from '@/features/glossary/GlossaryDrawer';
+import { BookOpen } from 'lucide-react';
 import type { MethodId } from '@/types/domain';
 
 export interface HeaderProps {
@@ -20,6 +22,8 @@ export const Header: React.FC<HeaderProps> = ({
   actions,
   className,
 }) => {
+  const [isGlossaryOpen, setIsGlossaryOpen] = useState(false);
+
   return (
     <header
       className={cn(
@@ -49,11 +53,28 @@ export const Header: React.FC<HeaderProps> = ({
             <span>Metode:</span>
             <span className="font-semibold text-slate-800">{activeMethod}</span>
           </div>
+
+          <button
+            type="button"
+            onClick={() => setIsGlossaryOpen(true)}
+            className="p-1.5 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors cursor-pointer"
+            title="Buka Glosarium Istilah SPK"
+            aria-label="Buka Glosarium"
+          >
+            <BookOpen className="w-4 h-4" />
+          </button>
+
           {actions && <div className="flex items-center gap-2">{actions}</div>}
         </div>
       </div>
+
+      <GlossaryDrawer
+        isOpen={isGlossaryOpen}
+        onClose={() => setIsGlossaryOpen(false)}
+      />
     </header>
   );
 };
 
 export default Header;
+
