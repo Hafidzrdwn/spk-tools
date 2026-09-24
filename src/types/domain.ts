@@ -14,7 +14,7 @@ export interface Alternative {
   values: Record<string, number>; // key = criterion.id
 }
 
-export type MethodId = 'SAW' | 'WP' | 'TOPSIS' | 'AHP' | 'AUTO';
+export type MethodId = 'SAW' | 'WP' | 'TOPSIS' | 'AHP' | 'AUTO' | 'COMPARE';
 
 export interface DecisiProjectState {
   title: string;

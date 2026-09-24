@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import type { MethodId } from '@/types/domain';
-import { Calculator, Layers, Compass, Sliders, Sparkles } from 'lucide-react';
+import { Calculator, Layers, Compass, Sliders, Sparkles, Scale } from 'lucide-react';
 import React from 'react';
 
 export interface RouteTab {
@@ -39,6 +39,13 @@ export const ROUTES: RouteTab[] = [
     icon: React.createElement(Sliders, { className: 'w-4 h-4' }),
     badge: 'Pairwise',
     description: 'Analytic Hierarchy Process — Matriks Perbandingan Berpasangan',
+  },
+  {
+    id: 'COMPARE',
+    label: 'Perbandingan',
+    icon: React.createElement(Scale, { className: 'w-4 h-4' }),
+    badge: 'Compare',
+    description: 'Evaluasi Komparatif & Analisis Pergeseran Peringkat (SAW, WP, TOPSIS)',
   },
   {
     id: 'AUTO',
