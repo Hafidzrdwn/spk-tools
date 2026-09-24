@@ -13,29 +13,16 @@ import CriteriaEditor from '@/features/shared/CriteriaEditor';
 import AlternativeEditor from '@/features/shared/AlternativeEditor';
 import MatrixInputGrid from '@/features/shared/MatrixInputGrid';
 import SawTab from '@/features/saw/SawTab';
-import { Sparkles, RefreshCw, FileText } from 'lucide-react';
-import type { MethodId, DecisiProjectState } from '@/types/domain';
-
-const dummyProject3x3: DecisiProjectState = {
-  title: 'Evaluasi Pemilihan Vendor Cloud 2026',
-  activeMethod: 'SAW',
-  criteria: [
-    { id: 'c1', name: 'Performa (vCPU/RAM)', type: 'BENEFIT', weight: 5, normalizedWeight: 0.5 },
-    { id: 'c2', name: 'Biaya Bulanan', type: 'COST', weight: 3, normalizedWeight: 0.3 },
-    { id: 'c3', name: 'SLA Uptime', type: 'BENEFIT', weight: 2, normalizedWeight: 0.2 },
-  ],
-  alternatives: [
-    { id: 'a1', name: 'Cloud Provider A', values: { c1: 80, c2: 50, c3: 95 } },
-    { id: 'a2', name: 'Cloud Provider B', values: { c1: 100, c2: 20, c3: 99 } },
-    { id: 'a3', name: 'Cloud Provider C', values: { c1: 75, c2: 30, c3: 90 } },
-  ],
-};
+import TemplateSelectorModal from '@/components/layout/TemplateSelectorModal';
+import { Sparkles, RefreshCw, FolderOpen } from 'lucide-react';
+import type { MethodId } from '@/types/domain';
 
 export default function App() {
   const { activeTab, setActiveTab } = useUiStore();
   const { title, setTitle, alternatives, updateCellValue, resetProject, loadProjectState } = useProjectStore();
   const criteria = useNormalizedCriteria();
   const [activeEditorSection, setActiveEditorSection] = useState<'matrix' | 'criteria' | 'alternatives'>('matrix');
+  const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
 
   const currentRoute = ROUTES.find((r) => r.id === activeTab) || ROUTES[0];
 
@@ -57,13 +44,13 @@ export default function App() {
             <Button
               variant="secondary"
               size="sm"
-              onClick={() => loadProjectState(dummyProject3x3)}
-              title="Isi 3 kriteria dan 3 alternatif dummy"
+              onClick={() => setIsTemplateModalOpen(true)}
+              title="Buka pilihan template studi kasus SPK"
             >
-              <FileText className="w-3.5 h-3.5 text-accent-primary" />
-              <span>Muat Contoh 3x3</span>
+              <FolderOpen className="w-3.5 h-3.5 text-accent-primary" />
+              <span>Muat Contoh Kasus</span>
             </Button>
-            <Button variant="ghost" size="sm" onClick={resetProject} title="Reset proyek">
+            <Button variant="ghost" size="sm" onClick={resetProject} title="Reset seluruh data ke kondisi awal kosong">
               <RefreshCw className="w-3.5 h-3.5 text-slate-500" />
             </Button>
           </div>
@@ -71,14 +58,19 @@ export default function App() {
       }}
     >
       <div className="space-y-6 max-w-6xl mx-auto">
-        {/* Navigation Tabs Bar */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-3 rounded-card bg-white/75 backdrop-blur-md border border-slate-200/80 shadow-2xs">
-          <Tabs<MethodId> items={tabItems} activeTab={activeTab} onChange={setActiveTab} />
-          <div className="flex items-center gap-2 pr-2">
-            <Badge variant="primary" size="sm">
-              {currentRoute.badge}
-            </Badge>
-            <span className="text-xs text-slate-500 hidden md:inline truncate max-w-xs">
+        {/* Navigation Tabs Bar & Fully Visible Method Description */}
+        <div className="space-y-2.5 p-3 rounded-card bg-white/80 backdrop-blur-md border border-slate-200/80 shadow-2xs">
+          <div className="overflow-x-auto pb-0.5 scrollbar-none">
+            <Tabs<MethodId> items={tabItems} activeTab={activeTab} onChange={setActiveTab} />
+          </div>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 px-3 py-2 bg-indigo-50/50 rounded-control border border-indigo-100/60 text-xs">
+            <div className="flex items-center gap-1.5 shrink-0">
+              <Badge variant="primary" size="sm">
+                {currentRoute.badge}
+              </Badge>
+              <span className="font-bold text-slate-800">{currentRoute.label}:</span>
+            </div>
+            <span className="text-slate-600 leading-relaxed">
               {currentRoute.description}
             </span>
           </div>
@@ -164,6 +156,13 @@ export default function App() {
           </motion.div>
         </AnimatePresence>
       </div>
+
+      {/* Modal Multi-Template Kasus */}
+      <TemplateSelectorModal
+        isOpen={isTemplateModalOpen}
+        onClose={() => setIsTemplateModalOpen(false)}
+        onSelect={(tpl) => loadProjectState(tpl.state)}
+      />
     </AppShell>
   );
 }

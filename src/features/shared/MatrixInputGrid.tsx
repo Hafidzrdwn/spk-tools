@@ -20,9 +20,26 @@ export const MatrixInputGrid: React.FC<MatrixInputGridProps> = ({
   className,
 }) => {
   if (criteria.length === 0 || alternatives.length === 0) {
+    const missingCrit = criteria.length === 0;
+    const missingAlt = alternatives.length === 0;
+
     return (
-      <div className="p-8 text-center rounded-card bg-white/80 border border-slate-200/80 text-xs text-slate-500">
-        Silakan tambahkan minimal 1 kriteria dan 1 alternatif untuk melihat matriks keputusan.
+      <div className="p-8 text-center rounded-card bg-white/80 border border-slate-200/80 shadow-2xs space-y-3">
+        <div className="w-12 h-12 mx-auto rounded-2xl bg-indigo-50 text-accent-primary flex items-center justify-center shadow-xs">
+          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
+          </svg>
+        </div>
+        <div className="space-y-1">
+          <h4 className="text-sm font-bold text-slate-800">Matriks Keputusan Belum Siap</h4>
+          <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
+            {missingCrit && missingAlt
+              ? 'Belum ada Kriteria dan Alternatif. Silakan tambahkan data melalui tab "Kriteria" & "Alternatif", atau gunakan tombol "Muat Contoh Kasus".'
+              : missingCrit
+              ? 'Kriteria evaluasi belum ada. Tambahkan minimal 1 kriteria pada tab "Kriteria".'
+              : 'Daftar alternatif belum ada. Tambahkan minimal 1 alternatif pada tab "Alternatif".'}
+          </p>
+        </div>
       </div>
     );
   }

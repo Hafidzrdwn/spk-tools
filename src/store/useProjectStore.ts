@@ -25,14 +25,8 @@ export interface ProjectStore extends DecisiProjectState {
 const defaultInitialState: DecisiProjectState = {
   title: 'Proyek SPK Baru',
   activeMethod: 'SAW',
-  criteria: [
-    { id: 'c1', name: 'Kriteria 1', type: 'BENEFIT', weight: 1, normalizedWeight: 0.5 },
-    { id: 'c2', name: 'Kriteria 2', type: 'COST', weight: 1, normalizedWeight: 0.5 },
-  ],
-  alternatives: [
-    { id: 'a1', name: 'Alternatif 1', values: { c1: 0, c2: 0 } },
-    { id: 'a2', name: 'Alternatif 2', values: { c1: 0, c2: 0 } },
-  ],
+  criteria: [],
+  alternatives: [],
 };
 
 export const useProjectStore = create<ProjectStore>()(
