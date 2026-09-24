@@ -38,7 +38,7 @@ export default function App() {
   const tabItems = ROUTES.map((r) => ({
     id: r.id,
     label: ['SAW', 'WP', 'TOPSIS', 'AHP'].includes(r.id) ? (
-      <GlossaryTerm term={r.id}>{r.label}</GlossaryTerm>
+      <GlossaryTerm term={r.id} position="bottom">{r.label}</GlossaryTerm>
     ) : (
       r.label
     ),
@@ -81,7 +81,7 @@ export default function App() {
               </Badge>
               <span className="font-bold text-slate-800">
                 {['SAW', 'WP', 'TOPSIS', 'AHP'].includes(currentRoute.id) ? (
-                  <GlossaryTerm term={currentRoute.id}>{currentRoute.label}</GlossaryTerm>
+                  <GlossaryTerm term={currentRoute.id} position="bottom">{currentRoute.label}</GlossaryTerm>
                 ) : (
                   currentRoute.label
                 )}:

@@ -1,6 +1,7 @@
 import React from 'react';
 import { cn } from '@/utils/cn';
 import Badge from '@/components/ui/Badge';
+import Button from '@/components/ui/Button';
 import Logo from './Logo';
 import EditableProjectTitle from '@/features/project/EditableProjectTitle';
 import GlossaryDrawer from '@/features/glossary/GlossaryDrawer';
@@ -58,15 +59,16 @@ export const Header: React.FC<HeaderProps> = ({
             <span className="font-semibold text-slate-800">{activeMethod}</span>
           </div>
 
-          <button
-            type="button"
+          <Button
+            variant="secondary"
+            size="sm"
             onClick={() => openGlossary()}
-            className="p-1.5 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors cursor-pointer"
-            title="Buka Glosarium Istilah SPK"
-            aria-label="Buka Glosarium"
+            title="Buka Glosarium Istilah SPK (Definisi & Rumus)"
+            className="flex items-center gap-1.5 text-slate-700 hover:text-accent-primary"
           >
-            <BookOpen className="w-4 h-4" />
-          </button>
+            <BookOpen className="w-3.5 h-3.5 text-accent-primary" />
+            <span className="font-medium text-xs">Glosarium</span>
+          </Button>
 
           {actions && <div className="flex items-center gap-2">{actions}</div>}
         </div>

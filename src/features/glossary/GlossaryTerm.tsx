@@ -8,12 +8,14 @@ import { cn } from '@/utils/cn';
 export interface GlossaryTermProps {
   term: string;
   children: React.ReactNode;
+  position?: 'top' | 'bottom' | 'left' | 'right';
   className?: string;
 }
 
 export const GlossaryTerm: React.FC<GlossaryTermProps> = ({
   term,
   children,
+  position = 'top',
   className,
 }) => {
   const openGlossary = useUiStore((s) => s.openGlossary);
@@ -39,19 +41,19 @@ export const GlossaryTerm: React.FC<GlossaryTermProps> = ({
   }
 
   const tooltipContent = (
-    <div className="space-y-1.5 p-0.5 text-left max-w-xs">
-      <div className="flex items-center justify-between gap-2 border-b border-slate-700/60 pb-1">
-        <span className="font-bold text-white tracking-tight">{matchedEntry.term}</span>
+    <div className="w-72 max-w-[90vw] space-y-2 p-1 text-left whitespace-normal select-none">
+      <div className="flex items-center justify-between gap-2 border-b border-slate-700/70 pb-1.5">
+        <span className="font-bold text-white text-xs tracking-tight">{matchedEntry.term}</span>
         {matchedEntry.symbol && (
-          <span className="font-mono text-[10px] px-1 py-0.2 rounded bg-slate-800 text-indigo-300">
+          <span className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-indigo-300 font-semibold border border-slate-700">
             {matchedEntry.symbol}
           </span>
         )}
       </div>
-      <p className="text-[11px] text-slate-200 leading-relaxed font-normal">
+      <p className="text-xs text-slate-300 leading-relaxed font-normal">
         {matchedEntry.definition}
       </p>
-      <div className="pt-0.5">
+      <div className="pt-1 border-t border-slate-800/80 flex items-center justify-end">
         <button
           type="button"
           onClick={(e) => {
@@ -59,10 +61,10 @@ export const GlossaryTerm: React.FC<GlossaryTermProps> = ({
             e.stopPropagation();
             openGlossary(matchedEntry.term);
           }}
-          className="inline-flex items-center gap-1 text-[11px] font-semibold text-indigo-400 hover:text-indigo-300 underline decoration-indigo-400/50 cursor-pointer transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-400 hover:text-indigo-300 transition-colors cursor-pointer py-0.5 px-1 rounded hover:bg-slate-800/60"
         >
           <span>Lihat detail</span>
-          <ExternalLink className="w-3 h-3" />
+          <ExternalLink className="w-3.5 h-3.5" />
         </button>
       </div>
     </div>
@@ -71,8 +73,10 @@ export const GlossaryTerm: React.FC<GlossaryTermProps> = ({
   return (
     <Tooltip
       content={tooltipContent}
-      position="top"
-      className="pointer-events-auto max-w-xs whitespace-normal bg-slate-900 text-white p-2.5 z-50 shadow-xl border border-slate-700/50 rounded-lg"
+      position={position}
+      interactive={true}
+      closeDelay={200}
+      className="p-2.5 shadow-2xl border border-slate-700/60 rounded-xl"
     >
       <span
         className={cn(
