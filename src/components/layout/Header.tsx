@@ -2,6 +2,7 @@ import React from 'react';
 import { cn } from '@/utils/cn';
 import Badge from '@/components/ui/Badge';
 import Logo from './Logo';
+import EditableProjectTitle from '@/features/project/EditableProjectTitle';
 import type { MethodId } from '@/types/domain';
 
 export interface HeaderProps {
@@ -35,19 +36,10 @@ export const Header: React.FC<HeaderProps> = ({
             <Badge variant="primary" size="sm">
               v1.0
             </Badge>
-            {onTitleChange ? (
-              <input
-                type="text"
-                value={title}
-                onChange={(e) => onTitleChange(e.target.value)}
-                placeholder="Beri nama proyek..."
-                className="text-xs text-slate-500 font-medium bg-transparent hover:bg-slate-100/60 focus:bg-white px-1.5 py-0.5 rounded focus:outline-none focus:ring-1 focus:ring-accent-primary/40 transition-colors"
-              />
-            ) : (
-              <span className="text-xs text-slate-500 font-medium block">
-                {title}
-              </span>
-            )}
+            <EditableProjectTitle
+              initialTitle={title}
+              onTitleChange={onTitleChange}
+            />
           </div>
         </div>
 
