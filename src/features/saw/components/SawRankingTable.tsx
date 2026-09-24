@@ -1,0 +1,91 @@
+import React from 'react';
+import type { RankingRow } from '@/core/math/types';
+import Badge from '@/components/ui/Badge';
+import { Trophy, Award } from 'lucide-react';
+
+export interface SawRankingTableProps {
+  ranking: RankingRow[];
+}
+
+export const SawRankingTable: React.FC<SawRankingTableProps> = ({ ranking }) => {
+  if (ranking.length === 0) {
+    return (
+      <div className="p-6 text-center text-xs text-slate-500 bg-slate-50 rounded-control border border-slate-200">
+        Belum ada hasil perangkingan untuk ditampilkan.
+      </div>
+    );
+  }
+
+  const maxScore = ranking.length > 0 ? Math.max(...ranking.map((r) => r.score), 1) : 1;
+
+  return (
+    <div className="w-full overflow-hidden rounded-card border border-slate-200/80 bg-white/90 shadow-2xs">
+      <table className="w-full text-left border-collapse text-xs">
+        <thead>
+          <tr className="bg-slate-50/90 border-b border-slate-200 text-slate-600 font-semibold">
+            <th className="py-3 px-4 w-24">Peringkat</th>
+            <th className="py-3 px-4">Alternatif / Rekomendasi</th>
+            <th className="py-3 px-4 w-36 text-right">Skor Preferensi (V)</th>
+            <th className="py-3 px-4 w-48 hidden sm:table-cell">Visualisasi Relatif</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-slate-100">
+          {ranking.map((row) => {
+            const isTop = row.rank === 1;
+            const percentage = maxScore > 0 ? (row.score / maxScore) * 100 : 0;
+
+            return (
+              <tr
+                key={row.alternativeId}
+                className={isTop ? 'bg-amber-50/30 hover:bg-amber-50/50' : 'hover:bg-slate-50/80'}
+              >
+                <td className="py-3 px-4 font-semibold">
+                  <div className="flex items-center gap-1.5">
+                    {isTop ? (
+                      <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 font-bold text-xs border border-amber-300">
+                        <Trophy className="w-3.5 h-3.5 text-amber-600" />
+                        #1
+                      </span>
+                    ) : row.rank === 2 ? (
+                      <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 font-bold text-xs border border-slate-300">
+                        <Award className="w-3.5 h-3.5 text-slate-500" />
+                        #2
+                      </span>
+                    ) : (
+                      <span className="font-mono text-slate-500 px-2">#{row.rank}</span>
+                    )}
+                  </div>
+                </td>
+                <td className="py-3 px-4">
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold text-slate-900">{row.alternativeName}</span>
+                    {isTop && (
+                      <Badge variant="benefit" size="sm">
+                        Rekomendasi Terbaik
+                      </Badge>
+                    )}
+                  </div>
+                </td>
+                <td className="py-3 px-4 text-right">
+                  <span className="font-mono text-sm font-bold text-slate-900 bg-slate-100/80 px-2 py-0.5 rounded border border-slate-200/60">
+                    {row.score.toFixed(4)}
+                  </span>
+                </td>
+                <td className="py-3 px-4 hidden sm:table-cell">
+                  <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden border border-slate-200/50">
+                    <div
+                      className={`h-full rounded-full transition-all duration-500 ${isTop ? 'bg-linear-to-r from-amber-400 to-amber-500' : 'bg-accent-primary'}`}
+                      style={{ width: `${Math.min(100, Math.max(0, percentage))}%` }}
+                    />
+                  </div>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
+export default SawRankingTable;
