@@ -5,6 +5,7 @@ import Button from '@/components/ui/Button';
 import Logo from './Logo';
 import EditableProjectTitle from '@/features/project/EditableProjectTitle';
 import GlossaryDrawer from '@/features/glossary/GlossaryDrawer';
+import TourLauncherMenu from '@/features/tour/TourLauncherMenu';
 import { BookOpen } from 'lucide-react';
 import { useUiStore } from '@/store/useUiStore';
 import type { MethodId } from '@/types/domain';
@@ -63,12 +64,15 @@ export const Header: React.FC<HeaderProps> = ({
             variant="secondary"
             size="sm"
             onClick={() => openGlossary()}
+            data-tour-id="glossary-btn"
             title="Buka Glosarium Istilah SPK (Definisi & Rumus)"
             className="flex items-center gap-1.5 text-slate-700 hover:text-accent-primary"
           >
             <BookOpen className="w-3.5 h-3.5 text-accent-primary" />
             <span className="font-medium text-xs">Glosarium</span>
           </Button>
+
+          <TourLauncherMenu />
 
           {actions && <div className="flex items-center gap-2">{actions}</div>}
         </div>

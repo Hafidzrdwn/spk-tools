@@ -10,6 +10,7 @@ export interface TourStore {
   setHasSeenWelcome: (seen: boolean) => void;
   startTour: (tourId: string) => void;
   goToNextStep: () => void;
+  goToPrevStep: () => void;
   skipTour: () => void;
   finishTour: (tourId: string) => void;
   resetAllTourProgress: () => void;
@@ -38,6 +39,11 @@ export const useTourStore = create<TourStore>()(
       goToNextStep: () =>
         set((state) => ({
           activeStepIndex: state.activeStepIndex + 1,
+        })),
+
+      goToPrevStep: () =>
+        set((state) => ({
+          activeStepIndex: Math.max(0, state.activeStepIndex - 1),
         })),
 
       skipTour: () =>

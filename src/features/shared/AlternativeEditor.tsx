@@ -22,7 +22,7 @@ export const AlternativeEditor: React.FC = () => {
           <h3 className="text-sm font-bold text-slate-800 tracking-tight">Daftar Alternatif</h3>
           <p className="text-xs text-slate-500">Kelola kandidat/opsi keputusan yang akan diperingkatkan</p>
         </div>
-        <Button variant="primary" size="sm" onClick={() => addAlternative()}>
+        <Button variant="primary" size="sm" onClick={() => addAlternative()} data-tour-id="add-alternative-btn">
           <Plus className="w-3.5 h-3.5" />
           <span>Tambah Alternatif</span>
         </Button>

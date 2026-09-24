@@ -33,7 +33,7 @@ export const CriteriaEditor: React.FC = () => {
             <Wand2 className="w-3.5 h-3.5 text-accent-primary" />
             <span>Ratakan Bobot</span>
           </Button>
-          <Button variant="primary" size="sm" onClick={() => addCriterion()}>
+          <Button variant="primary" size="sm" onClick={() => addCriterion()} data-tour-id="add-criterion-btn">
             <Plus className="w-3.5 h-3.5" />
             <span>Tambah Kriteria</span>
           </Button>
@@ -66,6 +66,7 @@ export const CriteriaEditor: React.FC = () => {
               <button
                 type="button"
                 onClick={() => handleToggleType(crit.id, crit.type)}
+                data-tour-id={idx === 0 ? "benefit-cost-toggle" : undefined}
                 className="focus:outline-none transition-transform active:scale-95 cursor-pointer"
                 title="Klik untuk mengubah tipe"
               >

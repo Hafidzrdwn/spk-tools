@@ -24,6 +24,7 @@ import useUrlTabSync from '@/features/shared/useUrlTabSync';
 import GlossaryTerm from '@/features/glossary/GlossaryTerm';
 import WelcomeModal from '@/features/tour/WelcomeModal';
 import TourRunner from '@/features/tour/TourRunner';
+import { generalTourDefinition } from '@/core/tour/generalTourSteps';
 import { useTourStore } from '@/store/useTourStore';
 import { Sparkles, FolderOpen } from 'lucide-react';
 import type { MethodId } from '@/types/domain';
@@ -33,16 +34,19 @@ export default function App() {
   const { activeTab, setActiveTab } = useUiStore();
   const { title, setTitle, alternatives, updateCellValue, loadProjectState } = useProjectStore();
   const criteria = useNormalizedCriteria();
-  const [activeEditorSection, setActiveEditorSection] = useState<'matrix' | 'criteria' | 'alternatives'>('matrix');
+  const activeEditorSection = useUiStore((s) => s.activeEditorSection);
+  const setActiveEditorSection = useUiStore((s) => s.setActiveEditorSection);
   const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
   const hasSeenWelcome = useTourStore((s) => s.hasSeenWelcome);
-  const [isWelcomeOpen, setIsWelcomeOpen] = useState(false);
+  const isWelcomeOpen = useUiStore((s) => s.isWelcomeOpen);
+  const openWelcome = useUiStore((s) => s.openWelcome);
+  const closeWelcome = useUiStore((s) => s.closeWelcome);
 
   useEffect(() => {
     if (!hasSeenWelcome) {
-      setIsWelcomeOpen(true);
+      openWelcome();
     }
-  }, [hasSeenWelcome]);
+  }, [hasSeenWelcome, openWelcome]);
 
   const currentRoute = ROUTES.find((r) => r.id === activeTab) || ROUTES[0];
 
@@ -82,7 +86,7 @@ export default function App() {
       <div className="space-y-6 max-w-6xl mx-auto">
         {/* Navigation Tabs Bar & Fully Visible Method Description */}
         <div className="space-y-2.5 p-3 rounded-card bg-white/80 backdrop-blur-md border border-slate-200/80 shadow-2xs">
-          <div className="overflow-x-auto pb-0.5 scrollbar-none">
+          <div data-tour-id="nav-tabs" className="overflow-x-auto pb-0.5 scrollbar-none">
             <Tabs<MethodId> items={tabItems} activeTab={activeTab} onChange={setActiveTab} />
           </div>
           <div className="flex flex-col sm:flex-row sm:items-center gap-2 px-3 py-2 bg-indigo-50/50 rounded-control border border-indigo-100/60 text-xs">
@@ -150,7 +154,8 @@ export default function App() {
         </Card>
 
         {/* Tab-Specific Viewport with Spring Motion */}
-        <AnimatePresence mode="wait">
+        <div data-tour-id="compute-section">
+          <AnimatePresence mode="wait">
           <motion.div
             key={activeTab}
             initial={{ opacity: 0, y: 14, scale: 0.99 }}
@@ -193,6 +198,7 @@ export default function App() {
             )}
           </motion.div>
         </AnimatePresence>
+        </div>
       </div>
 
       {/* Modal Multi-Template Kasus */}
@@ -205,11 +211,11 @@ export default function App() {
       {/* Modal Sambutan & Panduan Awal */}
       <WelcomeModal
         isOpen={isWelcomeOpen}
-        onClose={() => setIsWelcomeOpen(false)}
+        onClose={closeWelcome}
       />
 
       {/* Interactive Tour Engine Runner */}
-      <TourRunner />
+      <TourRunner tours={{ general: generalTourDefinition }} />
     </AppShell>
   );
 }

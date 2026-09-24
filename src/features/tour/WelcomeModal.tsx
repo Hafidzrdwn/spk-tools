@@ -3,6 +3,8 @@ import Dialog from '@/components/ui/Dialog';
 import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
 import { useTourStore } from '@/store/useTourStore';
+import { useProjectStore } from '@/store/useProjectStore';
+import { setCriteriaBaseline } from '@/core/tour/generalTourSteps';
 import { Sparkles, Calculator, Layers, Compass, Sliders, Scale } from 'lucide-react';
 
 export interface WelcomeModalProps {
@@ -53,6 +55,7 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
   const startTour = useTourStore((s) => s.startTour);
 
   const handleStartTour = () => {
+    setCriteriaBaseline(useProjectStore.getState().criteria.length);
     setHasSeenWelcome(true);
     onClose();
     if (onStartTour) {
