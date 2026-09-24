@@ -21,6 +21,7 @@ import StoryToMatrixTab from '@/features/story-to-matrix/StoryToMatrixTab';
 import TemplateSelectorModal from '@/components/layout/TemplateSelectorModal';
 import ResetProjectButton from '@/features/project/ResetProjectButton';
 import useUrlTabSync from '@/features/shared/useUrlTabSync';
+import GlossaryTerm from '@/features/glossary/GlossaryTerm';
 import { Sparkles, FolderOpen } from 'lucide-react';
 import type { MethodId } from '@/types/domain';
 
@@ -36,7 +37,11 @@ export default function App() {
 
   const tabItems = ROUTES.map((r) => ({
     id: r.id,
-    label: r.label,
+    label: ['SAW', 'WP', 'TOPSIS', 'AHP'].includes(r.id) ? (
+      <GlossaryTerm term={r.id}>{r.label}</GlossaryTerm>
+    ) : (
+      r.label
+    ),
     icon: r.icon,
     badge: r.badge,
   }));
@@ -74,7 +79,13 @@ export default function App() {
               <Badge variant="primary" size="sm">
                 {currentRoute.badge}
               </Badge>
-              <span className="font-bold text-slate-800">{currentRoute.label}:</span>
+              <span className="font-bold text-slate-800">
+                {['SAW', 'WP', 'TOPSIS', 'AHP'].includes(currentRoute.id) ? (
+                  <GlossaryTerm term={currentRoute.id}>{currentRoute.label}</GlossaryTerm>
+                ) : (
+                  currentRoute.label
+                )}:
+              </span>
             </div>
             <span className="text-slate-600 leading-relaxed">
               {currentRoute.description}

@@ -2,6 +2,7 @@ import React from 'react';
 import type { Criterion, Alternative } from '@/types/domain';
 import Badge from '@/components/ui/Badge';
 import NumericInput from '@/components/ui/NumericInput';
+import GlossaryTerm from '@/features/glossary/GlossaryTerm';
 import { cn } from '@/utils/cn';
 
 export interface MatrixInputGridProps {
@@ -50,7 +51,7 @@ export const MatrixInputGrid: React.FC<MatrixInputGridProps> = ({
         <thead>
           <tr className="bg-slate-50/90 border-b border-slate-200 text-slate-600 font-semibold">
             <th className="py-3 px-4 w-48 min-w-[12rem] sticky left-0 bg-slate-50/95 z-10 border-r border-slate-200/70">
-              Alternatif \ Kriteria
+              <GlossaryTerm term="Alternatif">Alternatif</GlossaryTerm> \ <GlossaryTerm term="Kriteria">Kriteria</GlossaryTerm>
             </th>
             {criteria.map((crit, idx) => (
               <th key={crit.id} className="py-3 px-3 min-w-[9.5rem] border-r border-slate-200/50 last:border-r-0">
@@ -59,11 +60,11 @@ export const MatrixInputGrid: React.FC<MatrixInputGridProps> = ({
                     {crit.name || `Kriteria ${idx + 1}`}
                   </span>
                   <Badge variant={crit.type === 'BENEFIT' ? 'benefit' : 'cost'} size="sm">
-                    {crit.type}
+                    <GlossaryTerm term={crit.type === 'BENEFIT' ? 'Benefit' : 'Cost'}>{crit.type}</GlossaryTerm>
                   </Badge>
                 </div>
                 <div className="flex items-center justify-between text-[11px] text-slate-400 font-mono">
-                  <span>w = {crit.weight}</span>
+                  <span><GlossaryTerm term="Bobot (Weight)">w</GlossaryTerm> = {crit.weight}</span>
                   <span>{(crit.normalizedWeight * 100).toFixed(1)}%</span>
                 </div>
               </th>

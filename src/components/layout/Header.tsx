@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { cn } from '@/utils/cn';
 import Badge from '@/components/ui/Badge';
 import Logo from './Logo';
 import EditableProjectTitle from '@/features/project/EditableProjectTitle';
 import GlossaryDrawer from '@/features/glossary/GlossaryDrawer';
 import { BookOpen } from 'lucide-react';
+import { useUiStore } from '@/store/useUiStore';
 import type { MethodId } from '@/types/domain';
 
 export interface HeaderProps {
@@ -22,7 +23,10 @@ export const Header: React.FC<HeaderProps> = ({
   actions,
   className,
 }) => {
-  const [isGlossaryOpen, setIsGlossaryOpen] = useState(false);
+  const isGlossaryOpen = useUiStore((s) => s.isGlossaryOpen);
+  const glossaryTargetTerm = useUiStore((s) => s.glossaryTargetTerm);
+  const openGlossary = useUiStore((s) => s.openGlossary);
+  const closeGlossary = useUiStore((s) => s.closeGlossary);
 
   return (
     <header
@@ -56,7 +60,7 @@ export const Header: React.FC<HeaderProps> = ({
 
           <button
             type="button"
-            onClick={() => setIsGlossaryOpen(true)}
+            onClick={() => openGlossary()}
             className="p-1.5 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors cursor-pointer"
             title="Buka Glosarium Istilah SPK"
             aria-label="Buka Glosarium"
@@ -70,7 +74,8 @@ export const Header: React.FC<HeaderProps> = ({
 
       <GlossaryDrawer
         isOpen={isGlossaryOpen}
-        onClose={() => setIsGlossaryOpen(false)}
+        onClose={closeGlossary}
+        targetTerm={glossaryTargetTerm}
       />
     </header>
   );

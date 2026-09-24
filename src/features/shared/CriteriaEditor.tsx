@@ -4,6 +4,7 @@ import { useNormalizedCriteria } from '@/store/selectors';
 import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
 import NumericInput from '@/components/ui/NumericInput';
+import GlossaryTerm from '@/features/glossary/GlossaryTerm';
 import { Plus, Trash2, Wand2 } from 'lucide-react';
 import type { CriterionType } from '@/types/domain';
 
@@ -20,7 +21,12 @@ export const CriteriaEditor: React.FC = () => {
       <div className="flex items-center justify-between gap-3">
         <div>
           <h3 className="text-sm font-bold text-slate-800 tracking-tight">Kriteria Keputusan</h3>
-          <p className="text-xs text-slate-500">Kelola kriteria, bobot, dan tipe (Benefit / Cost)</p>
+          <p className="text-xs text-slate-500">
+            Kelola <GlossaryTerm term="Kriteria">kriteria</GlossaryTerm>,{' '}
+            <GlossaryTerm term="Bobot (Weight)">bobot</GlossaryTerm>, dan tipe (
+            <GlossaryTerm term="Benefit">Benefit</GlossaryTerm> /{' '}
+            <GlossaryTerm term="Cost">Cost</GlossaryTerm>)
+          </p>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="secondary" size="sm" onClick={autoDistributeWeights}>
@@ -64,7 +70,9 @@ export const CriteriaEditor: React.FC = () => {
                 title="Klik untuk mengubah tipe"
               >
                 <Badge variant={crit.type === 'BENEFIT' ? 'benefit' : 'cost'} size="sm">
-                  {crit.type}
+                  <GlossaryTerm term={crit.type === 'BENEFIT' ? 'Benefit' : 'Cost'}>
+                    {crit.type}
+                  </GlossaryTerm>
                 </Badge>
               </button>
 
