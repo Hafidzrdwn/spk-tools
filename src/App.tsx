@@ -13,6 +13,7 @@ import CriteriaEditor from '@/features/shared/CriteriaEditor';
 import AlternativeEditor from '@/features/shared/AlternativeEditor';
 import MatrixInputGrid from '@/features/shared/MatrixInputGrid';
 import SawTab from '@/features/saw/SawTab';
+import WpTab from '@/features/wp/WpTab';
 import TemplateSelectorModal from '@/components/layout/TemplateSelectorModal';
 import { Sparkles, RefreshCw, FolderOpen } from 'lucide-react';
 import type { MethodId } from '@/types/domain';
@@ -132,6 +133,8 @@ export default function App() {
           >
             {activeTab === 'SAW' ? (
               <SawTab />
+            ) : activeTab === 'WP' ? (
+              <WpTab />
             ) : (
               <Card className="min-h-[280px] flex flex-col justify-center items-center text-center p-8 border-dashed border-2 border-slate-200/90 bg-white/60">
                 <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-accent-primary flex items-center justify-center mb-3 shadow-xs">
