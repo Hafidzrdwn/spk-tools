@@ -1,6 +1,7 @@
 import React from 'react';
 import { cn } from '@/utils/cn';
 import Badge from '@/components/ui/Badge';
+import Logo from './Logo';
 import type { MethodId } from '@/types/domain';
 
 export interface HeaderProps {
@@ -29,25 +30,18 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
         {/* Logo & Identitas */}
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-control bg-linear-to-tr from-accent-primary to-accent-secondary flex items-center justify-center text-white shadow-xs">
-            <span className="font-bold text-sm tracking-tight">DG</span>
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-bold text-slate-900 tracking-tight">
-                DecisiGraph
-              </span>
-              <Badge variant="primary" size="sm">
-                v1.0
-              </Badge>
-            </div>
+          <Logo size="md" showWordmark />
+          <div className="flex items-center gap-2 border-l border-slate-200/80 pl-3">
+            <Badge variant="primary" size="sm">
+              v1.0
+            </Badge>
             {onTitleChange ? (
               <input
                 type="text"
                 value={title}
                 onChange={(e) => onTitleChange(e.target.value)}
                 placeholder="Beri nama proyek..."
-                className="text-xs text-slate-500 font-medium bg-transparent hover:bg-slate-100/60 focus:bg-white px-1.5 py-0.5 -ml-1.5 rounded focus:outline-none focus:ring-1 focus:ring-accent-primary/40 transition-colors"
+                className="text-xs text-slate-500 font-medium bg-transparent hover:bg-slate-100/60 focus:bg-white px-1.5 py-0.5 rounded focus:outline-none focus:ring-1 focus:ring-accent-primary/40 transition-colors"
               />
             ) : (
               <span className="text-xs text-slate-500 font-medium block">

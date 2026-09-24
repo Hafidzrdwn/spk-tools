@@ -2,6 +2,7 @@ import React from 'react';
 import { cn } from '@/utils/cn';
 import Header, { type HeaderProps } from './Header';
 import DotGridBackground from './DotGridBackground';
+import Footer from './Footer';
 
 export interface AppShellProps {
   headerProps?: HeaderProps;
@@ -17,12 +18,12 @@ export const AppShell: React.FC<AppShellProps> = ({
   className,
 }) => {
   return (
-    <DotGridBackground>
+    <DotGridBackground className="flex flex-col min-h-screen">
       {/* Top Header */}
       <Header {...headerProps} />
 
       {/* Main Body */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
+      <div className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 py-6">
         {sidebar ? (
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <aside className="md:col-span-1">{sidebar}</aside>
@@ -32,8 +33,12 @@ export const AppShell: React.FC<AppShellProps> = ({
           <main className={cn('w-full', className)}>{children}</main>
         )}
       </div>
+
+      {/* Global Footer */}
+      <Footer />
     </DotGridBackground>
   );
 };
 
 export default AppShell;
+
