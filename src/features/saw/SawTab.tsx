@@ -18,7 +18,7 @@ export const SawTab: React.FC = () => {
     hasData,
   } = useSawViewModel();
 
-  const [activeStep, setActiveStep] = useState<1 | 2 | 3>(3);
+  const [activeStep, setActiveStep] = useState<1 | 2 | 3>(1);
 
   const steps = [
     { step: 1, label: '1. Matriks Awal (X)', icon: <Table className="w-3.5 h-3.5" /> },
