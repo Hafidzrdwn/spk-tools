@@ -1,210 +1,143 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import AppShell from '@/components/layout/AppShell';
+import Tabs from '@/components/ui/Tabs';
 import Card, { CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
-import Input from '@/components/ui/Input';
-import NumericInput from '@/components/ui/NumericInput';
-import Slider from '@/components/ui/Slider';
 import Badge from '@/components/ui/Badge';
-import Tooltip from '@/components/ui/Tooltip';
-import Tabs, { type TabItem } from '@/components/ui/Tabs';
-import GaugeMeter from '@/components/ui/GaugeMeter';
+import { useUiStore } from '@/store/useUiStore';
+import { useProjectStore } from '@/store/useProjectStore';
+import { useNormalizedCriteria } from '@/store/selectors';
+import { ROUTES } from '@/app/routes';
+import CriteriaEditor from '@/features/shared/CriteriaEditor';
+import AlternativeEditor from '@/features/shared/AlternativeEditor';
+import MatrixInputGrid from '@/features/shared/MatrixInputGrid';
+import { Sparkles, Play, RefreshCw } from 'lucide-react';
 import type { MethodId } from '@/types/domain';
 
 export default function App() {
-  const [activeMethod, setActiveMethod] = useState<MethodId>('SAW');
-  const [projectTitle, setProjectTitle] = useState('Pemilihan Supplier Bahan Baku 2026');
-  const [numericVal, setNumericVal] = useState(85.5);
-  const [sliderVal, setSliderVal] = useState(5);
-  const [textInput, setTextInput] = useState('Kualitas Layanan');
+  const { activeTab, setActiveTab } = useUiStore();
+  const { title, setTitle, alternatives, updateCellValue, resetProject } = useProjectStore();
+  const criteria = useNormalizedCriteria();
+  const [activeEditorSection, setActiveEditorSection] = useState<'matrix' | 'criteria' | 'alternatives'>('matrix');
 
-  const methodTabs: TabItem<MethodId>[] = [
-    { id: 'SAW', label: 'SAW', badge: 'Simple' },
-    { id: 'WP', label: 'WP', badge: 'Product' },
-    { id: 'TOPSIS', label: 'TOPSIS', badge: 'Geometry' },
-    { id: 'AHP', label: 'AHP', badge: 'Pairwise' },
-  ];
+  const currentRoute = ROUTES.find((r) => r.id === activeTab) || ROUTES[0];
 
-  const saatyTicks = [
-    { value: 1, label: '1' },
-    { value: 3, label: '3' },
-    { value: 5, label: '5' },
-    { value: 7, label: '7' },
-    { value: 9, label: '9' },
-  ];
+  const tabItems = ROUTES.map((r) => ({
+    id: r.id,
+    label: r.label,
+    icon: r.icon,
+    badge: r.badge,
+  }));
 
   return (
     <AppShell
       headerProps={{
-        title: projectTitle,
-        activeMethod,
-        onTitleChange: setProjectTitle,
+        title,
+        activeMethod: activeTab,
+        onTitleChange: setTitle,
         actions: (
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm">
-              Reset
+            <Button variant="ghost" size="sm" onClick={resetProject} title="Reset proyek">
+              <RefreshCw className="w-3.5 h-3.5 text-slate-500" />
             </Button>
             <Button variant="primary" size="sm">
-              Simpan Proyek
+              <Play className="w-3.5 h-3.5" />
+              <span>Hitung Solusi</span>
             </Button>
           </div>
         ),
       }}
     >
       <div className="space-y-6 max-w-6xl mx-auto">
-        {/* Banner Pengantar */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5 rounded-card bg-white/70 backdrop-blur-md border border-slate-200/80 shadow-xs">
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <span className="w-2.5 h-2.5 rounded-full bg-benefit animate-pulse" />
-              <h1 className="text-xl font-bold text-slate-900 tracking-tight">
-                DecisiGraph Design System Gallery
-              </h1>
-            </div>
-            <p className="text-xs text-slate-500">
-              Koleksi komponen UI bertema <strong className="text-slate-700">Clean Fun Tech</strong> dengan token warna Tailwind CSS v4.
-            </p>
+        {/* Navigation Tabs Bar */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-3 rounded-card bg-white/75 backdrop-blur-md border border-slate-200/80 shadow-2xs">
+          <Tabs<MethodId> items={tabItems} activeTab={activeTab} onChange={setActiveTab} />
+          <div className="flex items-center gap-2 pr-2">
+            <Badge variant="primary" size="sm">
+              {currentRoute.badge}
+            </Badge>
+            <span className="text-xs text-slate-500 hidden md:inline truncate max-w-xs">
+              {currentRoute.description}
+            </span>
           </div>
-          <Tabs items={methodTabs} activeTab={activeMethod} onChange={setActiveMethod} />
         </div>
 
-        {/* Baris 1: Buttons & Badges */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Card Buttons */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Button Variants</CardTitle>
-              <CardDescription>Aksi interaktif dengan efek spring dan palet token</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex flex-wrap items-center gap-2.5">
-                <Button variant="primary" size="sm">Primary</Button>
-                <Button variant="secondary" size="sm">Secondary</Button>
-                <Button variant="outline" size="sm">Outline</Button>
-                <Button variant="ghost" size="sm">Ghost</Button>
-                <Button variant="benefit" size="sm">Benefit</Button>
-                <Button variant="cost" size="sm">Cost</Button>
-                <Button variant="danger" size="sm">Danger</Button>
-              </div>
-              <div className="flex flex-wrap items-center gap-2.5 pt-2 border-t border-slate-100">
-                <Button variant="primary" size="md">Medium</Button>
-                <Button variant="primary" size="md" isLoading>Loading</Button>
-                <Button variant="secondary" size="md" disabled>Disabled</Button>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Card Badges & Tooltips */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Badges & Tooltips</CardTitle>
-              <CardDescription>Penanda atribut kriteria dan keterangan mengambang</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex flex-wrap items-center gap-2">
-                <Badge variant="benefit">Benefit / Max (Emerald)</Badge>
-                <Badge variant="cost">Cost / Min (Rose)</Badge>
-                <Badge variant="primary">Accent Indigo</Badge>
-                <Badge variant="secondary">Accent Violet</Badge>
-                <Badge variant="neutral">Neutral Slate</Badge>
-              </div>
-              <div className="pt-3 border-t border-slate-100 flex items-center gap-3">
-                <span className="text-xs text-slate-500 font-medium">Coba hover:</span>
-                <Tooltip content="Kriteria bertipe Benefit akan dinormalisasi r = x / max">
-                  <span className="inline-flex cursor-help">
-                    <Badge variant="benefit">Hover Me (Benefit)</Badge>
-                  </span>
-                </Tooltip>
-                <Tooltip content="Kriteria bertipe Cost akan dinormalisasi r = min / x" position="bottom">
-                  <span className="inline-flex cursor-help">
-                    <Badge variant="cost">Hover Me (Cost)</Badge>
-                  </span>
-                </Tooltip>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Baris 2: Input & NumericInput */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Text & Numeric Inputs</CardTitle>
-              <CardDescription>Input formulir dengan font mono khusus perhitungan</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Input
-                label="Nama Kriteria"
-                value={textInput}
-                onChange={(e) => setTextInput(e.target.value)}
-                helperText="Nama kriteria akan ditampilkan pada header tabel matriks"
-              />
-              <NumericInput
-                label="Nilai Matriks (Font Mono)"
-                value={numericVal}
-                onChange={setNumericVal}
-                step={0.5}
-                min={0}
-                max={100}
-              />
-            </CardContent>
-          </Card>
-
-          {/* Card Slider (Skala Saaty) */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Saaty Pairwise Slider</CardTitle>
-              <CardDescription>Slider interaktif untuk bobot dan perbandingan AHP 1-9</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Slider
-                label="Tingkat Kepentingan Relatif (1 - 9)"
-                value={sliderVal}
-                onChange={setSliderVal}
-                min={1}
-                max={9}
-                step={1}
-                valueDisplay={`Skala ${sliderVal}`}
-                ticks={saatyTicks}
-              />
-              <div className="p-3 rounded-control bg-slate-50 border border-slate-200/60 text-xs text-slate-600">
-                <span className="font-semibold text-accent-primary">Makna Nilai {sliderVal}: </span>
-                {sliderVal === 1 && 'Kedua kriteria sama penting (Equal).'}
-                {sliderVal === 3 && 'Kriteria A sedikit lebih penting dibanding B (Moderate).'}
-                {sliderVal === 5 && 'Kriteria A lebih penting dibanding B (Strong).'}
-                {sliderVal === 7 && 'Kriteria A sangat penting dibanding B (Very Strong).'}
-                {sliderVal === 9 && 'Kriteria A mutlak lebih penting dibanding B (Extreme).'}
-                {[2, 4, 6, 8].includes(sliderVal) && 'Nilai kompromi di antara dua tingkatan intensitas.'}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Baris 3: GaugeMeter AHP Consistency */}
+        {/* Shared Matrix & Model Input Section */}
         <Card>
-          <CardHeader>
-            <CardTitle>AHP Consistency Gauge Meter</CardTitle>
-            <CardDescription>Kurva SVG arc reaktif dengan threshold warna (konsisten ≤ 0.10, inkonsisten &gt; 0.10)</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 items-center">
-              <div className="flex flex-col items-center p-4 rounded-control bg-slate-50/70 border border-slate-200/60">
-                <GaugeMeter value={0.034} threshold={0.1} label="Hasil Matriks Konsisten (CR = 0.0340)" />
-                <p className="text-[11px] text-emerald-600 font-medium mt-1">✓ Memenuhi syarat AHP (CR ≤ 0.10)</p>
-              </div>
-
-              <div className="flex flex-col items-center p-4 rounded-control bg-slate-50/70 border border-slate-200/60">
-                <GaugeMeter value={0.185} threshold={0.1} label="Hasil Matriks Inkonsisten (CR = 0.1850)" />
-                <p className="text-[11px] text-rose-500 font-medium mt-1">⚠ Perlu saran koreksi perbandingan (CR &gt; 0.10)</p>
-              </div>
-
-              <div className="flex flex-col items-center p-4 rounded-control bg-slate-50/70 border border-slate-200/60">
-                <GaugeMeter value={sliderVal / 20} threshold={0.1} label={`Kaitkan dengan Slider (CR = ${(sliderVal / 20).toFixed(4)})`} />
-                <p className="text-[11px] text-slate-500 font-medium mt-1">Ubah slider di atas untuk menguji gauge ini</p>
-              </div>
+          <CardHeader className="border-b border-slate-100 flex flex-row items-center justify-between py-3">
+            <div>
+              <CardTitle className="text-sm">Matriks Keputusan Bersama (Shared Input)</CardTitle>
+              <CardDescription>Input data alternatif & kriteria dipakai lintas metode</CardDescription>
             </div>
+            <div className="flex items-center gap-1.5 p-1 bg-slate-100 rounded-control">
+              <button
+                type="button"
+                onClick={() => setActiveEditorSection('matrix')}
+                className={`px-3 py-1 text-xs font-semibold rounded ${activeEditorSection === 'matrix' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-500 hover:text-slate-800'}`}
+              >
+                Tabel Matriks
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveEditorSection('criteria')}
+                className={`px-3 py-1 text-xs font-semibold rounded ${activeEditorSection === 'criteria' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-500 hover:text-slate-800'}`}
+              >
+                Kriteria ({criteria.length})
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveEditorSection('alternatives')}
+                className={`px-3 py-1 text-xs font-semibold rounded ${activeEditorSection === 'alternatives' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-500 hover:text-slate-800'}`}
+              >
+                Alternatif ({alternatives.length})
+              </button>
+            </div>
+          </CardHeader>
+
+          <CardContent className="pt-4">
+            {activeEditorSection === 'matrix' && (
+              <MatrixInputGrid
+                criteria={criteria}
+                alternatives={alternatives}
+                onChangeCell={updateCellValue}
+              />
+            )}
+            {activeEditorSection === 'criteria' && <CriteriaEditor />}
+            {activeEditorSection === 'alternatives' && <AlternativeEditor />}
           </CardContent>
         </Card>
+
+        {/* Tab-Specific Viewport with Spring Motion */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 14, scale: 0.99 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -14, scale: 0.99 }}
+            transition={{ type: 'spring', stiffness: 350, damping: 26 }}
+          >
+            <Card className="min-h-[280px] flex flex-col justify-center items-center text-center p-8 border-dashed border-2 border-slate-200/90 bg-white/60">
+              <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-accent-primary flex items-center justify-center mb-3 shadow-xs">
+                {currentRoute.icon}
+              </div>
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 text-xs font-mono font-medium mb-2">
+                Tab ID: {activeTab}
+              </div>
+              <h2 className="text-lg font-bold text-slate-900 mb-1">
+                Panel Komputasi {currentRoute.label}
+              </h2>
+              <p className="text-xs text-slate-500 max-w-md mb-5 leading-relaxed">
+                {currentRoute.description}.
+                Komponen stepper kalkulasi dan tabel hasil untuk tab ini siap dirangkai pada tahap berikutnya.
+              </p>
+              <div className="flex items-center gap-2 text-xs text-slate-400 font-mono bg-slate-50 px-3 py-1.5 rounded-control border border-slate-200/60">
+                <Sparkles className="w-3.5 h-3.5 text-accent-primary" />
+                <span>Transisi Spring Motion Aktif (Framer Motion)</span>
+              </div>
+            </Card>
+          </motion.div>
+        </AnimatePresence>
       </div>
     </AppShell>
   );
