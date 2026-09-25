@@ -20,6 +20,7 @@ export interface UiStore {
   ahpCurrentCr: number;
   storyHasExtracted: boolean;
   storyMode: 'story' | 'form';
+  isSharedMatrixCollapsed: boolean;
   setHoveredCell: (id: string | null) => void;
   setActiveTab: (tab: MethodId) => void;
   setInspectorOpen: (open: boolean) => void;
@@ -36,6 +37,8 @@ export interface UiStore {
   setAhpCurrentCr: (cr: number) => void;
   setStoryHasExtracted: (has: boolean) => void;
   setStoryMode: (mode: 'story' | 'form') => void;
+  toggleSharedMatrix: () => void;
+  setSharedMatrixCollapsed: (collapsed: boolean) => void;
 }
 
 export const useUiStore = create<UiStore>((set) => ({
@@ -53,6 +56,7 @@ export const useUiStore = create<UiStore>((set) => ({
   ahpCurrentCr: 0,
   storyHasExtracted: false,
   storyMode: 'story',
+  isSharedMatrixCollapsed: false,
 
   setHoveredCell: (id) => set({ hoveredCellId: id }),
   setActiveTab: (tab) => {
@@ -73,5 +77,7 @@ export const useUiStore = create<UiStore>((set) => ({
   setAhpCurrentCr: (cr) => set({ ahpCurrentCr: cr }),
   setStoryHasExtracted: (has) => set({ storyHasExtracted: has }),
   setStoryMode: (mode) => set({ storyMode: mode }),
+  toggleSharedMatrix: () => set((s) => ({ isSharedMatrixCollapsed: !s.isSharedMatrixCollapsed })),
+  setSharedMatrixCollapsed: (collapsed) => set({ isSharedMatrixCollapsed: collapsed }),
 }));
 

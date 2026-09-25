@@ -87,7 +87,7 @@ export const ExtractedPreviewTable: React.FC<ExtractedPreviewTableProps> = ({
                   Alternatif / Kandidat
                 </th>
                 {criteria.map((crit) => (
-                  <th key={crit.id} className="py-2.5 px-3 min-w-[7.5rem] border-r border-slate-200/50 last:border-r-0 text-center">
+                  <th key={crit.id} className="py-2.5 px-3 min-w-30 border-r border-slate-200/50 last:border-r-0 text-center">
                     <div className="font-bold text-slate-800 truncate" title={crit.name}>{crit.name}</div>
                     <Badge variant={crit.type === 'BENEFIT' ? 'benefit' : 'cost'} size="sm" className="mt-0.5">
                       {crit.type}

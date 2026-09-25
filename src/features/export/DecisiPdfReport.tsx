@@ -522,6 +522,73 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({ payload }) => 
         </View>
 
         {/* ===================================================================
+            SECTION 5.B: PERBANDINGAN MULTI-METODE (OPSIONAL)
+        ==================================================================== */}
+        {payload.comparisonResult && payload.comparisonResult.rows.length > 0 && (
+          <View style={styles.sectionContainer} wrap={false}>
+            <Text style={styles.sectionTitle}>5.B Analisis Konsensus Multi-Metode (SAW vs WP vs TOPSIS)</Text>
+            <View style={styles.table}>
+              <View style={[styles.tableRow, styles.tableRowHeader]}>
+                <Text style={[styles.tableCellHeader, { width: '32%' }]}>Alternatif</Text>
+                <Text style={[styles.tableCellHeader, { width: '17%', textAlign: 'center' }]}>SAW</Text>
+                <Text style={[styles.tableCellHeader, { width: '17%', textAlign: 'center' }]}>WP</Text>
+                <Text style={[styles.tableCellHeader, { width: '17%', textAlign: 'center' }]}>TOPSIS</Text>
+                <Text style={[styles.tableCellHeader, { width: '17%', textAlign: 'center' }]}>Rata-rata</Text>
+              </View>
+
+              {payload.comparisonResult.rows.map((row, idx) => {
+                const isConsensus = row.isConsensusRank1;
+                const isEven = idx % 2 === 1;
+                return (
+                  <View
+                    key={row.alternativeId}
+                    style={[
+                      styles.tableRow,
+                      isConsensus ? styles.tableRowWinner : isEven ? styles.tableRowAlternate : {},
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        styles.tableCell,
+                        {
+                          width: '32%',
+                          fontWeight: isConsensus ? 'bold' : 'normal',
+                          color: isConsensus ? '#064E3B' : '#0F172A',
+                        },
+                      ]}
+                    >
+                      {row.alternativeName} {isConsensus ? '★' : ''}
+                    </Text>
+                    <Text style={[styles.tableCell, { width: '17%', textAlign: 'center', fontSize: 7.5 }]}>
+                      #{row.saw.rank} ({row.saw.score.toFixed(3)})
+                    </Text>
+                    <Text style={[styles.tableCell, { width: '17%', textAlign: 'center', fontSize: 7.5 }]}>
+                      #{row.wp.rank} ({row.wp.score.toFixed(3)})
+                    </Text>
+                    <Text style={[styles.tableCell, { width: '17%', textAlign: 'center', fontSize: 7.5 }]}>
+                      #{row.topsis.rank} ({row.topsis.score.toFixed(3)})
+                    </Text>
+                    <Text
+                      style={[
+                        styles.tableCell,
+                        {
+                          width: '17%',
+                          textAlign: 'center',
+                          fontWeight: 'bold',
+                          color: isConsensus ? '#047857' : '#4F46E5',
+                        },
+                      ]}
+                    >
+                      Rank {row.averageRank.toFixed(1)}
+                    </Text>
+                  </View>
+                );
+              })}
+            </View>
+          </View>
+        )}
+
+        {/* ===================================================================
             SECTION 6: KESIMPULAN OTOMATIS
         ==================================================================== */}
         <View style={styles.sectionContainer} wrap={false}>

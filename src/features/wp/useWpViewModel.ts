@@ -4,7 +4,7 @@ import { useNormalizedCriteria } from '@/store/selectors';
 import { calculateWP, WpZeroGuardError } from '@/core/math/wp';
 import { wpZeroGuard } from '@/validators/matrixSchemas';
 import type { Criterion, Alternative } from '@/types/domain';
-import type { RankingRow, TraceStep } from '@/core/math/types';
+import type { RankingRow, TraceStep, MethodResult } from '@/core/math/types';
 
 export interface ZeroGuardViolationDetail {
   alternativeId: string;
@@ -42,8 +42,15 @@ export interface WpViewModel {
   finalRanking: RankingRow[];
   bestAlternative?: RankingRow;
   formulaSteps: TraceStep[];
+  rawResult: MethodResult;
   updateCellValue: (alternativeId: string, criterionId: string, value: number) => void;
 }
+
+const EMPTY_WP_METHOD_RESULT: MethodResult = {
+  intermediateMatrices: {},
+  formulaSteps: [],
+  finalRanking: [],
+};
 
 export function useWpViewModel(): WpViewModel {
   const criteria = useNormalizedCriteria();
@@ -84,7 +91,14 @@ export function useWpViewModel(): WpViewModel {
   // 3. Kalkulasi WP (hanya saat bebas dari zero-guard violation)
   const calculationResult = useMemo(() => {
     if (!hasData || hasZeroGuardViolation) {
-      return { vectorS: [] as VectorSRow[], totalS: 0, finalRanking: [] as RankingRow[], bestAlternative: undefined, formulaSteps: [] as TraceStep[] };
+      return {
+        vectorS: [] as VectorSRow[],
+        totalS: 0,
+        finalRanking: [] as RankingRow[],
+        bestAlternative: undefined,
+        formulaSteps: [] as TraceStep[],
+        rawResult: EMPTY_WP_METHOD_RESULT,
+      };
     }
 
     try {
@@ -108,10 +122,18 @@ export function useWpViewModel(): WpViewModel {
         finalRanking: result.finalRanking,
         bestAlternative: result.finalRanking[0],
         formulaSteps: result.formulaSteps,
+        rawResult: result,
       };
     } catch (err) {
       if (err instanceof WpZeroGuardError) {
-        return { vectorS: [] as VectorSRow[], totalS: 0, finalRanking: [] as RankingRow[], bestAlternative: undefined, formulaSteps: [] as TraceStep[] };
+        return {
+          vectorS: [] as VectorSRow[],
+          totalS: 0,
+          finalRanking: [] as RankingRow[],
+          bestAlternative: undefined,
+          formulaSteps: [] as TraceStep[],
+          rawResult: EMPTY_WP_METHOD_RESULT,
+        };
       }
       throw err;
     }
@@ -129,6 +151,7 @@ export function useWpViewModel(): WpViewModel {
     finalRanking: calculationResult.finalRanking,
     bestAlternative: calculationResult.bestAlternative,
     formulaSteps: calculationResult.formulaSteps,
+    rawResult: calculationResult.rawResult,
     updateCellValue,
   };
 }

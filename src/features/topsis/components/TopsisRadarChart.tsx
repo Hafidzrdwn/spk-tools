@@ -59,7 +59,7 @@ export const TopsisRadarChart: React.FC<TopsisRadarChartProps> = ({
         </div>
       </div>
 
-      <div className="w-full h-[360px] sm:h-[400px]">
+      <div className="w-full h-90 sm:h-100">
         <ResponsiveContainer width="100%" height="100%">
           <RadarChart cx="50%" cy="50%" outerRadius="75%" data={radarData}>
             <PolarGrid stroke="#e2e8f0" />

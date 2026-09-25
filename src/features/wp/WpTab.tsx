@@ -5,6 +5,7 @@ import MatrixInputGrid from '@/features/shared/MatrixInputGrid';
 import WpZeroGuardAlert from './components/WpZeroGuardAlert';
 import WpExponentPanel from './components/WpExponentPanel';
 import WpVectorTable from './components/WpVectorTable';
+import ExportButton from '@/features/export/ExportButton';
 import Card, { CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
 import { ArrowRight, Trophy, Calculator, Table, Layers } from 'lucide-react';
@@ -21,6 +22,7 @@ export const WpTab: React.FC = () => {
     totalS,
     finalRanking,
     bestAlternative,
+    rawResult,
     updateCellValue,
   } = useWpViewModel();
 
@@ -83,10 +85,13 @@ export const WpTab: React.FC = () => {
             </button>
           ))}
         </div>
-        <div className="hidden md:flex items-center gap-1 text-[11px] text-slate-500 px-2 font-mono">
-          <span>w_j*</span><ArrowRight className="w-3 h-3 text-slate-400" />
-          <span>S_i = Π(x^w*)</span><ArrowRight className="w-3 h-3 text-slate-400" />
-          <span>V_i = S_i / Σ(S)</span>
+        <div className="flex items-center gap-2.5 self-end sm:self-auto">
+          <div className="hidden lg:flex items-center gap-1 text-[11px] text-slate-500 px-2 font-mono">
+            <span>w_j*</span><ArrowRight className="w-3 h-3 text-slate-400" />
+            <span>S_i = Π(x^w*)</span><ArrowRight className="w-3 h-3 text-slate-400" />
+            <span>V_i = S_i / Σ(S)</span>
+          </div>
+          <ExportButton method="WP" result={rawResult} />
         </div>
       </div>
 

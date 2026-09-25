@@ -3,7 +3,7 @@ import GaugeMeter from '@/components/ui/GaugeMeter';
 import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
 import type { ConsistencyResult, ConsistencyFixSuggestion } from '@/core/math/ahp-consistency';
-import { AlertCircle, CheckCircle2, Wand2, ArrowRight } from 'lucide-react';
+import { AlertCircle, Wand2, ArrowRight } from 'lucide-react';
 
 export interface AhpConsistencyGaugeProps {
   consistency: ConsistencyResult;

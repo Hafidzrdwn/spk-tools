@@ -3,7 +3,7 @@ import { useProjectStore } from '@/store/useProjectStore';
 import { useNormalizedCriteria } from '@/store/selectors';
 import { calculateSAW } from '@/core/math/saw';
 import type { Criterion, Alternative } from '@/types/domain';
-import type { RankingRow, TraceStep } from '@/core/math/types';
+import type { RankingRow, TraceStep, MethodResult } from '@/core/math/types';
 
 export interface SawViewModel {
   criteria: Criterion[];
@@ -13,6 +13,7 @@ export interface SawViewModel {
   formulaSteps: TraceStep[];
   finalRanking: RankingRow[];
   bestAlternative?: RankingRow;
+  rawResult: MethodResult;
   updateCellValue: (alternativeId: string, criterionId: string, value: number) => void;
   hasData: boolean;
 }
@@ -37,6 +38,7 @@ export function useSawViewModel(): SawViewModel {
     formulaSteps: sawResult.formulaSteps,
     finalRanking: sawResult.finalRanking,
     bestAlternative,
+    rawResult: sawResult,
     updateCellValue,
     hasData,
   };

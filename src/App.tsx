@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import AppShell from '@/components/layout/AppShell';
 import Tabs from '@/components/ui/Tabs';
@@ -31,17 +31,18 @@ import { topsisTourDefinition } from '@/core/tour/topsisTourSteps';
 import { ahpTourDefinition } from '@/core/tour/ahpTourSteps';
 import { storyTourDefinition } from '@/core/tour/storyTourSteps';
 import { useTourStore } from '@/store/useTourStore';
-import { Sparkles, FolderOpen } from 'lucide-react';
+import { Sparkles, FolderOpen, ChevronDown, ChevronUp } from 'lucide-react';
 import type { MethodId } from '@/types/domain';
 
 export default function App() {
   useUrlTabSync();
   const { activeTab, setActiveTab } = useUiStore();
-  const hoveredCellId = useUiStore((s) => s.hoveredCellId);
   const { title, setTitle, alternatives, updateCellValue, loadProjectState } = useProjectStore();
   const criteria = useNormalizedCriteria();
   const activeEditorSection = useUiStore((s) => s.activeEditorSection);
   const setActiveEditorSection = useUiStore((s) => s.setActiveEditorSection);
+  const isSharedMatrixCollapsed = useUiStore((s) => s.isSharedMatrixCollapsed);
+  const toggleSharedMatrix = useUiStore((s) => s.toggleSharedMatrix);
   const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
   const hasSeenWelcome = useTourStore((s) => s.hasSeenWelcome);
   const isWelcomeOpen = useUiStore((s) => s.isWelcomeOpen);
@@ -115,52 +116,103 @@ export default function App() {
           </div>
         </div>
 
-        {/* Shared Matrix & Model Input Section */}
-        <Card data-tour-id="shared-matrix-card">
-          <CardHeader className="border-b border-slate-100 flex flex-row items-center justify-between py-3">
-            <div>
-              <CardTitle className="text-sm">Matriks Keputusan Bersama (Shared Input)</CardTitle>
-              <CardDescription>Input data alternatif & kriteria dipakai lintas metode</CardDescription>
+        {/* Shared Matrix & Model Input Section (Collapsible) */}
+        <Card data-tour-id="shared-matrix-card" className="transition-all duration-200 shadow-2xs">
+          <CardHeader className="border-b border-slate-100 flex flex-col sm:flex-row items-start sm:items-center justify-between py-2.5 px-4 gap-2">
+            <div className="flex items-center gap-2.5">
+              <button
+                type="button"
+                data-tour-id="shared-matrix-toggle-btn"
+                onClick={toggleSharedMatrix}
+                className="p-1.5 rounded-control hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors cursor-pointer"
+                title={isSharedMatrixCollapsed ? 'Buka Matriks Keputusan Bersama' : 'Ciutkan Matriks Keputusan Bersama'}
+              >
+                {isSharedMatrixCollapsed ? (
+                  <ChevronDown className="w-4 h-4 text-accent-primary" />
+                ) : (
+                  <ChevronUp className="w-4 h-4 text-slate-500" />
+                )}
+              </button>
+              <div>
+                <div className="flex items-center gap-2">
+                  <CardTitle className="text-sm">Matriks Keputusan Bersama (Shared Input)</CardTitle>
+                  {isSharedMatrixCollapsed && (
+                    <span className="text-[10px] font-mono bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded-full font-semibold border border-indigo-200/60">
+                      {criteria.length} Kriteria • {alternatives.length} Alternatif (Diciutkan)
+                    </span>
+                  )}
+                </div>
+                <CardDescription>
+                  {isSharedMatrixCollapsed
+                    ? 'Klik "Buka Matriks" atau tombol panah untuk mengedit nilai sel, kriteria, dan alternatif.'
+                    : 'Input data alternatif & kriteria dipakai lintas metode'}
+                </CardDescription>
+              </div>
             </div>
-            <div className="flex items-center gap-1.5 p-1 bg-slate-100 rounded-control">
+
+            <div className="flex items-center gap-2 self-end sm:self-auto">
+              {!isSharedMatrixCollapsed && (
+                <div className="flex items-center gap-1.5 p-1 bg-slate-100 rounded-control">
+                  <button
+                    type="button"
+                    data-tour-id="editor-tab-matrix"
+                    onClick={() => setActiveEditorSection('matrix')}
+                    className={`px-3 py-1 text-xs font-semibold rounded ${activeEditorSection === 'matrix' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-500 hover:text-slate-800'}`}
+                  >
+                    Tabel Matriks
+                  </button>
+                  <button
+                    type="button"
+                    data-tour-id="editor-tab-criteria"
+                    onClick={() => setActiveEditorSection('criteria')}
+                    className={`px-3 py-1 text-xs font-semibold rounded ${activeEditorSection === 'criteria' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-500 hover:text-slate-800'}`}
+                  >
+                    Kriteria ({criteria.length})
+                  </button>
+                  <button
+                    type="button"
+                    data-tour-id="editor-tab-alternatives"
+                    onClick={() => setActiveEditorSection('alternatives')}
+                    className={`px-3 py-1 text-xs font-semibold rounded ${activeEditorSection === 'alternatives' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-500 hover:text-slate-800'}`}
+                  >
+                    Alternatif ({alternatives.length})
+                  </button>
+                </div>
+              )}
+
               <button
                 type="button"
-                data-tour-id="editor-tab-matrix"
-                onClick={() => setActiveEditorSection('matrix')}
-                className={`px-3 py-1 text-xs font-semibold rounded ${activeEditorSection === 'matrix' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-500 hover:text-slate-800'}`}
+                onClick={toggleSharedMatrix}
+                className="px-2.5 py-1 text-xs font-semibold rounded-control border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 transition-all flex items-center gap-1 shadow-2xs cursor-pointer"
               >
-                Tabel Matriks
-              </button>
-              <button
-                type="button"
-                data-tour-id="editor-tab-criteria"
-                onClick={() => setActiveEditorSection('criteria')}
-                className={`px-3 py-1 text-xs font-semibold rounded ${activeEditorSection === 'criteria' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-500 hover:text-slate-800'}`}
-              >
-                Kriteria ({criteria.length})
-              </button>
-              <button
-                type="button"
-                data-tour-id="editor-tab-alternatives"
-                onClick={() => setActiveEditorSection('alternatives')}
-                className={`px-3 py-1 text-xs font-semibold rounded ${activeEditorSection === 'alternatives' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-500 hover:text-slate-800'}`}
-              >
-                Alternatif ({alternatives.length})
+                {isSharedMatrixCollapsed ? (
+                  <>
+                    <ChevronDown className="w-3.5 h-3.5 text-accent-primary" />
+                    <span>Buka Matriks</span>
+                  </>
+                ) : (
+                  <>
+                    <ChevronUp className="w-3.5 h-3.5 text-slate-400" />
+                    <span>Ciutkan</span>
+                  </>
+                )}
               </button>
             </div>
           </CardHeader>
 
-          <CardContent className="pt-4">
-            {activeEditorSection === 'matrix' && (
-              <MatrixInputGrid
-                criteria={criteria}
-                alternatives={alternatives}
-                onChangeCell={updateCellValue}
-              />
-            )}
-            {activeEditorSection === 'criteria' && <CriteriaEditor />}
-            {activeEditorSection === 'alternatives' && <AlternativeEditor />}
-          </CardContent>
+          {!isSharedMatrixCollapsed && (
+            <CardContent className="pt-4">
+              {activeEditorSection === 'matrix' && (
+                <MatrixInputGrid
+                  criteria={criteria}
+                  alternatives={alternatives}
+                  onChangeCell={updateCellValue}
+                />
+              )}
+              {activeEditorSection === 'criteria' && <CriteriaEditor />}
+              {activeEditorSection === 'alternatives' && <AlternativeEditor />}
+            </CardContent>
+          )}
         </Card>
 
         {/* Tab-Specific Viewport with Spring Motion */}

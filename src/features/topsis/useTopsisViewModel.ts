@@ -37,6 +37,7 @@ export interface TopsisViewModel {
   radarData: RadarDataPoint[];
   radarAlternativeKeys: { name: string; color: string }[];
   formulaSteps: TraceStep[];
+  rawResult: MethodResult;
   updateCellValue: (alternativeId: string, criterionId: string, value: number) => void;
 }
 
@@ -56,6 +57,7 @@ export function useTopsisViewModel(): TopsisViewModel {
         distances: [] as TopsisDistanceDetail[], finalRanking: [] as RankingRow[],
         bestAlternative: undefined, radarData: [] as RadarDataPoint[],
         radarAlternativeKeys: [] as { name: string; color: string }[], formulaSteps: [] as TraceStep[],
+        rawResult: { intermediateMatrices: {}, formulaSteps: [], finalRanking: [] },
       };
     }
 
@@ -120,6 +122,7 @@ export function useTopsisViewModel(): TopsisViewModel {
       distances, finalRanking: result.finalRanking,
       bestAlternative: result.finalRanking[0], radarData,
       radarAlternativeKeys, formulaSteps: result.formulaSteps,
+      rawResult: result,
     };
   }, [criteria, alternatives, hasData]);
 

@@ -23,7 +23,7 @@ export interface TourStep {
   /** Jika diisi, tombol "Lanjut" disembunyikan/disabled sampai kondisi ini true. */
   requiredAction?: {
     description: string; // teks instruksi ke user, misal "Coba klik Auto-distribute weight"
-    isSatisfied: (projectState: DecisiProjectState) => boolean;
+    isSatisfied: (projectState?: DecisiProjectState) => boolean;
   };
 }
 

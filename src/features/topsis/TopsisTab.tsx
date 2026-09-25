@@ -7,6 +7,7 @@ import TopsisDistanceCard from './components/TopsisDistanceCard';
 import TopsisRadarChart from './components/TopsisRadarChart';
 import TopsisRankingTable from './components/TopsisRankingTable';
 import { FormulaFloatingCard } from '@/features/inspector';
+import ExportButton from '@/features/export/ExportButton';
 import Card, { CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
 import { ArrowRight, Trophy, Compass, Table, BarChart2 } from 'lucide-react';
@@ -16,7 +17,7 @@ export const TopsisTab: React.FC = () => {
     criteria, alternatives, hasData, weightedMatrix,
     idealPositive, idealNegative, distances, finalRanking,
     bestAlternative, radarData, radarAlternativeKeys, updateCellValue,
-    formulaSteps,
+    formulaSteps, rawResult,
   } = useTopsisViewModel();
 
   const activeStep = useUiStore((s) => s.topsisActiveStep);
@@ -71,11 +72,14 @@ export const TopsisTab: React.FC = () => {
             </button>
           ))}
         </div>
-        <div className="hidden md:flex items-center gap-1 text-[11px] text-slate-500 px-2 font-mono">
-          <span>Y = w·r</span><ArrowRight className="w-3 h-3 text-slate-400" />
-          <span>A+, A-</span><ArrowRight className="w-3 h-3 text-slate-400" />
-          <span>D+, D-</span><ArrowRight className="w-3 h-3 text-slate-400" />
-          <span>C_i</span>
+        <div className="flex items-center gap-2.5 self-end sm:self-auto">
+          <div className="hidden lg:flex items-center gap-1 text-[11px] text-slate-500 px-2 font-mono">
+            <span>Y = w·r</span><ArrowRight className="w-3 h-3 text-slate-400" />
+            <span>A+, A-</span><ArrowRight className="w-3 h-3 text-slate-400" />
+            <span>D+, D-</span><ArrowRight className="w-3 h-3 text-slate-400" />
+            <span>C_i</span>
+          </div>
+          <ExportButton method="TOPSIS" result={rawResult} />
         </div>
       </div>
 

@@ -5,6 +5,7 @@ import MatrixInputGrid from '@/features/shared/MatrixInputGrid';
 import SawNormalizationTable from './components/SawNormalizationTable';
 import SawRankingTable from './components/SawRankingTable';
 import { FormulaFloatingCard } from '@/features/inspector';
+import ExportButton from '@/features/export/ExportButton';
 import Card, { CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
 import { ArrowRight, Trophy, Calculator, Table, BarChart2 } from 'lucide-react';
@@ -16,6 +17,7 @@ export const SawTab: React.FC = () => {
     normalizedMatrix,
     finalRanking,
     bestAlternative,
+    rawResult,
     updateCellValue,
     hasData,
     formulaSteps,
@@ -77,12 +79,15 @@ export const SawTab: React.FC = () => {
           ))}
         </div>
 
-        <div className="hidden md:flex items-center gap-1 text-[11px] text-slate-500 px-2 font-mono">
-          <span>X_ij</span>
-          <ArrowRight className="w-3 h-3 text-slate-400" />
-          <span>R_ij</span>
-          <ArrowRight className="w-3 h-3 text-slate-400" />
-          <span>V_i = Σ(w_j · r_ij)</span>
+        <div className="flex items-center gap-2.5 self-end sm:self-auto">
+          <div className="hidden lg:flex items-center gap-1 text-[11px] text-slate-500 px-2 font-mono">
+            <span>X_ij</span>
+            <ArrowRight className="w-3 h-3 text-slate-400" />
+            <span>R_ij</span>
+            <ArrowRight className="w-3 h-3 text-slate-400" />
+            <span>V_i = Σ(w_j · r_ij)</span>
+          </div>
+          <ExportButton method="SAW" result={rawResult} />
         </div>
       </div>
 

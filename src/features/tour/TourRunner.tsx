@@ -377,7 +377,7 @@ export const TourRunner: React.FC<TourRunnerProps> = ({ tours = {} }) => {
                   <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-indigo-600 text-white text-[10px] font-bold shrink-0 mt-0.5 shadow-2xs">
                     {activeStepIndex + 1}
                   </span>
-                  <h4 className="text-sm font-bold text-slate-900 leading-snug break-words">
+                  <h4 className="text-sm font-bold text-slate-900 leading-snug wrap-break-word">
                     {currentStep.title}
                   </h4>
                 </div>

@@ -85,7 +85,7 @@ describe('Tour Infrastructure & useTourStore', () => {
   });
 
   it('generalTourDefinition memiliki alur eksplisit dari judul, glosarium, kriteria, hingga alternatif', () => {
-    expect(generalTourDefinition.steps.length).toBe(14);
+    expect(generalTourDefinition.steps.length).toBe(16);
     
     // Step 1: title
     const titleStep = generalTourDefinition.steps.find((s) => s.id === 'general-title');
@@ -97,20 +97,30 @@ describe('Tour Infrastructure & useTourStore', () => {
     expect(glossaryStep).toBeDefined();
     expect(glossaryStep?.requiredAction).toBeDefined();
 
-    // Step 8: open criteria
+    // Step shared matrix toggle
+    const toggleStep = generalTourDefinition.steps.find((s) => s.id === 'general-shared-matrix-toggle');
+    expect(toggleStep).toBeDefined();
+    expect(toggleStep?.targetSelector).toBe('[data-tour-id="shared-matrix-toggle-btn"]');
+
+    // Step open criteria
     const openCritStep = generalTourDefinition.steps.find((s) => s.id === 'general-open-criteria');
     expect(openCritStep).toBeDefined();
     expect(openCritStep?.requiredAction).toBeDefined();
 
-    // Step 9: add criterion
+    // Step add criterion
     const addCritStep = generalTourDefinition.steps.find((s) => s.id === 'general-add-criterion');
     expect(addCritStep).toBeDefined();
     expect(addCritStep?.requiredAction).toBeDefined();
 
-    // Step 11: open alternatives
+    // Step open alternatives
     const openAltStep = generalTourDefinition.steps.find((s) => s.id === 'general-open-alternatives');
     expect(openAltStep).toBeDefined();
     expect(openAltStep?.requiredAction).toBeDefined();
+
+    // Step export PDF
+    const exportPdfStep = generalTourDefinition.steps.find((s) => s.id === 'general-export-pdf');
+    expect(exportPdfStep).toBeDefined();
+    expect(exportPdfStep?.targetSelector).toBe('[data-tour-id="export-pdf-btn"]');
   });
 
   it('sawTourDefinition memenuhi kriteria 8 step eksplisit, klik tab SAW, klik stepper, dan required hover sel', async () => {

@@ -126,4 +126,62 @@ describe('Export PDF Report Module', () => {
     expect(element.props.payload.method).toBe('TOPSIS');
     expect(element.props.payload.result.formulaSteps.length).toBe(3);
   });
+
+  it('DecisiPdfReport dengan comparisonResult merender varian perbandingan multi-metode', () => {
+    const payloadWithComp: ReportPayload = {
+      projectTitle: 'Studi Komparasi Multi-Metode',
+      generatedAt: '2026-09-26T01:30:00Z',
+      method: 'COMPARE',
+      criteria: dummyCriteria,
+      alternatives: dummyAlternatives,
+      result: dummyResult,
+      comparisonResult: {
+        rows: [
+          {
+            alternativeId: 'a1',
+            alternativeName: 'Vendor Alpha',
+            saw: { score: 0.872, rank: 1 },
+            wp: { score: 0.865, rank: 1 },
+            topsis: { score: 0.891, rank: 1 },
+            averageRank: 1.0,
+            isConsensusRank1: true,
+          },
+          {
+            alternativeId: 'a2',
+            alternativeName: 'Vendor Beta',
+            saw: { score: 0.832, rank: 2 },
+            wp: { score: 0.84, rank: 2 },
+            topsis: { score: 0.82, rank: 3 },
+            averageRank: 2.3,
+            isConsensusRank1: false,
+          },
+        ],
+        hasRank1Shift: false,
+        rank1Winners: {},
+        explanation: 'Konsensus tercapai.',
+        differences: [],
+      },
+    };
+
+    const element = React.createElement(DecisiPdfReport, { payload: payloadWithComp });
+    expect(element).toBeDefined();
+    expect(element.props.payload.comparisonResult?.rows.length).toBe(2);
+  });
+
+  it('useUiStore mengelola state isSharedMatrixCollapsed dan toggleSharedMatrix dengan benar', async () => {
+    const { useUiStore } = await import('@/store/useUiStore');
+
+    // Default false (terbuka)
+    useUiStore.getState().setSharedMatrixCollapsed(false);
+    expect(useUiStore.getState().isSharedMatrixCollapsed).toBe(false);
+
+    // Toggle ke true (ciut)
+    useUiStore.getState().toggleSharedMatrix();
+    expect(useUiStore.getState().isSharedMatrixCollapsed).toBe(true);
+
+    // Toggle kembali ke false
+    useUiStore.getState().toggleSharedMatrix();
+    expect(useUiStore.getState().isSharedMatrixCollapsed).toBe(false);
+  });
 });
+

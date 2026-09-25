@@ -94,6 +94,20 @@ export const GENERAL_TOUR_STEPS: TourStep[] = [
     content:
       'Data alternatif dan kriteria disimpan di panel bersama ini, sehingga nilai yang Anda masukkan langsung tersinkronisasi ke seluruh metode tanpa perlu input ulang.',
     placement: 'top',
+    preNavigate: () => {
+      useUiStore.getState().setSharedMatrixCollapsed(false);
+    },
+  },
+  {
+    id: 'general-shared-matrix-toggle',
+    targetSelector: '[data-tour-id="shared-matrix-toggle-btn"]',
+    title: 'Fitur Buka / Ciutkan Matriks Bersama',
+    content:
+      'Container ini dapat diciutkan (collapsible)! Anda dapat mengklik tombol panah atau tombol "Ciutkan" kapan saja untuk menyembunyikan input tabel agar area komputasi di bawah lebih lega, dan klik lagi untuk membukanya.',
+    placement: 'bottom',
+    preNavigate: () => {
+      useUiStore.getState().setSharedMatrixCollapsed(false);
+    },
   },
   {
     id: 'general-open-criteria',
@@ -194,6 +208,14 @@ export const GENERAL_TOUR_STEPS: TourStep[] = [
     content:
       'Di bagian bawah, sistem secara instan menampilkan proses normalisasi, kalkulasi bobot, dan peringkat akhir sesuai tab metode yang aktif.',
     placement: 'top',
+  },
+  {
+    id: 'general-export-pdf',
+    targetSelector: '[data-tour-id="export-pdf-btn"]',
+    title: 'Fitur Unggulan: Export Laporan ke PDF',
+    content:
+      'Fitur penting yang sangat bermanfaat: Klik tombol "Export ke PDF" ini untuk langsung mengunduh berkas laporan resmi berbasis teks vektor asli, lengkap dengan 7 bagian mulai dari kriteria hingga kesimpulan naratif otomatis.',
+    placement: 'bottom',
   },
 ];
 

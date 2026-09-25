@@ -7,6 +7,8 @@ import { AhpConsistencyGauge } from './components/AhpConsistencyGauge';
 import Card, { CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
+import ExportButton from '@/features/export/ExportButton';
+import type { MethodResult, RankingRow } from '@/core/math/types';
 import { Sliders, Grid3X3, Activity, Sparkles, Check, RotateCcw } from 'lucide-react';
 
 export const AhpTab: React.FC = () => {
@@ -14,6 +16,24 @@ export const AhpTab: React.FC = () => {
   const activeStep = useUiStore((s) => s.ahpActiveStep);
   const setActiveStep = useUiStore((s) => s.setAhpActiveStep);
   const [applied, setApplied] = useState(false);
+
+  const ahpMethodResult = React.useMemo<MethodResult>(() => {
+    const ranking: RankingRow[] = criteria
+      .map((c, i) => ({
+        alternativeId: c.id,
+        alternativeName: c.name,
+        score: priorityVector[i] ?? 0,
+        rank: 0,
+      }))
+      .sort((a, b) => b.score - a.score)
+      .map((r, idx) => ({ ...r, rank: idx + 1 }));
+
+    return {
+      intermediateMatrices: { pairwise: matrix },
+      formulaSteps: [],
+      finalRanking: ranking,
+    };
+  }, [criteria, priorityVector, matrix]);
 
   const handleApply = () => {
     applyWeightsToProject();
@@ -72,7 +92,10 @@ export const AhpTab: React.FC = () => {
             </button>
           ))}
         </div>
-        <div className="text-[11px] text-slate-500 px-2 font-mono hidden md:block">{criteria.length} Kriteria &bull; {pairs.length} Perbandingan</div>
+        <div className="flex items-center gap-2.5 self-end sm:self-auto">
+          <div className="text-[11px] text-slate-500 px-2 font-mono hidden md:block">{criteria.length} Kriteria &bull; {pairs.length} Perbandingan</div>
+          <ExportButton method="AHP" result={ahpMethodResult} />
+        </div>
       </div>
 
       {!hasData ? (
