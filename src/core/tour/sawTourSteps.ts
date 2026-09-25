@@ -1,6 +1,7 @@
 import type { TourDefinition, TourStep } from './types';
 import { useUiStore } from '@/store/useUiStore';
 import { useProjectStore } from '@/store/useProjectStore';
+import { useTourStore } from '@/store/useTourStore';
 import { CASE_TEMPLATES } from '@/core/constants/caseTemplates';
 
 let isHoverStepActive = false;
@@ -27,7 +28,10 @@ export const isSawHoverSatisfied = () => {
 
 const ensureTemplateData = () => {
   const { criteria, alternatives, loadProjectState } = useProjectStore.getState();
-  if (criteria.length === 0 || alternatives.length === 0) {
+  const stashed = useTourStore.getState().stashedProjectState;
+  // Muat template demonstrasi jika ada data stashed (data asli pengguna sudah diamankan)
+  // atau jika data saat ini masih kosong
+  if (stashed || criteria.length === 0 || alternatives.length === 0) {
     loadProjectState(CASE_TEMPLATES[0].state);
   }
 };

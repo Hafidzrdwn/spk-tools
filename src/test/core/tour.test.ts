@@ -260,4 +260,38 @@ describe('Tour Infrastructure & useTourStore', () => {
     wpStep2?.resetOnBack?.();
     expect(useUiStore.getState().wpActiveStep).toBe(1);
   });
+
+  it('startTour mengamankan data riil user (stash) dan memulihkannya saat tour selesai atau diskip', async () => {
+    const { useProjectStore } = await import('@/store/useProjectStore');
+    
+    // Siapkan data riil user
+    const realUserState: DecisiProjectState = {
+      title: 'Proyek Riil Vendor 2026',
+      activeMethod: 'SAW',
+      criteria: [
+        { id: 'crit_real', name: 'Kualitas Produk', type: 'BENEFIT', weight: 0.7, normalizedWeight: 0.7 },
+      ],
+      alternatives: [
+        { id: 'alt_real', name: 'Vendor A', values: { crit_real: 95 } },
+      ],
+    };
+    useProjectStore.getState().loadProjectState(realUserState);
+
+    // User menjalankan tour mendalam
+    useTourStore.getState().startTour('saw');
+    expect(useTourStore.getState().stashedProjectState).not.toBeNull();
+    expect(useTourStore.getState().stashedProjectState?.title).toBe('Proyek Riil Vendor 2026');
+
+    // Selama tour berjalan, muat template demo
+    const { CASE_TEMPLATES } = await import('@/core/constants/caseTemplates');
+    useProjectStore.getState().loadProjectState(CASE_TEMPLATES[0].state);
+    expect(useProjectStore.getState().title).not.toBe('Proyek Riil Vendor 2026');
+
+    // Saat tour di-skip / ditutup -> data riil user otomatis pulih kembali!
+    useTourStore.getState().skipTour();
+    expect(useTourStore.getState().stashedProjectState).toBeNull();
+    expect(useProjectStore.getState().title).toBe('Proyek Riil Vendor 2026');
+    expect(useProjectStore.getState().criteria[0].name).toBe('Kualitas Produk');
+    expect(useProjectStore.getState().alternatives[0].name).toBe('Vendor A');
+  });
 });

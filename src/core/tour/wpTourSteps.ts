@@ -2,6 +2,7 @@ import type { TourDefinition, TourStep } from './types';
 import type { DecisiProjectState } from '@/types/domain';
 import { useUiStore } from '@/store/useUiStore';
 import { useProjectStore } from '@/store/useProjectStore';
+import { useTourStore } from '@/store/useTourStore';
 import { CASE_TEMPLATES } from '@/core/constants/caseTemplates';
 import { wpZeroGuard } from '@/validators/matrixSchemas';
 
@@ -28,8 +29,13 @@ export const isWpZeroGuardSatisfied = (state: DecisiProjectState) => {
 
 const ensureWpTemplateData = () => {
   const { criteria, alternatives, loadProjectState, updateCriterion } = useProjectStore.getState();
-  if (criteria.length === 0 || alternatives.length === 0) {
+  const stashed = useTourStore.getState().stashedProjectState;
+  if (stashed || criteria.length === 0 || alternatives.length === 0) {
     loadProjectState(CASE_TEMPLATES[0].state);
+    const currentCriteria = useProjectStore.getState().criteria;
+    if (currentCriteria.length > 0 && !currentCriteria.some((c) => c.type === 'COST')) {
+      updateCriterion(currentCriteria[0].id, { type: 'COST' });
+    }
   } else if (!criteria.some((c) => c.type === 'COST')) {
     updateCriterion(criteria[0].id, { type: 'COST' });
   }

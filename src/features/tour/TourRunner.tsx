@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronLeft, ChevronRight, AlertTriangle, CheckCircle2 } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, AlertTriangle, CheckCircle2, ShieldCheck } from 'lucide-react';
 import { useTourStore } from '@/store/useTourStore';
 import { useProjectStore } from '@/store/useProjectStore';
 import { useUiStore } from '@/store/useUiStore';
@@ -65,8 +65,8 @@ const SpotlightOverlay: React.FC<{ spot: SpotRect | null; onSkip: () => void }> 
 function calcTooltipPos(
   spot: SpotRect | null,
   preferredPlacement: 'top' | 'bottom' | 'left' | 'right' | 'center' = 'bottom',
-  tooltipW = 340,
-  tooltipH = 290
+  tooltipW = 360,
+  tooltipH = 310
 ): React.CSSProperties {
   if (!spot || preferredPlacement === 'center') {
     return {
@@ -158,7 +158,7 @@ export interface TourRunnerProps {
 }
 
 export const TourRunner: React.FC<TourRunnerProps> = ({ tours = {} }) => {
-  const { activeTourId, activeStepIndex, goToNextStep, goToPrevStep, skipTour, finishTour } = useTourStore();
+  const { activeTourId, activeStepIndex, goToNextStep, goToPrevStep, skipTour, finishTour, stashedProjectState } = useTourStore();
   const projectState = useProjectStore();
   // Subscribe ke state UI agar perubahan drawer/tab/inspector memicu re-evaluasi requiredAction secara reaktif
   useUiStore();
@@ -372,15 +372,17 @@ export const TourRunner: React.FC<TourRunnerProps> = ({ tours = {} }) => {
             <div className="bg-white rounded-2xl shadow-2xl border border-slate-200/80 overflow-hidden">
 
               {/* Header */}
-              <div className="flex items-center justify-between px-4 pt-3.5 pb-2.5 border-b border-slate-100 bg-linear-to-r from-indigo-50/70 to-white">
-                <div className="flex items-center gap-2 min-w-0">
-                  <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-indigo-600 text-white text-[10px] font-bold shrink-0">
+              <div className="flex items-start justify-between px-4 pt-3.5 pb-2.5 border-b border-slate-100 bg-linear-to-r from-indigo-50/70 to-white gap-3">
+                <div className="flex items-start gap-2.5 min-w-0 flex-1">
+                  <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-indigo-600 text-white text-[10px] font-bold shrink-0 mt-0.5 shadow-2xs">
                     {activeStepIndex + 1}
                   </span>
-                  <h4 className="text-sm font-bold text-slate-900 leading-tight truncate">{currentStep.title}</h4>
+                  <h4 className="text-sm font-bold text-slate-900 leading-snug break-words">
+                    {currentStep.title}
+                  </h4>
                 </div>
-                <div className="flex items-center gap-1.5 shrink-0 ml-2">
-                  <span className="text-[10px] text-slate-400 font-mono">{activeStepIndex + 1}/{totalSteps}</span>
+                <div className="flex items-center gap-1.5 shrink-0 ml-2 pt-0.5">
+                  <span className="text-[10px] text-slate-400 font-mono font-medium">{activeStepIndex + 1}/{totalSteps}</span>
                   <button
                     type="button"
                     onClick={handleSkip}
@@ -391,6 +393,16 @@ export const TourRunner: React.FC<TourRunnerProps> = ({ tours = {} }) => {
                   </button>
                 </div>
               </div>
+
+              {/* Simulation Mode Indicator jika data asli user dicadangkan */}
+              {stashedProjectState && (
+                <div className="mx-4 mt-2.5 flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-indigo-50 border border-indigo-100/80 text-[11px] text-indigo-700 leading-tight">
+                  <ShieldCheck className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
+                  <span>
+                    <strong>Mode Simulasi:</strong> Data proyek asli Anda aman dan otomatis dikembalikan saat tour ditutup.
+                  </span>
+                </div>
+              )}
 
               {/* Body */}
               <div className="px-4 py-3 space-y-2.5">
