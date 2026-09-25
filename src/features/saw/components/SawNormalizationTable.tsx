@@ -23,15 +23,15 @@ export const SawNormalizationTable: React.FC<SawNormalizationTableProps> = ({
   }
 
   return (
-    <div className="w-full overflow-x-auto rounded-card border border-slate-200/80 bg-white/90 shadow-2xs">
+    <div data-tour-id="saw-normalization-table" className="w-full overflow-x-auto rounded-card border border-slate-200/80 bg-white/90 shadow-2xs">
       <table className="w-full text-left border-collapse text-xs">
         <thead>
           <tr className="bg-slate-50/90 border-b border-slate-200 text-slate-600 font-semibold">
-            <th className="py-3 px-4 w-44 min-w-[11rem] sticky left-0 bg-slate-50/95 z-10 border-r border-slate-200/70">
+            <th className="py-3 px-4 w-44 min-w-44 sticky left-0 bg-slate-50/95 z-10 border-r border-slate-200/70">
               Alternatif \ Matriks R
             </th>
             {criteria.map((crit, idx) => (
-              <th key={crit.id} className="py-3 px-3 min-w-[8.5rem] border-r border-slate-200/50 last:border-r-0">
+              <th key={crit.id} className="py-3 px-3 min-w-34 border-r border-slate-200/50 last:border-r-0">
                 <div className="flex items-center justify-between gap-1.5 mb-1">
                   <span className="font-bold text-slate-800 truncate" title={crit.name}>
                     {crit.name || `Kriteria ${idx + 1}`}
@@ -60,10 +60,12 @@ export const SawNormalizationTable: React.FC<SawNormalizationTableProps> = ({
                 </td>
                 {criteria.map((crit, critIdx) => {
                   const val = rowValues[critIdx] ?? 0;
+                  const isFirstCell = altIdx === 0 && critIdx === 0;
                   return (
                     <TraceableCell
                       key={crit.id}
                       cellId={`saw-${alt.id}-${crit.id}-NORMALIZED`}
+                      data-tour-id={isFirstCell ? 'saw-normalized-cell' : undefined}
                       className="py-2.5 px-3 border-r border-slate-100 last:border-r-0"
                     >
                       <div className="font-mono text-xs py-1 px-2 rounded bg-slate-50 border border-slate-200/60 text-slate-800 text-right font-medium">

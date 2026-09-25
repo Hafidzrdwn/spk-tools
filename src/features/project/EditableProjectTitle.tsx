@@ -64,6 +64,7 @@ export const EditableProjectTitle: React.FC<EditableProjectTitleProps> = ({
         <input
           ref={inputRef}
           type="text"
+          data-tour-id="project-title-input"
           value={draftTitle}
           onChange={(e) => setDraftTitle(e.target.value)}
           onBlur={handleSave}
@@ -77,6 +78,7 @@ export const EditableProjectTitle: React.FC<EditableProjectTitleProps> = ({
 
   return (
     <div
+      data-tour-id="project-title-input"
       onClick={() => setIsEditing(true)}
       role="button"
       tabIndex={0}
@@ -93,7 +95,7 @@ export const EditableProjectTitle: React.FC<EditableProjectTitleProps> = ({
       )}
       title="Klik untuk mengubah nama proyek"
     >
-      <span className="text-xs sm:text-sm font-semibold text-slate-700 group-hover:text-slate-900 transition-colors truncate max-w-[140px] sm:max-w-xs">
+      <span className="text-xs sm:text-sm font-semibold text-slate-700 group-hover:text-slate-900 transition-colors truncate max-w-35 sm:max-w-xs">
         {activeTitle}
       </span>
       <Pencil className="w-3 h-3 text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />

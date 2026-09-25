@@ -19,7 +19,7 @@ export const SawRankingTable: React.FC<SawRankingTableProps> = ({ ranking }) => 
   const maxScore = ranking.length > 0 ? Math.max(...ranking.map((r) => r.score), 1) : 1;
 
   return (
-    <div className="w-full overflow-hidden rounded-card border border-slate-200/80 bg-white/90 shadow-2xs">
+    <div data-tour-id="saw-ranking-table" className="w-full overflow-hidden rounded-card border border-slate-200/80 bg-white/90 shadow-2xs">
       <table className="w-full text-left border-collapse text-xs">
         <thead>
           <tr className="bg-slate-50/90 border-b border-slate-200 text-slate-600 font-semibold">

@@ -23,6 +23,7 @@ export const ResetProjectButton: React.FC<ResetProjectButtonProps> = ({
         variant="ghost"
         size={size}
         onClick={() => setIsDialogOpen(true)}
+        data-tour-id="reset-project-btn"
         className={cn('text-slate-600 hover:text-slate-900', className)}
         title="Reset seluruh data proyek ke kondisi awal kosong"
       >

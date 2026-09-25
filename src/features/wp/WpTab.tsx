@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import useWpViewModel from './useWpViewModel';
+import { useUiStore } from '@/store/useUiStore';
 import MatrixInputGrid from '@/features/shared/MatrixInputGrid';
 import WpZeroGuardAlert from './components/WpZeroGuardAlert';
 import WpExponentPanel from './components/WpExponentPanel';
@@ -23,7 +24,8 @@ export const WpTab: React.FC = () => {
     updateCellValue,
   } = useWpViewModel();
 
-  const [activeStep, setActiveStep] = useState<1 | 2 | 3>(1);
+  const activeStep = useUiStore((s) => s.wpActiveStep);
+  const setActiveStep = useUiStore((s) => s.setWpActiveStep);
 
   const steps = [
     { step: 1, label: '1. Matriks Awal (X)', icon: <Table className="w-3.5 h-3.5" /> },
@@ -36,7 +38,7 @@ export const WpTab: React.FC = () => {
       {hasZeroGuardViolation && <WpZeroGuardAlert violations={violations} />}
 
       {!hasZeroGuardViolation && bestAlternative && (
-        <Card className="bg-linear-to-r from-amber-500/10 via-indigo-500/5 to-transparent border-amber-200/80">
+        <Card data-tour-id="wp-best-card" className="bg-linear-to-r from-amber-500/10 via-indigo-500/5 to-transparent border-amber-200/80">
           <CardContent className="p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-control bg-amber-100 border border-amber-300 flex items-center justify-center text-amber-700 shadow-xs">
@@ -59,12 +61,13 @@ export const WpTab: React.FC = () => {
       )}
 
       {/* Stepper Navigation */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-2 bg-slate-100/80 rounded-card border border-slate-200/70">
+      <div data-tour-id="wp-stepper" className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-2 bg-slate-100/80 rounded-card border border-slate-200/70">
         <div className="flex items-center gap-1.5 w-full sm:w-auto">
           {steps.map((s) => (
             <button
               key={s.step}
               type="button"
+              data-tour-id={`wp-step-btn-${s.step}`}
               disabled={hasZeroGuardViolation && s.step > 1}
               onClick={() => setActiveStep(s.step)}
               className={`flex-1 sm:flex-none flex items-center gap-2 px-3 py-1.5 text-xs font-semibold rounded-control transition-all ${
@@ -103,7 +106,7 @@ export const WpTab: React.FC = () => {
       ) : (
         <div>
           {activeStep === 1 && (
-            <Card>
+            <Card data-tour-id="wp-matrix-panel">
               <CardHeader className="py-3 border-b border-slate-100 flex flex-row items-center justify-between">
                 <div>
                   <CardTitle className="text-sm">Tahap 1: Matriks Keputusan Awal (X)</CardTitle>
@@ -118,7 +121,7 @@ export const WpTab: React.FC = () => {
           )}
 
           {activeStep === 2 && !hasZeroGuardViolation && (
-            <Card>
+            <Card data-tour-id="wp-exponent-panel">
               <CardHeader className="py-3 border-b border-slate-100">
                 <CardTitle className="text-sm">Tahap 2: Transformasi Pangkat Bobot (w*)</CardTitle>
                 <CardDescription>Normalisasi bobot (+w untuk Benefit, -w untuk Cost)</CardDescription>
@@ -130,7 +133,7 @@ export const WpTab: React.FC = () => {
           )}
 
           {activeStep === 3 && !hasZeroGuardViolation && (
-            <Card>
+            <Card data-tour-id="wp-vector-panel">
               <CardHeader className="py-3 border-b border-slate-100">
                 <CardTitle className="text-sm">Tahap 3: Vektor S & Vektor V (Hasil Akhir)</CardTitle>
                 <CardDescription>Perhitungan nilai perkalian S_i dan preferensi relatif V_i</CardDescription>

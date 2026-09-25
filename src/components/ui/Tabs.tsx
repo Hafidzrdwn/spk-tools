@@ -67,6 +67,7 @@ export function Tabs<T extends string = string>({
           <button
             key={tab.id}
             type="button"
+            data-tour-id={`nav-tab-${tab.id}`}
             onClick={() => onChange(tab.id)}
             className={cn(
               'h-9 px-3.5 flex items-center justify-center gap-2 text-xs font-semibold rounded-[0.55rem] transition-colors duration-150 select-none whitespace-nowrap shrink-0 cursor-pointer',

@@ -60,20 +60,95 @@ const SpotlightOverlay: React.FC<{ spot: SpotRect | null; onSkip: () => void }> 
   );
 };
 
-// ─── Tooltip placement ────────────────────────────────────────────────────────
-function calcTooltipPos(spot: SpotRect | null, tooltipW = 330, tooltipH = 220): React.CSSProperties {
-  if (!spot) {
-    return { position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 9999, width: tooltipW };
+// ─── Tooltip placement with Collision Detection & Safe Gap ─────────────────────
+function calcTooltipPos(
+  spot: SpotRect | null,
+  preferredPlacement: 'top' | 'bottom' | 'left' | 'right' | 'center' = 'bottom',
+  tooltipW = 340,
+  tooltipH = 290
+): React.CSSProperties {
+  if (!spot || preferredPlacement === 'center') {
+    return {
+      position: 'fixed',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      zIndex: 9999,
+      width: tooltipW,
+      maxWidth: 'calc(100vw - 32px)',
+    };
   }
+
   const W = window.innerWidth;
   const H = window.innerHeight;
-  const gap = 14;
-  const belowTop = spot.top + spot.height + gap;
-  const aboveTop = spot.top - tooltipH - gap;
-  const top = belowTop + tooltipH < H - gap ? belowTop : aboveTop > gap ? aboveTop : gap;
-  const rawLeft = spot.left + spot.width / 2 - tooltipW / 2;
-  const left = Math.max(gap, Math.min(rawLeft, W - tooltipW - gap));
-  return { position: 'fixed', top, left, zIndex: 9999, width: tooltipW };
+  const gap = 16;
+  const clampedW = Math.min(tooltipW, W - gap * 2);
+
+  // Helper untuk mengecek apakah posisi tooltip menimpa target spotlight
+  const overlapsSpot = (t: number, l: number, w: number, h: number) => {
+    return !(
+      l + w <= spot.left ||
+      l >= spot.left + spot.width ||
+      t + h <= spot.top ||
+      t >= spot.top + spot.height
+    );
+  };
+
+  // Urutan fallback penempatan berdasarkan preferensi step
+  const placementsToTry: Array<'top' | 'bottom' | 'left' | 'right'> = [
+    preferredPlacement,
+    ...(preferredPlacement === 'right'
+      ? ['left', 'bottom', 'top']
+      : preferredPlacement === 'left'
+      ? ['right', 'bottom', 'top']
+      : preferredPlacement === 'top'
+      ? ['bottom', 'right', 'left']
+      : ['top', 'right', 'left']),
+  ] as Array<'top' | 'bottom' | 'left' | 'right'>;
+
+  for (const pl of placementsToTry) {
+    let top = 0;
+    let left = 0;
+
+    if (pl === 'bottom') {
+      top = spot.top + spot.height + gap;
+      left = Math.max(gap, Math.min(spot.left + spot.width / 2 - clampedW / 2, W - clampedW - gap));
+      if (top + tooltipH <= H - gap && !overlapsSpot(top, left, clampedW, tooltipH)) {
+        return { position: 'fixed', top, left, zIndex: 9999, width: clampedW };
+      }
+    } else if (pl === 'top') {
+      top = spot.top - tooltipH - gap;
+      left = Math.max(gap, Math.min(spot.left + spot.width / 2 - clampedW / 2, W - clampedW - gap));
+      if (top >= gap && !overlapsSpot(top, left, clampedW, tooltipH)) {
+        return { position: 'fixed', top, left, zIndex: 9999, width: clampedW };
+      }
+    } else if (pl === 'right') {
+      left = spot.left + spot.width + gap;
+      top = Math.max(gap, Math.min(spot.top + spot.height / 2 - tooltipH / 2, H - tooltipH - gap));
+      if (left + clampedW <= W - gap && !overlapsSpot(top, left, clampedW, tooltipH)) {
+        return { position: 'fixed', top, left, zIndex: 9999, width: clampedW };
+      }
+    } else if (pl === 'left') {
+      left = spot.left - clampedW - gap;
+      top = Math.max(gap, Math.min(spot.top + spot.height / 2 - tooltipH / 2, H - tooltipH - gap));
+      if (left >= gap && !overlapsSpot(top, left, clampedW, tooltipH)) {
+        return { position: 'fixed', top, left, zIndex: 9999, width: clampedW };
+      }
+    }
+  }
+
+  // Fallback jika semua sisi sempit: pilih sisi vertikal yang paling luas tanpa menimpa
+  const spaceBelow = H - (spot.top + spot.height);
+  const spaceAbove = spot.top;
+  if (spaceBelow >= spaceAbove) {
+    const top = Math.min(spot.top + spot.height + gap, H - tooltipH - gap);
+    const left = Math.max(gap, Math.min(spot.left + spot.width / 2 - clampedW / 2, W - clampedW - gap));
+    return { position: 'fixed', top: Math.max(gap, top), left, zIndex: 9999, width: clampedW };
+  } else {
+    const top = Math.max(gap, spot.top - tooltipH - gap);
+    const left = Math.max(gap, Math.min(spot.left + spot.width / 2 - clampedW / 2, W - clampedW - gap));
+    return { position: 'fixed', top, left, zIndex: 9999, width: clampedW };
+  }
 }
 
 // ─── Main TourRunner ──────────────────────────────────────────────────────────
@@ -103,7 +178,7 @@ export const TourRunner: React.FC<TourRunnerProps> = ({ tours = {} }) => {
     if (!currentStep) return;
     const s = getSpotRect(currentStep.targetSelector);
     setSpot(s);
-    setTooltipPos(calcTooltipPos(s));
+    setTooltipPos(calcTooltipPos(s, currentStep.placement));
   }, [currentStep]);
 
   // Saat step berubah: preNavigate → poll DOM → scroll → ukur
@@ -112,7 +187,7 @@ export const TourRunner: React.FC<TourRunnerProps> = ({ tours = {} }) => {
 
     setStepReady(false);
 
-    // 1. Jalankan preNavigate (pindah section/tab)
+    // 1. Jalankan preNavigate (jika ada hook inisialisasi)
     currentStep.preNavigate?.();
 
     // Bersihkan interval/timer sebelumnya
@@ -123,7 +198,7 @@ export const TourRunner: React.FC<TourRunnerProps> = ({ tours = {} }) => {
 
     if (isCenter) {
       setSpot(null);
-      setTooltipPos(calcTooltipPos(null));
+      setTooltipPos(calcTooltipPos(null, 'center'));
       setStepReady(true);
       return;
     }
@@ -140,18 +215,18 @@ export const TourRunner: React.FC<TourRunnerProps> = ({ tours = {} }) => {
         // 3. Smooth scroll ke elemen target
         el.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
 
-        // 4. Tunggu scroll selesai, baru ukur posisi spotlight
+        // 4. Tunggu scroll selesai, baru ukur posisi spotlight & tooltip
         scrollTimerRef.current = setTimeout(() => {
           const s = getSpotRect(currentStep.targetSelector);
           setSpot(s);
-          setTooltipPos(calcTooltipPos(s));
+          setTooltipPos(calcTooltipPos(s, currentStep.placement));
           setStepReady(true);
         }, SCROLL_SETTLE_MS);
 
       } else if (attempts >= POLL_MAX_ATTEMPTS) {
         clearInterval(pollRef.current!);
         setSpot(null);
-        setTooltipPos(calcTooltipPos(null));
+        setTooltipPos(calcTooltipPos(null, 'center'));
         setStepReady(true);
       }
     }, POLL_INTERVAL_MS);
@@ -239,7 +314,7 @@ export const TourRunner: React.FC<TourRunnerProps> = ({ tours = {} }) => {
             <div className="bg-white rounded-2xl shadow-2xl border border-slate-200/80 overflow-hidden">
 
               {/* Header */}
-              <div className="flex items-center justify-between px-4 pt-3.5 pb-2.5 border-b border-slate-100 bg-gradient-to-r from-indigo-50/70 to-white">
+              <div className="flex items-center justify-between px-4 pt-3.5 pb-2.5 border-b border-slate-100 bg-linear-to-r from-indigo-50/70 to-white">
                 <div className="flex items-center gap-2 min-w-0">
                   <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-indigo-600 text-white text-[10px] font-bold shrink-0">
                     {activeStepIndex + 1}

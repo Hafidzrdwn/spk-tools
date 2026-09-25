@@ -13,6 +13,7 @@ export const WpZeroGuardAlert: React.FC<WpZeroGuardAlertProps> = ({ violations, 
 
   return (
     <div
+      data-tour-id="wp-zero-guard-alert"
       className={`rounded-card border-2 border-rose-300 bg-rose-50/95 p-4.5 shadow-sm text-rose-950 space-y-3 animate-in fade-in-50 duration-200 ${className ?? ''}`}
       role="alert"
     >

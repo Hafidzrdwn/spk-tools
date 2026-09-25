@@ -6,12 +6,12 @@ import { useProjectStore } from '@/store/useProjectStore';
 import { setCriteriaBaseline } from '@/core/tour/generalTourSteps';
 
 const METHOD_TOURS = [
-  { id: 'saw', label: 'Tour Mendalam: SAW' },
-  { id: 'wp', label: 'Tour Mendalam: WP' },
-  { id: 'topsis', label: 'Tour Mendalam: TOPSIS' },
-  { id: 'ahp', label: 'Tour Mendalam: AHP' },
-  { id: 'story', label: 'Tour: Story-to-Matrix' },
-];
+  { id: 'saw', label: 'Tour Mendalam: SAW', methodTab: 'SAW' },
+  { id: 'wp', label: 'Tour Mendalam: WP', methodTab: 'WP' },
+  { id: 'topsis', label: 'Tour Mendalam: TOPSIS', methodTab: 'TOPSIS' },
+  { id: 'ahp', label: 'Tour Mendalam: AHP', methodTab: 'AHP' },
+  { id: 'story', label: 'Tour: Story-to-Matrix', methodTab: 'AUTO' },
+] as const;
 
 export const TourLauncherMenu: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -36,6 +36,11 @@ export const TourLauncherMenu: React.FC = () => {
   const handleStartGeneralTour = () => {
     setCriteriaBaseline(useProjectStore.getState().criteria.length);
     startTour('general');
+    setIsOpen(false);
+  };
+
+  const handleStartMethodTour = (tourId: string) => {
+    startTour(tourId);
     setIsOpen(false);
   };
 
@@ -97,17 +102,44 @@ export const TourLauncherMenu: React.FC = () => {
             <span className="px-3 py-1 text-[10px] font-semibold text-slate-400 block uppercase tracking-wider">
               Tour Metode
             </span>
-            {METHOD_TOURS.map((t) => (
-              <div
-                key={t.id}
-                className="w-full flex items-center justify-between px-3 py-1.5 rounded-lg text-left text-xs text-slate-400 opacity-60 cursor-not-allowed select-none"
-              >
-                <span>{t.label}</span>
-                <span className="text-[9px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-400 font-mono">
-                  Segera
-                </span>
-              </div>
-            ))}
+            {METHOD_TOURS.map((t) => {
+              const isAvailable = t.id === 'saw' || t.id === 'wp';
+
+              if (isAvailable) {
+                const isCompleted = completedTours[t.id];
+                return (
+                  <button
+                    key={t.id}
+                    type="button"
+                    onClick={() => handleStartMethodTour(t.id)}
+                    className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-left text-xs text-slate-700 hover:bg-slate-50 hover:text-indigo-600 transition-colors cursor-pointer"
+                  >
+                    <span className="font-medium">{t.label}</span>
+                    {isCompleted ? (
+                      <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-full border border-emerald-200">
+                        <CheckCircle2 className="w-3 h-3" /> Selesai
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 text-[10px] text-slate-400 bg-slate-50 px-1.5 py-0.5 rounded-full">
+                        <Circle className="w-2.5 h-2.5 text-slate-300" /> Belum
+                      </span>
+                    )}
+                  </button>
+                );
+              }
+
+              return (
+                <div
+                  key={t.id}
+                  className="w-full flex items-center justify-between px-3 py-1.5 rounded-lg text-left text-xs text-slate-400 opacity-60 cursor-not-allowed select-none"
+                >
+                  <span>{t.label}</span>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-400 font-mono">
+                    Segera
+                  </span>
+                </div>
+              );
+            })}
           </div>
 
           <div className="pt-1 border-t border-slate-100">

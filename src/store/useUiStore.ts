@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import type { MethodId } from '@/types/domain';
+import { useTourStore } from './useTourStore';
 
 export type EditorSection = 'matrix' | 'criteria' | 'alternatives';
 
@@ -12,6 +13,8 @@ export interface UiStore {
   isWelcomeOpen: boolean;
   /** Section aktif di panel Shared Input (Matrix / Kriteria / Alternatif) */
   activeEditorSection: EditorSection;
+  sawActiveStep: 1 | 2 | 3;
+  wpActiveStep: 1 | 2 | 3;
   setHoveredCell: (id: string | null) => void;
   setActiveTab: (tab: MethodId) => void;
   setInspectorOpen: (open: boolean) => void;
@@ -21,6 +24,8 @@ export interface UiStore {
   openWelcome: () => void;
   closeWelcome: () => void;
   setActiveEditorSection: (section: EditorSection) => void;
+  setSawActiveStep: (step: 1 | 2 | 3) => void;
+  setWpActiveStep: (step: 1 | 2 | 3) => void;
 }
 
 export const useUiStore = create<UiStore>((set) => ({
@@ -31,9 +36,14 @@ export const useUiStore = create<UiStore>((set) => ({
   glossaryTargetTerm: null,
   isWelcomeOpen: false,
   activeEditorSection: 'matrix',
+  sawActiveStep: 1,
+  wpActiveStep: 1,
 
   setHoveredCell: (id) => set({ hoveredCellId: id }),
-  setActiveTab: (tab) => set({ activeTab: tab }),
+  setActiveTab: (tab) => {
+    useTourStore.getState().markTabVisited(tab);
+    set({ activeTab: tab });
+  },
   setInspectorOpen: (open) => set({ isInspectorOpen: open }),
   toggleInspector: () => set((state) => ({ isInspectorOpen: !state.isInspectorOpen })),
   openGlossary: (term) => set({ isGlossaryOpen: true, glossaryTargetTerm: term ?? null }),
@@ -41,4 +51,7 @@ export const useUiStore = create<UiStore>((set) => ({
   openWelcome: () => set({ isWelcomeOpen: true }),
   closeWelcome: () => set({ isWelcomeOpen: false }),
   setActiveEditorSection: (section) => set({ activeEditorSection: section }),
+  setSawActiveStep: (step) => set({ sawActiveStep: step }),
+  setWpActiveStep: (step) => set({ wpActiveStep: step }),
 }));
+

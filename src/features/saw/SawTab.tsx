@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import useSawViewModel from './useSawViewModel';
+import { useUiStore } from '@/store/useUiStore';
 import MatrixInputGrid from '@/features/shared/MatrixInputGrid';
 import SawNormalizationTable from './components/SawNormalizationTable';
 import SawRankingTable from './components/SawRankingTable';
@@ -20,7 +21,8 @@ export const SawTab: React.FC = () => {
     formulaSteps,
   } = useSawViewModel();
 
-  const [activeStep, setActiveStep] = useState<1 | 2 | 3>(1);
+  const activeStep = useUiStore((s) => s.sawActiveStep);
+  const setActiveStep = useUiStore((s) => s.setSawActiveStep);
 
   const steps = [
     { step: 1, label: '1. Matriks Awal (X)', icon: <Table className="w-3.5 h-3.5" /> },
@@ -32,7 +34,7 @@ export const SawTab: React.FC = () => {
     <div className="space-y-6">
       {/* Top Banner & Best Alternative Card */}
       {bestAlternative && (
-        <Card className="bg-linear-to-r from-amber-500/10 via-indigo-500/5 to-transparent border-amber-200/80">
+        <Card data-tour-id="saw-best-card" className="bg-linear-to-r from-amber-500/10 via-indigo-500/5 to-transparent border-amber-200/80">
           <CardContent className="p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-control bg-amber-100 border border-amber-300 flex items-center justify-center text-amber-700 shadow-xs">
@@ -55,12 +57,13 @@ export const SawTab: React.FC = () => {
       )}
 
       {/* Live Mathematical Stepper Navigation */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-2 bg-slate-100/80 rounded-card border border-slate-200/70">
+      <div data-tour-id="saw-stepper" className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-2 bg-slate-100/80 rounded-card border border-slate-200/70">
         <div className="flex items-center gap-1.5 w-full sm:w-auto">
           {steps.map((s) => (
             <button
               key={s.step}
               type="button"
+              data-tour-id={`saw-step-btn-${s.step}`}
               onClick={() => setActiveStep(s.step)}
               className={`flex-1 sm:flex-none flex items-center gap-2 px-3 py-1.5 text-xs font-semibold rounded-control transition-all ${
                 activeStep === s.step
@@ -99,7 +102,7 @@ export const SawTab: React.FC = () => {
       ) : (
         <div>
           {activeStep === 1 && (
-            <Card>
+            <Card data-tour-id="saw-matrix-panel">
               <CardHeader className="py-3 border-b border-slate-100">
                 <CardTitle className="text-sm">Tahap 1: Matriks Keputusan Awal (X)</CardTitle>
                 <CardDescription>Ketik nilai kriteria setiap alternatif di bawah ini</CardDescription>
@@ -111,7 +114,7 @@ export const SawTab: React.FC = () => {
           )}
 
           {activeStep === 2 && (
-            <Card>
+            <Card data-tour-id="saw-normalization-panel">
               <CardHeader className="py-3 border-b border-slate-100">
                 <CardTitle className="text-sm">Tahap 2: Matriks Ternormalisasi (R)</CardTitle>
                 <CardDescription>Nilai r_ij = x_ij / max (Benefit) atau min / x_ij (Cost)</CardDescription>
@@ -123,7 +126,7 @@ export const SawTab: React.FC = () => {
           )}
 
           {activeStep === 3 && (
-            <Card>
+            <Card data-tour-id="saw-ranking-panel">
               <CardHeader className="py-3 border-b border-slate-100">
                 <CardTitle className="text-sm">Tahap 3: Hasil Perangkingan Akhir (V)</CardTitle>
                 <CardDescription>Agregasi bobot ternormalisasi: V_i = Σ (w_j · r_ij)</CardDescription>

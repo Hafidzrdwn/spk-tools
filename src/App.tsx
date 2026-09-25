@@ -25,6 +25,8 @@ import GlossaryTerm from '@/features/glossary/GlossaryTerm';
 import WelcomeModal from '@/features/tour/WelcomeModal';
 import TourRunner from '@/features/tour/TourRunner';
 import { generalTourDefinition } from '@/core/tour/generalTourSteps';
+import { sawTourDefinition } from '@/core/tour/sawTourSteps';
+import { wpTourDefinition } from '@/core/tour/wpTourSteps';
 import { useTourStore } from '@/store/useTourStore';
 import { Sparkles, FolderOpen } from 'lucide-react';
 import type { MethodId } from '@/types/domain';
@@ -32,6 +34,7 @@ import type { MethodId } from '@/types/domain';
 export default function App() {
   useUrlTabSync();
   const { activeTab, setActiveTab } = useUiStore();
+  const hoveredCellId = useUiStore((s) => s.hoveredCellId);
   const { title, setTitle, alternatives, updateCellValue, loadProjectState } = useProjectStore();
   const criteria = useNormalizedCriteria();
   const activeEditorSection = useUiStore((s) => s.activeEditorSection);
@@ -73,6 +76,7 @@ export default function App() {
               variant="secondary"
               size="sm"
               onClick={() => setIsTemplateModalOpen(true)}
+              data-tour-id="load-template-btn"
               title="Buka pilihan template studi kasus SPK"
             >
               <FolderOpen className="w-3.5 h-3.5 text-accent-primary" />
@@ -109,7 +113,7 @@ export default function App() {
         </div>
 
         {/* Shared Matrix & Model Input Section */}
-        <Card>
+        <Card data-tour-id="shared-matrix-card">
           <CardHeader className="border-b border-slate-100 flex flex-row items-center justify-between py-3">
             <div>
               <CardTitle className="text-sm">Matriks Keputusan Bersama (Shared Input)</CardTitle>
@@ -118,6 +122,7 @@ export default function App() {
             <div className="flex items-center gap-1.5 p-1 bg-slate-100 rounded-control">
               <button
                 type="button"
+                data-tour-id="editor-tab-matrix"
                 onClick={() => setActiveEditorSection('matrix')}
                 className={`px-3 py-1 text-xs font-semibold rounded ${activeEditorSection === 'matrix' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-500 hover:text-slate-800'}`}
               >
@@ -125,6 +130,7 @@ export default function App() {
               </button>
               <button
                 type="button"
+                data-tour-id="editor-tab-criteria"
                 onClick={() => setActiveEditorSection('criteria')}
                 className={`px-3 py-1 text-xs font-semibold rounded ${activeEditorSection === 'criteria' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-500 hover:text-slate-800'}`}
               >
@@ -132,6 +138,7 @@ export default function App() {
               </button>
               <button
                 type="button"
+                data-tour-id="editor-tab-alternatives"
                 onClick={() => setActiveEditorSection('alternatives')}
                 className={`px-3 py-1 text-xs font-semibold rounded ${activeEditorSection === 'alternatives' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-500 hover:text-slate-800'}`}
               >
@@ -215,7 +222,13 @@ export default function App() {
       />
 
       {/* Interactive Tour Engine Runner */}
-      <TourRunner tours={{ general: generalTourDefinition }} />
+      <TourRunner
+        tours={{
+          general: generalTourDefinition,
+          saw: sawTourDefinition,
+          wp: wpTourDefinition,
+        }}
+      />
     </AppShell>
   );
 }

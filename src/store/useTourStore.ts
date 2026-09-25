@@ -15,6 +15,9 @@ export interface TourStore {
   finishTour: (tourId: string) => void;
   resetAllTourProgress: () => void;
 
+  visitedTabs: string[];
+  markTabVisited: (tab: string) => void;
+
   // Backward compatibility aliases
   markTourCompleted: (tourId: string) => void;
   resetTourProgress: () => void;
@@ -59,12 +62,22 @@ export const useTourStore = create<TourStore>()(
           completedTours: { ...state.completedTours, [tourId]: true },
         })),
 
+      visitedTabs: ['SAW'],
+
+      markTabVisited: (tab) =>
+        set((state) => ({
+          visitedTabs: (state.visitedTabs || []).includes(tab)
+            ? state.visitedTabs || ['SAW']
+            : [...(state.visitedTabs || ['SAW']), tab],
+        })),
+
       resetAllTourProgress: () =>
         set({
           hasSeenWelcome: false,
           completedTours: {},
           activeTourId: null,
           activeStepIndex: 0,
+          visitedTabs: ['SAW'],
         }),
 
       markTourCompleted: (tourId) =>
@@ -86,6 +99,7 @@ export const useTourStore = create<TourStore>()(
       partialize: (state) => ({
         hasSeenWelcome: state.hasSeenWelcome,
         completedTours: state.completedTours,
+        visitedTabs: state.visitedTabs,
       }),
     }
   )

@@ -1,33 +1,113 @@
 import type { TourDefinition, TourStep } from './types';
 import { useUiStore } from '@/store/useUiStore';
+import { useProjectStore } from '@/store/useProjectStore';
 
+let baselineTitle = '';
 let baselineCriteriaCount = 0;
+let baselineAlternativesCount = 0;
+
+export const setBaselineTitle = (title: string) => {
+  baselineTitle = title;
+};
 
 export const setCriteriaBaseline = (count: number) => {
   baselineCriteriaCount = count;
 };
 
-export const getCriteriaBaseline = () => baselineCriteriaCount;
+export const setAlternativesBaseline = (count: number) => {
+  baselineAlternativesCount = count;
+};
 
 export const GENERAL_TOUR_STEPS: TourStep[] = [
   {
+    id: 'general-title',
+    targetSelector: '[data-tour-id="project-title-input"]',
+    title: 'Langkah Awal: Judul Proyek Keputusan',
+    content:
+      'Setiap pengambilan keputusan memiliki konteks tersendiri. Coba klik dan ubah nama proyek ini sesuai kebutuhan analisis Anda (misal: "Pemilihan Laptop 2026").',
+    placement: 'bottom',
+    preNavigate: () => {
+      baselineTitle = useProjectStore.getState().title;
+    },
+    requiredAction: {
+      description: 'Ketik nama judul proyek yang baru hingga tersimpan.',
+      isSatisfied: (state) => state.title.trim() !== baselineTitle.trim(),
+    },
+  },
+  {
+    id: 'general-glossary',
+    targetSelector: '[data-tour-id="glossary-btn"]',
+    title: 'Pusat Glosarium & Rumus SPK',
+    content:
+      'Memerlukan bantuan memahami istilah teknis SPK seperti Vektor S, Vektor V, Normalisasi, atau Rasio Konsistensi? Klik tombol Glosarium ini untuk membuka kamus SPK.',
+    placement: 'bottom',
+    requiredAction: {
+      description: 'Klik tombol "Glosarium" untuk membuka drawer panduan istilah.',
+      isSatisfied: () => useUiStore.getState().isGlossaryOpen === true,
+    },
+  },
+  {
+    id: 'general-help-launcher',
+    targetSelector: '[data-tour-id="help-launcher"]',
+    title: 'Pusat Bantuan & Tour Interaktif',
+    content:
+      'Menu Bantuan ini menyimpan panduan awal serta tour mendalam untuk setiap metode SPK yang dapat Anda jalankan kembali kapan saja.',
+    placement: 'bottom',
+  },
+  {
+    id: 'general-template',
+    targetSelector: '[data-tour-id="load-template-btn"]',
+    title: 'Muat Contoh Studi Kasus',
+    content:
+      'Tidak ingin mengetik dari awal? Tombol ini menyediakan berbagai template kasus nyata (seperti Evaluasi Supplier, Beasiswa, dan Laptop) yang siap dianalisis secara instan.',
+    placement: 'bottom',
+  },
+  {
+    id: 'general-reset',
+    targetSelector: '[data-tour-id="reset-project-btn"]',
+    title: 'Reset Data Proyek',
+    content:
+      'Jika ingin membersihkan seluruh data dan memulai pengambilan keputusan baru dari lembar kosong, gunakan tombol Reset ini.',
+    placement: 'bottom',
+  },
+  {
     id: 'general-nav-tabs',
     targetSelector: '[data-tour-id="nav-tabs"]',
-    title: 'Navigasi 5 Tab Metode SPK',
+    title: 'Navigasi 5 Metode Pengambilan Keputusan',
     content:
-      'Pilih metode SPK sesuai kebutuhan: SAW (linier), WP (perkalian), TOPSIS (jarak ideal), AHP (perbandingan berpasangan), atau Perbandingan lintas metode.',
+      'DecisiGraph menyediakan metode linier (SAW), perkalian eksponensial (WP), jarak solusi ideal (TOPSIS), pembobotan berpasangan (AHP), dan Perbandingan Komparatif lintas metode.',
     placement: 'bottom',
-    preNavigate: () => useUiStore.getState().setActiveEditorSection('matrix'),
+  },
+  {
+    id: 'general-shared-matrix',
+    targetSelector: '[data-tour-id="shared-matrix-card"]',
+    title: 'Matriks Keputusan Bersama (Shared Input)',
+    content:
+      'Data alternatif dan kriteria disimpan di panel bersama ini, sehingga nilai yang Anda masukkan langsung tersinkronisasi ke seluruh metode tanpa perlu input ulang.',
+    placement: 'top',
+  },
+  {
+    id: 'general-open-criteria',
+    targetSelector: '[data-tour-id="editor-tab-criteria"]',
+    title: 'Langkah Wajib: Buka Tab Kriteria',
+    content:
+      'Mari kita kelola tolok ukur evaluasi keputusan. Silakan klik tombol tab "Kriteria" di atas tabel matriks ini.',
+    placement: 'bottom',
+    requiredAction: {
+      description: 'Klik tab "Kriteria" untuk membuka editor kriteria.',
+      isSatisfied: () => useUiStore.getState().activeEditorSection === 'criteria',
+    },
   },
   {
     id: 'general-add-criterion',
     targetSelector: '[data-tour-id="add-criterion-btn"]',
     title: 'Langkah Wajib: Tambah Kriteria Baru',
     content:
-      'Kriteria adalah tolok ukur penilaian. Silakan klik tombol "+ Tambah Kriteria" untuk melanjutkan tur.',
+      'Kriteria adalah tolok ukur penilaian. Silakan klik tombol "+ Tambah Kriteria" untuk membuat kriteria evaluasi baru ke dalam daftar.',
     placement: 'bottom',
-    // Otomatis pindah ke tab Kriteria agar tombol muncul di DOM
-    preNavigate: () => useUiStore.getState().setActiveEditorSection('criteria'),
+    preNavigate: () => {
+      baselineCriteriaCount = useProjectStore.getState().criteria.length;
+    },
     requiredAction: {
       description: 'Klik tombol "+ Tambah Kriteria" agar jumlah kriteria bertambah.',
       isSatisfied: (state) => state.criteria.length > baselineCriteriaCount,
@@ -38,38 +118,55 @@ export const GENERAL_TOUR_STEPS: TourStep[] = [
     targetSelector: '[data-tour-id="benefit-cost-toggle"]',
     title: 'Tipe Kriteria: Benefit vs Cost',
     content:
-      'Pilih "Benefit" jika nilai lebih besar lebih diinginkan (kualitas/keuntungan), atau "Cost" jika nilai lebih kecil lebih disukai (harga/biaya).',
+      'Setiap kriteria memiliki arah preferensi: pilih "Benefit" jika nilai lebih besar lebih diinginkan (keuntungan/kualitas), atau "Cost" jika nilai lebih kecil lebih disukai (harga/biaya).',
     placement: 'bottom',
-    // Toggle ada di dalam tab Kriteria
-    preNavigate: () => useUiStore.getState().setActiveEditorSection('criteria'),
+  },
+  {
+    id: 'general-open-alternatives',
+    targetSelector: '[data-tour-id="editor-tab-alternatives"]',
+    title: 'Langkah Wajib: Buka Tab Alternatif',
+    content:
+      'Kini giliran mengelola daftar kandidat pilihan keputusan. Silakan klik tombol tab "Alternatif".',
+    placement: 'bottom',
+    requiredAction: {
+      description: 'Klik tab "Alternatif" untuk membuka editor kandidat alternatif.',
+      isSatisfied: () => useUiStore.getState().activeEditorSection === 'alternatives',
+    },
   },
   {
     id: 'general-add-alternative',
     targetSelector: '[data-tour-id="add-alternative-btn"]',
-    title: 'Tambah Alternatif Keputusan',
+    title: 'Langkah Wajib: Tambah Alternatif Baru',
     content:
-      'Klik tombol "+ Tambah Alternatif" untuk memasukkan pilihan kandidat (misal produk, pelamar, atau lokasi) yang akan dievaluasi.',
+      'Klik tombol "+ Tambah Alternatif" untuk memasukkan pilihan kandidat baru (misal kandidat produk, pelamar, atau lokasi) yang akan dievaluasi.',
     placement: 'bottom',
-    // Tombol ada di tab Alternatif
-    preNavigate: () => useUiStore.getState().setActiveEditorSection('alternatives'),
+    preNavigate: () => {
+      baselineAlternativesCount = useProjectStore.getState().alternatives.length;
+    },
+    requiredAction: {
+      description: 'Klik tombol "+ Tambah Alternatif" agar jumlah alternatif bertambah.',
+      isSatisfied: (state) => state.alternatives.length > baselineAlternativesCount,
+    },
+  },
+  {
+    id: 'general-back-to-matrix',
+    targetSelector: '[data-tour-id="editor-tab-matrix"]',
+    title: 'Langkah Wajib: Kembali ke Tabel Matriks',
+    content:
+      'Bagus! Sekarang silakan klik kembali tab "Tabel Matriks" untuk melihat grid pengisian nilai matriks.',
+    placement: 'bottom',
+    requiredAction: {
+      description: 'Klik tab "Tabel Matriks" untuk kembali ke tampilan matriks awal.',
+      isSatisfied: () => useUiStore.getState().activeEditorSection === 'matrix',
+    },
   },
   {
     id: 'general-compute-section',
     targetSelector: '[data-tour-id="compute-section"]',
-    title: 'Panel Komputasi & Perhitungan',
+    title: 'Panel Komputasi & Perhitungan Instan',
     content:
       'Di bagian bawah, sistem secara instan menampilkan proses normalisasi, kalkulasi bobot, dan peringkat akhir sesuai tab metode yang aktif.',
     placement: 'top',
-    // Kembalikan ke matrix view agar lebih rapi
-    preNavigate: () => useUiStore.getState().setActiveEditorSection('matrix'),
-  },
-  {
-    id: 'general-help-launcher',
-    targetSelector: '[data-tour-id="help-launcher"]',
-    title: 'Pusat Bantuan & Glosarium',
-    content:
-      'Gunakan tombol Bantuan ini untuk memutar ulang tour, membuka panduan awal, atau mengakses Glosarium istilah dan rumus kapan saja.',
-    placement: 'bottom',
   },
 ];
 
