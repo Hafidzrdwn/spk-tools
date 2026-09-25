@@ -2,19 +2,13 @@ import React from 'react';
 import { useProjectStore } from '@/store/useProjectStore';
 import { useNormalizedCriteria } from '@/store/selectors';
 import Button from '@/components/ui/Button';
-import Badge from '@/components/ui/Badge';
 import NumericInput from '@/components/ui/NumericInput';
 import GlossaryTerm from '@/features/glossary/GlossaryTerm';
 import { Plus, Trash2, Wand2 } from 'lucide-react';
-import type { CriterionType } from '@/types/domain';
 
 export const CriteriaEditor: React.FC = () => {
   const { addCriterion, removeCriterion, updateCriterion, autoDistributeWeights } = useProjectStore();
   const criteria = useNormalizedCriteria();
-
-  const handleToggleType = (id: string, currentType: CriterionType) => {
-    updateCriterion(id, { type: currentType === 'BENEFIT' ? 'COST' : 'BENEFIT' });
-  };
 
   return (
     <div className="space-y-4">
@@ -63,19 +57,37 @@ export const CriteriaEditor: React.FC = () => {
                 className="flex-1 px-2.5 py-1.5 text-xs font-medium text-slate-800 bg-slate-50/70 border border-slate-200 rounded-control focus:bg-white focus:outline-none focus:ring-1 focus:ring-accent-primary"
               />
 
-              <button
-                type="button"
-                onClick={() => handleToggleType(crit.id, crit.type)}
+              <div
+                className="inline-flex items-center p-0.5 bg-slate-100/90 rounded-lg border border-slate-200/80 shadow-2xs shrink-0"
                 data-tour-id={idx === 0 ? "benefit-cost-toggle" : undefined}
-                className="focus:outline-none transition-transform active:scale-95 cursor-pointer"
-                title="Klik untuk mengubah tipe"
+                role="group"
+                aria-label="Tipe Kriteria"
               >
-                <Badge variant={crit.type === 'BENEFIT' ? 'benefit' : 'cost'} size="sm">
-                  <GlossaryTerm term={crit.type === 'BENEFIT' ? 'Benefit' : 'Cost'}>
-                    {crit.type}
-                  </GlossaryTerm>
-                </Badge>
-              </button>
+                <button
+                  type="button"
+                  onClick={() => updateCriterion(crit.id, { type: 'BENEFIT' })}
+                  className={`px-2 py-0.5 text-[11px] rounded-md transition-all cursor-pointer ${
+                    crit.type === 'BENEFIT'
+                      ? 'bg-emerald-600 text-white font-bold shadow-xs'
+                      : 'text-slate-500 hover:text-slate-800 hover:bg-slate-200/60 font-medium'
+                  }`}
+                  title="Benefit: Nilai kriteria yang lebih besar lebih diinginkan"
+                >
+                  Benefit
+                </button>
+                <button
+                  type="button"
+                  onClick={() => updateCriterion(crit.id, { type: 'COST' })}
+                  className={`px-2 py-0.5 text-[11px] rounded-md transition-all cursor-pointer ${
+                    crit.type === 'COST'
+                      ? 'bg-rose-600 text-white font-bold shadow-xs'
+                      : 'text-slate-500 hover:text-slate-800 hover:bg-slate-200/60 font-medium'
+                  }`}
+                  title="Cost: Nilai kriteria yang lebih kecil lebih diinginkan"
+                >
+                  Cost
+                </button>
+              </div>
 
               <div className="w-24">
                 <NumericInput

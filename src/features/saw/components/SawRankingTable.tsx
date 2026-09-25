@@ -1,6 +1,5 @@
 import React from 'react';
 import type { RankingRow } from '@/core/math/types';
-import Badge from '@/components/ui/Badge';
 import { Trophy, Award } from 'lucide-react';
 
 export interface SawRankingTableProps {
@@ -42,27 +41,29 @@ export const SawRankingTable: React.FC<SawRankingTableProps> = ({ ranking }) => 
                 <td className="py-3 px-4 font-semibold">
                   <div className="flex items-center gap-1.5">
                     {isTop ? (
-                      <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 font-bold text-xs border border-amber-300">
-                        <Trophy className="w-3.5 h-3.5 text-amber-600" />
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 font-bold text-xs border border-amber-300 shadow-2xs whitespace-nowrap">
+                        <Trophy className="w-3.5 h-3.5 text-amber-600 shrink-0" />
                         #1
                       </span>
                     ) : row.rank === 2 ? (
-                      <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 font-bold text-xs border border-slate-300">
-                        <Award className="w-3.5 h-3.5 text-slate-500" />
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 font-semibold text-xs border border-slate-300 shadow-2xs whitespace-nowrap">
+                        <Award className="w-3.5 h-3.5 text-slate-500 shrink-0" />
                         #2
                       </span>
                     ) : (
-                      <span className="font-mono text-slate-500 px-2">#{row.rank}</span>
+                      <span className="font-mono text-slate-500 px-2 font-semibold text-xs whitespace-nowrap">
+                        #{row.rank}
+                      </span>
                     )}
                   </div>
                 </td>
                 <td className="py-3 px-4">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <span className="font-semibold text-slate-900">{row.alternativeName}</span>
                     {isTop && (
-                      <Badge variant="benefit" size="sm">
-                        Rekomendasi Terbaik
-                      </Badge>
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[11px] font-medium whitespace-nowrap shrink-0">
+                        Rekomendasi Utama
+                      </span>
                     )}
                   </div>
                 </td>

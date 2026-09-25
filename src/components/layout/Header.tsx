@@ -54,11 +54,7 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         {/* Status Method & Aksi */}
-        <div className="flex items-center gap-3">
-          <div className="hidden sm:flex items-center gap-1.5 text-xs text-slate-500 bg-slate-100/80 px-2.5 py-1 rounded-full border border-slate-200/60">
-            <span>Metode:</span>
-            <span className="font-semibold text-slate-800">{activeMethod}</span>
-          </div>
+        <div className="flex items-center gap-2.5">
 
           <Button
             variant="secondary"

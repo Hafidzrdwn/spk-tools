@@ -76,7 +76,7 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
       onOpenChange={(open) => {
         if (!open) handleSkip();
       }}
-      className="max-w-xl"
+      className="max-w-xl max-h-[85vh]"
       title={
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-accent-primary shrink-0 shadow-2xs">

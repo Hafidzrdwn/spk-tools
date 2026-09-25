@@ -41,6 +41,17 @@ export interface UiStore {
   setSharedMatrixCollapsed: (collapsed: boolean) => void;
 }
 
+const MATRIX_COLLAPSED_STORAGE_KEY = 'decisigraph_matrix_collapsed';
+
+const getInitialMatrixCollapsed = (): boolean => {
+  if (typeof window === 'undefined') return false;
+  try {
+    return localStorage.getItem(MATRIX_COLLAPSED_STORAGE_KEY) === 'true';
+  } catch {
+    return false;
+  }
+};
+
 export const useUiStore = create<UiStore>((set) => ({
   activeTab: 'SAW',
   hoveredCellId: null,
@@ -56,7 +67,7 @@ export const useUiStore = create<UiStore>((set) => ({
   ahpCurrentCr: 0,
   storyHasExtracted: false,
   storyMode: 'story',
-  isSharedMatrixCollapsed: false,
+  isSharedMatrixCollapsed: getInitialMatrixCollapsed(),
 
   setHoveredCell: (id) => set({ hoveredCellId: id }),
   setActiveTab: (tab) => {
@@ -77,7 +88,23 @@ export const useUiStore = create<UiStore>((set) => ({
   setAhpCurrentCr: (cr) => set({ ahpCurrentCr: cr }),
   setStoryHasExtracted: (has) => set({ storyHasExtracted: has }),
   setStoryMode: (mode) => set({ storyMode: mode }),
-  toggleSharedMatrix: () => set((s) => ({ isSharedMatrixCollapsed: !s.isSharedMatrixCollapsed })),
-  setSharedMatrixCollapsed: (collapsed) => set({ isSharedMatrixCollapsed: collapsed }),
+  toggleSharedMatrix: () =>
+    set((s) => {
+      const next = !s.isSharedMatrixCollapsed;
+      try {
+        localStorage.setItem(MATRIX_COLLAPSED_STORAGE_KEY, String(next));
+      } catch {
+        // safe fallback
+      }
+      return { isSharedMatrixCollapsed: next };
+    }),
+  setSharedMatrixCollapsed: (collapsed) => {
+    try {
+      localStorage.setItem(MATRIX_COLLAPSED_STORAGE_KEY, String(collapsed));
+    } catch {
+      // safe fallback
+    }
+    set({ isSharedMatrixCollapsed: collapsed });
+  },
 }));
 

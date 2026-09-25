@@ -20,6 +20,7 @@ import ComparisonTab from '@/features/comparison/ComparisonTab';
 import StoryToMatrixTab from '@/features/story-to-matrix/StoryToMatrixTab';
 import TemplateSelectorModal from '@/components/layout/TemplateSelectorModal';
 import ResetProjectButton from '@/features/project/ResetProjectButton';
+import ExportButton from '@/features/export/ExportButton';
 import useUrlTabSync from '@/features/shared/useUrlTabSync';
 import GlossaryTerm from '@/features/glossary/GlossaryTerm';
 import WelcomeModal from '@/features/tour/WelcomeModal';
@@ -76,6 +77,7 @@ export default function App() {
         onTitleChange: setTitle,
         actions: (
           <div className="flex items-center gap-2">
+            <ExportButton variant="primary" />
             <Button
               variant="secondary"
               size="sm"
@@ -84,7 +86,7 @@ export default function App() {
               title="Buka pilihan template studi kasus SPK"
             >
               <FolderOpen className="w-3.5 h-3.5 text-accent-primary" />
-              <span>Muat Contoh Kasus</span>
+              <span className="hidden sm:inline">Muat Contoh Kasus</span>
             </Button>
             <ResetProjectButton />
           </div>

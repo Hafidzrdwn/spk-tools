@@ -5,7 +5,6 @@ import MatrixInputGrid from '@/features/shared/MatrixInputGrid';
 import SawNormalizationTable from './components/SawNormalizationTable';
 import SawRankingTable from './components/SawRankingTable';
 import { FormulaFloatingCard } from '@/features/inspector';
-import ExportButton from '@/features/export/ExportButton';
 import Card, { CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
 import { ArrowRight, Trophy, Calculator, Table, BarChart2 } from 'lucide-react';
@@ -17,7 +16,6 @@ export const SawTab: React.FC = () => {
     normalizedMatrix,
     finalRanking,
     bestAlternative,
-    rawResult,
     updateCellValue,
     hasData,
     formulaSteps,
@@ -80,14 +78,13 @@ export const SawTab: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-2.5 self-end sm:self-auto">
-          <div className="hidden lg:flex items-center gap-1 text-[11px] text-slate-500 px-2 font-mono">
+          <div className="hidden sm:flex items-center gap-1 text-[11px] text-slate-500 px-2 font-mono">
             <span>X_ij</span>
             <ArrowRight className="w-3 h-3 text-slate-400" />
             <span>R_ij</span>
             <ArrowRight className="w-3 h-3 text-slate-400" />
             <span>V_i = Σ(w_j · r_ij)</span>
           </div>
-          <ExportButton method="SAW" result={rawResult} />
         </div>
       </div>
 
@@ -95,7 +92,7 @@ export const SawTab: React.FC = () => {
       {!hasData ? (
         <Card className="border-dashed border-2 border-slate-200/90 bg-white/70">
           <CardContent className="p-8 text-center space-y-2">
-            <div className="w-10 h-10 mx-auto rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+            <div className="w-10 h-10 mx-auto rounded-xl bg-indigo-50 text-accent-primary flex items-center justify-center">
               <Calculator className="w-5 h-5" />
             </div>
             <h4 className="text-sm font-bold text-slate-800">Menunggu Data Matriks Keputusan</h4>

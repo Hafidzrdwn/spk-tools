@@ -4,30 +4,10 @@ import MultiMethodComparisonTable from './components/MultiMethodComparisonTable'
 import RankingShiftExplanation from './components/RankingShiftExplanation';
 import Card, { CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
-import ExportButton from '@/features/export/ExportButton';
-import type { MethodResult, RankingRow } from '@/core/math/types';
 import { Scale, Sparkles, Layers } from 'lucide-react';
 
 export const ComparisonTab: React.FC = () => {
   const { hasData, comparison, loadShiftDemoCase } = useComparisonViewModel();
-
-  const comparisonMethodResult = React.useMemo<MethodResult>(() => {
-    const ranking: RankingRow[] = comparison.rows
-      .map((row) => ({
-        alternativeId: row.alternativeId,
-        alternativeName: row.alternativeName,
-        score: Number((1 / Math.max(1, row.averageRank)).toFixed(4)),
-        rank: Math.round(row.averageRank),
-      }))
-      .sort((a, b) => a.rank - b.rank)
-      .map((r, idx) => ({ ...r, rank: idx + 1 }));
-
-    return {
-      intermediateMatrices: {},
-      formulaSteps: [],
-      finalRanking: ranking,
-    };
-  }, [comparison]);
 
   return (
     <div className="space-y-6">
@@ -54,11 +34,6 @@ export const ComparisonTab: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
-            <ExportButton
-              method="COMPARE"
-              result={comparisonMethodResult}
-              comparisonResult={comparison}
-            />
             <Button
               variant="secondary"
               size="sm"
