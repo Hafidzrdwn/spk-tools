@@ -68,7 +68,7 @@ export const CriteriaEditor: React.FC = () => {
                   onClick={() => updateCriterion(crit.id, { type: 'BENEFIT' })}
                   className={`px-2 py-0.5 text-[11px] rounded-md transition-all cursor-pointer ${
                     crit.type === 'BENEFIT'
-                      ? 'bg-emerald-600 text-white font-bold shadow-xs'
+                      ? 'bg-benefit text-white font-bold shadow-xs'
                       : 'text-slate-500 hover:text-slate-800 hover:bg-slate-200/60 font-medium'
                   }`}
                   title="Benefit: Nilai kriteria yang lebih besar lebih diinginkan"
@@ -80,7 +80,7 @@ export const CriteriaEditor: React.FC = () => {
                   onClick={() => updateCriterion(crit.id, { type: 'COST' })}
                   className={`px-2 py-0.5 text-[11px] rounded-md transition-all cursor-pointer ${
                     crit.type === 'COST'
-                      ? 'bg-rose-600 text-white font-bold shadow-xs'
+                      ? 'bg-cost text-white font-bold shadow-xs'
                       : 'text-slate-500 hover:text-slate-800 hover:bg-slate-200/60 font-medium'
                   }`}
                   title="Cost: Nilai kriteria yang lebih kecil lebih diinginkan"

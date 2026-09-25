@@ -17,7 +17,8 @@ export const MultiMethodComparisonTable: React.FC<MultiMethodComparisonTableProp
   if (rows.length === 0) {
     return (
       <div className="p-6 text-center text-xs text-slate-500 bg-slate-50 rounded-control border border-slate-200">
-        Data perbandingan belum tersedia.
+        <p className="font-medium text-slate-600 mb-1">Data perbandingan belum tersedia.</p>
+        <p>Tambahkan kriteria dan alternatif, atau klik <span className="font-semibold text-accent-primary">Muat Contoh Kasus Pergeseran</span> di atas untuk melihat perbandingan instan.</p>
       </div>
     );
   }
@@ -62,9 +63,9 @@ export const MultiMethodComparisonTable: React.FC<MultiMethodComparisonTableProp
               <td className="py-2.5 px-4 font-semibold text-slate-800 sticky left-0 bg-white/95 z-10 border-r border-slate-200/70 shadow-xs">
                 <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
                   <span className="text-slate-400 font-mono text-[11px] w-5">#{idx + 1}</span>
-                  <span className="truncate font-semibold">{row.alternativeName}</span>
+                  <span className="truncate font-semibold" title={row.alternativeName}>{row.alternativeName}</span>
                   {row.isConsensusRank1 && (
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-medium whitespace-nowrap shrink-0">
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-benefit/10 text-benefit border border-benefit/20 text-[10px] font-medium whitespace-nowrap shrink-0">
                       Rekomendasi Utama
                     </span>
                   )}
@@ -114,8 +115,8 @@ export const MultiMethodComparisonTable: React.FC<MultiMethodComparisonTableProp
                     <span>Konsensus #1</span>
                   </div>
                 ) : row.saw.rank === row.wp.rank && row.wp.rank === row.topsis.rank ? (
-                  <div className="inline-flex items-center gap-1 text-[11px] text-emerald-700 font-medium whitespace-nowrap">
-                    <CheckCircle2 className="w-3 h-3 text-emerald-600 shrink-0" />
+                  <div className="inline-flex items-center gap-1 text-[11px] text-benefit font-medium whitespace-nowrap">
+                    <CheckCircle2 className="w-3 h-3 text-benefit shrink-0" />
                     <span>Seragam (#{row.saw.rank})</span>
                   </div>
                 ) : (

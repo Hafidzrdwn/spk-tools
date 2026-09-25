@@ -17,7 +17,8 @@ export const SawNormalizationTable: React.FC<SawNormalizationTableProps> = ({
   if (criteria.length === 0 || alternatives.length === 0) {
     return (
       <div className="p-6 text-center text-xs text-slate-500 bg-slate-50 rounded-control border border-slate-200">
-        Data kriteria atau alternatif belum tersedia untuk normalisasi.
+        <p className="font-medium text-slate-600 mb-1">Data belum lengkap untuk normalisasi.</p>
+        <p>Isi nilai matriks keputusan pada panel <span className="font-semibold text-accent-primary">Tabel Matriks</span> di atas terlebih dahulu.</p>
       </div>
     );
   }
@@ -55,7 +56,7 @@ export const SawNormalizationTable: React.FC<SawNormalizationTableProps> = ({
                 <td className="py-2.5 px-4 font-semibold text-slate-800 sticky left-0 bg-white/95 z-10 border-r border-slate-200/70 shadow-xs">
                   <div className="flex items-center gap-2">
                     <span className="text-slate-400 font-mono text-[11px] w-5">A{altIdx + 1}</span>
-                    <span className="truncate">{alt.name}</span>
+                    <span className="truncate" title={alt.name}>{alt.name}</span>
                   </div>
                 </td>
                 {criteria.map((crit, critIdx) => {

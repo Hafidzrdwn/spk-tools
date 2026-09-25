@@ -62,7 +62,7 @@ export const TopsisRankingTable: React.FC<TopsisRankingTableProps> = ({ ranking 
                     </td>
                     <td className="py-2.5 px-4">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <span className="font-semibold text-slate-900">{row.alternativeName}</span>
+                        <span className="font-semibold text-slate-900 truncate" title={row.alternativeName}>{row.alternativeName}</span>
                         {isTop && (
                           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-benefit/10 text-benefit border border-benefit/20 text-[11px] font-medium whitespace-nowrap shrink-0">
                             Rekomendasi Utama

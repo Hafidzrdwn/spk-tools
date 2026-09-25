@@ -10,7 +10,8 @@ export const TopsisDistanceCard: React.FC<TopsisDistanceCardProps> = ({ distance
   if (distances.length === 0) {
     return (
       <div className="p-6 text-center text-xs text-slate-500 bg-slate-50 rounded-control border border-slate-200">
-        Data jarak Euclidean belum tersedia.
+        <p className="font-medium text-slate-600 mb-1">Data jarak Euclidean belum tersedia.</p>
+        <p>Isi nilai matriks keputusan terlebih dahulu untuk menghitung jarak ke solusi ideal A+ dan A−.</p>
       </div>
     );
   }
@@ -35,7 +36,7 @@ export const TopsisDistanceCard: React.FC<TopsisDistanceCardProps> = ({ distance
                 <td className="py-2.5 px-4 font-semibold text-slate-800">
                   <div className="flex items-center gap-2">
                     <span className="text-slate-400 font-mono text-[11px] w-5">A{idx + 1}</span>
-                    <span className="truncate">{row.alternativeName}</span>
+                    <span className="truncate" title={row.alternativeName}>{row.alternativeName}</span>
                   </div>
                 </td>
                 <td className="py-2.5 px-4 text-right font-mono text-slate-500">

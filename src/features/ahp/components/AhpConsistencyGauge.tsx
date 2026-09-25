@@ -75,7 +75,7 @@ export const AhpConsistencyGauge: React.FC<AhpConsistencyGaugeProps> = ({
               </div>
               <div className="p-2 rounded-lg bg-white/80 border border-slate-200/70">
                 <span className="text-[10px] text-slate-400 block">Status CR</span>
-                <span className={`font-bold ${isConsistent ? 'text-emerald-700' : 'text-rose-700'}`}>
+                <span className={`font-bold ${isConsistent ? 'text-benefit' : 'text-cost'}`}>
                   {(consistency.cr * 100).toFixed(2)}%
                 </span>
               </div>
@@ -125,7 +125,7 @@ export const AhpConsistencyGauge: React.FC<AhpConsistencyGaugeProps> = ({
               <div className="text-[11px] text-slate-500">
                 Nilai Sekarang: <span className="line-through text-rose-600 font-bold">{suggestion.currentValue}</span>
                 {' ➔ '}
-                Nilai Rekomendasi: <span className="text-emerald-700 font-bold">{suggestion.suggestedValue}</span>
+                Nilai Rekomendasi: <span className="text-benefit font-bold">{suggestion.suggestedValue}</span>
               </div>
             </div>
 

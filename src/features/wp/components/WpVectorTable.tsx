@@ -17,7 +17,8 @@ export const WpVectorTable: React.FC<WpVectorTableProps> = ({
   if (vectorS.length === 0 || finalRanking.length === 0) {
     return (
       <div className="p-6 text-center text-xs text-slate-500 bg-slate-50 rounded-control border border-slate-200">
-        Hasil kalkulasi Vektor S dan Vektor V belum tersedia.
+        <p className="font-medium text-slate-600 mb-1">Hasil kalkulasi belum tersedia.</p>
+        <p>Pastikan semua nilai telah diisi dan tidak ada nilai <span className="font-semibold text-cost">0</span> pada kriteria Cost.</p>
       </div>
     );
   }
@@ -75,7 +76,7 @@ export const WpVectorTable: React.FC<WpVectorTableProps> = ({
 
                   <td className="py-3 px-4">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-semibold text-slate-900">{rankItem.alternativeName}</span>
+                      <span className="font-semibold text-slate-900 truncate" title={rankItem.alternativeName}>{rankItem.alternativeName}</span>
                       {isTop && (
                         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-benefit/10 text-benefit border border-benefit/20 text-[11px] font-medium whitespace-nowrap shrink-0">
                           Rekomendasi Utama

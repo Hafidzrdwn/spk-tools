@@ -13,17 +13,17 @@ export const RankingShiftExplanation: React.FC<RankingShiftExplanationProps> = (
 
   if (!hasRank1Shift) {
     return (
-      <Card className="bg-emerald-50/50 border-emerald-200/80 shadow-2xs">
+      <Card className="bg-benefit/5 border-benefit/20 shadow-2xs">
         <CardContent className="p-4 flex items-start gap-3">
-          <div className="w-8 h-8 rounded-control bg-emerald-100 border border-emerald-300 flex items-center justify-center text-emerald-700 shrink-0">
+          <div className="w-8 h-8 rounded-control bg-benefit/15 border border-benefit/30 flex items-center justify-center text-benefit shrink-0">
             <CheckCircle2 className="w-4 h-4" />
           </div>
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <h4 className="text-xs font-bold text-emerald-950 uppercase tracking-wide">Konsensus Peringkat #1 Tercapai</h4>
+              <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wide">Konsensus Peringkat #1 Tercapai</h4>
               <Badge variant="benefit" size="sm">Stabil</Badge>
             </div>
-            <p className="text-xs text-emerald-800/90 leading-relaxed">{explanation}</p>
+            <p className="text-xs text-slate-600 leading-relaxed">{explanation}</p>
           </div>
         </CardContent>
       </Card>
@@ -54,7 +54,7 @@ export const RankingShiftExplanation: React.FC<RankingShiftExplanationProps> = (
               <span className="font-semibold text-indigo-700">Pemenang SAW</span>
               <Badge variant="primary" size="sm">#1</Badge>
             </div>
-            <div className="font-bold text-slate-800 text-xs truncate">{rank1Winners.saw?.alternativeName || '-'}</div>
+            <div className="font-bold text-slate-800 text-xs truncate" title={rank1Winners.saw?.alternativeName}>{rank1Winners.saw?.alternativeName || '-'}</div>
             <div className="text-[10px] font-mono text-slate-400 mt-0.5">Skor: {rank1Winners.saw?.score.toFixed(4)}</div>
           </div>
 
@@ -63,7 +63,7 @@ export const RankingShiftExplanation: React.FC<RankingShiftExplanationProps> = (
               <span className="font-semibold text-violet-700">Pemenang WP</span>
               <Badge variant="primary" size="sm">#1</Badge>
             </div>
-            <div className="font-bold text-slate-800 text-xs truncate">{rank1Winners.wp?.alternativeName || '-'}</div>
+            <div className="font-bold text-slate-800 text-xs truncate" title={rank1Winners.wp?.alternativeName}>{rank1Winners.wp?.alternativeName || '-'}</div>
             <div className="text-[10px] font-mono text-slate-400 mt-0.5">Skor: {rank1Winners.wp?.score.toFixed(4)}</div>
           </div>
 
@@ -72,7 +72,7 @@ export const RankingShiftExplanation: React.FC<RankingShiftExplanationProps> = (
               <span className="font-semibold text-sky-700">Pemenang TOPSIS</span>
               <Badge variant="primary" size="sm">#1</Badge>
             </div>
-            <div className="font-bold text-slate-800 text-xs truncate">{rank1Winners.topsis?.alternativeName || '-'}</div>
+            <div className="font-bold text-slate-800 text-xs truncate" title={rank1Winners.topsis?.alternativeName}>{rank1Winners.topsis?.alternativeName || '-'}</div>
             <div className="text-[10px] font-mono text-slate-400 mt-0.5">C_i: {rank1Winners.topsis?.score.toFixed(4)}</div>
           </div>
         </div>
@@ -94,8 +94,8 @@ export const RankingShiftExplanation: React.FC<RankingShiftExplanationProps> = (
                   <tr className="bg-slate-50 text-slate-500 font-semibold border-b border-slate-100">
                     <th className="py-1.5 px-3">Kriteria</th>
                     <th className="py-1.5 px-3 text-right">Bobot</th>
-                    <th className="py-1.5 px-3 text-right font-medium text-indigo-700">{rank1Winners.saw?.alternativeName} (SAW)</th>
-                    <th className="py-1.5 px-3 text-right font-medium text-sky-700">{rank1Winners.topsis?.alternativeName} (TOPSIS)</th>
+                    <th className="py-1.5 px-3 text-right font-medium text-indigo-700 max-w-[7rem] truncate" title={`${rank1Winners.saw?.alternativeName ?? ''} (SAW)`}>{rank1Winners.saw?.alternativeName} (SAW)</th>
+                    <th className="py-1.5 px-3 text-right font-medium text-sky-700 max-w-[7rem] truncate" title={`${rank1Winners.topsis?.alternativeName ?? ''} (TOPSIS)`}>{rank1Winners.topsis?.alternativeName} (TOPSIS)</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 font-mono">
