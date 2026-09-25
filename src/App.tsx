@@ -77,7 +77,6 @@ export default function App() {
         onTitleChange: setTitle,
         actions: (
           <div className="flex items-center gap-2">
-            <ExportButton variant="primary" />
             <Button
               variant="secondary"
               size="sm"
@@ -89,6 +88,7 @@ export default function App() {
               <span className="hidden sm:inline">Muat Contoh Kasus</span>
             </Button>
             <ResetProjectButton />
+            <ExportButton variant="primary" />
           </div>
         ),
       }}

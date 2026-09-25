@@ -56,6 +56,8 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Status Method & Aksi */}
         <div className="flex items-center gap-2.5">
 
+          <TourLauncherMenu />
+
           <Button
             variant="secondary"
             size="sm"
@@ -67,8 +69,6 @@ export const Header: React.FC<HeaderProps> = ({
             <BookOpen className="w-3.5 h-3.5 text-accent-primary" />
             <span className="font-medium text-xs">Glosarium</span>
           </Button>
-
-          <TourLauncherMenu />
 
           {actions && <div className="flex items-center gap-2">{actions}</div>}
         </div>
