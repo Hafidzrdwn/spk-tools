@@ -29,6 +29,9 @@ export const GENERAL_TOUR_STEPS: TourStep[] = [
     preNavigate: () => {
       baselineTitle = useProjectStore.getState().title;
     },
+    resetOnBack: () => {
+      baselineTitle = useProjectStore.getState().title;
+    },
     requiredAction: {
       description: 'Ketik nama judul proyek yang baru hingga tersimpan.',
       isSatisfied: (state) => state.title.trim() !== baselineTitle.trim(),
@@ -41,6 +44,12 @@ export const GENERAL_TOUR_STEPS: TourStep[] = [
     content:
       'Memerlukan bantuan memahami istilah teknis SPK seperti Vektor S, Vektor V, Normalisasi, atau Rasio Konsistensi? Klik tombol Glosarium ini untuk membuka kamus SPK.',
     placement: 'bottom',
+    onLeave: () => {
+      useUiStore.getState().closeGlossary();
+    },
+    resetOnBack: () => {
+      useUiStore.getState().closeGlossary();
+    },
     requiredAction: {
       description: 'Klik tombol "Glosarium" untuk membuka drawer panduan istilah.',
       isSatisfied: () => useUiStore.getState().isGlossaryOpen === true,
@@ -93,6 +102,10 @@ export const GENERAL_TOUR_STEPS: TourStep[] = [
     content:
       'Mari kita kelola tolok ukur evaluasi keputusan. Silakan klik tombol tab "Kriteria" di atas tabel matriks ini.',
     placement: 'bottom',
+    resetOnBack: () => {
+      // Saat mundur ke step ini, reset section ke 'matrix' agar user wajib klik tab Kriteria lagi
+      useUiStore.getState().setActiveEditorSection('matrix');
+    },
     requiredAction: {
       description: 'Klik tab "Kriteria" untuk membuka editor kriteria.',
       isSatisfied: () => useUiStore.getState().activeEditorSection === 'criteria',
@@ -106,6 +119,9 @@ export const GENERAL_TOUR_STEPS: TourStep[] = [
       'Kriteria adalah tolok ukur penilaian. Silakan klik tombol "+ Tambah Kriteria" untuk membuat kriteria evaluasi baru ke dalam daftar.',
     placement: 'bottom',
     preNavigate: () => {
+      baselineCriteriaCount = useProjectStore.getState().criteria.length;
+    },
+    resetOnBack: () => {
       baselineCriteriaCount = useProjectStore.getState().criteria.length;
     },
     requiredAction: {
@@ -128,6 +144,10 @@ export const GENERAL_TOUR_STEPS: TourStep[] = [
     content:
       'Kini giliran mengelola daftar kandidat pilihan keputusan. Silakan klik tombol tab "Alternatif".',
     placement: 'bottom',
+    resetOnBack: () => {
+      // Saat mundur ke step ini, kembalikan ke 'criteria' agar user wajib klik tab Alternatif lagi
+      useUiStore.getState().setActiveEditorSection('criteria');
+    },
     requiredAction: {
       description: 'Klik tab "Alternatif" untuk membuka editor kandidat alternatif.',
       isSatisfied: () => useUiStore.getState().activeEditorSection === 'alternatives',
@@ -143,6 +163,9 @@ export const GENERAL_TOUR_STEPS: TourStep[] = [
     preNavigate: () => {
       baselineAlternativesCount = useProjectStore.getState().alternatives.length;
     },
+    resetOnBack: () => {
+      baselineAlternativesCount = useProjectStore.getState().alternatives.length;
+    },
     requiredAction: {
       description: 'Klik tombol "+ Tambah Alternatif" agar jumlah alternatif bertambah.',
       isSatisfied: (state) => state.alternatives.length > baselineAlternativesCount,
@@ -155,6 +178,10 @@ export const GENERAL_TOUR_STEPS: TourStep[] = [
     content:
       'Bagus! Sekarang silakan klik kembali tab "Tabel Matriks" untuk melihat grid pengisian nilai matriks.',
     placement: 'bottom',
+    resetOnBack: () => {
+      // Saat mundur ke step ini, kembalikan ke 'alternatives' agar user wajib klik tab Tabel Matriks lagi
+      useUiStore.getState().setActiveEditorSection('alternatives');
+    },
     requiredAction: {
       description: 'Klik tab "Tabel Matriks" untuk kembali ke tampilan matriks awal.',
       isSatisfied: () => useUiStore.getState().activeEditorSection === 'matrix',

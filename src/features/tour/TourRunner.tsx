@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight, AlertTriangle, CheckCircle2 } from 'lucide-react';
 import { useTourStore } from '@/store/useTourStore';
 import { useProjectStore } from '@/store/useProjectStore';
+import { useUiStore } from '@/store/useUiStore';
 import type { TourDefinition } from '@/core/tour/types';
 
 // ─── Spotlight geometry ───────────────────────────────────────────────────────
@@ -159,6 +160,9 @@ export interface TourRunnerProps {
 export const TourRunner: React.FC<TourRunnerProps> = ({ tours = {} }) => {
   const { activeTourId, activeStepIndex, goToNextStep, goToPrevStep, skipTour, finishTour } = useTourStore();
   const projectState = useProjectStore();
+  // Subscribe ke state UI agar perubahan drawer/tab/inspector memicu re-evaluasi requiredAction secara reaktif
+  useUiStore();
+
   const [spot, setSpot] = useState<SpotRect | null>(null);
   const [tooltipPos, setTooltipPos] = useState<React.CSSProperties>({});
   const [stepReady, setStepReady] = useState(false);
@@ -174,6 +178,18 @@ export const TourRunner: React.FC<TourRunnerProps> = ({ tours = {} }) => {
   const requiredAction = currentStep?.requiredAction;
   const isSatisfied = requiredAction ? requiredAction.isSatisfied(projectState) : true;
 
+  // Membersihkan modal/drawer/inspector terbuka agar tidak menutupi tampilan step berikutnya/sebelumnya
+  const cleanupOverlays = useCallback((targetSelector?: string) => {
+    const isTargetInsideGlossary = targetSelector
+      ? targetSelector.includes('glossary-drawer') || targetSelector.includes('glossary-content')
+      : false;
+    if (!isTargetInsideGlossary) {
+      useUiStore.getState().closeGlossary();
+    }
+    useUiStore.getState().setInspectorOpen(false);
+    useUiStore.getState().setHoveredCell(null);
+  }, []);
+
   const measure = useCallback(() => {
     if (!currentStep) return;
     const s = getSpotRect(currentStep.targetSelector);
@@ -181,11 +197,26 @@ export const TourRunner: React.FC<TourRunnerProps> = ({ tours = {} }) => {
     setTooltipPos(calcTooltipPos(s, currentStep.placement));
   }, [currentStep]);
 
-  // Saat step berubah: preNavigate → poll DOM → scroll → ukur
+  // Cleanup saat unmount
+  useEffect(() => {
+    return () => {
+      cleanupOverlays();
+    };
+  }, [cleanupOverlays]);
+
+  // Saat step berubah: auto-cleanup overlay luar → preNavigate → poll DOM → scroll → ukur
   useEffect(() => {
     if (!activeTourId || !currentStep) return;
 
     setStepReady(false);
+
+    // Auto-cleanup overlay jika target step ini berada di luar overlay
+    const isTargetInsideGlossary =
+      currentStep.targetSelector?.includes('glossary-drawer') ||
+      currentStep.targetSelector?.includes('glossary-content');
+    if (!isTargetInsideGlossary && useUiStore.getState().isGlossaryOpen) {
+      useUiStore.getState().closeGlossary();
+    }
 
     // 1. Jalankan preNavigate (jika ada hook inisialisasi)
     currentStep.preNavigate?.();
@@ -257,8 +288,35 @@ export const TourRunner: React.FC<TourRunnerProps> = ({ tours = {} }) => {
   if (!activeTourId || !currentTour || !currentStep) return null;
 
   const handleNext = () => {
-    if (isLastStep) finishTour(activeTourId);
-    else goToNextStep();
+    currentStep?.onLeave?.();
+    const nextIndex = activeStepIndex + 1;
+    const nextStep = currentTour?.steps[nextIndex];
+    cleanupOverlays(nextStep?.targetSelector);
+
+    if (isLastStep) {
+      cleanupOverlays();
+      finishTour(activeTourId);
+    } else {
+      goToNextStep();
+    }
+  };
+
+  const handlePrev = () => {
+    if (isFirstStep) return;
+    currentStep?.onLeave?.();
+
+    const prevIndex = activeStepIndex - 1;
+    const prevStep = currentTour?.steps[prevIndex];
+
+    cleanupOverlays(prevStep?.targetSelector);
+    prevStep?.resetOnBack?.();
+    goToPrevStep();
+  };
+
+  const handleSkip = () => {
+    currentStep?.onLeave?.();
+    cleanupOverlays();
+    skipTour();
   };
 
   return createPortal(
@@ -297,7 +355,7 @@ export const TourRunner: React.FC<TourRunnerProps> = ({ tours = {} }) => {
       </AnimatePresence>
 
       {/* Overlay + spotlight */}
-      {stepReady && <SpotlightOverlay spot={spot} onSkip={skipTour} />}
+      {stepReady && <SpotlightOverlay spot={spot} onSkip={handleSkip} />}
 
       {/* Tooltip dengan animasi masuk per step */}
       <AnimatePresence mode="wait">
@@ -325,7 +383,7 @@ export const TourRunner: React.FC<TourRunnerProps> = ({ tours = {} }) => {
                   <span className="text-[10px] text-slate-400 font-mono">{activeStepIndex + 1}/{totalSteps}</span>
                   <button
                     type="button"
-                    onClick={skipTour}
+                    onClick={handleSkip}
                     className="p-1 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
                     aria-label="Tutup tour"
                   >
@@ -380,7 +438,7 @@ export const TourRunner: React.FC<TourRunnerProps> = ({ tours = {} }) => {
                 <div className="flex items-center justify-between gap-2">
                   <button
                     type="button"
-                    onClick={goToPrevStep}
+                    onClick={handlePrev}
                     disabled={isFirstStep}
                     className="flex items-center gap-1 px-3 py-1.5 rounded-xl border border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-700 text-xs font-medium transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
                   >

@@ -220,4 +220,44 @@ describe('Tour Infrastructure & useTourStore', () => {
     store.markTabVisited('WP');
     expect(useTourStore.getState().visitedTabs).toContain('WP');
   });
+
+  it('resetOnBack dan onLeave pada step tour mereset state UI dengan benar', async () => {
+    const { useUiStore } = await import('@/store/useUiStore');
+    const { sawTourDefinition } = await import('@/core/tour/sawTourSteps');
+    const { wpTourDefinition } = await import('@/core/tour/wpTourSteps');
+
+    // 1. General glossary step onLeave & resetOnBack menutup glosarium
+    const glossaryStep = generalTourDefinition.steps.find((s) => s.id === 'general-glossary');
+    useUiStore.getState().openGlossary();
+    expect(useUiStore.getState().isGlossaryOpen).toBe(true);
+
+    glossaryStep?.onLeave?.();
+    expect(useUiStore.getState().isGlossaryOpen).toBe(false);
+
+    useUiStore.getState().openGlossary();
+    expect(useUiStore.getState().isGlossaryOpen).toBe(true);
+    glossaryStep?.resetOnBack?.();
+    expect(useUiStore.getState().isGlossaryOpen).toBe(false);
+
+    // 2. Criteria step resetOnBack mengembalikan section ke matrix
+    const critStep = generalTourDefinition.steps.find((s) => s.id === 'general-open-criteria');
+    useUiStore.getState().setActiveEditorSection('criteria');
+    expect(useUiStore.getState().activeEditorSection).toBe('criteria');
+    critStep?.resetOnBack?.();
+    expect(useUiStore.getState().activeEditorSection).toBe('matrix');
+
+    // 3. SAW step 2 resetOnBack mengembalikan stepper ke 1
+    const sawStep2 = sawTourDefinition.steps.find((s) => s.id === 'saw-click-step-2');
+    useUiStore.getState().setSawActiveStep(2);
+    expect(useUiStore.getState().sawActiveStep).toBe(2);
+    sawStep2?.resetOnBack?.();
+    expect(useUiStore.getState().sawActiveStep).toBe(1);
+
+    // 4. WP step 2 resetOnBack mengembalikan stepper ke 1
+    const wpStep2 = wpTourDefinition.steps.find((s) => s.id === 'wp-click-step-2');
+    useUiStore.getState().setWpActiveStep(2);
+    expect(useUiStore.getState().wpActiveStep).toBe(2);
+    wpStep2?.resetOnBack?.();
+    expect(useUiStore.getState().wpActiveStep).toBe(1);
+  });
 });

@@ -11,6 +11,15 @@ export interface TourStep {
    * (pindah tab editor, buka section) agar elemen target tersedia di DOM.
    */
   preNavigate?: () => void;
+  /**
+   * Dipanggil saat pengguna berpindah/meninggalkan step ini (baik maju maupun mundur).
+   */
+  onLeave?: () => void;
+  /**
+   * Dipanggil khusus saat pengguna menavigasi mundur (Back) ke step ini.
+   * Gunakan untuk me-reset kondisi UI/action ke status awal sebelum aksi dilakukan.
+   */
+  resetOnBack?: () => void;
   /** Jika diisi, tombol "Lanjut" disembunyikan/disabled sampai kondisi ini true. */
   requiredAction?: {
     description: string; // teks instruksi ke user, misal "Coba klik Auto-distribute weight"

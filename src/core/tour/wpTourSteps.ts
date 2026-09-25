@@ -64,6 +64,11 @@ export const WP_TOUR_STEPS: TourStep[] = [
       zeroGuardEverTriggered = false;
       zeroGuardEverResolved = false;
     },
+    resetOnBack: () => {
+      isZeroGuardStepActive = true;
+      zeroGuardEverTriggered = false;
+      zeroGuardEverResolved = false;
+    },
     requiredAction: {
       description:
         'Ubah salah satu nilai alternatif pada kolom kriteria Cost menjadi 0 (hingga alert merah muncul), lalu kembalikan ke angka semula (> 0).',
@@ -79,6 +84,10 @@ export const WP_TOUR_STEPS: TourStep[] = [
     placement: 'bottom',
     preNavigate: () => {
       isZeroGuardStepActive = false;
+    },
+    resetOnBack: () => {
+      isZeroGuardStepActive = false;
+      useUiStore.getState().setWpActiveStep(1);
     },
     requiredAction: {
       description: 'Klik tombol stepper "2. Pangkat Bobot (w*)".',
@@ -105,6 +114,10 @@ export const WP_TOUR_STEPS: TourStep[] = [
     placement: 'bottom',
     preNavigate: () => {
       isZeroGuardStepActive = false;
+    },
+    resetOnBack: () => {
+      isZeroGuardStepActive = false;
+      useUiStore.getState().setWpActiveStep(2);
     },
     requiredAction: {
       description: 'Klik tombol stepper "3. Vektor S & V".',

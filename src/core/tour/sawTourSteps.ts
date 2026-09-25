@@ -70,6 +70,10 @@ export const SAW_TOUR_STEPS: TourStep[] = [
     preNavigate: () => {
       isHoverStepActive = false;
     },
+    resetOnBack: () => {
+      isHoverStepActive = false;
+      useUiStore.getState().setSawActiveStep(1);
+    },
     requiredAction: {
       description: 'Klik tombol stepper "2. Normalisasi (R)".',
       isSatisfied: () => useUiStore.getState().sawActiveStep === 2,
@@ -97,6 +101,17 @@ export const SAW_TOUR_STEPS: TourStep[] = [
       isHoverStepActive = true;
       sawCellHoveredDuringStep = false;
     },
+    onLeave: () => {
+      isHoverStepActive = false;
+      useUiStore.getState().setInspectorOpen(false);
+      useUiStore.getState().setHoveredCell(null);
+    },
+    resetOnBack: () => {
+      isHoverStepActive = true;
+      sawCellHoveredDuringStep = false;
+      useUiStore.getState().setInspectorOpen(false);
+      useUiStore.getState().setHoveredCell(null);
+    },
     requiredAction: {
       description: 'Arahkan kursor (hover) ke salah satu sel matriks normalisasi untuk membuka Formula Inspector.',
       isSatisfied: () => isSawHoverSatisfied(),
@@ -122,6 +137,10 @@ export const SAW_TOUR_STEPS: TourStep[] = [
     placement: 'bottom',
     preNavigate: () => {
       isHoverStepActive = false;
+    },
+    resetOnBack: () => {
+      isHoverStepActive = false;
+      useUiStore.getState().setSawActiveStep(2);
     },
     requiredAction: {
       description: 'Klik tombol stepper "3. Perangkingan (V)".',
