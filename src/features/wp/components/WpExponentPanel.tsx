@@ -20,7 +20,7 @@ export const WpExponentPanel: React.FC<WpExponentPanelProps> = ({ exponents }) =
 
   return (
     <div className="space-y-4">
-      <div className="p-3.5 rounded-xl bg-indigo-50/60 border border-indigo-100/80 flex items-start gap-2.5 text-xs text-indigo-900">
+      <div className="p-3.5 rounded-xl bg-accent-primary/5 border border-accent-primary/10 flex items-start gap-2.5 text-xs text-slate-800">
         <Info className="w-4 h-4 text-accent-primary shrink-0 mt-0.5" />
         <div className="space-y-1">
           <p className="font-semibold">Aturan Pangkat Pembobotan Weighted Product (WP):</p>
@@ -68,8 +68,8 @@ export const WpExponentPanel: React.FC<WpExponentPanelProps> = ({ exponents }) =
                     <span
                       className={`inline-flex items-center px-2.5 py-1 rounded-md font-mono text-xs font-bold border ${
                         isBenefit
-                          ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                          : 'bg-rose-50 text-rose-700 border-rose-200'
+                          ? 'bg-benefit/10 text-benefit border-benefit/20'
+                          : 'bg-cost/10 text-cost border-cost/20'
                       }`}
                     >
                       {isBenefit ? `+${exp.normalizedWeight.toFixed(4)}` : `-${exp.normalizedWeight.toFixed(4)}`}
@@ -88,7 +88,7 @@ export const WpExponentPanel: React.FC<WpExponentPanelProps> = ({ exponents }) =
                 {totalAbsWeight.toFixed(4)}
               </td>
               <td className="py-2.5 px-4 text-center">
-                <span className="inline-flex items-center gap-1 text-[11px] text-emerald-600 font-semibold">
+                <span className="inline-flex items-center gap-1 text-[11px] text-benefit font-semibold">
                   <CheckCircle2 className="w-3.5 h-3.5" />
                   <span>Valid (1.0)</span>
                 </span>

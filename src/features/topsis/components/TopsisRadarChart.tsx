@@ -42,18 +42,18 @@ export const TopsisRadarChart: React.FC<TopsisRadarChartProps> = ({
           <span
             data-tour-id="topsis-radar-point"
             onMouseEnter={() => markTopsisHover()}
-            className="flex items-center gap-1.5 text-emerald-700 cursor-pointer hover:underline"
+            className="flex items-center gap-1.5 text-benefit cursor-pointer hover:underline"
             title="Arahkan kursor untuk memeriksa titik A+"
           >
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block" />
+            <span className="w-2.5 h-2.5 rounded-full bg-benefit inline-block" />
             <span>A+ (Ideal)</span>
           </span>
           <span
             onMouseEnter={() => markTopsisHover()}
-            className="flex items-center gap-1.5 text-rose-700 cursor-pointer hover:underline"
+            className="flex items-center gap-1.5 text-cost cursor-pointer hover:underline"
             title="Arahkan kursor untuk memeriksa titik A-"
           >
-            <span className="w-2.5 h-2.5 rounded-full bg-rose-500 inline-block" />
+            <span className="w-2.5 h-2.5 rounded-full bg-cost inline-block" />
             <span>A- (Anti-Ideal)</span>
           </span>
         </div>

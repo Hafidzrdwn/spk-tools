@@ -77,14 +77,14 @@ export const WpVectorTable: React.FC<WpVectorTableProps> = ({
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="font-semibold text-slate-900">{rankItem.alternativeName}</span>
                       {isTop && (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[11px] font-medium whitespace-nowrap shrink-0">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-benefit/10 text-benefit border border-benefit/20 text-[11px] font-medium whitespace-nowrap shrink-0">
                           Rekomendasi Utama
                         </span>
                       )}
                     </div>
                   </td>
 
-                  <td className="py-3 px-4 text-right font-mono text-xs font-semibold text-indigo-700">
+                  <td className="py-3 px-4 text-right font-mono text-xs font-semibold text-accent-primary">
                     {sRow ? sRow.sValue.toFixed(4) : '-'}
                   </td>
 
@@ -114,7 +114,7 @@ export const WpVectorTable: React.FC<WpVectorTableProps> = ({
               <td className="py-2.5 px-4 text-right font-mono text-xs text-accent-primary font-bold">
                 {totalS.toFixed(4)}
               </td>
-              <td className="py-2.5 px-4 text-right font-mono text-xs text-emerald-600 font-bold">
+              <td className="py-2.5 px-4 text-right font-mono text-xs text-benefit font-bold">
                 1.0000 (100%)
               </td>
               <td className="hidden md:table-cell"></td>

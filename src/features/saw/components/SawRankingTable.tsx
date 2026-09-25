@@ -61,7 +61,7 @@ export const SawRankingTable: React.FC<SawRankingTableProps> = ({ ranking }) => 
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="font-semibold text-slate-900">{row.alternativeName}</span>
                     {isTop && (
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[11px] font-medium whitespace-nowrap shrink-0">
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-benefit/10 text-benefit border border-benefit/20 text-[11px] font-medium whitespace-nowrap shrink-0">
                         Rekomendasi Utama
                       </span>
                     )}

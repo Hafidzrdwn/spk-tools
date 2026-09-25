@@ -422,10 +422,10 @@ export const TourRunner: React.FC<TourRunnerProps> = ({ tours = {} }) => {
                   <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="flex items-center gap-2 p-2 rounded-xl bg-emerald-50 border border-emerald-200"
+                    className="flex items-center gap-2 p-2 rounded-xl bg-benefit/10 border border-benefit/20"
                   >
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                    <p className="text-[11px] font-semibold text-emerald-800">Berhasil! Klik Lanjut untuk melanjutkan.</p>
+                    <CheckCircle2 className="w-3.5 h-3.5 text-benefit shrink-0" />
+                    <p className="text-[11px] font-semibold text-benefit">Berhasil! Klik Lanjut untuk melanjutkan.</p>
                   </motion.div>
                 )}
               </div>
@@ -438,8 +438,8 @@ export const TourRunner: React.FC<TourRunnerProps> = ({ tours = {} }) => {
                     <span
                       key={i}
                       className={`block rounded-full transition-all duration-300 ${
-                        i === activeStepIndex ? 'w-5 h-1.5 bg-indigo-600'
-                        : i < activeStepIndex ? 'w-1.5 h-1.5 bg-indigo-300'
+                        i === activeStepIndex ? 'w-5 h-1.5 bg-accent-primary'
+                        : i < activeStepIndex ? 'w-1.5 h-1.5 bg-accent-primary/40'
                         : 'w-1.5 h-1.5 bg-slate-200'
                       }`}
                     />
@@ -462,7 +462,7 @@ export const TourRunner: React.FC<TourRunnerProps> = ({ tours = {} }) => {
                     <button
                       type="button"
                       onClick={handleNext}
-                      className="flex items-center gap-1 px-3.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white text-xs font-semibold shadow-sm transition-all cursor-pointer"
+                      className="flex items-center gap-1 px-3.5 py-1.5 rounded-xl bg-accent-primary hover:bg-accent-primary/90 active:scale-95 text-white text-xs font-semibold shadow-sm transition-all cursor-pointer"
                     >
                       {isLastStep ? 'Selesai 🎉' : 'Lanjut'}
                       {!isLastStep && <ChevronRight className="w-3.5 h-3.5" />}

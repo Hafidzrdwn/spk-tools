@@ -119,7 +119,7 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
                   key={tab.name}
                   className="flex items-start gap-2.5 p-2.5 rounded-xl border border-slate-100 hover:border-slate-200 bg-white hover:bg-slate-50/50 transition-colors shadow-2xs"
                 >
-                  <div className="w-6 h-6 rounded-lg bg-indigo-50/70 border border-indigo-100/60 flex items-center justify-center text-indigo-600 shrink-0 mt-0.5">
+                  <div className="w-6 h-6 rounded-lg bg-accent-primary/5 border border-accent-primary/10 flex items-center justify-center text-accent-primary shrink-0 mt-0.5">
                     <Icon className="w-3.5 h-3.5" />
                   </div>
                   <div className="flex-1 min-w-0">

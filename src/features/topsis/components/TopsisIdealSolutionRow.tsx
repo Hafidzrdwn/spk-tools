@@ -75,37 +75,37 @@ export const TopsisIdealSolutionRow: React.FC<TopsisIdealSolutionRowProps> = ({
               </tr>
             ))}
 
-            {/* Baris Solusi Ideal Positif A+ (Menyala Hijau / Emerald) */}
-            <tr className="bg-emerald-50/80 border-t-2 border-emerald-400 font-semibold text-emerald-950 hover:bg-emerald-100/60 transition-colors">
-              <td className="py-3 px-4 sticky left-0 bg-emerald-50/95 z-10 border-r border-emerald-300">
+            {/* Baris Solusi Ideal Positif A+ */}
+            <tr className="bg-benefit/5 border-t-2 border-benefit/40 font-semibold hover:bg-benefit/10 transition-colors">
+              <td className="py-3 px-4 sticky left-0 bg-benefit/5 z-10 border-r border-benefit/30">
                 <div className="flex items-center gap-2">
-                  <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-200/80 text-emerald-900 font-mono font-bold text-xs border border-emerald-400 shadow-2xs">
-                    <Sparkles className="w-3 h-3 text-emerald-700" />
+                  <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-benefit/20 text-benefit font-mono font-bold text-xs border border-benefit/30 shadow-2xs">
+                    <Sparkles className="w-3 h-3 text-benefit" />
                     <span>A+</span>
                   </span>
-                  <span className="text-xs font-bold text-emerald-900">Solusi Ideal Positif</span>
+                  <span className="text-xs font-bold text-benefit">Solusi Ideal Positif</span>
                 </div>
               </td>
               {criteria.map((crit, critIdx) => (
-                <td key={crit.id} className="py-3 px-3 border-r border-emerald-200/60 last:border-r-0 text-right font-mono font-bold text-emerald-800">
+                <td key={crit.id} className="py-3 px-3 border-r border-benefit/20 last:border-r-0 text-right font-mono font-bold text-benefit">
                   {(idealPositive[critIdx] ?? 0).toFixed(4)}
                 </td>
               ))}
             </tr>
 
-            {/* Baris Solusi Ideal Negatif A- (Menyala Merah Muda / Rose) */}
-            <tr className="bg-rose-50/80 border-t border-rose-300 font-semibold text-rose-950 hover:bg-rose-100/60 transition-colors">
-              <td className="py-3 px-4 sticky left-0 bg-rose-50/95 z-10 border-r border-rose-300">
+            {/* Baris Solusi Ideal Negatif A- */}
+            <tr className="bg-cost/5 border-t border-cost/30 font-semibold hover:bg-cost/10 transition-colors">
+              <td className="py-3 px-4 sticky left-0 bg-cost/5 z-10 border-r border-cost/30">
                 <div className="flex items-center gap-2">
-                  <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-rose-200/80 text-rose-900 font-mono font-bold text-xs border border-rose-400 shadow-2xs">
-                    <AlertOctagon className="w-3 h-3 text-rose-700" />
+                  <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-cost/20 text-cost font-mono font-bold text-xs border border-cost/30 shadow-2xs">
+                    <AlertOctagon className="w-3 h-3 text-cost" />
                     <span>A-</span>
                   </span>
-                  <span className="text-xs font-bold text-rose-900">Solusi Ideal Negatif</span>
+                  <span className="text-xs font-bold text-cost">Solusi Ideal Negatif</span>
                 </div>
               </td>
               {criteria.map((crit, critIdx) => (
-                <td key={crit.id} className="py-3 px-3 border-r border-rose-200/60 last:border-r-0 text-right font-mono font-bold text-rose-800">
+                <td key={crit.id} className="py-3 px-3 border-r border-cost/20 last:border-r-0 text-right font-mono font-bold text-cost">
                   {(idealNegative[critIdx] ?? 0).toFixed(4)}
                 </td>
               ))}

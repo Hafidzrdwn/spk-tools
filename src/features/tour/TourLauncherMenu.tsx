@@ -70,10 +70,10 @@ export const TourLauncherMenu: React.FC = () => {
               openWelcome();
               setIsOpen(false);
             }}
-            className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-left text-xs text-slate-700 hover:bg-slate-50 hover:text-indigo-600 transition-colors cursor-pointer"
+            className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-left text-xs text-slate-700 hover:bg-slate-50 hover:text-accent-primary transition-colors cursor-pointer"
           >
             <div className="flex items-center gap-2">
-              <Sparkles className="w-3.5 h-3.5 text-indigo-500 shrink-0" />
+              <Sparkles className="w-3.5 h-3.5 text-accent-primary shrink-0" />
               <span className="font-medium">Buka Panduan Umum</span>
             </div>
           </button>
@@ -81,7 +81,7 @@ export const TourLauncherMenu: React.FC = () => {
           <button
             type="button"
             onClick={handleStartGeneralTour}
-            className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-left text-xs text-slate-700 hover:bg-slate-50 hover:text-indigo-600 transition-colors cursor-pointer"
+            className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-left text-xs text-slate-700 hover:bg-slate-50 hover:text-accent-primary transition-colors cursor-pointer"
           >
             <div className="flex items-center gap-2">
               <Compass className="w-3.5 h-3.5 text-accent-primary shrink-0" />
@@ -109,11 +109,11 @@ export const TourLauncherMenu: React.FC = () => {
                   key={t.id}
                   type="button"
                   onClick={() => handleStartMethodTour(t.id)}
-                  className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-left text-xs text-slate-700 hover:bg-slate-50 hover:text-indigo-600 transition-colors cursor-pointer"
+                  className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-left text-xs text-slate-700 hover:bg-slate-50 hover:text-accent-primary transition-colors cursor-pointer"
                 >
                   <span className="font-medium">{t.label}</span>
                   {isCompleted ? (
-                    <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-full border border-emerald-200">
+                    <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-benefit bg-benefit/10 px-1.5 py-0.5 rounded-full border border-benefit/20">
                       <CheckCircle2 className="w-3 h-3" /> Selesai
                     </span>
                   ) : (
@@ -133,9 +133,9 @@ export const TourLauncherMenu: React.FC = () => {
                 openGlossary();
                 setIsOpen(false);
               }}
-              className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-left text-xs text-slate-700 hover:bg-slate-50 hover:text-indigo-600 transition-colors cursor-pointer"
+              className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-left text-xs text-slate-700 hover:bg-slate-50 hover:text-accent-primary transition-colors cursor-pointer"
             >
-              <BookOpen className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+              <BookOpen className="w-3.5 h-3.5 text-accent-secondary shrink-0" />
               <span className="font-medium">Buka Glosarium</span>
             </button>
           </div>
