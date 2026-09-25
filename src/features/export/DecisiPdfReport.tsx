@@ -295,6 +295,7 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({ payload }) => 
             SECTION 1: COVER / HEADER
         ==================================================================== */}
         <View style={styles.headerContainer}>
+          <Text style={[styles.sectionTitle, { marginBottom: 8 }]}>1. Ringkasan Proyek &amp; Metode</Text>
           <View style={styles.headerTopRow}>
             <View style={styles.brandBadge}>
               <Text style={styles.brandBadgeText}>Dibuat dengan DecisiGraph</Text>
