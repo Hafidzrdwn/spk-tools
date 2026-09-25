@@ -27,6 +27,9 @@ import TourRunner from '@/features/tour/TourRunner';
 import { generalTourDefinition } from '@/core/tour/generalTourSteps';
 import { sawTourDefinition } from '@/core/tour/sawTourSteps';
 import { wpTourDefinition } from '@/core/tour/wpTourSteps';
+import { topsisTourDefinition } from '@/core/tour/topsisTourSteps';
+import { ahpTourDefinition } from '@/core/tour/ahpTourSteps';
+import { storyTourDefinition } from '@/core/tour/storyTourSteps';
 import { useTourStore } from '@/store/useTourStore';
 import { Sparkles, FolderOpen } from 'lucide-react';
 import type { MethodId } from '@/types/domain';
@@ -227,6 +230,9 @@ export default function App() {
           general: generalTourDefinition,
           saw: sawTourDefinition,
           wp: wpTourDefinition,
+          topsis: topsisTourDefinition,
+          ahp: ahpTourDefinition,
+          story: storyTourDefinition,
         }}
       />
     </AppShell>

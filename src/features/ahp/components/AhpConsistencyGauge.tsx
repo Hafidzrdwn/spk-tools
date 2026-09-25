@@ -23,6 +23,7 @@ export const AhpConsistencyGauge: React.FC<AhpConsistencyGaugeProps> = ({
     <div className="space-y-4">
       {/* Gauge and Metric Summary Card */}
       <div
+        data-tour-id="ahp-consistency-gauge"
         className={`p-6 rounded-card border-2 transition-all ${
           isConsistent
             ? 'bg-emerald-50/40 border-emerald-300'
@@ -86,6 +87,7 @@ export const AhpConsistencyGauge: React.FC<AhpConsistencyGaugeProps> = ({
                 <Button
                   variant="danger"
                   size="sm"
+                  data-tour-id="ahp-correction-btn"
                   onClick={() => setShowSuggestion((prev) => !prev)}
                   className="w-full sm:w-auto"
                 >

@@ -61,6 +61,7 @@ export const StoryToMatrixTab: React.FC = () => {
           <div className="flex items-center gap-2">
             <button
               type="button"
+              data-tour-id="story-try-example-btn"
               onClick={() => setIsTemplatePickerOpen(true)}
               className="px-3 py-1.5 rounded-control bg-white border border-slate-200 text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:border-slate-300 shadow-2xs transition-all flex items-center gap-1.5 cursor-pointer"
             >
@@ -72,30 +73,36 @@ export const StoryToMatrixTab: React.FC = () => {
       </Card>
 
       {/* Mode Switcher (Cerita ↔ Form) */}
-      <ModeSwitcher
-        mode={mode}
-        onSwitchToStory={handleSwitchToStory}
-        onSwitchToForm={handleSwitchToForm}
-      />
+      <div data-tour-id="story-mode-switcher">
+        <ModeSwitcher
+          mode={mode}
+          onSwitchToStory={handleSwitchToStory}
+          onSwitchToForm={handleSwitchToForm}
+        />
+      </div>
 
       {/* Content View: Mode Cerita (Textarea) vs Mode Form (Table Preview) */}
       {mode === 'story' ? (
-        <StoryTextArea
-          value={rawText}
-          onChange={setRawText}
-          onParse={handleParse}
-          onOpenTemplates={() => setIsTemplatePickerOpen(true)}
-          errorMessage={errorMessage}
-        />
+        <div data-tour-id="story-textarea-card">
+          <StoryTextArea
+            value={rawText}
+            onChange={setRawText}
+            onParse={handleParse}
+            onOpenTemplates={() => setIsTemplatePickerOpen(true)}
+            errorMessage={errorMessage}
+          />
+        </div>
       ) : (
-        <ExtractedPreviewTable
-          criteria={criteria}
-          alternatives={previewAlternatives}
-          unmatchedCriteria={unmatchedCriteria}
-          onCommit={handleCommit}
-          onBackToEdit={() => setMode('story')}
-          isCommitted={isCommitted}
-        />
+        <div data-tour-id="story-preview-section">
+          <ExtractedPreviewTable
+            criteria={criteria}
+            alternatives={previewAlternatives}
+            unmatchedCriteria={unmatchedCriteria}
+            onCommit={handleCommit}
+            onBackToEdit={() => setMode('story')}
+            isCommitted={isCommitted}
+          />
+        </div>
       )}
 
       {/* Modal Prompt Deteksi Perbandingan Relatif AHP */}

@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import useTopsisViewModel from './useTopsisViewModel';
+import { useUiStore } from '@/store/useUiStore';
 import MatrixInputGrid from '@/features/shared/MatrixInputGrid';
 import TopsisIdealSolutionRow from './components/TopsisIdealSolutionRow';
 import TopsisDistanceCard from './components/TopsisDistanceCard';
@@ -18,7 +19,8 @@ export const TopsisTab: React.FC = () => {
     formulaSteps,
   } = useTopsisViewModel();
 
-  const [activeStep, setActiveStep] = useState<1 | 2 | 3>(1);
+  const activeStep = useUiStore((s) => s.topsisActiveStep);
+  const setActiveStep = useUiStore((s) => s.setTopsisActiveStep);
 
   const steps = [
     { step: 1, label: '1. Matriks Awal (X)', icon: <Table className="w-3.5 h-3.5" /> },
@@ -58,6 +60,7 @@ export const TopsisTab: React.FC = () => {
             <button
               key={s.step}
               type="button"
+              data-tour-id={`topsis-step-btn-${s.step}`}
               onClick={() => setActiveStep(s.step)}
               className={`flex-1 sm:flex-none flex items-center gap-2 px-3 py-1.5 text-xs font-semibold rounded-control transition-all ${
                 activeStep === s.step ? 'bg-white text-slate-900 shadow-2xs border border-slate-200/60' : 'text-slate-500 hover:text-slate-800 hover:bg-white/40 cursor-pointer'
@@ -92,7 +95,7 @@ export const TopsisTab: React.FC = () => {
       ) : (
         <div className="space-y-6">
           {activeStep === 1 && (
-            <Card>
+            <Card data-tour-id="topsis-matrix-panel">
               <CardHeader className="py-3 border-b border-slate-100">
                 <CardTitle className="text-sm">Tahap 1: Matriks Keputusan Awal (X)</CardTitle>
                 <CardDescription>Ketik nilai kriteria setiap alternatif di bawah ini</CardDescription>
@@ -104,7 +107,7 @@ export const TopsisTab: React.FC = () => {
           )}
 
           {activeStep === 2 && (
-            <div className="space-y-6">
+            <div className="space-y-6" data-tour-id="topsis-ideal-panel">
               <Card>
                 <CardHeader className="py-3 border-b border-slate-100">
                   <CardTitle className="text-sm">Tahap 2A: Solusi Ideal Positif (A+) & Negatif (A-)</CardTitle>
@@ -115,7 +118,7 @@ export const TopsisTab: React.FC = () => {
                 </CardContent>
               </Card>
 
-              <Card>
+              <Card data-tour-id="topsis-distance-panel">
                 <CardHeader className="py-3 border-b border-slate-100">
                   <CardTitle className="text-sm">Tahap 2B: Jarak Separasi Euclidean (D+ & D-)</CardTitle>
                   <CardDescription>Rincian kuadrat selisih jarak ke solusi ideal A+ dan anti-ideal A-</CardDescription>
@@ -129,8 +132,12 @@ export const TopsisTab: React.FC = () => {
 
           {activeStep === 3 && (
             <div className="space-y-6">
-              <TopsisRadarChart radarData={radarData} alternativeKeys={radarAlternativeKeys} />
-              <TopsisRankingTable ranking={finalRanking} />
+              <div data-tour-id="topsis-radar-chart">
+                <TopsisRadarChart radarData={radarData} alternativeKeys={radarAlternativeKeys} />
+              </div>
+              <div data-tour-id="topsis-ranking-panel">
+                <TopsisRankingTable ranking={finalRanking} />
+              </div>
             </div>
           )}
         </div>

@@ -56,6 +56,7 @@ export const AhpPairwiseSlider: React.FC<AhpPairwiseSliderProps> = ({
           return (
             <div
               key={`${pair.i}-${pair.j}`}
+              data-tour-id="ahp-pairwise-slider"
               className="p-4 rounded-xl border border-slate-200/80 bg-white/90 shadow-2xs space-y-3 hover:border-slate-300 transition-all"
             >
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-slate-100 pb-2">

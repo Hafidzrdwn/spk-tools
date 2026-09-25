@@ -10,6 +10,7 @@ import {
   Tooltip,
 } from 'recharts';
 import type { RadarDataPoint } from '../useTopsisViewModel';
+import { markTopsisHover } from '@/core/tour/topsisTourSteps';
 
 export interface TopsisRadarChartProps {
   radarData: RadarDataPoint[];
@@ -38,11 +39,20 @@ export const TopsisRadarChart: React.FC<TopsisRadarChartProps> = ({
           </p>
         </div>
         <div className="flex items-center gap-3 text-xs font-mono">
-          <span className="flex items-center gap-1.5 text-emerald-700">
+          <span
+            data-tour-id="topsis-radar-point"
+            onMouseEnter={() => markTopsisHover()}
+            className="flex items-center gap-1.5 text-emerald-700 cursor-pointer hover:underline"
+            title="Arahkan kursor untuk memeriksa titik A+"
+          >
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block" />
             <span>A+ (Ideal)</span>
           </span>
-          <span className="flex items-center gap-1.5 text-rose-700">
+          <span
+            onMouseEnter={() => markTopsisHover()}
+            className="flex items-center gap-1.5 text-rose-700 cursor-pointer hover:underline"
+            title="Arahkan kursor untuk memeriksa titik A-"
+          >
             <span className="w-2.5 h-2.5 rounded-full bg-rose-500 inline-block" />
             <span>A- (Anti-Ideal)</span>
           </span>
@@ -73,6 +83,8 @@ export const TopsisRadarChart: React.FC<TopsisRadarChartProps> = ({
               strokeDasharray="4 4"
               fill="#10B981"
               fillOpacity={0.12}
+              dot={{ r: 4, onMouseEnter: () => markTopsisHover() }}
+              onMouseEnter={() => markTopsisHover()}
             />
 
             {/* Garis Solusi Ideal Negatif A- (Rose) */}
@@ -84,6 +96,8 @@ export const TopsisRadarChart: React.FC<TopsisRadarChartProps> = ({
               strokeDasharray="3 3"
               fill="#F43F5E"
               fillOpacity={0.08}
+              dot={{ r: 4, onMouseEnter: () => markTopsisHover() }}
+              onMouseEnter={() => markTopsisHover()}
             />
 
             {/* Garis Setiap Alternatif */}

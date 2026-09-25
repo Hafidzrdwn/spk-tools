@@ -15,6 +15,11 @@ export interface UiStore {
   activeEditorSection: EditorSection;
   sawActiveStep: 1 | 2 | 3;
   wpActiveStep: 1 | 2 | 3;
+  topsisActiveStep: 1 | 2 | 3;
+  ahpActiveStep: 1 | 2 | 3;
+  ahpCurrentCr: number;
+  storyHasExtracted: boolean;
+  storyMode: 'story' | 'form';
   setHoveredCell: (id: string | null) => void;
   setActiveTab: (tab: MethodId) => void;
   setInspectorOpen: (open: boolean) => void;
@@ -26,6 +31,11 @@ export interface UiStore {
   setActiveEditorSection: (section: EditorSection) => void;
   setSawActiveStep: (step: 1 | 2 | 3) => void;
   setWpActiveStep: (step: 1 | 2 | 3) => void;
+  setTopsisActiveStep: (step: 1 | 2 | 3) => void;
+  setAhpActiveStep: (step: 1 | 2 | 3) => void;
+  setAhpCurrentCr: (cr: number) => void;
+  setStoryHasExtracted: (has: boolean) => void;
+  setStoryMode: (mode: 'story' | 'form') => void;
 }
 
 export const useUiStore = create<UiStore>((set) => ({
@@ -38,6 +48,11 @@ export const useUiStore = create<UiStore>((set) => ({
   activeEditorSection: 'matrix',
   sawActiveStep: 1,
   wpActiveStep: 1,
+  topsisActiveStep: 1,
+  ahpActiveStep: 1,
+  ahpCurrentCr: 0,
+  storyHasExtracted: false,
+  storyMode: 'story',
 
   setHoveredCell: (id) => set({ hoveredCellId: id }),
   setActiveTab: (tab) => {
@@ -53,5 +68,10 @@ export const useUiStore = create<UiStore>((set) => ({
   setActiveEditorSection: (section) => set({ activeEditorSection: section }),
   setSawActiveStep: (step) => set({ sawActiveStep: step }),
   setWpActiveStep: (step) => set({ wpActiveStep: step }),
+  setTopsisActiveStep: (step) => set({ topsisActiveStep: step }),
+  setAhpActiveStep: (step) => set({ ahpActiveStep: step }),
+  setAhpCurrentCr: (cr) => set({ ahpCurrentCr: cr }),
+  setStoryHasExtracted: (has) => set({ storyHasExtracted: has }),
+  setStoryMode: (mode) => set({ storyMode: mode }),
 }));
 

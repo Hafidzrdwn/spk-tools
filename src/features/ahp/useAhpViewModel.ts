@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect, useCallback } from 'react';
 import { useNormalizedCriteria } from '@/store/selectors';
 import { useProjectStore } from '@/store/useProjectStore';
+import { useUiStore } from '@/store/useUiStore';
 import { calculateAHP, type AhpResult } from '@/core/math/ahp';
 import type { ConsistencyResult, ConsistencyFixSuggestion } from '@/core/math/ahp-consistency';
 import type { Criterion } from '@/types/domain';
@@ -78,6 +79,11 @@ export function useAhpViewModel(): AhpViewModel {
     }
     return calculateAHP(matrix, criteria);
   }, [matrix, criteria, hasData, n]);
+
+  // Sinkronisasi rasio konsistensi (CR) ke useUiStore untuk pelacakan live tour
+  useEffect(() => {
+    useUiStore.getState().setAhpCurrentCr(ahpResult.consistency.cr);
+  }, [ahpResult.consistency.cr]);
 
   // Ekstrak daftar pasangan unik (i < j) untuk slider
   const pairs = useMemo<PairwiseComparisonPair[]>(() => {

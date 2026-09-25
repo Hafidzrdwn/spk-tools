@@ -16,8 +16,9 @@ export function useStoryToMatrixViewModel() {
   const alternatives = useProjectStore((s) => s.alternatives);
   const loadProjectState = useProjectStore((s) => s.loadProjectState);
   const setActiveTab = useUiStore((s) => s.setActiveTab);
+  const mode = useUiStore((s) => s.storyMode);
+  const setMode = useUiStore((s) => s.setStoryMode);
 
-  const [mode, setMode] = useState<'story' | 'form'>('story');
   const [rawText, setRawText] = useState<string>('');
   const [previewAlternatives, setPreviewAlternatives] = useState<Alternative[]>([]);
   const [tempCriteria, setTempCriteria] = useState<Criterion[]>([]);
@@ -81,7 +82,8 @@ export function useStoryToMatrixViewModel() {
     setPreviewAlternatives(extractResult.alternatives);
     setUnmatchedCriteria(extractResult.unmatchedCriteria);
     setMode('form');
-  }, [rawText, criteria, tempCriteria]);
+    useUiStore.getState().setStoryHasExtracted(true);
+  }, [rawText, criteria, tempCriteria, setMode]);
 
   // Terapkan hasil ekstraksi ke useProjectStore
   const handleCommit = useCallback(() => {
@@ -110,9 +112,12 @@ export function useStoryToMatrixViewModel() {
 
     setRawText(narrative);
     setTempCriteria(preset.state.criteria);
+    setPreviewAlternatives(preset.state.alternatives);
+    setMode('form');
+    useUiStore.getState().setStoryHasExtracted(true);
     setIsTemplatePickerOpen(false);
     setErrorMessage(null);
-  }, []);
+  }, [setMode]);
 
   return {
     mode, setMode, rawText, setRawText, previewAlternatives,

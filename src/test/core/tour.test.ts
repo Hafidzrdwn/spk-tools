@@ -294,4 +294,160 @@ describe('Tour Infrastructure & useTourStore', () => {
     expect(useProjectStore.getState().criteria[0].name).toBe('Kualitas Produk');
     expect(useProjectStore.getState().alternatives[0].name).toBe('Vendor A');
   });
+
+  it('topsisTourDefinition memiliki 7 step, tab click, stepper jumps, dan required radar hover', async () => {
+    const { topsisTourDefinition, resetTopsisTourTracking, markTopsisHover, isTopsisHoverSatisfied } = await import(
+      '@/core/tour/topsisTourSteps'
+    );
+    const { useUiStore } = await import('@/store/useUiStore');
+
+    // 1. Jumlah step 7
+    expect(topsisTourDefinition.steps.length).toBe(7);
+
+    // 2. Step 1: klik tab TOPSIS
+    const tabStep = topsisTourDefinition.steps.find((s) => s.id === 'topsis-click-tab');
+    expect(tabStep).toBeDefined();
+    expect(tabStep?.requiredAction).toBeDefined();
+
+    useUiStore.getState().setActiveTab('SAW');
+    expect(tabStep!.requiredAction!.isSatisfied()).toBe(false);
+    useUiStore.getState().setActiveTab('TOPSIS');
+    expect(tabStep!.requiredAction!.isSatisfied()).toBe(true);
+
+    // 3. Step 3: klik stepper 2
+    const step2 = topsisTourDefinition.steps.find((s) => s.id === 'topsis-click-step-2');
+    expect(step2).toBeDefined();
+    expect(step2?.requiredAction).toBeDefined();
+    useUiStore.getState().setTopsisActiveStep(1);
+    expect(step2!.requiredAction!.isSatisfied()).toBe(false);
+    useUiStore.getState().setTopsisActiveStep(2);
+    expect(step2!.requiredAction!.isSatisfied()).toBe(true);
+
+    // 4. Step 5: klik stepper 3
+    const step3 = topsisTourDefinition.steps.find((s) => s.id === 'topsis-click-step-3');
+    expect(step3).toBeDefined();
+    expect(step3?.requiredAction).toBeDefined();
+    useUiStore.getState().setTopsisActiveStep(2);
+    expect(step3!.requiredAction!.isSatisfied()).toBe(false);
+    useUiStore.getState().setTopsisActiveStep(3);
+    expect(step3!.requiredAction!.isSatisfied()).toBe(true);
+
+    // 5. Step 6: required hover radar chart
+    const radarStep = topsisTourDefinition.steps.find((s) => s.id === 'topsis-radar-chart');
+    expect(radarStep).toBeDefined();
+    expect(radarStep?.requiredAction).toBeDefined();
+
+    resetTopsisTourTracking();
+    expect(isTopsisHoverSatisfied()).toBe(false);
+
+    // Aktifkan tracking via preNavigate
+    radarStep?.preNavigate?.();
+    expect(isTopsisHoverSatisfied()).toBe(false);
+
+    // Hover ke radar point/line A+ / A-
+    markTopsisHover();
+    expect(isTopsisHoverSatisfied()).toBe(true);
+
+    // resetOnBack mengembalikan stepper
+    step2?.resetOnBack?.();
+    expect(useUiStore.getState().topsisActiveStep).toBe(1);
+  });
+
+  it('ahpTourDefinition memiliki 7 step, tab click, required slider CR change, dan audit konsistensi', async () => {
+    const { ahpTourDefinition, resetAhpTourTracking, isAhpCrSatisfied } = await import('@/core/tour/ahpTourSteps');
+    const { useUiStore } = await import('@/store/useUiStore');
+
+    // 1. Jumlah step 7
+    expect(ahpTourDefinition.steps.length).toBe(7);
+
+    // 2. Step 1: klik tab AHP
+    const tabStep = ahpTourDefinition.steps.find((s) => s.id === 'ahp-click-tab');
+    expect(tabStep).toBeDefined();
+    expect(tabStep?.requiredAction).toBeDefined();
+
+    useUiStore.getState().setActiveTab('SAW');
+    expect(tabStep!.requiredAction!.isSatisfied()).toBe(false);
+    useUiStore.getState().setActiveTab('AHP');
+    expect(tabStep!.requiredAction!.isSatisfied()).toBe(true);
+
+    // 3. Step 3: required slider action (CR change)
+    const sliderStep = ahpTourDefinition.steps.find((s) => s.id === 'ahp-slider-action');
+    expect(sliderStep).toBeDefined();
+    expect(sliderStep?.requiredAction).toBeDefined();
+
+    useUiStore.getState().setAhpCurrentCr(0.045);
+    resetAhpTourTracking();
+    sliderStep?.preNavigate?.();
+    expect(isAhpCrSatisfied()).toBe(false);
+
+    // Geser slider sampai CR berubah
+    useUiStore.getState().setAhpCurrentCr(0.12);
+    expect(isAhpCrSatisfied()).toBe(true);
+
+    // 4. Step 4: klik stepper 3 (uji konsistensi)
+    const step3 = ahpTourDefinition.steps.find((s) => s.id === 'ahp-click-step-3');
+    expect(step3).toBeDefined();
+    expect(step3?.requiredAction).toBeDefined();
+    useUiStore.getState().setAhpActiveStep(1);
+    expect(step3!.requiredAction!.isSatisfied()).toBe(false);
+    useUiStore.getState().setAhpActiveStep(3);
+    expect(step3!.requiredAction!.isSatisfied()).toBe(true);
+
+    // 5. Steps audit & apply target selector
+    const gaugeStep = ahpTourDefinition.steps.find((s) => s.id === 'ahp-consistency-gauge');
+    expect(gaugeStep?.targetSelector).toBe('[data-tour-id="ahp-consistency-gauge"]');
+
+    const correctionStep = ahpTourDefinition.steps.find((s) => s.id === 'ahp-correction-guide');
+    expect(correctionStep?.targetSelector).toBe('[data-tour-id="ahp-consistency-panel"]');
+
+    const applyStep = ahpTourDefinition.steps.find((s) => s.id === 'ahp-apply-weights');
+    expect(applyStep?.targetSelector).toBe('[data-tour-id="ahp-apply-btn"]');
+  });
+
+  it('storyTourDefinition memiliki 6 step, tab click, required template click, dan preview section', async () => {
+    const { storyTourDefinition, resetStoryTourTracking, markStoryTemplateClicked, isStoryTemplateSatisfied } =
+      await import('@/core/tour/storyTourSteps');
+    const { useUiStore } = await import('@/store/useUiStore');
+
+    // 1. Jumlah step 6
+    expect(storyTourDefinition.steps.length).toBe(6);
+
+    // 2. Step 1: klik tab AUTO
+    const tabStep = storyTourDefinition.steps.find((s) => s.id === 'story-click-tab');
+    expect(tabStep).toBeDefined();
+    expect(tabStep?.requiredAction).toBeDefined();
+
+    useUiStore.getState().setActiveTab('SAW');
+    expect(tabStep!.requiredAction!.isSatisfied()).toBe(false);
+    useUiStore.getState().setActiveTab('AUTO');
+    expect(tabStep!.requiredAction!.isSatisfied()).toBe(true);
+
+    // 3. Step 3: required template click
+    const templateStep = storyTourDefinition.steps.find((s) => s.id === 'story-try-example-btn');
+    expect(templateStep).toBeDefined();
+    expect(templateStep?.requiredAction).toBeDefined();
+
+    resetStoryTourTracking();
+    expect(isStoryTemplateSatisfied()).toBe(false);
+
+    markStoryTemplateClicked();
+    expect(isStoryTemplateSatisfied()).toBe(true);
+    expect(useUiStore.getState().storyMode).toBe('form');
+
+    // resetOnBack mengembalikan ke mode story dan status belum diekstrak
+    templateStep?.resetOnBack?.();
+    expect(isStoryTemplateSatisfied()).toBe(false);
+    expect(useUiStore.getState().storyMode).toBe('story');
+
+    // 4. Verifikasi target selectors step lainnya
+    const previewStep = storyTourDefinition.steps.find((s) => s.id === 'story-preview-section');
+    expect(previewStep?.targetSelector).toBe('[data-tour-id="story-preview-section"]');
+
+    const modeStep = storyTourDefinition.steps.find((s) => s.id === 'story-mode-switcher');
+    expect(modeStep?.targetSelector).toBe('[data-tour-id="story-mode-switcher"]');
+
+    const commitStep = storyTourDefinition.steps.find((s) => s.id === 'story-commit-btn');
+    expect(commitStep?.targetSelector).toBe('[data-tour-id="story-commit-btn"]');
+  });
 });
+

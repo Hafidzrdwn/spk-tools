@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import useAhpViewModel from './useAhpViewModel';
+import { useUiStore } from '@/store/useUiStore';
 import { AhpPairwiseSlider } from './components/AhpPairwiseSlider';
 import { AhpMatrixGrid } from './components/AhpMatrixGrid';
 import { AhpConsistencyGauge } from './components/AhpConsistencyGauge';
@@ -10,7 +11,8 @@ import { Sliders, Grid3X3, Activity, Sparkles, Check, RotateCcw } from 'lucide-r
 
 export const AhpTab: React.FC = () => {
   const { criteria, hasData, matrix, pairs, priorityVector, consistency, suggestion, setPairwiseValue, applySuggestion, resetMatrix, applyWeightsToProject } = useAhpViewModel();
-  const [activeStep, setActiveStep] = useState<1 | 2 | 3>(1);
+  const activeStep = useUiStore((s) => s.ahpActiveStep);
+  const setActiveStep = useUiStore((s) => s.setAhpActiveStep);
   const [applied, setApplied] = useState(false);
 
   const handleApply = () => {
@@ -43,7 +45,7 @@ export const AhpTab: React.FC = () => {
               <p className="text-xs text-slate-500 mt-0.5">Hitung eigen-vektor prioritas kriteria kualitatif via perbandingan berpasangan Saaty.</p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2" data-tour-id="ahp-apply-btn">
             <Button variant="ghost" size="sm" onClick={resetMatrix} title="Reset Matriks ke 1.0">
               <RotateCcw className="w-3.5 h-3.5 mr-1" /> Reset
             </Button>
@@ -60,6 +62,7 @@ export const AhpTab: React.FC = () => {
             <button
               key={s.step}
               type="button"
+              data-tour-id={`ahp-step-btn-${s.step}`}
               onClick={() => setActiveStep(s.step)}
               className={`flex-1 sm:flex-none flex items-center gap-2 px-3 py-1.5 text-xs font-semibold rounded-control transition-all ${
                 activeStep === s.step ? 'bg-white text-slate-900 shadow-2xs border border-slate-200/60' : 'text-slate-500 hover:text-slate-800 hover:bg-white/40 cursor-pointer'
@@ -85,7 +88,7 @@ export const AhpTab: React.FC = () => {
       ) : (
         <div className="space-y-6">
           {activeStep === 1 && (
-            <Card>
+            <Card data-tour-id="ahp-pairwise-panel">
               <CardHeader className="py-3 border-b border-slate-100">
                 <CardTitle className="text-sm">Tahap 1: Slider Perbandingan Berpasangan (Skala Saaty)</CardTitle>
                 <CardDescription>Geser slider untuk menentukan derajat kepentingan relatif kriteria baris vs kriteria kolom</CardDescription>
@@ -95,7 +98,7 @@ export const AhpTab: React.FC = () => {
           )}
 
           {activeStep === 2 && (
-            <Card>
+            <Card data-tour-id="ahp-matrix-panel">
               <CardHeader className="py-3 border-b border-slate-100">
                 <CardTitle className="text-sm">Tahap 2: Matriks Resiprokal & Vektor Prioritas (w_i)</CardTitle>
                 <CardDescription>Matriks n x n lengkap dengan nilai kebalikan otomatis dan bobot eigen-vektor ternormalisasi</CardDescription>
@@ -105,7 +108,7 @@ export const AhpTab: React.FC = () => {
           )}
 
           {activeStep === 3 && (
-            <Card>
+            <Card data-tour-id="ahp-consistency-panel">
               <CardHeader className="py-3 border-b border-slate-100">
                 <CardTitle className="text-sm">Tahap 3: Uji Konsistensi Rasio (Saaty Consistency Check)</CardTitle>
                 <CardDescription>Visualisasi gauge rasio konsistensi (CR), parameter λ_max, CI, RI, dan rekomendasi perbaikan</CardDescription>

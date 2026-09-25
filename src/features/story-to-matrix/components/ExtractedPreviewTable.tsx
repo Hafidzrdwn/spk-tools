@@ -55,6 +55,7 @@ export const ExtractedPreviewTable: React.FC<ExtractedPreviewTableProps> = ({
           <Button
             variant="primary"
             size="sm"
+            data-tour-id="story-commit-btn"
             onClick={onCommit}
             className="font-semibold shadow-xs cursor-pointer px-4"
           >

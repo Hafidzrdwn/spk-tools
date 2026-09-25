@@ -103,41 +103,25 @@ export const TourLauncherMenu: React.FC = () => {
               Tour Metode
             </span>
             {METHOD_TOURS.map((t) => {
-              const isAvailable = t.id === 'saw' || t.id === 'wp';
-
-              if (isAvailable) {
-                const isCompleted = completedTours[t.id];
-                return (
-                  <button
-                    key={t.id}
-                    type="button"
-                    onClick={() => handleStartMethodTour(t.id)}
-                    className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-left text-xs text-slate-700 hover:bg-slate-50 hover:text-indigo-600 transition-colors cursor-pointer"
-                  >
-                    <span className="font-medium">{t.label}</span>
-                    {isCompleted ? (
-                      <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-full border border-emerald-200">
-                        <CheckCircle2 className="w-3 h-3" /> Selesai
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center gap-1 text-[10px] text-slate-400 bg-slate-50 px-1.5 py-0.5 rounded-full">
-                        <Circle className="w-2.5 h-2.5 text-slate-300" /> Belum
-                      </span>
-                    )}
-                  </button>
-                );
-              }
-
+              const isCompleted = completedTours[t.id];
               return (
-                <div
+                <button
                   key={t.id}
-                  className="w-full flex items-center justify-between px-3 py-1.5 rounded-lg text-left text-xs text-slate-400 opacity-60 cursor-not-allowed select-none"
+                  type="button"
+                  onClick={() => handleStartMethodTour(t.id)}
+                  className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-left text-xs text-slate-700 hover:bg-slate-50 hover:text-indigo-600 transition-colors cursor-pointer"
                 >
-                  <span>{t.label}</span>
-                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-400 font-mono">
-                    Segera
-                  </span>
-                </div>
+                  <span className="font-medium">{t.label}</span>
+                  {isCompleted ? (
+                    <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-full border border-emerald-200">
+                      <CheckCircle2 className="w-3 h-3" /> Selesai
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1 text-[10px] text-slate-400 bg-slate-50 px-1.5 py-0.5 rounded-full">
+                      <Circle className="w-2.5 h-2.5 text-slate-300" /> Belum
+                    </span>
+                  )}
+                </button>
               );
             })}
           </div>
