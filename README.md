@@ -11,8 +11,7 @@
 
 ---
 
-<!-- TODO: ganti dengan screenshot asli aplikasi -->
-<!-- ![DecisiGraph Screenshot](docs/assets/screenshot.png) -->
+![DecisiGraph Screenshot](public/screenshot.jpg)
 
 ---
 

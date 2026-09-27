@@ -184,7 +184,7 @@ export const useProjectStore = create<ProjectStore>()(
           ...result.data,
         };
       },
-      // TODO: migrate: (persisted, version) => persisted, // siapkan slot ini untuk breaking change di masa depan
+      migrate: (persistedState: unknown) => persistedState as ProjectStore,
     }
   )
 );
