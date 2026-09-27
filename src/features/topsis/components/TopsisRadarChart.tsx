@@ -30,7 +30,11 @@ export const TopsisRadarChart: React.FC<TopsisRadarChartProps> = ({
   }
 
   return (
-    <div className="w-full bg-white/90 rounded-card border border-slate-200/80 p-4 shadow-2xs space-y-3">
+    <div
+      onMouseEnter={() => markTopsisHover()}
+      onMouseMove={() => markTopsisHover()}
+      className="w-full bg-white/90 rounded-card border border-slate-200/80 p-4 shadow-2xs space-y-3"
+    >
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
         <div>
           <h4 className="text-sm font-bold text-slate-800">Visualisasi Multi-Dimensi (Radar Profile)</h4>
@@ -38,7 +42,11 @@ export const TopsisRadarChart: React.FC<TopsisRadarChartProps> = ({
             Perbandingan profil kontur alternatif terhadap Solusi Ideal Positif (A+) dan Solusi Ideal Negatif (A-)
           </p>
         </div>
-        <div className="flex items-center gap-3 text-xs font-mono">
+        <div
+          onMouseEnter={() => markTopsisHover()}
+          onMouseMove={() => markTopsisHover()}
+          className="flex items-center gap-3 text-xs font-mono"
+        >
           <span
             data-tour-id="topsis-radar-point"
             onMouseEnter={() => markTopsisHover()}
@@ -59,9 +67,19 @@ export const TopsisRadarChart: React.FC<TopsisRadarChartProps> = ({
         </div>
       </div>
 
-      <div className="w-full h-90 sm:h-100">
+      <div
+        onMouseEnter={() => markTopsisHover()}
+        onMouseMove={() => markTopsisHover()}
+        className="w-full h-90 sm:h-100"
+      >
         <ResponsiveContainer width="100%" height="100%">
-          <RadarChart cx="50%" cy="50%" outerRadius="75%" data={radarData}>
+          <RadarChart
+            cx="50%"
+            cy="50%"
+            outerRadius="75%"
+            data={radarData}
+            onMouseMove={() => markTopsisHover()}
+          >
             <PolarGrid stroke="#e2e8f0" />
             <PolarAngleAxis
               dataKey="criterion"

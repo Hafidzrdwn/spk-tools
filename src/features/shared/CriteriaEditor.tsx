@@ -48,79 +48,103 @@ export const CriteriaEditor: React.FC = () => {
             Belum ada kriteria. Klik "Tambah Kriteria" untuk memulai.
           </div>
         ) : (
-          criteria.map((crit, idx) => (
-            <div
-              key={crit.id}
-              className="flex items-center gap-3 p-2.5 rounded-control bg-white/90 border border-slate-200/80 shadow-2xs hover:border-slate-300 transition-all"
-            >
-              <span className="w-6 text-center text-xs font-mono font-bold text-slate-400">
-                C{idx + 1}
-              </span>
-
-              <input
-                type="text"
-                value={crit.name}
-                onChange={(e) => updateCriterion(crit.id, { name: e.target.value })}
-                placeholder="Nama kriteria..."
-                className="flex-1 px-2.5 py-1.5 text-xs font-medium text-slate-800 bg-slate-50/70 border border-slate-200 rounded-control focus:bg-white focus:outline-none focus:ring-1 focus:ring-accent-primary"
-              />
-
-              <div
-                className="inline-flex items-center p-0.5 bg-slate-100/90 rounded-lg border border-slate-200/80 shadow-2xs shrink-0"
-                data-tour-id={idx === 0 ? "benefit-cost-toggle" : undefined}
-                role="group"
-                aria-label="Tipe Kriteria"
-              >
-                <button
-                  type="button"
-                  onClick={() => updateCriterion(crit.id, { type: 'BENEFIT' })}
-                  className={`px-2 py-0.5 text-[11px] rounded-md transition-all cursor-pointer ${
-                    crit.type === 'BENEFIT'
-                      ? 'bg-benefit text-white font-bold shadow-xs'
-                      : 'text-slate-500 hover:text-slate-800 hover:bg-slate-200/60 font-medium'
-                  }`}
-                  title="Benefit: Nilai kriteria yang lebih besar lebih diinginkan"
-                >
-                  Benefit
-                </button>
-                <button
-                  type="button"
-                  onClick={() => updateCriterion(crit.id, { type: 'COST' })}
-                  className={`px-2 py-0.5 text-[11px] rounded-md transition-all cursor-pointer ${
-                    crit.type === 'COST'
-                      ? 'bg-cost text-white font-bold shadow-xs'
-                      : 'text-slate-500 hover:text-slate-800 hover:bg-slate-200/60 font-medium'
-                  }`}
-                  title="Cost: Nilai kriteria yang lebih kecil lebih diinginkan"
-                >
-                  Cost
-                </button>
-              </div>
-
-              <div className="w-24">
-                <NumericInput
-                  value={crit.weight}
-                  onChange={(val) => updateCriterion(crit.id, { weight: val })}
-                  min={0}
-                  step={0.5}
-                />
-              </div>
-
-              <div className="w-16 text-right font-mono text-xs font-semibold text-slate-500">
-                {(crit.normalizedWeight * 100).toFixed(1)}%
-              </div>
-
-              <button
-                type="button"
-                onClick={() => removeCriterion(crit.id)}
-                className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"
-                title="Hapus kriteria"
-                aria-label="Hapus kriteria"
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
+          <>
+            <div className="hidden sm:flex items-center gap-3 px-2.5 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+              <span className="w-6 text-center">Kode</span>
+              <span className="flex-1 min-w-[130px]">Nama Kriteria</span>
+              <span className="w-32 sm:w-40">Satuan / Format</span>
+              <span className="w-[120px] text-center">Tipe</span>
+              <span className="w-28 sm:w-32 text-center">Bobot (w)</span>
+              <span className="w-16 text-right">Normalisasi</span>
+              <span className="w-8"></span>
             </div>
-          ))
+
+            {criteria.map((crit, idx) => (
+              <div
+                key={crit.id}
+                className="flex flex-wrap sm:flex-nowrap items-center gap-2.5 sm:gap-3 p-2.5 rounded-control bg-white/90 border border-slate-200/80 shadow-2xs hover:border-slate-300 transition-all"
+              >
+                <span className="w-6 text-center text-xs font-mono font-bold text-slate-400">
+                  C{idx + 1}
+                </span>
+
+                <input
+                  type="text"
+                  value={crit.name}
+                  onChange={(e) => updateCriterion(crit.id, { name: e.target.value })}
+                  placeholder="Nama kriteria..."
+                  title="Nama kriteria evaluasi"
+                  className="flex-1 min-w-[130px] px-2.5 py-1.5 text-xs font-medium text-slate-800 bg-slate-50/70 border border-slate-200 rounded-control focus:bg-white focus:outline-none focus:ring-1 focus:ring-accent-primary"
+                />
+
+                <input
+                  type="text"
+                  value={crit.unit || ''}
+                  onChange={(e) => updateCriterion(crit.id, { unit: e.target.value })}
+                  placeholder="Satuan (misal: Juta Rp, Thn)"
+                  title="Satuan atau format nilai kriteria (opsional)"
+                  className="w-32 sm:w-40 px-2.5 py-1.5 text-xs font-medium text-slate-700 bg-slate-50/70 border border-slate-200 rounded-control focus:bg-white focus:outline-none focus:ring-1 focus:ring-accent-primary"
+                />
+
+                <div
+                  className="inline-flex items-center p-0.5 bg-slate-100/90 rounded-lg border border-slate-200/80 shadow-2xs shrink-0"
+                  data-tour-id={idx === 0 ? "benefit-cost-toggle" : undefined}
+                  role="group"
+                  aria-label="Tipe Kriteria"
+                >
+                  <button
+                    type="button"
+                    onClick={() => updateCriterion(crit.id, { type: 'BENEFIT' })}
+                    className={`px-2 py-0.5 text-[11px] rounded-md transition-all cursor-pointer ${
+                      crit.type === 'BENEFIT'
+                        ? 'bg-benefit text-white font-bold shadow-xs'
+                        : 'text-slate-500 hover:text-slate-800 hover:bg-slate-200/60 font-medium'
+                    }`}
+                    title="Benefit: Nilai kriteria yang lebih besar lebih diinginkan"
+                  >
+                    Benefit
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => updateCriterion(crit.id, { type: 'COST' })}
+                    className={`px-2 py-0.5 text-[11px] rounded-md transition-all cursor-pointer ${
+                      crit.type === 'COST'
+                        ? 'bg-cost text-white font-bold shadow-xs'
+                        : 'text-slate-500 hover:text-slate-800 hover:bg-slate-200/60 font-medium'
+                    }`}
+                    title="Cost: Nilai kriteria yang lebih kecil lebih diinginkan"
+                  >
+                    Cost
+                  </button>
+                </div>
+
+                <div className="w-28 sm:w-32">
+                  <NumericInput
+                    value={crit.weight}
+                    onChange={(val) => updateCriterion(crit.id, { weight: val })}
+                    min={0}
+                    step={0.5}
+                    placeholder="Bobot (cth: 25 / 20%)"
+                    title="Nilai bobot: angka bulat, desimal, atau persen (cth: 25, 0.25, 20%)"
+                  />
+                </div>
+
+                <div className="w-16 text-right font-mono text-xs font-semibold text-slate-500">
+                  {(crit.normalizedWeight * 100).toFixed(1)}%
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => removeCriterion(crit.id)}
+                  className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"
+                  title="Hapus kriteria"
+                  aria-label="Hapus kriteria"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
+            ))}
+          </>
         )}
       </div>
     </div>

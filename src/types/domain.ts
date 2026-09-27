@@ -3,6 +3,7 @@ export type CriterionType = 'BENEFIT' | 'COST';
 export interface Criterion {
   id: string;
   name: string;
+  unit?: string;             // satuan / format nilai, misal 'Juta Rp', 'Tahun', 'Skala 1-5'
   type: CriterionType;
   weight: number;            // bobot mentah, misal 3, 5, 1 (belum dinormalisasi)
   normalizedWeight: number;  // weight / totalWeight, HARUS selalu jumlah = 1.0 (toleransi 1e-9)

@@ -53,6 +53,7 @@ export function wpZeroGuard(
 export const criterionSchema = z.object({
   id: z.string(),
   name: z.string(),
+  unit: z.string().optional(),
   type: z.enum(['BENEFIT', 'COST']),
   weight: z.number(),
   normalizedWeight: z.number().optional().default(0),

@@ -139,12 +139,18 @@ export default function App() {
 
         {/* Shared Matrix & Model Input Section (Collapsible) */}
         <Card data-tour-id="shared-matrix-card" className="transition-all duration-200 shadow-2xs">
-          <CardHeader className="border-b border-slate-100 flex flex-col sm:flex-row items-start sm:items-center justify-between py-2.5 px-4 gap-2">
+          <CardHeader
+            onClick={toggleSharedMatrix}
+            className="border-b border-slate-100 flex flex-col sm:flex-row items-start sm:items-center justify-between py-2.5 px-4 gap-2 cursor-pointer select-none hover:bg-slate-50/50 transition-colors"
+          >
             <div className="flex items-center gap-2.5">
               <button
                 type="button"
                 data-tour-id="shared-matrix-toggle-btn"
-                onClick={toggleSharedMatrix}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleSharedMatrix();
+                }}
                 className="p-1.5 rounded-control hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors cursor-pointer"
                 title={isSharedMatrixCollapsed ? 'Buka Matriks Keputusan Bersama' : 'Ciutkan Matriks Keputusan Bersama'}
                 aria-label={isSharedMatrixCollapsed ? 'Buka Matriks Keputusan Bersama' : 'Ciutkan Matriks Keputusan Bersama'}
@@ -166,7 +172,7 @@ export default function App() {
                 </div>
                 <CardDescription>
                   {isSharedMatrixCollapsed
-                    ? 'Klik "Buka Matriks" atau tombol panah untuk mengedit nilai sel, kriteria, dan alternatif.'
+                    ? 'Klik untuk membuka dan mengedit nilai sel, kriteria, dan alternatif.'
                     : 'Input data alternatif & kriteria dipakai lintas metode'}
                 </CardDescription>
               </div>
@@ -174,7 +180,10 @@ export default function App() {
 
             <div className="flex items-center gap-2 self-end sm:self-auto">
               {!isSharedMatrixCollapsed && (
-                <div className="flex items-center gap-1.5 p-1 bg-slate-100 rounded-control">
+                <div
+                  className="flex items-center gap-1.5 p-1 bg-slate-100 rounded-control"
+                  onClick={(e) => e.stopPropagation()}
+                >
                   <button
                     type="button"
                     data-tour-id="editor-tab-matrix"
@@ -201,24 +210,6 @@ export default function App() {
                   </button>
                 </div>
               )}
-
-              <button
-                type="button"
-                onClick={toggleSharedMatrix}
-                className="px-2.5 py-1 text-xs font-semibold rounded-control border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 transition-all flex items-center gap-1 shadow-2xs cursor-pointer"
-              >
-                {isSharedMatrixCollapsed ? (
-                  <>
-                    <ChevronDown className="w-3.5 h-3.5 text-accent-primary" />
-                    <span>Buka Matriks</span>
-                  </>
-                ) : (
-                  <>
-                    <ChevronUp className="w-3.5 h-3.5 text-slate-400" />
-                    <span>Ciutkan</span>
-                  </>
-                )}
-              </button>
             </div>
           </CardHeader>
 

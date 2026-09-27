@@ -20,9 +20,9 @@ export const CASE_TEMPLATES: CaseTemplate[] = [
       title: 'Pemilihan Laptop Developer',
       activeMethod: 'SAW',
       criteria: [
-        { id: 'c_price', name: 'Harga (Juta Rp)', type: 'COST', weight: 4, normalizedWeight: 0.4 },
-        { id: 'c_ram', name: 'RAM (GB)', type: 'BENEFIT', weight: 3, normalizedWeight: 0.3 },
-        { id: 'c_battery', name: 'Baterai (Jam)', type: 'BENEFIT', weight: 3, normalizedWeight: 0.3 },
+        { id: 'c_price', name: 'Harga', unit: 'Juta Rp', type: 'COST', weight: 4, normalizedWeight: 0.4 },
+        { id: 'c_ram', name: 'RAM', unit: 'GB', type: 'BENEFIT', weight: 3, normalizedWeight: 0.3 },
+        { id: 'c_battery', name: 'Baterai', unit: 'Jam', type: 'BENEFIT', weight: 3, normalizedWeight: 0.3 },
       ],
       alternatives: [
         { id: 'a_mac', name: 'MacBook Air M2', values: { c_price: 18, c_ram: 16, c_battery: 18 } },
@@ -41,10 +41,10 @@ export const CASE_TEMPLATES: CaseTemplate[] = [
       title: 'Evaluasi Supplier Industri',
       activeMethod: 'SAW',
       criteria: [
-        { id: 'c_cost', name: 'Harga Satuan', type: 'COST', weight: 3, normalizedWeight: 0.3 },
-        { id: 'c_quality', name: 'Kualitas Mutu (1-100)', type: 'BENEFIT', weight: 3, normalizedWeight: 0.3 },
-        { id: 'c_leadtime', name: 'Waktu Kirim (Hari)', type: 'COST', weight: 2, normalizedWeight: 0.2 },
-        { id: 'c_reputation', name: 'Reputasi Vendor (1-10)', type: 'BENEFIT', weight: 2, normalizedWeight: 0.2 },
+        { id: 'c_cost', name: 'Harga Satuan', unit: 'Ribu Rp', type: 'COST', weight: 3, normalizedWeight: 0.3 },
+        { id: 'c_quality', name: 'Kualitas Mutu', unit: '1-100', type: 'BENEFIT', weight: 3, normalizedWeight: 0.3 },
+        { id: 'c_leadtime', name: 'Waktu Kirim', unit: 'Hari', type: 'COST', weight: 2, normalizedWeight: 0.2 },
+        { id: 'c_reputation', name: 'Reputasi Vendor', unit: 'Skala 1-10', type: 'BENEFIT', weight: 2, normalizedWeight: 0.2 },
       ],
       alternatives: [
         { id: 'a_sup_a', name: 'PT Mitra Sejahtera', values: { c_cost: 120, c_quality: 90, c_leadtime: 3, c_reputation: 9 } },
@@ -64,10 +64,10 @@ export const CASE_TEMPLATES: CaseTemplate[] = [
       title: 'Seleksi Beasiswa Prestasi Mahasiswa',
       activeMethod: 'SAW',
       criteria: [
-        { id: 'c_gpa', name: 'IPK Akademik', type: 'BENEFIT', weight: 35, normalizedWeight: 0.35 },
-        { id: 'c_income', name: 'Gaji Ortu (Juta Rp)', type: 'COST', weight: 25, normalizedWeight: 0.25 },
-        { id: 'c_achieve', name: 'Skor Prestasi (0-100)', type: 'BENEFIT', weight: 25, normalizedWeight: 0.25 },
-        { id: 'c_depend', name: 'Jml Tanggungan', type: 'BENEFIT', weight: 15, normalizedWeight: 0.15 },
+        { id: 'c_gpa', name: 'IPK Akademik', unit: 'Skala 4.0', type: 'BENEFIT', weight: 35, normalizedWeight: 0.35 },
+        { id: 'c_income', name: 'Gaji Ortu', unit: 'Juta Rp', type: 'COST', weight: 25, normalizedWeight: 0.25 },
+        { id: 'c_achieve', name: 'Skor Prestasi', unit: '0-100', type: 'BENEFIT', weight: 25, normalizedWeight: 0.25 },
+        { id: 'c_depend', name: 'Jml Tanggungan', unit: 'Orang', type: 'BENEFIT', weight: 15, normalizedWeight: 0.15 },
       ],
       alternatives: [
         { id: 'a_budi', name: 'Budi Santoso', values: { c_gpa: 3.85, c_income: 3.5, c_achieve: 85, c_depend: 4 } },
@@ -88,11 +88,11 @@ export const CASE_TEMPLATES: CaseTemplate[] = [
       title: 'Pemilihan Lokasi Cabang Usaha',
       activeMethod: 'SAW',
       criteria: [
-        { id: 'c_rent', name: 'Sewa Tahunan (Juta)', type: 'COST', weight: 25, normalizedWeight: 0.25 },
-        { id: 'c_traffic', name: 'Traffic Pengunjung/Hari', type: 'BENEFIT', weight: 25, normalizedWeight: 0.25 },
-        { id: 'c_purchasing', name: 'Indeks Daya Beli (1-10)', type: 'BENEFIT', weight: 20, normalizedWeight: 0.2 },
-        { id: 'c_competition', name: 'Jml Pesaing Radius 1km', type: 'COST', weight: 15, normalizedWeight: 0.15 },
-        { id: 'c_size', name: 'Luas Tempat (m²)', type: 'BENEFIT', weight: 15, normalizedWeight: 0.15 },
+        { id: 'c_rent', name: 'Sewa Tahunan', unit: 'Juta Rp', type: 'COST', weight: 25, normalizedWeight: 0.25 },
+        { id: 'c_traffic', name: 'Traffic Pengunjung', unit: 'Orang/Hari', type: 'BENEFIT', weight: 25, normalizedWeight: 0.25 },
+        { id: 'c_purchasing', name: 'Indeks Daya Beli', unit: 'Skala 1-10', type: 'BENEFIT', weight: 20, normalizedWeight: 0.2 },
+        { id: 'c_competition', name: 'Jml Pesaing', unit: 'Toko (1km)', type: 'COST', weight: 15, normalizedWeight: 0.15 },
+        { id: 'c_size', name: 'Luas Tempat', unit: 'm²', type: 'BENEFIT', weight: 15, normalizedWeight: 0.15 },
       ],
       alternatives: [
         { id: 'a_sudirman', name: 'Cabang Sudirman Hub', values: { c_rent: 180, c_traffic: 2400, c_purchasing: 9.5, c_competition: 6, c_size: 140 } },
@@ -112,11 +112,11 @@ export const CASE_TEMPLATES: CaseTemplate[] = [
       title: 'Penghargaan Karyawan Teladan',
       activeMethod: 'SAW',
       criteria: [
-        { id: 'c_discipline', name: 'Kedisiplinan (%)', type: 'BENEFIT', weight: 20, normalizedWeight: 0.2 },
-        { id: 'c_kpi', name: 'Pencapaian KPI (%)', type: 'BENEFIT', weight: 30, normalizedWeight: 0.3 },
-        { id: 'c_teamwork', name: 'Kerjasama Tim (1-10)', type: 'BENEFIT', weight: 20, normalizedWeight: 0.2 },
-        { id: 'c_innovation', name: 'Inisiatif Proyek (1-10)', type: 'BENEFIT', weight: 15, normalizedWeight: 0.15 },
-        { id: 'c_complaints', name: 'Jumlah Komplain', type: 'COST', weight: 15, normalizedWeight: 0.15 },
+        { id: 'c_discipline', name: 'Kedisiplinan', unit: '%', type: 'BENEFIT', weight: 20, normalizedWeight: 0.2 },
+        { id: 'c_kpi', name: 'Pencapaian KPI', unit: '%', type: 'BENEFIT', weight: 30, normalizedWeight: 0.3 },
+        { id: 'c_teamwork', name: 'Kerjasama Tim', unit: 'Skala 1-10', type: 'BENEFIT', weight: 20, normalizedWeight: 0.2 },
+        { id: 'c_innovation', name: 'Inisiatif Proyek', unit: 'Skala 1-10', type: 'BENEFIT', weight: 15, normalizedWeight: 0.15 },
+        { id: 'c_complaints', name: 'Jumlah Komplain', unit: 'Kasus', type: 'COST', weight: 15, normalizedWeight: 0.15 },
       ],
       alternatives: [
         { id: 'a_anton', name: 'Anton Wijaya (Senior Sales)', values: { c_discipline: 98, c_kpi: 115, c_teamwork: 8.5, c_innovation: 7.5, c_complaints: 1 } },

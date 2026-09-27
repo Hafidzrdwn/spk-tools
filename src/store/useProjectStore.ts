@@ -42,12 +42,14 @@ export const useProjectStore = create<ProjectStore>()(
         set((state) => {
           const id = initialData?.id ?? `crit_${nanoid(6)}`;
           const name = initialData?.name ?? `Kriteria ${state.criteria.length + 1}`;
+          const unit = initialData?.unit ?? '';
           const type = initialData?.type ?? 'BENEFIT';
           const weight = initialData?.weight ?? 1;
 
           state.criteria.push({
             id,
             name,
+            unit,
             type,
             weight,
             normalizedWeight: 0,

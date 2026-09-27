@@ -200,7 +200,26 @@ export const TourRunner: React.FC<TourRunnerProps> = ({ tours = {} }) => {
   const isLastStep = activeStepIndex >= totalSteps - 1;
   const isFirstStep = activeStepIndex === 0;
   const requiredAction = currentStep?.requiredAction;
-  const isSatisfied = requiredAction ? requiredAction.isSatisfied(projectState) : true;
+  const [actionSatisfied, setActionSatisfied] = useState<boolean>(() => {
+    return requiredAction ? requiredAction.isSatisfied(projectState) : true;
+  });
+
+  // Fast-reactivity check (60ms) for requiredAction satisfaction across stores & mouse events
+  useEffect(() => {
+    if (!requiredAction) {
+      setActionSatisfied(true);
+      return;
+    }
+
+    const check = () => {
+      const satisfied = requiredAction.isSatisfied(useProjectStore.getState());
+      setActionSatisfied((prev) => (prev !== satisfied ? satisfied : prev));
+    };
+
+    check();
+    const interval = setInterval(check, 60);
+    return () => clearInterval(interval);
+  }, [requiredAction, activeStepIndex, activeTourId]);
 
   // Membersihkan modal/drawer/inspector terbuka agar tidak menutupi tampilan step berikutnya/sebelumnya
   const cleanupOverlays = useCallback((targetSelector?: string) => {
@@ -432,7 +451,7 @@ export const TourRunner: React.FC<TourRunnerProps> = ({ tours = {} }) => {
               <div className="px-4 py-3 space-y-2.5">
                 <p className="text-xs text-slate-600 leading-relaxed">{currentStep.content}</p>
 
-                {requiredAction && !isSatisfied && (
+                {requiredAction && !actionSatisfied && (
                   <div className="flex items-start gap-2 p-2.5 rounded-xl bg-amber-50 border border-amber-200">
                     <AlertTriangle className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
                     <div>
@@ -442,7 +461,7 @@ export const TourRunner: React.FC<TourRunnerProps> = ({ tours = {} }) => {
                   </div>
                 )}
 
-                {requiredAction && isSatisfied && (
+                {requiredAction && actionSatisfied && (
                   <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
@@ -482,7 +501,7 @@ export const TourRunner: React.FC<TourRunnerProps> = ({ tours = {} }) => {
                     Kembali
                   </button>
 
-                  {(!requiredAction || isSatisfied) ? (
+                  {(!requiredAction || actionSatisfied) ? (
                     <button
                       type="button"
                       onClick={handleNext}

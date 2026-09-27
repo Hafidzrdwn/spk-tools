@@ -92,11 +92,18 @@ export const MatrixInputGrid: React.FC<MatrixInputGridProps> = ({
             </th>
             {criteria.map((crit, idx) => (
               <th key={crit.id} className="py-3 px-3 min-w-[9.5rem] border-r border-slate-200/50 last:border-r-0">
-                <div className="flex items-center justify-between gap-1.5 mb-1">
-                  <span className="font-bold text-slate-800 truncate" title={crit.name}>
-                    {crit.name || `Kriteria ${idx + 1}`}
-                  </span>
-                  <Badge variant={crit.type === 'BENEFIT' ? 'benefit' : 'cost'} size="sm">
+                <div className="flex items-start justify-between gap-1.5 mb-1">
+                  <div className="truncate flex-1">
+                    <span className="font-bold text-slate-800 block truncate" title={crit.name}>
+                      {crit.name || `Kriteria ${idx + 1}`}
+                    </span>
+                    {crit.unit && (
+                      <span className="text-[10px] text-slate-400 font-normal block truncate" title={crit.unit}>
+                        ({crit.unit})
+                      </span>
+                    )}
+                  </div>
+                  <Badge variant={crit.type === 'BENEFIT' ? 'benefit' : 'cost'} size="sm" className="shrink-0 mt-0.5">
                     <GlossaryTerm term={crit.type === 'BENEFIT' ? 'Benefit' : 'Cost'}>{crit.type}</GlossaryTerm>
                   </Badge>
                 </div>

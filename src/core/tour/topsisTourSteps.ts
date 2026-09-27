@@ -13,7 +13,9 @@ export const resetTopsisTourTracking = () => {
 };
 
 export const markTopsisHover = () => {
-  if (isTopsisHoverStepActive) {
+  const currentTour = useTourStore.getState();
+  const isRadarStep = currentTour.activeTourId === 'topsis' && currentTour.activeStepIndex === 5;
+  if (isTopsisHoverStepActive || isRadarStep) {
     topsisHoverSatisfied = true;
   }
 };
