@@ -7,6 +7,7 @@ import WpExponentPanel from './components/WpExponentPanel';
 import WpVectorTable from './components/WpVectorTable';
 import Card, { CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
+import { MathFormula } from '@/components/ui/MathFormula';
 import { ArrowRight, Trophy, Calculator, Table, Layers } from 'lucide-react';
 
 export const WpTab: React.FC = () => {
@@ -21,7 +22,6 @@ export const WpTab: React.FC = () => {
     totalS,
     finalRanking,
     bestAlternative,
-    rawResult,
     updateCellValue,
   } = useWpViewModel();
 
@@ -85,10 +85,12 @@ export const WpTab: React.FC = () => {
           ))}
         </div>
         <div className="flex items-center gap-2.5 self-end sm:self-auto">
-          <div className="hidden sm:flex items-center gap-1 text-[11px] text-slate-500 px-2 font-mono">
-            <span>w_j*</span><ArrowRight className="w-3 h-3 text-slate-400" />
-            <span>S_i = Π(x^w*)</span><ArrowRight className="w-3 h-3 text-slate-400" />
-            <span>V_i = S_i / Σ(S)</span>
+          <div className="hidden sm:flex items-center gap-1.5 text-xs text-slate-500 px-2 font-mono">
+            <MathFormula math="w_j^*" inline />
+            <ArrowRight className="w-3 h-3 text-slate-400" />
+            <MathFormula math="S_i = \prod (x_{ij}^{w_j^*})" inline />
+            <ArrowRight className="w-3 h-3 text-slate-400" />
+            <MathFormula math="V_i = \frac{S_i}{\sum S}" inline />
           </div>
         </div>
       </div>
@@ -126,8 +128,18 @@ export const WpTab: React.FC = () => {
           {activeStep === 2 && !hasZeroGuardViolation && (
             <Card data-tour-id="wp-exponent-panel">
               <CardHeader className="py-3 border-b border-slate-100">
-                <CardTitle className="text-sm">Tahap 2: Transformasi Pangkat Bobot (w*)</CardTitle>
-                <CardDescription>Normalisasi bobot (+w untuk Benefit, -w untuk Cost)</CardDescription>
+                <CardTitle className="text-sm flex items-center gap-1.5 flex-wrap">
+                  <span>Tahap 2: Transformasi Pangkat Bobot (</span>
+                  <MathFormula math="w_j^*" inline />
+                  <span>)</span>
+                </CardTitle>
+                <CardDescription className="flex items-center gap-1 flex-wrap text-xs">
+                  <span>Normalisasi bobot:</span>
+                  <MathFormula math="+w_j" inline />
+                  <span>untuk Benefit,</span>
+                  <MathFormula math="-w_j" inline />
+                  <span>untuk Cost</span>
+                </CardDescription>
               </CardHeader>
               <CardContent className="pt-4">
                 <WpExponentPanel exponents={exponents} />
@@ -138,8 +150,19 @@ export const WpTab: React.FC = () => {
           {activeStep === 3 && !hasZeroGuardViolation && (
             <Card data-tour-id="wp-vector-panel">
               <CardHeader className="py-3 border-b border-slate-100">
-                <CardTitle className="text-sm">Tahap 3: Vektor S & Vektor V (Hasil Akhir)</CardTitle>
-                <CardDescription>Perhitungan nilai perkalian S_i dan preferensi relatif V_i</CardDescription>
+                <CardTitle className="text-sm flex items-center gap-1.5 flex-wrap">
+                  <span>Tahap 3: Vektor S (</span>
+                  <MathFormula math="S_i" inline />
+                  <span>) &amp; Vektor V (</span>
+                  <MathFormula math="V_i" inline />
+                  <span>) Hasil Akhir</span>
+                </CardTitle>
+                <CardDescription className="flex items-center gap-1.5 flex-wrap text-xs">
+                  <span>Perhitungan perkalian</span>
+                  <MathFormula math="S_i = \prod (x_{ij}^{w_j^*})" inline />
+                  <span>dan preferensi relatif</span>
+                  <MathFormula math="V_i = \frac{S_i}{\sum S}" inline />
+                </CardDescription>
               </CardHeader>
               <CardContent className="pt-4">
                 <WpVectorTable vectorS={vectorS} totalS={totalS} finalRanking={finalRanking} />

@@ -2,7 +2,8 @@ import React from 'react';
 import type { Criterion, Alternative } from '@/types/domain';
 import Badge from '@/components/ui/Badge';
 import { TraceableCell } from '@/features/inspector';
-import { Sparkles, AlertOctagon, CheckCircle2 } from 'lucide-react';
+import { MathFormula } from '@/components/ui/MathFormula';
+import { Sparkles, AlertOctagon } from 'lucide-react';
 
 export interface TopsisIdealSolutionRowProps {
   criteria: Criterion[];
@@ -33,11 +34,11 @@ export const TopsisIdealSolutionRow: React.FC<TopsisIdealSolutionRowProps> = ({
         <table className="w-full text-left border-collapse text-xs">
           <thead>
             <tr className="bg-slate-50/90 border-b border-slate-200 text-slate-600 font-semibold">
-              <th className="py-3 px-4 w-52 min-w-[13rem] sticky left-0 bg-slate-50/95 z-10 border-r border-slate-200/70">
-                Matriks Terbobot (Y) & Solusi Ideal
+              <th className="py-3 px-4 w-52 min-w-52 sticky left-0 bg-slate-50/95 z-10 border-r border-slate-200/70">
+                Matriks Terbobot (<MathFormula math="Y" inline />) & Solusi Ideal
               </th>
               {criteria.map((crit, idx) => (
-                <th key={crit.id} className="py-3 px-3 min-w-[8.5rem] border-r border-slate-200/50 last:border-r-0">
+                <th key={crit.id} className="py-3 px-3 min-w-34 border-r border-slate-200/50 last:border-r-0">
                   <div className="flex items-center justify-between gap-1 mb-1">
                     <span className="font-bold text-slate-800 truncate" title={crit.name}>
                       {crit.name || `C${idx + 1}`}
@@ -46,8 +47,8 @@ export const TopsisIdealSolutionRow: React.FC<TopsisIdealSolutionRowProps> = ({
                       {crit.type}
                     </Badge>
                   </div>
-                  <div className="text-[10px] text-slate-400 font-mono">
-                    w = {crit.normalizedWeight.toFixed(4)}
+                  <div className="text-[10px] text-slate-500 font-mono">
+                    <MathFormula math={`w_{${idx + 1}} = ${crit.normalizedWeight.toFixed(4)}`} inline />
                   </div>
                 </th>
               ))}
@@ -81,7 +82,7 @@ export const TopsisIdealSolutionRow: React.FC<TopsisIdealSolutionRowProps> = ({
                 <div className="flex items-center gap-2">
                   <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-benefit/20 text-benefit font-mono font-bold text-xs border border-benefit/30 shadow-2xs">
                     <Sparkles className="w-3 h-3 text-benefit" />
-                    <span>A+</span>
+                    <MathFormula math="A^+" inline className="text-benefit font-bold" />
                   </span>
                   <span className="text-xs font-bold text-benefit">Solusi Ideal Positif</span>
                 </div>
@@ -99,7 +100,7 @@ export const TopsisIdealSolutionRow: React.FC<TopsisIdealSolutionRowProps> = ({
                 <div className="flex items-center gap-2">
                   <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-cost/20 text-cost font-mono font-bold text-xs border border-cost/30 shadow-2xs">
                     <AlertOctagon className="w-3 h-3 text-cost" />
-                    <span>A-</span>
+                    <MathFormula math="A^-" inline className="text-cost font-bold" />
                   </span>
                   <span className="text-xs font-bold text-cost">Solusi Ideal Negatif</span>
                 </div>

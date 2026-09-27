@@ -3,7 +3,8 @@ import { createPortal } from 'react-dom';
 import useCellTrace from '../useCellTrace';
 import type { TraceStep } from '@/core/math/types';
 import Badge from '@/components/ui/Badge';
-import { Calculator, ArrowRight, Sparkles } from 'lucide-react';
+import { MathFormula, formatTraceToLatex } from '@/components/ui/MathFormula';
+import { Calculator, Sparkles } from 'lucide-react';
 
 export interface FormulaFloatingCardProps {
   formulaSteps?: TraceStep[];
@@ -82,7 +83,7 @@ export const FormulaFloatingCard: React.FC<FormulaFloatingCardProps> = ({
         left: coords.left,
         transform: coords.placeAbove ? 'translateY(-100%)' : 'none',
       }}
-      className="z-50 w-[380px] pointer-events-none transition-all duration-150 animate-in fade-in zoom-in-95"
+      className="z-50 w-95 pointer-events-none transition-all duration-150 animate-in fade-in zoom-in-95"
     >
       <div className="p-4 rounded-xl bg-white/95 backdrop-blur-md border border-indigo-200/90 shadow-2xl text-slate-800 space-y-2.5 ring-1 ring-slate-900/5">
         {/* Header Kartu Rumus */}
@@ -96,9 +97,14 @@ export const FormulaFloatingCard: React.FC<FormulaFloatingCardProps> = ({
           </Badge>
         </div>
 
-        {/* Tampilan Formula Label */}
-        <div className="p-2.5 rounded-lg bg-indigo-50/80 border border-indigo-100/90 font-mono text-xs text-indigo-950 font-medium leading-relaxed break-words shadow-2xs">
-          {activeStep.formulaLabel}
+        {/* Tampilan Formula Label dengan KaTeX */}
+        <div className="p-2.5 rounded-lg bg-indigo-50/80 border border-indigo-100/90 text-indigo-950 font-medium leading-relaxed shadow-2xs">
+          <MathFormula
+            math={formatTraceToLatex(activeStep.formulaLabel)}
+            inline={false}
+            className="text-xs text-indigo-950 py-0.5"
+            ariaLabel={activeStep.formulaLabel}
+          />
         </div>
 
         {/* Info Hasil & Sel Sumber */}

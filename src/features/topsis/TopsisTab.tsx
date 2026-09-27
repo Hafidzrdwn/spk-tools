@@ -9,6 +9,7 @@ import TopsisRankingTable from './components/TopsisRankingTable';
 import { FormulaFloatingCard } from '@/features/inspector';
 import Card, { CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
+import { MathFormula } from '@/components/ui/MathFormula';
 import { ArrowRight, Trophy, Compass, Table, BarChart2 } from 'lucide-react';
 
 export const TopsisTab: React.FC = () => {
@@ -16,7 +17,7 @@ export const TopsisTab: React.FC = () => {
     criteria, alternatives, hasData, weightedMatrix,
     idealPositive, idealNegative, distances, finalRanking,
     bestAlternative, radarData, radarAlternativeKeys, updateCellValue,
-    formulaSteps, rawResult,
+    formulaSteps,
   } = useTopsisViewModel();
 
   const activeStep = useUiStore((s) => s.topsisActiveStep);
@@ -72,11 +73,14 @@ export const TopsisTab: React.FC = () => {
           ))}
         </div>
         <div className="flex items-center gap-2.5 self-end sm:self-auto">
-          <div className="hidden sm:flex items-center gap-1 text-[11px] text-slate-500 px-2 font-mono">
-            <span>Y = w·r</span><ArrowRight className="w-3 h-3 text-slate-400" />
-            <span>A+, A-</span><ArrowRight className="w-3 h-3 text-slate-400" />
-            <span>D+, D-</span><ArrowRight className="w-3 h-3 text-slate-400" />
-            <span>C_i</span>
+          <div className="hidden sm:flex items-center gap-1.5 text-xs text-slate-500 px-2 font-mono">
+            <MathFormula math="y_{ij} = w_j \cdot r_{ij}" inline />
+            <ArrowRight className="w-3 h-3 text-slate-400" />
+            <MathFormula math="A^+, A^-" inline />
+            <ArrowRight className="w-3 h-3 text-slate-400" />
+            <MathFormula math="D_i^+, D_i^-" inline />
+            <ArrowRight className="w-3 h-3 text-slate-400" />
+            <MathFormula math="C_i" inline />
           </div>
         </div>
       </div>
@@ -112,7 +116,12 @@ export const TopsisTab: React.FC = () => {
             <div className="space-y-6" data-tour-id="topsis-ideal-panel">
               <Card>
                 <CardHeader className="py-3 border-b border-slate-100">
-                  <CardTitle className="text-sm">Tahap 2A: Solusi Ideal Positif (A+) & Negatif (A-)</CardTitle>
+                  <CardTitle className="text-sm flex items-center gap-1.5 flex-wrap">
+                    <span>Tahap 2A: Solusi Ideal Positif</span>
+                    <MathFormula math="(A^+)" inline />
+                    <span>&amp; Negatif</span>
+                    <MathFormula math="(A^-)" inline />
+                  </CardTitle>
                   <CardDescription>Titik referensi terbaik dan terburuk pada ruang matriks terbobot</CardDescription>
                 </CardHeader>
                 <CardContent className="pt-4">
@@ -122,8 +131,16 @@ export const TopsisTab: React.FC = () => {
 
               <Card data-tour-id="topsis-distance-panel">
                 <CardHeader className="py-3 border-b border-slate-100">
-                  <CardTitle className="text-sm">Tahap 2B: Jarak Separasi Euclidean (D+ & D-)</CardTitle>
-                  <CardDescription>Rincian kuadrat selisih jarak ke solusi ideal A+ dan anti-ideal A-</CardDescription>
+                  <CardTitle className="text-sm flex items-center gap-1.5 flex-wrap">
+                    <span>Tahap 2B: Jarak Separasi Euclidean</span>
+                    <MathFormula math="(D_i^+ \text{ \& } D_i^-)" inline />
+                  </CardTitle>
+                  <CardDescription className="flex items-center gap-1 flex-wrap text-xs">
+                    <span>Rincian selisih jarak ke solusi ideal</span>
+                    <MathFormula math="A^+" inline />
+                    <span>dan anti-ideal</span>
+                    <MathFormula math="A^-" inline />
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="pt-4">
                   <TopsisDistanceCard distances={distances} />

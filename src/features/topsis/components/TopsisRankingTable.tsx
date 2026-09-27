@@ -1,6 +1,7 @@
 import React from 'react';
 import type { RankingRow } from '@/core/math/types';
 import Card, { CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
+import { MathFormula } from '@/components/ui/MathFormula';
 import { Trophy, Award } from 'lucide-react';
 
 export interface TopsisRankingTableProps {
@@ -73,9 +74,15 @@ export const TopsisRankingTable: React.FC<TopsisRankingTableProps> = ({ ranking 
   return (
     <Card>
       <CardHeader className="py-3 border-b border-slate-100">
-        <CardTitle className="text-sm">Perangkingan Nilai Kedekatan Relatif (C_i)</CardTitle>
-        <CardDescription>
-          Skor kedekatan C_i berkisar antara 0 hingga 1. Peringkat #1 adalah alternatif terdekat ke solusi ideal
+        <CardTitle className="text-sm flex items-center gap-1.5 flex-wrap">
+          <span>Perangkingan Nilai Kedekatan Relatif (</span>
+          <MathFormula math="C_i" inline />
+          <span>)</span>
+        </CardTitle>
+        <CardDescription className="flex items-center gap-1.5 flex-wrap text-xs">
+          <span>Skor kedekatan</span>
+          <MathFormula math="C_i" inline />
+          <span>berkisar antara 0 hingga 1. Peringkat #1 adalah alternatif terdekat ke solusi ideal</span>
         </CardDescription>
       </CardHeader>
       <CardContent className="pt-4">
@@ -85,7 +92,7 @@ export const TopsisRankingTable: React.FC<TopsisRankingTableProps> = ({ ranking 
               <tr className="bg-slate-50/90 border-b border-slate-200 text-slate-600 font-semibold">
                 <th className="py-2.5 px-4 w-24">Peringkat</th>
                 <th className="py-2.5 px-4">Alternatif</th>
-                <th className="py-2.5 px-4 w-36 text-right font-mono">Skor Kedekatan (C_i)</th>
+                <th className="py-2.5 px-4 w-40 text-right font-mono">Skor Kedekatan (<MathFormula math="C_i" inline />)</th>
                 <th className="py-2.5 px-4 w-44 hidden md:table-cell">Visualisasi Relatif</th>
               </tr>
             </thead>

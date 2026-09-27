@@ -1,7 +1,8 @@
 import React from 'react';
 import type { WpExponentDetail } from '../useWpViewModel';
+import { MathFormula } from '@/components/ui/MathFormula';
 import Badge from '@/components/ui/Badge';
-import { ArrowRight, CheckCircle2, Info } from 'lucide-react';
+import { Info, CheckCircle2 } from 'lucide-react';
 
 export interface WpExponentPanelProps {
   exponents: WpExponentDetail[];
@@ -25,7 +26,7 @@ export const WpExponentPanel: React.FC<WpExponentPanelProps> = ({ exponents }) =
         <div className="space-y-1">
           <p className="font-semibold">Aturan Pangkat Pembobotan Weighted Product (WP):</p>
           <p className="text-slate-600 leading-relaxed text-[11px]">
-            Bobot ternormalisasi <span className="font-mono font-bold">w_j</span> (di mana <span className="font-mono">Σ w_j = 1.0</span>) diubah menjadi pangkat eksponen: bernilai <strong>positif (+w_j)</strong> untuk kriteria <strong>Benefit</strong>, dan bernilai <strong>negatif (-w_j)</strong> untuk kriteria <strong>Cost</strong>.
+            Bobot ternormalisasi <MathFormula math="w_j" inline className="font-bold" /> (di mana <MathFormula math="\sum w_j = 1.0" inline />) diubah menjadi pangkat eksponen: bernilai <strong>positif (+<MathFormula math="w_j" inline />)</strong> untuk kriteria <strong>Benefit</strong>, dan bernilai <strong>negatif (-<MathFormula math="w_j" inline />)</strong> untuk kriteria <strong>Cost</strong>.
           </p>
         </div>
       </div>
@@ -37,9 +38,15 @@ export const WpExponentPanel: React.FC<WpExponentPanelProps> = ({ exponents }) =
               <th className="py-3 px-4 w-12 text-center">No</th>
               <th className="py-3 px-4">Kriteria</th>
               <th className="py-3 px-4 w-28">Tipe</th>
-              <th className="py-3 px-4 w-28 text-right font-mono">Bobot Mentah (w)</th>
-              <th className="py-3 px-4 w-32 text-right font-mono">Normalisasi (|w_j|)</th>
-              <th className="py-3 px-4 w-36 text-center font-mono">Pangkat WP (w_j*)</th>
+              <th className="py-3 px-4 w-28 text-right">
+                Bobot Mentah (<MathFormula math="w" inline />)
+              </th>
+              <th className="py-3 px-4 w-32 text-right">
+                Normalisasi (<MathFormula math="|w_j|" inline />)
+              </th>
+              <th className="py-3 px-4 w-36 text-center">
+                Pangkat WP (<MathFormula math="w_j^*" inline />)
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
@@ -82,7 +89,11 @@ export const WpExponentPanel: React.FC<WpExponentPanelProps> = ({ exponents }) =
           <tfoot>
             <tr className="bg-slate-50/80 border-t border-slate-200 font-semibold text-slate-700">
               <td colSpan={4} className="py-2.5 px-4 text-right text-xs">
-                Total Jumlah Absolut Bobot (Σ |w_j|):
+                <span className="inline-flex items-center justify-end gap-1">
+                  <span>Total Jumlah Absolut Bobot (</span>
+                  <MathFormula math="\sum |w_j|" inline />
+                  <span>):</span>
+                </span>
               </td>
               <td className="py-2.5 px-4 text-right font-mono text-xs text-accent-primary font-bold">
                 {totalAbsWeight.toFixed(4)}

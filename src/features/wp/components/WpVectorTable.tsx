@@ -1,6 +1,7 @@
 import React from 'react';
 import type { VectorSRow } from '../useWpViewModel';
 import type { RankingRow } from '@/core/math/types';
+import { MathFormula } from '@/components/ui/MathFormula';
 import { Trophy, Award } from 'lucide-react';
 
 export interface WpVectorTableProps {
@@ -104,8 +105,12 @@ export const WpVectorTable: React.FC<WpVectorTableProps> = ({
             <tr className="bg-slate-50/90 border-b border-slate-200 text-slate-600 font-semibold">
               <th className="py-3 px-4 w-24">Peringkat</th>
               <th className="py-3 px-4">Alternatif</th>
-              <th className="py-3 px-4 w-36 text-right font-mono">Nilai Vektor S (S_i)</th>
-              <th className="py-3 px-4 w-36 text-right font-mono">Vektor V (Preferensi)</th>
+              <th className="py-3 px-4 w-36 text-right">
+                Vektor S (<MathFormula math="S_i" inline />)
+              </th>
+              <th className="py-3 px-4 w-36 text-right">
+                Vektor V (<MathFormula math="V_i" inline />)
+              </th>
               <th className="py-3 px-4 w-44 hidden md:table-cell">Visualisasi Relatif</th>
             </tr>
           </thead>
@@ -122,7 +127,11 @@ export const WpVectorTable: React.FC<WpVectorTableProps> = ({
           <tfoot>
             <tr className="bg-slate-50/80 border-t border-slate-200 font-semibold text-slate-700">
               <td colSpan={2} className="py-2.5 px-4 text-xs">
-                Total Jumlah Vektor S (Σ S_i):
+                <span className="inline-flex items-center gap-1">
+                  <span>Total Vektor S (</span>
+                  <MathFormula math="\sum S_i" inline />
+                  <span>):</span>
+                </span>
               </td>
               <td className="py-2.5 px-4 text-right font-mono text-xs text-accent-primary font-bold">
                 {totalS.toFixed(4)}

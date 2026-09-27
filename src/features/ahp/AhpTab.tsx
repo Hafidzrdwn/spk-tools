@@ -5,6 +5,7 @@ import { AhpPairwiseSlider } from './components/AhpPairwiseSlider';
 import { AhpMatrixGrid } from './components/AhpMatrixGrid';
 import { AhpConsistencyGauge } from './components/AhpConsistencyGauge';
 import Card, { CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
+import { MathFormula } from '@/components/ui/MathFormula';
 import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
 import { Sliders, Grid3X3, Activity, Sparkles, Check, RotateCcw } from 'lucide-react';
@@ -102,8 +103,16 @@ export const AhpTab: React.FC = () => {
           {activeStep === 2 && (
             <Card data-tour-id="ahp-matrix-panel">
               <CardHeader className="py-3 border-b border-slate-100">
-                <CardTitle className="text-sm">Tahap 2: Matriks Resiprokal & Vektor Prioritas (w_i)</CardTitle>
-                <CardDescription>Matriks n x n lengkap dengan nilai kebalikan otomatis dan bobot eigen-vektor ternormalisasi</CardDescription>
+                <CardTitle className="text-sm flex items-center gap-1.5 flex-wrap">
+                  <span>Tahap 2: Matriks Resiprokal &amp; Vektor Prioritas (</span>
+                  <MathFormula math="w_i" inline />
+                  <span>)</span>
+                </CardTitle>
+                <CardDescription className="flex items-center gap-1 flex-wrap text-xs">
+                  <span>Matriks</span>
+                  <MathFormula math="n \times n" inline />
+                  <span>lengkap dengan nilai kebalikan otomatis dan bobot eigen-vektor ternormalisasi</span>
+                </CardDescription>
               </CardHeader>
               <CardContent className="pt-4"><AhpMatrixGrid criteria={criteria} matrix={matrix} priorityVector={priorityVector} /></CardContent>
             </Card>
@@ -112,8 +121,22 @@ export const AhpTab: React.FC = () => {
           {activeStep === 3 && (
             <Card data-tour-id="ahp-consistency-panel">
               <CardHeader className="py-3 border-b border-slate-100">
-                <CardTitle className="text-sm">Tahap 3: Uji Konsistensi Rasio (Saaty Consistency Check)</CardTitle>
-                <CardDescription>Visualisasi gauge rasio konsistensi (CR), parameter λ_max, CI, RI, dan rekomendasi perbaikan</CardDescription>
+                <CardTitle className="text-sm flex items-center gap-1.5 flex-wrap">
+                  <span>Tahap 3: Uji Konsistensi Rasio (Saaty Consistency Check -</span>
+                  <MathFormula math="\text{CR}" inline />
+                  <span>)</span>
+                </CardTitle>
+                <CardDescription className="flex items-center gap-1.5 flex-wrap text-xs">
+                  <span>Visualisasi gauge</span>
+                  <MathFormula math="\text{CR}" inline />
+                  <span>, parameter</span>
+                  <MathFormula math="\lambda_{\max}" inline />
+                  <span>,</span>
+                  <MathFormula math="\text{CI}" inline />
+                  <span>,</span>
+                  <MathFormula math="\text{RI}" inline />
+                  <span>, dan rekomendasi perbaikan</span>
+                </CardDescription>
               </CardHeader>
               <CardContent className="pt-4"><AhpConsistencyGauge consistency={consistency} suggestion={suggestion} onApplySuggestion={applySuggestion} /></CardContent>
             </Card>

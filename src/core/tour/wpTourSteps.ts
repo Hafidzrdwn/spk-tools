@@ -78,7 +78,7 @@ export const WP_TOUR_STEPS: TourStep[] = [
     requiredAction: {
       description:
         'Ubah salah satu nilai alternatif pada kolom kriteria Cost menjadi 0 (hingga alert merah muncul), lalu kembalikan ke angka semula (> 0).',
-      isSatisfied: (state) => isWpZeroGuardSatisfied(state),
+      isSatisfied: (state) => Boolean(state && isWpZeroGuardSatisfied(state)),
     },
   },
   {

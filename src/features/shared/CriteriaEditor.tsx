@@ -51,9 +51,9 @@ export const CriteriaEditor: React.FC = () => {
           <>
             <div className="hidden sm:flex items-center gap-3 px-2.5 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
               <span className="w-6 text-center">Kode</span>
-              <span className="flex-1 min-w-[130px]">Nama Kriteria</span>
+              <span className="flex-1 min-w-32.5">Nama Kriteria</span>
               <span className="w-32 sm:w-40">Satuan / Format</span>
-              <span className="w-[120px] text-center">Tipe</span>
+              <span className="w-30 text-center">Tipe</span>
               <span className="w-28 sm:w-32 text-center">Bobot (w)</span>
               <span className="w-16 text-right">Normalisasi</span>
               <span className="w-8"></span>
@@ -74,7 +74,7 @@ export const CriteriaEditor: React.FC = () => {
                   onChange={(e) => updateCriterion(crit.id, { name: e.target.value })}
                   placeholder="Nama kriteria..."
                   title="Nama kriteria evaluasi"
-                  className="flex-1 min-w-[130px] px-2.5 py-1.5 text-xs font-medium text-slate-800 bg-slate-50/70 border border-slate-200 rounded-control focus:bg-white focus:outline-none focus:ring-1 focus:ring-accent-primary"
+                  className="flex-1 min-w-32.5 px-2.5 py-1.5 text-xs font-medium text-slate-800 bg-slate-50/70 border border-slate-200 rounded-control focus:bg-white focus:outline-none focus:ring-1 focus:ring-accent-primary"
                 />
 
                 <input

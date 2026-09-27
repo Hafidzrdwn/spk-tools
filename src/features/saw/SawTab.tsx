@@ -7,6 +7,7 @@ import SawRankingTable from './components/SawRankingTable';
 import { FormulaFloatingCard } from '@/features/inspector';
 import Card, { CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
+import { MathFormula } from '@/components/ui/MathFormula';
 import { ArrowRight, Trophy, Calculator, Table, BarChart2 } from 'lucide-react';
 
 export const SawTab: React.FC = () => {
@@ -78,12 +79,12 @@ export const SawTab: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-2.5 self-end sm:self-auto">
-          <div className="hidden sm:flex items-center gap-1 text-[11px] text-slate-500 px-2 font-mono">
-            <span>X_ij</span>
+          <div className="hidden sm:flex items-center gap-1.5 text-xs text-slate-500 px-2 font-mono">
+            <MathFormula math="X_{ij}" inline />
             <ArrowRight className="w-3 h-3 text-slate-400" />
-            <span>R_ij</span>
+            <MathFormula math="R_{ij}" inline />
             <ArrowRight className="w-3 h-3 text-slate-400" />
-            <span>V_i = Σ(w_j · r_ij)</span>
+            <MathFormula math="V_i = \sum_{j=1}^n (w_j \cdot r_{ij})" inline />
           </div>
         </div>
       </div>
@@ -119,7 +120,13 @@ export const SawTab: React.FC = () => {
             <Card data-tour-id="saw-normalization-panel">
               <CardHeader className="py-3 border-b border-slate-100">
                 <CardTitle className="text-sm">Tahap 2: Matriks Ternormalisasi (R)</CardTitle>
-                <CardDescription>Nilai r_ij = x_ij / max (Benefit) atau min / x_ij (Cost)</CardDescription>
+                <CardDescription className="flex items-center gap-1.5 flex-wrap text-xs">
+                  <span>Formula:</span>
+                  <MathFormula math="r_{ij} = \frac{x_{ij}}{\max_i(x_{ij})}" inline />
+                  <span className="text-slate-400">(Benefit) atau</span>
+                  <MathFormula math="r_{ij} = \frac{\min_i(x_{ij})}{x_{ij}}" inline />
+                  <span className="text-slate-400">(Cost)</span>
+                </CardDescription>
               </CardHeader>
               <CardContent className="pt-4">
                 <SawNormalizationTable criteria={criteria} alternatives={alternatives} normalizedMatrix={normalizedMatrix} />
@@ -131,7 +138,10 @@ export const SawTab: React.FC = () => {
             <Card data-tour-id="saw-ranking-panel">
               <CardHeader className="py-3 border-b border-slate-100">
                 <CardTitle className="text-sm">Tahap 3: Hasil Perangkingan Akhir (V)</CardTitle>
-                <CardDescription>Agregasi bobot ternormalisasi: V_i = Σ (w_j · r_ij)</CardDescription>
+                <CardDescription className="flex items-center gap-1.5 flex-wrap text-xs">
+                  <span>Agregasi bobot ternormalisasi:</span>
+                  <MathFormula math="V_i = \sum_{j=1}^n (w_j \cdot r_{ij})" inline />
+                </CardDescription>
               </CardHeader>
               <CardContent className="pt-4">
                 <SawRankingTable ranking={finalRanking} />

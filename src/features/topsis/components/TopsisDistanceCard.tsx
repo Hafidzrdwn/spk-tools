@@ -1,6 +1,6 @@
 import React from 'react';
 import type { TopsisDistanceDetail } from '../useTopsisViewModel';
-import { Compass, CheckCircle2 } from 'lucide-react';
+import { MathFormula } from '@/components/ui/MathFormula';
 
 export interface TopsisDistanceCardProps {
   distances: TopsisDistanceDetail[];
@@ -23,11 +23,30 @@ export const TopsisDistanceCard: React.FC<TopsisDistanceCardProps> = ({ distance
           <thead>
             <tr className="bg-slate-50/90 border-b border-slate-200 text-slate-600 font-semibold">
               <th className="py-3 px-4 w-44">Alternatif</th>
-              <th className="py-3 px-4 text-right font-mono">Σ (y_ij - A+j)²</th>
-              <th className="py-3 px-4 text-right font-mono text-benefit bg-benefit/5">Jarak D+ = √(Σ)</th>
-              <th className="py-3 px-4 text-right font-mono">Σ (y_ij - A-j)²</th>
-              <th className="py-3 px-4 text-right font-mono text-cost bg-cost/5">Jarak D- = √(Σ)</th>
-              <th className="py-3 px-4 text-right font-mono font-bold text-slate-900">Skor C_i = D- / (D+ + D-)</th>
+              <th className="py-3 px-4 text-right">
+                <MathFormula math="\sum (y_{ij} - A_j^+)^2" inline className="text-xs" />
+              </th>
+              <th className="py-3 px-4 text-right text-benefit bg-benefit/5">
+                <span className="inline-flex items-center justify-end gap-1">
+                  <span className="font-sans text-[11px] font-medium">Jarak</span>
+                  <MathFormula math="D_i^+ = \sqrt{\sum}" inline className="text-xs text-benefit" />
+                </span>
+              </th>
+              <th className="py-3 px-4 text-right">
+                <MathFormula math="\sum (y_{ij} - A_j^-)^2" inline className="text-xs" />
+              </th>
+              <th className="py-3 px-4 text-right text-cost bg-cost/5">
+                <span className="inline-flex items-center justify-end gap-1">
+                  <span className="font-sans text-[11px] font-medium">Jarak</span>
+                  <MathFormula math="D_i^- = \sqrt{\sum}" inline className="text-xs text-cost" />
+                </span>
+              </th>
+              <th className="py-3 px-4 text-right font-bold text-slate-900">
+                <span className="inline-flex items-center justify-end gap-1.5">
+                  <span className="font-sans text-[11px] font-medium text-slate-600">Skor</span>
+                  <MathFormula math="C_i = \frac{D_i^-}{D_i^+ + D_i^-}" inline className="text-xs" />
+                </span>
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
@@ -43,13 +62,19 @@ export const TopsisDistanceCard: React.FC<TopsisDistanceCardProps> = ({ distance
                   {row.diffPlusSum.toFixed(4)}
                 </td>
                 <td className="py-2.5 px-4 text-right font-mono font-bold text-benefit bg-benefit/5">
-                  √({row.diffPlusSum.toFixed(4)}) = {row.dPlus.toFixed(4)}
+                  <span className="inline-flex items-center justify-end gap-1">
+                    <MathFormula math={`\\sqrt{${row.diffPlusSum.toFixed(4)}}`} inline className="text-xs text-benefit" />
+                    <span>= {row.dPlus.toFixed(4)}</span>
+                  </span>
                 </td>
                 <td className="py-2.5 px-4 text-right font-mono text-slate-500">
                   {row.diffMinusSum.toFixed(4)}
                 </td>
                 <td className="py-2.5 px-4 text-right font-mono font-bold text-cost bg-cost/5">
-                  √({row.diffMinusSum.toFixed(4)}) = {row.dMinus.toFixed(4)}
+                  <span className="inline-flex items-center justify-end gap-1">
+                    <MathFormula math={`\\sqrt{${row.diffMinusSum.toFixed(4)}}`} inline className="text-xs text-cost" />
+                    <span>= {row.dMinus.toFixed(4)}</span>
+                  </span>
                 </td>
                 <td className="py-2.5 px-4 text-right font-mono font-extrabold text-xs text-accent-primary">
                   {row.cScore.toFixed(4)}

@@ -87,11 +87,11 @@ export const MatrixInputGrid: React.FC<MatrixInputGridProps> = ({
       <table className="w-full text-left border-collapse text-xs">
         <thead>
           <tr className="bg-slate-50/90 border-b border-slate-200 text-slate-600 font-semibold">
-            <th className="py-3 px-4 w-48 min-w-[12rem] sticky left-0 bg-slate-50/95 z-10 border-r border-slate-200/70">
+            <th className="py-3 px-4 w-48 min-w-48 sticky left-0 bg-slate-50/95 z-10 border-r border-slate-200/70">
               <GlossaryTerm term="Alternatif">Alternatif</GlossaryTerm> \ <GlossaryTerm term="Kriteria">Kriteria</GlossaryTerm>
             </th>
             {criteria.map((crit, idx) => (
-              <th key={crit.id} className="py-3 px-3 min-w-[9.5rem] border-r border-slate-200/50 last:border-r-0">
+              <th key={crit.id} className="py-3 px-3 min-w-38 border-r border-slate-200/50 last:border-r-0">
                 <div className="flex items-start justify-between gap-1.5 mb-1">
                   <div className="truncate flex-1">
                     <span className="font-bold text-slate-800 block truncate" title={crit.name}>

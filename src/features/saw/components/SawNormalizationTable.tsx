@@ -2,6 +2,7 @@ import React from 'react';
 import type { Criterion, Alternative } from '@/types/domain';
 import Badge from '@/components/ui/Badge';
 import { TraceableCell } from '@/features/inspector';
+import { MathFormula } from '@/components/ui/MathFormula';
 
 export interface SawNormalizationTableProps {
   criteria: Criterion[];
@@ -71,7 +72,7 @@ export const SawNormalizationTable: React.FC<SawNormalizationTableProps> = ({
         <thead>
           <tr className="bg-slate-50/90 border-b border-slate-200 text-slate-600 font-semibold">
             <th className="py-3 px-4 w-44 min-w-44 sticky left-0 bg-slate-50/95 z-10 border-r border-slate-200/70">
-              Alternatif \ Matriks R
+              Alternatif \ Matriks <MathFormula math="R" inline />
             </th>
             {criteria.map((crit, idx) => (
               <th key={crit.id} className="py-3 px-3 min-w-34 border-r border-slate-200/50 last:border-r-0">
@@ -83,8 +84,11 @@ export const SawNormalizationTable: React.FC<SawNormalizationTableProps> = ({
                     {crit.type}
                   </Badge>
                 </div>
-                <div className="text-[10px] text-slate-400 font-mono">
-                  {crit.type === 'BENEFIT' ? 'r = x / max' : 'r = min / x'}
+                <div className="text-[10px] text-slate-500 font-mono">
+                  <MathFormula
+                    math={crit.type === 'BENEFIT' ? 'r_{ij} = \\frac{x_{ij}}{\\max_i(x_{ij})}' : 'r_{ij} = \\frac{\\min_i(x_{ij})}{x_{ij}}'}
+                    inline
+                  />
                 </div>
               </th>
             ))}

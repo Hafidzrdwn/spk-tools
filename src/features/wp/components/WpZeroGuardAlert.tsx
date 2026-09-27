@@ -1,6 +1,6 @@
 import React from 'react';
 import type { ZeroGuardViolationDetail } from '../useWpViewModel';
-import { AlertTriangle, AlertCircle, XCircle } from 'lucide-react';
+import { AlertTriangle, AlertCircle } from 'lucide-react';
 import Badge from '@/components/ui/Badge';
 
 export interface WpZeroGuardAlertProps {

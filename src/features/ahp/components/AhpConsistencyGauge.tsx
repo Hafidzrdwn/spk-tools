@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import GaugeMeter from '@/components/ui/GaugeMeter';
 import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
+import { MathFormula } from '@/components/ui/MathFormula';
 import type { ConsistencyResult, ConsistencyFixSuggestion } from '@/core/math/ahp-consistency';
 import { AlertCircle, Wand2, ArrowRight } from 'lucide-react';
 
@@ -42,7 +43,17 @@ export const AhpConsistencyGauge: React.FC<AhpConsistencyGaugeProps> = ({
             />
             <div className="mt-1">
               <Badge variant={isConsistent ? 'benefit' : 'cost'} size="sm">
-                {isConsistent ? 'CR ≤ 0.10 (Konsisten)' : 'CR > 0.10 (Inkonsisten!)'}
+                {isConsistent ? (
+                  <span className="flex items-center gap-1">
+                    <MathFormula math="\text{CR} \le 0.10" inline />
+                    <span>(Konsisten)</span>
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-1">
+                    <MathFormula math="\text{CR} > 0.10" inline />
+                    <span>(Inkonsisten!)</span>
+                  </span>
+                )}
               </Badge>
             </div>
           </div>
@@ -54,27 +65,41 @@ export const AhpConsistencyGauge: React.FC<AhpConsistencyGaugeProps> = ({
                 Uji Konsistensi Logika (Saaty Ratio)
               </h4>
               <p className="text-xs text-slate-500 leading-relaxed">
-                {isConsistent
-                  ? 'Matriks perbandingan berpasangan memenuhi syarat konsistensi transitif (CR ≤ 10%). Bobot prioritas valid untuk digunakan.'
-                  : 'Ditemukan kontradiksi logika pada perbandingan antar kriteria (CR > 10%). Matriks perlu dikoreksi agar hasil SPK tidak bias.'}
+                {isConsistent ? (
+                  <>
+                    Matriks perbandingan berpasangan memenuhi syarat konsistensi transitif (<MathFormula math="\text{CR} \le 10\%" inline />). Bobot prioritas valid untuk digunakan.
+                  </>
+                ) : (
+                  <>
+                    Ditemukan kontradiksi logika pada perbandingan antar kriteria (<MathFormula math="\text{CR} > 10\%" inline />). Matriks perlu dikoreksi agar hasil SPK tidak bias.
+                  </>
+                )}
               </p>
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-mono">
               <div className="p-2 rounded-lg bg-white/80 border border-slate-200/70">
-                <span className="text-[10px] text-slate-400 block">λ max</span>
+                <span className="text-[10px] text-slate-400 block mb-0.5">
+                  <MathFormula math="\lambda_{\max}" inline />
+                </span>
                 <span className="font-bold text-slate-800">{consistency.lambdaMax.toFixed(4)}</span>
               </div>
               <div className="p-2 rounded-lg bg-white/80 border border-slate-200/70">
-                <span className="text-[10px] text-slate-400 block">CI (Indeks)</span>
+                <span className="text-[10px] text-slate-400 block mb-0.5">
+                  <MathFormula math="\text{CI}" inline /> (Indeks)
+                </span>
                 <span className="font-bold text-slate-800">{consistency.ci.toFixed(4)}</span>
               </div>
               <div className="p-2 rounded-lg bg-white/80 border border-slate-200/70">
-                <span className="text-[10px] text-slate-400 block">RI (Random)</span>
+                <span className="text-[10px] text-slate-400 block mb-0.5">
+                  <MathFormula math="\text{RI}" inline /> (Random)
+                </span>
                 <span className="font-bold text-slate-800">{consistency.ri.toFixed(2)}</span>
               </div>
               <div className="p-2 rounded-lg bg-white/80 border border-slate-200/70">
-                <span className="text-[10px] text-slate-400 block">Status CR</span>
+                <span className="text-[10px] text-slate-400 block mb-0.5">
+                  Status <MathFormula math="\text{CR}" inline />
+                </span>
                 <span className={`font-bold ${isConsistent ? 'text-benefit' : 'text-cost'}`}>
                   {(consistency.cr * 100).toFixed(2)}%
                 </span>

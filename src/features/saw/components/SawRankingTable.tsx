@@ -1,5 +1,6 @@
 import React from 'react';
 import type { RankingRow } from '@/core/math/types';
+import { MathFormula } from '@/components/ui/MathFormula';
 import { Trophy, Award } from 'lucide-react';
 
 export interface SawRankingTableProps {
@@ -82,7 +83,7 @@ export const SawRankingTable: React.FC<SawRankingTableProps> = ({ ranking }) => 
           <tr className="bg-slate-50/90 border-b border-slate-200 text-slate-600 font-semibold">
             <th className="py-3 px-4 w-24">Peringkat</th>
             <th className="py-3 px-4">Alternatif / Rekomendasi</th>
-            <th className="py-3 px-4 w-36 text-right">Skor Preferensi (V)</th>
+            <th className="py-3 px-4 w-40 text-right">Skor Preferensi (<MathFormula math="V_i" inline />)</th>
             <th className="py-3 px-4 w-48 hidden sm:table-cell">Visualisasi Relatif</th>
           </tr>
         </thead>

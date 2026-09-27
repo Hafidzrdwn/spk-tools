@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect, useRef } from 'react';
 import Drawer from '@/components/ui/Drawer';
 import { GLOSSARY_TERMS, type GlossaryEntry } from '@/core/constants/glossaryTerms';
 import Badge from '@/components/ui/Badge';
+import { MathFormula } from '@/components/ui/MathFormula';
 import { Search, BookOpen, X } from 'lucide-react';
 import { cn } from '@/utils/cn';
 
@@ -122,7 +123,7 @@ export const GlossaryDrawer: React.FC<GlossaryDrawerProps> = ({
         ) : (
           groupKeys.map((letter) => (
             <div key={letter}>
-              <div className="sticky top-[57px] z-10 bg-slate-100/90 backdrop-blur-xs px-5 py-1 text-xs font-bold text-accent-primary border-y border-slate-200/60">
+              <div className="sticky top-14.25 z-10 bg-slate-100/90 backdrop-blur-xs px-5 py-1 text-xs font-bold text-accent-primary border-y border-slate-200/60">
                 {letter}
               </div>
               <div className="divide-y divide-slate-50">
@@ -146,8 +147,12 @@ export const GlossaryDrawer: React.FC<GlossaryDrawerProps> = ({
                           {entry.term}
                         </span>
                         {entry.symbol && (
-                          <span className="font-mono text-xs px-1.5 py-0.5 rounded bg-indigo-50 text-accent-primary border border-indigo-100 font-semibold shrink-0">
-                            {entry.symbol}
+                          <span className="font-mono text-xs px-2 py-0.5 rounded bg-indigo-50 text-accent-primary border border-indigo-100 font-semibold shrink-0">
+                            {entry.latex ? (
+                              <MathFormula math={entry.latex} inline className="text-accent-primary font-bold" />
+                            ) : (
+                              entry.symbol
+                            )}
                           </span>
                         )}
                       </div>

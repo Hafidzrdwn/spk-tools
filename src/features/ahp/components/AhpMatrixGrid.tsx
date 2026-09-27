@@ -1,5 +1,6 @@
 import React from 'react';
 import type { Criterion } from '@/types/domain';
+import { MathFormula } from '@/components/ui/MathFormula';
 
 export interface AhpMatrixGridProps {
   criteria: Criterion[];
@@ -48,7 +49,7 @@ export const AhpMatrixGrid: React.FC<AhpMatrixGridProps> = ({
                 Kriteria \ Kriteria
               </th>
               {criteria.map((crit, idx) => (
-                <th key={crit.id} className="py-3 px-3 min-w-[7.5rem] text-center border-r border-slate-200/50">
+                <th key={crit.id} className="py-3 px-3 min-w-30 text-center border-r border-slate-200/50">
                   <div className="font-bold text-slate-800 truncate" title={crit.name}>
                     {crit.name || `C${idx + 1}`}
                   </div>
@@ -56,7 +57,7 @@ export const AhpMatrixGrid: React.FC<AhpMatrixGridProps> = ({
                 </th>
               ))}
               <th className="py-3 px-4 w-36 text-right font-mono bg-indigo-50/60 text-indigo-900 border-l border-indigo-200/60">
-                Priority Vector (w)
+                Priority Vector (<MathFormula math="w_i" inline />)
               </th>
             </tr>
           </thead>
@@ -112,7 +113,7 @@ export const AhpMatrixGrid: React.FC<AhpMatrixGridProps> = ({
           <tfoot>
             <tr className="bg-slate-50/80 border-t border-slate-200 font-semibold text-slate-700">
               <td className="py-2.5 px-4 text-xs sticky left-0 bg-slate-50/95 z-10 border-r border-slate-200/70">
-                Jumlah Kolom (Σ):
+                Jumlah Kolom (<MathFormula math="\sum" inline />):
               </td>
               {colSums.map((sum, idx) => (
                 <td key={`sum-${idx}`} className="py-2.5 px-3 text-center font-mono text-xs text-slate-600 border-r border-slate-200/50">
@@ -138,7 +139,7 @@ export const AhpMatrixGrid: React.FC<AhpMatrixGridProps> = ({
         </span>
         <span className="flex items-center gap-1.5">
           <span className="w-3 h-3 rounded bg-slate-50 border border-slate-200" />
-          <span>Nilai Kebalikan Otomatis (1/k)</span>
+          <span>Nilai Kebalikan Otomatis (<MathFormula math="1/k" inline />)</span>
         </span>
       </div>
     </div>

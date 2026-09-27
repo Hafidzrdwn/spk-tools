@@ -34,7 +34,7 @@ export const GENERAL_TOUR_STEPS: TourStep[] = [
     },
     requiredAction: {
       description: 'Ketik nama judul proyek yang baru hingga tersimpan.',
-      isSatisfied: (state) => state.title.trim() !== baselineTitle.trim(),
+      isSatisfied: (state) => Boolean(state && state.title.trim() !== baselineTitle.trim()),
     },
   },
   {
@@ -140,7 +140,7 @@ export const GENERAL_TOUR_STEPS: TourStep[] = [
     },
     requiredAction: {
       description: 'Klik tombol "+ Tambah Kriteria" agar jumlah kriteria bertambah.',
-      isSatisfied: (state) => state.criteria.length > baselineCriteriaCount,
+      isSatisfied: (state) => Boolean(state && state.criteria.length > baselineCriteriaCount),
     },
   },
   {
@@ -182,7 +182,7 @@ export const GENERAL_TOUR_STEPS: TourStep[] = [
     },
     requiredAction: {
       description: 'Klik tombol "+ Tambah Alternatif" agar jumlah alternatif bertambah.',
-      isSatisfied: (state) => state.alternatives.length > baselineAlternativesCount,
+      isSatisfied: (state) => Boolean(state && state.alternatives.length > baselineAlternativesCount),
     },
   },
   {

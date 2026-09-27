@@ -163,7 +163,6 @@ export function calculateTOPSIS(
     const weightedSourceCellIds: string[] = [];
 
     criteria.forEach((crit, critIndex) => {
-      const colIdx = critIndex + 1;
       const y = yRow[critIndex];
       const aPlus = idealPositive[critIndex];
       const aMinus = idealNegative[critIndex];
