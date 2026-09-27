@@ -9,6 +9,48 @@ export interface SawNormalizationTableProps {
   normalizedMatrix: number[][];
 }
 
+interface SawNormalizationRowProps {
+  alt: Alternative;
+  altIdx: number;
+  rowValues: number[];
+  criteria: Criterion[];
+}
+
+const SawNormalizationRow: React.FC<SawNormalizationRowProps> = React.memo(({
+  alt,
+  altIdx,
+  rowValues,
+  criteria,
+}) => {
+  return (
+    <tr className="hover:bg-indigo-50/20 transition-colors">
+      <td className="py-2.5 px-4 font-semibold text-slate-800 sticky left-0 bg-white/95 z-10 border-r border-slate-200/70 shadow-xs">
+        <div className="flex items-center gap-2">
+          <span className="text-slate-400 font-mono text-[11px] w-5">A{altIdx + 1}</span>
+          <span className="truncate" title={alt.name}>{alt.name}</span>
+        </div>
+      </td>
+      {criteria.map((crit, critIdx) => {
+        const val = rowValues[critIdx] ?? 0;
+        const isFirstCell = altIdx === 0 && critIdx === 0;
+        return (
+          <TraceableCell
+            key={crit.id}
+            cellId={`saw-${alt.id}-${crit.id}-NORMALIZED`}
+            data-tour-id={isFirstCell ? 'saw-normalized-cell' : undefined}
+            className="py-2.5 px-3 border-r border-slate-100 last:border-r-0"
+          >
+            <div className="font-mono text-xs py-1 px-2 rounded bg-slate-50 border border-slate-200/60 text-slate-800 text-right font-medium">
+              {val.toFixed(4)}
+            </div>
+          </TraceableCell>
+        );
+      })}
+    </tr>
+  );
+});
+SawNormalizationRow.displayName = 'SawNormalizationRow';
+
 export const SawNormalizationTable: React.FC<SawNormalizationTableProps> = ({
   criteria,
   alternatives,
@@ -49,35 +91,15 @@ export const SawNormalizationTable: React.FC<SawNormalizationTableProps> = ({
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-100">
-          {alternatives.map((alt, altIdx) => {
-            const rowValues = normalizedMatrix[altIdx] || [];
-            return (
-              <tr key={alt.id} className="hover:bg-indigo-50/20 transition-colors">
-                <td className="py-2.5 px-4 font-semibold text-slate-800 sticky left-0 bg-white/95 z-10 border-r border-slate-200/70 shadow-xs">
-                  <div className="flex items-center gap-2">
-                    <span className="text-slate-400 font-mono text-[11px] w-5">A{altIdx + 1}</span>
-                    <span className="truncate" title={alt.name}>{alt.name}</span>
-                  </div>
-                </td>
-                {criteria.map((crit, critIdx) => {
-                  const val = rowValues[critIdx] ?? 0;
-                  const isFirstCell = altIdx === 0 && critIdx === 0;
-                  return (
-                    <TraceableCell
-                      key={crit.id}
-                      cellId={`saw-${alt.id}-${crit.id}-NORMALIZED`}
-                      data-tour-id={isFirstCell ? 'saw-normalized-cell' : undefined}
-                      className="py-2.5 px-3 border-r border-slate-100 last:border-r-0"
-                    >
-                      <div className="font-mono text-xs py-1 px-2 rounded bg-slate-50 border border-slate-200/60 text-slate-800 text-right font-medium">
-                        {val.toFixed(4)}
-                      </div>
-                    </TraceableCell>
-                  );
-                })}
-              </tr>
-            );
-          })}
+          {alternatives.map((alt, altIdx) => (
+            <SawNormalizationRow
+              key={alt.id}
+              alt={alt}
+              altIdx={altIdx}
+              rowValues={normalizedMatrix[altIdx] || []}
+              criteria={criteria}
+            />
+          ))}
         </tbody>
       </table>
     </div>

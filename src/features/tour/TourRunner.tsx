@@ -5,6 +5,7 @@ import { X, ChevronLeft, ChevronRight, AlertTriangle, CheckCircle2, ShieldCheck 
 import { useTourStore } from '@/store/useTourStore';
 import { useProjectStore } from '@/store/useProjectStore';
 import { useUiStore } from '@/store/useUiStore';
+import { useShallow } from 'zustand/react/shallow';
 import type { TourDefinition } from '@/core/tour/types';
 
 // ─── Spotlight geometry ───────────────────────────────────────────────────────
@@ -158,10 +159,33 @@ export interface TourRunnerProps {
 }
 
 export const TourRunner: React.FC<TourRunnerProps> = ({ tours = {} }) => {
-  const { activeTourId, activeStepIndex, goToNextStep, goToPrevStep, skipTour, finishTour, stashedProjectState } = useTourStore();
-  const projectState = useProjectStore();
-  // Subscribe ke state UI agar perubahan drawer/tab/inspector memicu re-evaluasi requiredAction secara reaktif
-  useUiStore();
+  const { activeTourId, activeStepIndex, goToNextStep, goToPrevStep, skipTour, finishTour, stashedProjectState } = useTourStore(
+    useShallow((s) => ({
+      activeTourId: s.activeTourId,
+      activeStepIndex: s.activeStepIndex,
+      goToNextStep: s.goToNextStep,
+      goToPrevStep: s.goToPrevStep,
+      skipTour: s.skipTour,
+      finishTour: s.finishTour,
+      stashedProjectState: s.stashedProjectState,
+    }))
+  );
+  const projectState = useProjectStore(
+    useShallow((s) => ({
+      title: s.title,
+      criteria: s.criteria,
+      alternatives: s.alternatives,
+      activeMethod: s.activeMethod,
+    }))
+  );
+  // Subscribe hanya ke state UI relevan agar tidak re-render saat hovering sel (hoveredCellId)
+  useUiStore(
+    useShallow((s) => ({
+      activeTab: s.activeTab,
+      isGlossaryOpen: s.isGlossaryOpen,
+      ahpCurrentCr: s.ahpCurrentCr,
+    }))
+  );
 
   const [spot, setSpot] = useState<SpotRect | null>(null);
   const [tooltipPos, setTooltipPos] = useState<React.CSSProperties>({});

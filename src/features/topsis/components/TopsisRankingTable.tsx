@@ -7,6 +7,64 @@ export interface TopsisRankingTableProps {
   ranking: RankingRow[];
 }
 
+interface TopsisRankingRowProps {
+  row: RankingRow;
+  maxScore: number;
+}
+
+const TopsisRankingRow: React.FC<TopsisRankingRowProps> = React.memo(({ row, maxScore }) => {
+  const isTop = row.rank === 1;
+  const barWidth = maxScore > 0 ? (row.score / maxScore) * 100 : 0;
+
+  return (
+    <tr className={isTop ? 'bg-amber-50/30 hover:bg-amber-50/50' : 'hover:bg-slate-50/70'}>
+      <td className="py-2.5 px-4 font-semibold">
+        <div className="flex items-center gap-1.5">
+          {isTop ? (
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 font-bold text-xs border border-amber-300 shadow-2xs whitespace-nowrap">
+              <Trophy className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+              #1
+            </span>
+          ) : row.rank === 2 ? (
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 font-semibold text-xs border border-slate-300 shadow-2xs whitespace-nowrap">
+              <Award className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+              #2
+            </span>
+          ) : (
+            <span className="font-mono text-slate-500 px-2 font-semibold text-xs whitespace-nowrap">
+              #{row.rank}
+            </span>
+          )}
+        </div>
+      </td>
+      <td className="py-2.5 px-4">
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="font-semibold text-slate-900 truncate" title={row.alternativeName}>{row.alternativeName}</span>
+          {isTop && (
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-benefit/10 text-benefit border border-benefit/20 text-[11px] font-medium whitespace-nowrap shrink-0">
+              Rekomendasi Utama
+            </span>
+          )}
+        </div>
+      </td>
+      <td className="py-2.5 px-4 text-right font-mono font-extrabold text-accent-primary">
+        {row.score.toFixed(4)}
+      </td>
+      <td className="py-2.5 px-4 hidden md:table-cell">
+        <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden border border-slate-200/50">
+          <div
+            className={`h-full rounded-full transition-all duration-300 ${
+              isTop ? 'bg-amber-500' : 'bg-accent-primary'
+            }`}
+            style={{ width: `${Math.min(100, Math.max(5, barWidth))}%` }}
+          />
+        </div>
+      </td>
+    </tr>
+  );
+});
+TopsisRankingRow.displayName = 'TopsisRankingRow';
+
 export const TopsisRankingTable: React.FC<TopsisRankingTableProps> = ({ ranking }) => {
   if (ranking.length === 0) return null;
 
@@ -32,60 +90,9 @@ export const TopsisRankingTable: React.FC<TopsisRankingTableProps> = ({ ranking 
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {ranking.map((row) => {
-                const isTop = row.rank === 1;
-                const barWidth = maxScore > 0 ? (row.score / maxScore) * 100 : 0;
-
-                return (
-                  <tr
-                    key={row.alternativeId}
-                    className={isTop ? 'bg-amber-50/30 hover:bg-amber-50/50' : 'hover:bg-slate-50/70'}
-                  >
-                    <td className="py-2.5 px-4 font-semibold">
-                      <div className="flex items-center gap-1.5">
-                        {isTop ? (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 font-bold text-xs border border-amber-300 shadow-2xs whitespace-nowrap">
-                            <Trophy className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-                            #1
-                          </span>
-                        ) : row.rank === 2 ? (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 font-semibold text-xs border border-slate-300 shadow-2xs whitespace-nowrap">
-                            <Award className="w-3.5 h-3.5 text-slate-500 shrink-0" />
-                            #2
-                          </span>
-                        ) : (
-                          <span className="font-mono text-slate-500 px-2 font-semibold text-xs whitespace-nowrap">
-                            #{row.rank}
-                          </span>
-                        )}
-                      </div>
-                    </td>
-                    <td className="py-2.5 px-4">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="font-semibold text-slate-900 truncate" title={row.alternativeName}>{row.alternativeName}</span>
-                        {isTop && (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-benefit/10 text-benefit border border-benefit/20 text-[11px] font-medium whitespace-nowrap shrink-0">
-                            Rekomendasi Utama
-                          </span>
-                        )}
-                      </div>
-                    </td>
-                    <td className="py-2.5 px-4 text-right font-mono font-extrabold text-accent-primary">
-                      {row.score.toFixed(4)}
-                    </td>
-                    <td className="py-2.5 px-4 hidden md:table-cell">
-                      <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden border border-slate-200/50">
-                        <div
-                          className={`h-full rounded-full transition-all duration-300 ${
-                            isTop ? 'bg-amber-500' : 'bg-accent-primary'
-                          }`}
-                          style={{ width: `${Math.min(100, Math.max(5, barWidth))}%` }}
-                        />
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
+              {ranking.map((row) => (
+                <TopsisRankingRow key={row.alternativeId} row={row} maxScore={maxScore} />
+              ))}
             </tbody>
           </table>
         </div>

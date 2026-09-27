@@ -7,6 +7,7 @@ import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
 import { useUiStore } from '@/store/useUiStore';
 import { useProjectStore } from '@/store/useProjectStore';
+import { useShallow } from 'zustand/react/shallow';
 import { useNormalizedCriteria } from '@/store/selectors';
 import { ROUTES } from '@/app/routes';
 import CriteriaEditor from '@/features/shared/CriteriaEditor';
@@ -40,8 +41,21 @@ import type { MethodId } from '@/types/domain';
 
 export default function App() {
   useUrlTabSync();
-  const { activeTab, setActiveTab } = useUiStore();
-  const { title, setTitle, alternatives, updateCellValue, loadProjectState } = useProjectStore();
+  const { activeTab, setActiveTab } = useUiStore(
+    useShallow((s) => ({
+      activeTab: s.activeTab,
+      setActiveTab: s.setActiveTab,
+    }))
+  );
+  const { title, setTitle, alternatives, updateCellValue, loadProjectState } = useProjectStore(
+    useShallow((s) => ({
+      title: s.title,
+      setTitle: s.setTitle,
+      alternatives: s.alternatives,
+      updateCellValue: s.updateCellValue,
+      loadProjectState: s.loadProjectState,
+    }))
+  );
   const criteria = useNormalizedCriteria();
   const activeEditorSection = useUiStore((s) => s.activeEditorSection);
   const setActiveEditorSection = useUiStore((s) => s.setActiveEditorSection);

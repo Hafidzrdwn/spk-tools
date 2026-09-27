@@ -1,5 +1,6 @@
 import React from 'react';
 import { useProjectStore } from '@/store/useProjectStore';
+import { useShallow } from 'zustand/react/shallow';
 import { useNormalizedCriteria } from '@/store/selectors';
 import Button from '@/components/ui/Button';
 import NumericInput from '@/components/ui/NumericInput';
@@ -7,7 +8,14 @@ import GlossaryTerm from '@/features/glossary/GlossaryTerm';
 import { Plus, Trash2, Wand2 } from 'lucide-react';
 
 export const CriteriaEditor: React.FC = () => {
-  const { addCriterion, removeCriterion, updateCriterion, autoDistributeWeights } = useProjectStore();
+  const { addCriterion, removeCriterion, updateCriterion, autoDistributeWeights } = useProjectStore(
+    useShallow((s) => ({
+      addCriterion: s.addCriterion,
+      removeCriterion: s.removeCriterion,
+      updateCriterion: s.updateCriterion,
+      autoDistributeWeights: s.autoDistributeWeights,
+    }))
+  );
   const criteria = useNormalizedCriteria();
 
   return (

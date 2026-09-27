@@ -8,7 +8,7 @@ export interface TraceableCellProps extends React.TdHTMLAttributes<HTMLTableCell
   className?: string;
 }
 
-export const TraceableCell: React.FC<TraceableCellProps> = ({
+export const TraceableCell: React.FC<TraceableCellProps> = React.memo(({
   cellId,
   children,
   className,
@@ -17,8 +17,7 @@ export const TraceableCell: React.FC<TraceableCellProps> = ({
   ...rest
 }) => {
   const setHoveredCell = useUiStore((state) => state.setHoveredCell);
-  const hoveredCellId = useUiStore((state) => state.hoveredCellId);
-  const isHovered = hoveredCellId === cellId;
+  const isHovered = useUiStore((state) => state.hoveredCellId === cellId);
 
   const handleMouseEnter = (e: React.MouseEvent<HTMLTableCellElement>) => {
     setHoveredCell(cellId);
@@ -45,6 +44,8 @@ export const TraceableCell: React.FC<TraceableCellProps> = ({
       {children}
     </td>
   );
-};
+});
+
+TraceableCell.displayName = 'TraceableCell';
 
 export default TraceableCell;

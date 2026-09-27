@@ -9,6 +9,72 @@ export interface WpVectorTableProps {
   finalRanking: RankingRow[];
 }
 
+interface WpVectorRowProps {
+  rankItem: RankingRow;
+  sRow?: VectorSRow;
+  maxV: number;
+}
+
+const WpVectorRow: React.FC<WpVectorRowProps> = React.memo(({ rankItem, sRow, maxV }) => {
+  const isTop = rankItem.rank === 1;
+  const barWidth = maxV > 0 ? (rankItem.score / maxV) * 100 : 0;
+
+  return (
+    <tr className={isTop ? 'bg-amber-50/30 hover:bg-amber-50/50' : 'hover:bg-slate-50/80'}>
+      <td className="py-3 px-4 font-semibold">
+        <div className="flex items-center gap-1.5">
+          {isTop ? (
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 font-bold text-xs border border-amber-300 shadow-2xs whitespace-nowrap">
+              <Trophy className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+              #1
+            </span>
+          ) : rankItem.rank === 2 ? (
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 font-semibold text-xs border border-slate-300 shadow-2xs whitespace-nowrap">
+              <Award className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+              #2
+            </span>
+          ) : (
+            <span className="font-mono text-slate-500 px-2 font-semibold text-xs whitespace-nowrap">
+              #{rankItem.rank}
+            </span>
+          )}
+        </div>
+      </td>
+
+      <td className="py-3 px-4">
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="font-semibold text-slate-900 truncate" title={rankItem.alternativeName}>{rankItem.alternativeName}</span>
+          {isTop && (
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-benefit/10 text-benefit border border-benefit/20 text-[11px] font-medium whitespace-nowrap shrink-0">
+              Rekomendasi Utama
+            </span>
+          )}
+        </div>
+      </td>
+
+      <td className="py-3 px-4 text-right font-mono text-xs font-semibold text-accent-primary">
+        {sRow ? sRow.sValue.toFixed(4) : '-'}
+      </td>
+
+      <td className="py-3 px-4 text-right font-mono text-xs font-extrabold text-slate-900">
+        {rankItem.score.toFixed(4)}
+      </td>
+
+      <td className="py-3 px-4 hidden md:table-cell">
+        <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden border border-slate-200/50">
+          <div
+            className={`h-full rounded-full transition-all duration-300 ${
+              isTop ? 'bg-amber-500' : 'bg-accent-primary'
+            }`}
+            style={{ width: `${Math.min(100, Math.max(5, barWidth))}%` }}
+          />
+        </div>
+      </td>
+    </tr>
+  );
+});
+WpVectorRow.displayName = 'WpVectorRow';
+
 export const WpVectorTable: React.FC<WpVectorTableProps> = ({
   vectorS,
   totalS,
@@ -44,68 +110,14 @@ export const WpVectorTable: React.FC<WpVectorTableProps> = ({
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
-            {finalRanking.map((rankItem) => {
-              const sRow = vectorS.find((s) => s.alternativeId === rankItem.alternativeId);
-              const isTop = rankItem.rank === 1;
-              const barWidth = maxV > 0 ? (rankItem.score / maxV) * 100 : 0;
-
-              return (
-                <tr
-                  key={rankItem.alternativeId}
-                  className={isTop ? 'bg-amber-50/30 hover:bg-amber-50/50' : 'hover:bg-slate-50/80'}
-                >
-                  <td className="py-3 px-4 font-semibold">
-                    <div className="flex items-center gap-1.5">
-                      {isTop ? (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 font-bold text-xs border border-amber-300 shadow-2xs whitespace-nowrap">
-                          <Trophy className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-                          #1
-                        </span>
-                      ) : rankItem.rank === 2 ? (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 font-semibold text-xs border border-slate-300 shadow-2xs whitespace-nowrap">
-                          <Award className="w-3.5 h-3.5 text-slate-500 shrink-0" />
-                          #2
-                        </span>
-                      ) : (
-                        <span className="font-mono text-slate-500 px-2 font-semibold text-xs whitespace-nowrap">
-                          #{rankItem.rank}
-                        </span>
-                      )}
-                    </div>
-                  </td>
-
-                  <td className="py-3 px-4">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-semibold text-slate-900 truncate" title={rankItem.alternativeName}>{rankItem.alternativeName}</span>
-                      {isTop && (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-benefit/10 text-benefit border border-benefit/20 text-[11px] font-medium whitespace-nowrap shrink-0">
-                          Rekomendasi Utama
-                        </span>
-                      )}
-                    </div>
-                  </td>
-
-                  <td className="py-3 px-4 text-right font-mono text-xs font-semibold text-accent-primary">
-                    {sRow ? sRow.sValue.toFixed(4) : '-'}
-                  </td>
-
-                  <td className="py-3 px-4 text-right font-mono text-xs font-extrabold text-slate-900">
-                    {rankItem.score.toFixed(4)}
-                  </td>
-
-                  <td className="py-3 px-4 hidden md:table-cell">
-                    <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden border border-slate-200/50">
-                      <div
-                        className={`h-full rounded-full transition-all duration-300 ${
-                          isTop ? 'bg-amber-500' : 'bg-accent-primary'
-                        }`}
-                        style={{ width: `${Math.min(100, Math.max(5, barWidth))}%` }}
-                      />
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
+            {finalRanking.map((rankItem) => (
+              <WpVectorRow
+                key={rankItem.alternativeId}
+                rankItem={rankItem}
+                sRow={vectorS.find((s) => s.alternativeId === rankItem.alternativeId)}
+                maxV={maxV}
+              />
+            ))}
           </tbody>
           <tfoot>
             <tr className="bg-slate-50/80 border-t border-slate-200 font-semibold text-slate-700">

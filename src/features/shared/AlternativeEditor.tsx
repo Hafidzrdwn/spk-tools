@@ -1,10 +1,17 @@
 import React from 'react';
 import { useProjectStore } from '@/store/useProjectStore';
+import { useShallow } from 'zustand/react/shallow';
 import Button from '@/components/ui/Button';
 import { Plus, Trash2 } from 'lucide-react';
 
 export const AlternativeEditor: React.FC = () => {
-  const { alternatives, addAlternative, removeAlternative, updateCellValue } = useProjectStore();
+  const { alternatives, addAlternative, removeAlternative } = useProjectStore(
+    useShallow((s) => ({
+      alternatives: s.alternatives,
+      addAlternative: s.addAlternative,
+      removeAlternative: s.removeAlternative,
+    }))
+  );
 
   const handleUpdateName = (id: string, name: string) => {
     useProjectStore.setState((state) => {
