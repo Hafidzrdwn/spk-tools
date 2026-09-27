@@ -94,6 +94,7 @@ export const EditableProjectTitle: React.FC<EditableProjectTitleProps> = ({
         className
       )}
       title="Klik untuk mengubah nama proyek"
+      aria-label="Ubah nama proyek"
     >
       <span className="text-xs sm:text-sm font-semibold text-slate-700 group-hover:text-slate-900 transition-colors truncate max-w-35 sm:max-w-xs">
         {activeTitle}

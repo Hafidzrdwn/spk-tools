@@ -147,6 +147,7 @@ export default function App() {
                 onClick={toggleSharedMatrix}
                 className="p-1.5 rounded-control hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors cursor-pointer"
                 title={isSharedMatrixCollapsed ? 'Buka Matriks Keputusan Bersama' : 'Ciutkan Matriks Keputusan Bersama'}
+                aria-label={isSharedMatrixCollapsed ? 'Buka Matriks Keputusan Bersama' : 'Ciutkan Matriks Keputusan Bersama'}
               >
                 {isSharedMatrixCollapsed ? (
                   <ChevronDown className="w-4 h-4 text-accent-primary" />

@@ -41,7 +41,9 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
         {/* Logo & Identitas */}
         <div className="flex items-center gap-3">
-          <Logo size="md" showWordmark />
+          <h1 className="m-0 p-0 text-inherit font-inherit inline-flex items-center">
+            <Logo size="md" showWordmark />
+          </h1>
           <div className="flex items-center gap-2 border-l border-slate-200/80 pl-3">
             <Badge variant="primary" size="sm">
               v1.0
@@ -64,6 +66,7 @@ export const Header: React.FC<HeaderProps> = ({
             onClick={() => openGlossary()}
             data-tour-id="glossary-btn"
             title="Buka Glosarium Istilah SPK (Definisi & Rumus)"
+            aria-label="Buka Glosarium Istilah SPK"
             className="flex items-center gap-1.5 text-slate-700 hover:text-accent-primary"
           >
             <BookOpen className="w-3.5 h-3.5 text-accent-primary" />

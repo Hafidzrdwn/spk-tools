@@ -51,6 +51,7 @@ export const TourLauncherMenu: React.FC = () => {
         onClick={() => setIsOpen((prev) => !prev)}
         data-tour-id="help-launcher"
         title="Buka Menu Bantuan & Panduan Tour SPK"
+        aria-label="Buka menu bantuan dan panduan tour SPK"
         className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 hover:text-accent-primary text-xs font-medium transition-all shadow-2xs cursor-pointer"
       >
         <HelpCircle className="w-3.5 h-3.5 text-accent-primary" />

@@ -89,9 +89,9 @@ export const AhpPairwiseSlider: React.FC<AhpPairwiseSliderProps> = ({
                     {isEqual ? (
                       <span className="text-slate-500 font-semibold">Sama Penting (1:1)</span>
                     ) : isA ? (
-                      <span className="text-indigo-700 font-semibold">{pair.criterionA.name} ({currentScale}:1) — {saaty.label}</span>
+                      <span className="text-indigo-700 font-semibold">{pair.criterionA.name} ({currentScale}:1) - {saaty.label}</span>
                     ) : (
-                      <span className="text-violet-700 font-semibold">{pair.criterionB.name} (1:{currentScale}) — {saaty.label}</span>
+                      <span className="text-violet-700 font-semibold">{pair.criterionB.name} (1:{currentScale}) - {saaty.label}</span>
                     )}
                   </span>
                   <button

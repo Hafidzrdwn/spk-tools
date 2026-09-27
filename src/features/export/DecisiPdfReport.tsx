@@ -604,7 +604,7 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({ payload }) => 
         ==================================================================== */}
         <View style={styles.footer} fixed>
           <Text style={styles.footerCopyright}>
-            © {currentYear} DecisiGraph — Dibuat oleh Hafidz Ridwan
+            © {currentYear} DecisiGraph - Dibuat oleh Hafidz Ridwan
           </Text>
           <Text
             style={styles.footerPage}

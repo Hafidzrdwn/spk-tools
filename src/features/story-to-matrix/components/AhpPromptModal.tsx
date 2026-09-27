@@ -35,6 +35,7 @@ export const AhpPromptModal: React.FC<AhpPromptModalProps> = ({
           <button
             type="button"
             onClick={onClose}
+            aria-label="Tutup modal perbandingan AHP"
             className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer"
           >
             <X className="w-4 h-4" />

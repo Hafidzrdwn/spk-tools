@@ -25,13 +25,19 @@ export function Tabs<T extends string = string>({
 }: TabsProps<T>) {
   if (variant === 'underline') {
     return (
-      <div className={cn('flex border-b border-slate-200 gap-6 overflow-x-auto scrollbar-none', className)}>
+      <div
+        role="tablist"
+        aria-label="Navigasi Metode SPK"
+        className={cn('flex border-b border-slate-200 gap-6 overflow-x-auto scrollbar-none', className)}
+      >
         {items.map((tab) => {
           const isActive = tab.id === activeTab;
           return (
             <button
               key={tab.id}
               type="button"
+              role="tab"
+              aria-selected={isActive}
               onClick={() => onChange(tab.id)}
               className={cn(
                 'flex items-center gap-2 py-3 px-1 text-sm font-semibold border-b-2 transition-colors duration-150 whitespace-nowrap shrink-0 cursor-pointer',
@@ -56,6 +62,8 @@ export function Tabs<T extends string = string>({
 
   return (
     <div
+      role="tablist"
+      aria-label="Navigasi Metode SPK"
       className={cn(
         'inline-flex items-center p-1 bg-slate-100/90 rounded-control border border-slate-200/60 gap-1 overflow-x-auto max-w-full scrollbar-none',
         className
@@ -67,6 +75,8 @@ export function Tabs<T extends string = string>({
           <button
             key={tab.id}
             type="button"
+            role="tab"
+            aria-selected={isActive}
             data-tour-id={`nav-tab-${tab.id}`}
             onClick={() => onChange(tab.id)}
             className={cn(

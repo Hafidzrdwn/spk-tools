@@ -33,7 +33,11 @@ export const Logo: React.FC<LogoProps> = ({
   const cfg = sizeConfig[size];
 
   return (
-    <div className={cn('flex items-center shrink-0', cfg.gap, className)}>
+    <div
+      className={cn('flex items-center shrink-0', cfg.gap, className)}
+      role="img"
+      aria-label="DecisiGraph"
+    >
       {/* Inline SVG Decision Graph Mark */}
       <svg
         viewBox="0 0 32 32"

@@ -17,14 +17,14 @@ export const ROUTES: RouteTab[] = [
     label: 'SAW',
     icon: React.createElement(Calculator, { className: 'w-4 h-4' }),
     badge: 'Additive',
-    description: 'Simple Additive Weighting — Penjumlahan Terbobot',
+    description: 'Simple Additive Weighting - Penjumlahan Terbobot',
   },
   {
     id: 'WP',
     label: 'WP',
     icon: React.createElement(Layers, { className: 'w-4 h-4' }),
     badge: 'Product',
-    description: 'Weighted Product — Perkalian Pangkat Bobot',
+    description: 'Weighted Product - Perkalian Pangkat Bobot',
   },
   {
     id: 'TOPSIS',
@@ -38,7 +38,7 @@ export const ROUTES: RouteTab[] = [
     label: 'AHP',
     icon: React.createElement(Sliders, { className: 'w-4 h-4' }),
     badge: 'Pairwise',
-    description: 'Analytic Hierarchy Process — Matriks Perbandingan Berpasangan',
+    description: 'Analytic Hierarchy Process - Matriks Perbandingan Berpasangan',
   },
   {
     id: 'COMPARE',

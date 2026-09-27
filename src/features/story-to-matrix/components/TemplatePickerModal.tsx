@@ -34,6 +34,7 @@ export const TemplatePickerModal: React.FC<TemplatePickerModalProps> = ({
           <button
             type="button"
             onClick={onClose}
+            aria-label="Tutup modal contoh studi kasus"
             className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer"
           >
             <X className="w-4 h-4" />

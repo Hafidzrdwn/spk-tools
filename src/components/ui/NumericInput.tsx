@@ -67,6 +67,7 @@ export const NumericInput = forwardRef<HTMLInputElement, NumericInputProps>(
               tabIndex={-1}
               disabled={disabled}
               onClick={() => handleStep(false)}
+              aria-label="Kurangi nilai"
               className="p-1 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded text-xs select-none disabled:opacity-40"
             >
               -
@@ -76,6 +77,7 @@ export const NumericInput = forwardRef<HTMLInputElement, NumericInputProps>(
               tabIndex={-1}
               disabled={disabled}
               onClick={() => handleStep(true)}
+              aria-label="Tambah nilai"
               className="p-1 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded text-xs select-none disabled:opacity-40"
             >
               +

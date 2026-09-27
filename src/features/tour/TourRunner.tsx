@@ -46,7 +46,7 @@ const SpotlightOverlay: React.FC<{ spot: SpotRect | null; onSkip: () => void }> 
       <div style={{ ...base, top: top + height, left: 0, right: 0, bottom: 0 }} onClick={onSkip} />
       <div style={{ ...base, top, left: 0, width: left, height }} onClick={onSkip} />
       <div style={{ ...base, top, left: left + width, right: 0, height }} onClick={onSkip} />
-      {/* Border pulse — pointer-events:none agar tidak blokir klik target */}
+      {/* Border pulse - pointer-events:none agar tidak blokir klik target */}
       <div
         style={{
           position: 'fixed', zIndex: 9991,
@@ -345,7 +345,7 @@ export const TourRunner: React.FC<TourRunnerProps> = ({ tours = {} }) => {
 
   return createPortal(
     <>
-      {/* Keyframes injected sekali — aman didefinisikan di sini */}
+      {/* Keyframes injected sekali - aman didefinisikan di sini */}
       <style>{`
         @keyframes tour-spot-pulse {
           0%, 100% { box-shadow: 0 0 0 4px rgba(99,102,241,0.12); }
