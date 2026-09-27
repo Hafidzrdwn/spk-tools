@@ -66,7 +66,8 @@ export function useAhpViewModel(): AhpViewModel {
 
   // Hitung hasil AHP secara reaktif (Live Recompute)
   const ahpResult: AhpResult = useMemo(() => {
-    if (!hasData || matrix.length !== n) {
+    const nCrit = criteria.length;
+    if (nCrit < 2 || matrix.length !== nCrit) {
       return {
         priorityVector: [],
         normalizedMatrix: [],
@@ -78,7 +79,7 @@ export function useAhpViewModel(): AhpViewModel {
       };
     }
     return calculateAHP(matrix, criteria);
-  }, [matrix, criteria, hasData, n]);
+  }, [matrix, criteria]);
 
   // Sinkronisasi rasio konsistensi (CR) ke useUiStore untuk pelacakan live tour
   useEffect(() => {

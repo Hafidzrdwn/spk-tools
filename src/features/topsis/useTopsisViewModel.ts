@@ -3,7 +3,7 @@ import { useProjectStore } from '@/store/useProjectStore';
 import { useNormalizedCriteria } from '@/store/selectors';
 import { calculateTOPSIS } from '@/core/math/topsis';
 import type { Criterion, Alternative } from '@/types/domain';
-import type { RankingRow, TraceStep } from '@/core/math/types';
+import type { RankingRow, TraceStep, MethodResult } from '@/core/math/types';
 
 export interface TopsisDistanceDetail {
   alternativeId: string;
@@ -50,7 +50,8 @@ export function useTopsisViewModel(): TopsisViewModel {
   const hasData = criteria.length > 0 && alternatives.length > 0;
 
   const topsisResult = useMemo(() => {
-    if (!hasData) {
+    const isReady = criteria.length > 0 && alternatives.length > 0;
+    if (!isReady) {
       return {
         normalizedMatrix: [] as number[][], weightedMatrix: [] as number[][],
         idealPositive: [] as number[], idealNegative: [] as number[],
@@ -124,7 +125,7 @@ export function useTopsisViewModel(): TopsisViewModel {
       radarAlternativeKeys, formulaSteps: result.formulaSteps,
       rawResult: result,
     };
-  }, [criteria, alternatives, hasData]);
+  }, [criteria, alternatives]);
 
   return {
     criteria, alternatives, hasData,

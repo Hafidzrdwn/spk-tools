@@ -90,7 +90,9 @@ export function useWpViewModel(): WpViewModel {
 
   // 3. Kalkulasi WP (hanya saat bebas dari zero-guard violation)
   const calculationResult = useMemo(() => {
-    if (!hasData || hasZeroGuardViolation) {
+    const isReady = criteria.length > 0 && alternatives.length > 0;
+    const zeroGuardViolations = isReady ? wpZeroGuard(alternatives, criteria) : [];
+    if (!isReady || zeroGuardViolations.length > 0) {
       return {
         vectorS: [] as VectorSRow[],
         totalS: 0,
@@ -137,7 +139,7 @@ export function useWpViewModel(): WpViewModel {
       }
       throw err;
     }
-  }, [criteria, alternatives, hasData, hasZeroGuardViolation]);
+  }, [criteria, alternatives]);
 
   return {
     criteria,

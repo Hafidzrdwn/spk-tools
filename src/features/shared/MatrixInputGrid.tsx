@@ -1,9 +1,46 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import type { Criterion, Alternative } from '@/types/domain';
 import Badge from '@/components/ui/Badge';
 import NumericInput from '@/components/ui/NumericInput';
 import GlossaryTerm from '@/features/glossary/GlossaryTerm';
+import { useDebouncedCallback } from '@/utils/useDebouncedCallback';
 import { cn } from '@/utils/cn';
+
+interface MatrixCellInputProps {
+  value: number;
+  onCommit: (val: number) => void;
+  className?: string;
+}
+
+const MatrixCellInput: React.FC<MatrixCellInputProps> = React.memo(({ value, onCommit, className }) => {
+  const [localVal, setLocalVal] = useState<number>(value);
+
+  // Sinkronisasi jika nilai luar berubah (misal ganti template atau reset)
+  useEffect(() => {
+    setLocalVal(value);
+  }, [value]);
+
+  const debouncedCommit = useDebouncedCallback((val: number) => {
+    onCommit(val);
+  }, 250);
+
+  const handleChange = (newVal: number) => {
+    setLocalVal(newVal);
+    debouncedCommit(newVal);
+  };
+
+  return (
+    <NumericInput
+      value={localVal}
+      onChange={handleChange}
+      onBlur={() => debouncedCommit.flush()}
+      min={0}
+      step={1}
+      className={className}
+    />
+  );
+});
+MatrixCellInput.displayName = 'MatrixCellInput';
 
 export interface MatrixInputGridProps {
   criteria: Criterion[];
@@ -93,11 +130,9 @@ export const MatrixInputGrid: React.FC<MatrixInputGridProps> = ({
                         {cellValue}
                       </div>
                     ) : (
-                      <NumericInput
+                      <MatrixCellInput
                         value={cellValue}
-                        onChange={(val) => onChangeCell?.(alt.id, crit.id, val)}
-                        min={0}
-                        step={1}
+                        onCommit={(val) => onChangeCell?.(alt.id, crit.id, val)}
                         className="py-1 text-xs"
                       />
                     )}
