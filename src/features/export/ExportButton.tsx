@@ -1,7 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Download, Loader2, AlertCircle, ChevronDown, FileText, Layers } from 'lucide-react';
-import { pdf } from '@react-pdf/renderer';
-import { DecisiPdfReport } from './DecisiPdfReport';
 import { generateReport } from './generateReport';
 import { useProjectStore } from '@/store/useProjectStore';
 import { useUiStore } from '@/store/useUiStore';
@@ -152,6 +150,10 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
         comp || comparisonResult
       );
 
+      const [{ pdf }, { DecisiPdfReport }] = await Promise.all([
+        import('@react-pdf/renderer'),
+        import('./DecisiPdfReport'),
+      ]);
       const blob = await pdf(<DecisiPdfReport payload={payload} />).toBlob();
       const safeTitle = sanitizeFilename(title) || 'proyek-spk';
       const fileName = `DecisiGraph-${safeTitle}-${effectiveMethod}.pdf`;
@@ -217,6 +219,10 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
         compRes
       );
 
+      const [{ pdf }, { DecisiPdfReport }] = await Promise.all([
+        import('@react-pdf/renderer'),
+        import('./DecisiPdfReport'),
+      ]);
       const blob = await pdf(<DecisiPdfReport payload={payload} />).toBlob();
       const safeTitle = sanitizeFilename(title) || 'proyek-spk';
       const fileName = `DecisiGraph-${safeTitle}-Laporan-Lengkap.pdf`;

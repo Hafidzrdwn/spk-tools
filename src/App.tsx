@@ -26,7 +26,6 @@ import ExportButton from '@/features/export/ExportButton';
 import useUrlTabSync from '@/features/shared/useUrlTabSync';
 import GlossaryTerm from '@/features/glossary/GlossaryTerm';
 import WelcomeModal from '@/features/tour/WelcomeModal';
-import TourRunner from '@/features/tour/TourRunner';
 import { generalTourDefinition } from '@/core/tour/generalTourSteps';
 import { sawTourDefinition } from '@/core/tour/sawTourSteps';
 import { wpTourDefinition } from '@/core/tour/wpTourSteps';
@@ -34,6 +33,8 @@ import { topsisTourDefinition } from '@/core/tour/topsisTourSteps';
 import { ahpTourDefinition } from '@/core/tour/ahpTourSteps';
 import { storyTourDefinition } from '@/core/tour/storyTourSteps';
 import { useTourStore } from '@/store/useTourStore';
+
+const TourRunner = lazy(() => import('@/features/tour/TourRunner'));
 import { Sparkles, FolderOpen, ChevronDown, ChevronUp } from 'lucide-react';
 import type { MethodId } from '@/types/domain';
 
@@ -48,6 +49,7 @@ export default function App() {
   const toggleSharedMatrix = useUiStore((s) => s.toggleSharedMatrix);
   const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
   const hasSeenWelcome = useTourStore((s) => s.hasSeenWelcome);
+  const activeTourId = useTourStore((s) => s.activeTourId);
   const isWelcomeOpen = useUiStore((s) => s.isWelcomeOpen);
   const openWelcome = useUiStore((s) => s.openWelcome);
   const closeWelcome = useUiStore((s) => s.closeWelcome);
@@ -283,16 +285,20 @@ export default function App() {
       />
 
       {/* Interactive Tour Engine Runner */}
-      <TourRunner
-        tours={{
-          general: generalTourDefinition,
-          saw: sawTourDefinition,
-          wp: wpTourDefinition,
-          topsis: topsisTourDefinition,
-          ahp: ahpTourDefinition,
-          story: storyTourDefinition,
-        }}
-      />
+      {activeTourId && (
+        <Suspense fallback={null}>
+          <TourRunner
+            tours={{
+              general: generalTourDefinition,
+              saw: sawTourDefinition,
+              wp: wpTourDefinition,
+              topsis: topsisTourDefinition,
+              ahp: ahpTourDefinition,
+              story: storyTourDefinition,
+            }}
+          />
+        </Suspense>
+      )}
     </AppShell>
   );
 }
