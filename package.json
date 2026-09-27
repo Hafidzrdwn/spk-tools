@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:analyze": "cross-env ANALYZE=true vite build",
     "preview": "vite preview",
     "test": "vitest run"
   },
@@ -33,7 +34,9 @@
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
+    "cross-env": "^10.1.0",
     "jsdom": "^24.1.1",
+    "rollup-plugin-visualizer": "^7.1.1",
     "tailwindcss": "^4.0.0",
     "typescript": "^5.5.3",
     "vite": "^5.4.2",
