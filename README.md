@@ -51,9 +51,28 @@ Proyek ini lahir untuk menjawab kebutuhan nyata mahasiswa, peneliti, dan praktis
 
 DecisiGraph dikembangkan secara bertahap dengan visi jangka panjang menjadi platform SPK yang komprehensif.
 
-### ✅ v1.0 - _Foundation_ · **Sekarang**
+### ✅ v1.0 - _Foundation (MVP)_ · **Sekarang**
 
-MVP penuh: 5 metode MCDM, Traceability Inspector, Multi-Method Comparison, Export PDF, Interactive Tour, Glosarium, dan Story-to-Matrix.
+> Fokus: fondasi sistem pendukung keputusan interaktif dengan beberapa metode dasar.
+
+Pada tahap MVP ini, arsitektur UI menyajikan seluruh metode secara langsung dalam satu antarmuka sederhana dan belum dipisahkan secara konseptual antara *weighting engine* dan *ranking engine*.
+
+#### Ranking / Decision-Making Methods
+- [x] **SAW** _(Simple Additive Weighting)_
+- [x] **WP** _(Weighted Product)_
+- [x] **TOPSIS** _(Technique for Order Preference by Similarity to Ideal Solution)_
+
+#### Weighting Method
+- [x] **AHP** _(Analytic Hierarchy Process)_
+
+#### Core Platform Features
+- [x] **Traceability Inspector** — jejak kalkulasi matematis per sel
+- [x] **Multi-Method Comparison** — komparasi hasil ranking & analisis divergensi
+- [x] **Export PDF** — laporan keputusan komprehensif siap cetak
+- [x] **Interactive Tour** — panduan interaktif langkah-demi-langkah
+- [x] **Glosarium Istilah** — penjelasan kontekstual konsep teknis SPK
+- [x] **Shared Decision Matrix** — satu input matriks reaktif lintas metode
+- [x] **Story-to-Matrix** — konversi narasi berbasis AI ke matriks terstruktur
 
 ---
 
@@ -61,31 +80,55 @@ MVP penuh: 5 metode MCDM, Traceability Inspector, Multi-Method Comparison, Expor
 
 > Fokus: stabilitas dan kenyamanan berdasarkan umpan balik pengguna nyata.
 
-- Perbaikan bug yang ditemukan pasca-rilis
-- Peningkatan UX berdasarkan testimoni pengguna - teks lebih jelas, alur lebih intuitif, responsivitas mobile lebih baik
+- [ ] Perbaikan bug yang ditemukan pasca-rilis
+- [ ] Peningkatan UX berdasarkan testimoni pengguna - teks lebih jelas, alur lebih intuitif, responsivitas mobile lebih baik
 
 ---
 
-### 🌐 v2.0 - _Platform_
+### 🌐 v2.0 - _SPK Engine Architecture & Platform_
 
-> Fokus: dari alat lokal menjadi platform berbasis akun dengan penyimpanan data persisten.
+> Fokus: pemisahan konsep Weighting Engine vs Ranking/Decision-Making Engine serta evolusi dari alat lokal menjadi platform berbasis akun dengan penyimpanan data persisten.
 
-- Landing page dengan autentikasi **Google Sign-In** (OAuth - tidak ada password)
-- Proyek tersimpan di cloud - tidak hilang saat tab ditutup atau perangkat berganti
-- Manajemen proyek lengkap: buat baru, muat ulang, hapus, dan lihat riwayat semua proyek yang pernah dikerjakan
-- Riwayat ekspor PDF tersimpan dan bisa diunduh ulang kapan saja
-- Pengalaman seperti **Google Docs** untuk data keputusan - buka proyek lama dari perangkat mana pun
+Mulai v2.0, arsitektur engine SPK dipisahkan secara konseptual di mana penentuan bobot kriteria (*Weighting Methods*) dapat dihubungkan secara modular ke berbagai algoritma perankingan (*Ranking / Decision-Making Methods*).
+
+#### Weighting Methods
+- [ ] **Manual Weighting**
+- [x] **AHP** _(Analytic Hierarchy Process)_ — diposisikan secara konseptual sebagai weighting engine
+- [ ] **Entropy Weighting**
+- [ ] **ROC** _(Rank Order Centroid)_
+
+#### Ranking / Decision-Making Methods
+- [x] **SAW** _(Simple Additive Weighting)_
+- [x] **WP** _(Weighted Product)_
+- [x] **TOPSIS** _(Technique for Order Preference by Similarity to Ideal Solution)_
+- [ ] **MOORA** _(Multi-Objective Optimization on the Basis of Ratio Analysis)_
+- [ ] **WASPAS** _(Weighted Aggregated Sum Product Assessment)_
+
+#### Platform & Persistence Features
+- [ ] Landing page dengan autentikasi **Google Sign-In** (OAuth - tidak ada password)
+- [ ] Proyek tersimpan di cloud - tidak hilang saat tab ditutup atau perangkat berganti
+- [ ] Manajemen proyek lengkap: buat baru, muat ulang, hapus, dan lihat riwayat semua proyek yang pernah dikerjakan
+- [ ] Riwayat ekspor PDF tersimpan dan bisa diunduh ulang kapan saja
+- [ ] Pengalaman seperti **Google Docs** untuk data keputusan - buka proyek lama dari perangkat mana pun
 
 ---
 
-### 🚀 v3.0 - _Evolution_
+### 🚀 v3.0 - _Advanced Decision Methods & Evolution_
 
-> Fokus: pengalaman premium dan ekosistem yang lebih kaya.
+> Fokus: memperluas engine dengan metode SPK yang lebih beragam dan advanced, serta pengalaman premium dan ekosistem yang lebih kaya.
 
-- Perbaikan bug dan peningkatan performa keseluruhan
-- **Mode Gelap** _(Dark Mode)_ penuh
-- Peningkatan UI/UX secara menyeluruh berdasarkan feedback akumulatif v1.x dan v2.x
-- Sistem **langganan** _(subscription)_ dengan fitur premium eksklusif - detail akan diumumkan mendekati rilis
+#### Additional / Advanced Decision-Making Methods
+- [ ] **ANP** _(Analytic Network Process)_ — pembobotan & prioritisasi berbasis jaringan keterkaitan kriteria
+- [ ] **SMART** _(Simple Multi-Attribute Rating Technique)_
+- [ ] **COPRAS** _(Complex Proportional Assessment)_
+- [ ] **ARAS** _(Additive Ratio Assessment)_
+- [ ] **EDAS** _(Evaluation based on Distance from Average Solution)_
+
+#### Platform Evolution & Ecosystem
+- [ ] Perbaikan bug dan peningkatan performa keseluruhan
+- [ ] **Mode Gelap** _(Dark Mode)_ penuh
+- [ ] Peningkatan UI/UX secara menyeluruh berdasarkan feedback akumulatif v1.x dan v2.x
+- [ ] Sistem **langganan** _(subscription)_ dengan fitur premium eksklusif - detail akan diumumkan mendekati rilis
 
 ---
 
