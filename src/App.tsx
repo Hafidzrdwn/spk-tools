@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import AppShell from '@/components/layout/AppShell';
 import Tabs from '@/components/ui/Tabs';
@@ -12,12 +12,14 @@ import { ROUTES } from '@/app/routes';
 import CriteriaEditor from '@/features/shared/CriteriaEditor';
 import AlternativeEditor from '@/features/shared/AlternativeEditor';
 import MatrixInputGrid from '@/features/shared/MatrixInputGrid';
-import SawTab from '@/features/saw/SawTab';
-import WpTab from '@/features/wp/WpTab';
-import TopsisTab from '@/features/topsis/TopsisTab';
-import AhpTab from '@/features/ahp/AhpTab';
-import ComparisonTab from '@/features/comparison/ComparisonTab';
-import StoryToMatrixTab from '@/features/story-to-matrix/StoryToMatrixTab';
+import TabSkeleton from '@/components/ui/TabSkeleton';
+
+const SawTab = lazy(() => import('@/features/saw/SawTab'));
+const WpTab = lazy(() => import('@/features/wp/WpTab'));
+const TopsisTab = lazy(() => import('@/features/topsis/TopsisTab'));
+const AhpTab = lazy(() => import('@/features/ahp/AhpTab'));
+const ComparisonTab = lazy(() => import('@/features/comparison/ComparisonTab'));
+const StoryToMatrixTab = lazy(() => import('@/features/story-to-matrix/StoryToMatrixTab'));
 import TemplateSelectorModal from '@/components/layout/TemplateSelectorModal';
 import ResetProjectButton from '@/features/project/ResetProjectButton';
 import ExportButton from '@/features/export/ExportButton';
@@ -227,39 +229,41 @@ export default function App() {
             exit={{ opacity: 0, y: -14, scale: 0.99 }}
             transition={{ type: 'spring', stiffness: 350, damping: 26 }}
           >
-            {activeTab === 'SAW' ? (
-              <SawTab />
-            ) : activeTab === 'WP' ? (
-              <WpTab />
-            ) : activeTab === 'TOPSIS' ? (
-              <TopsisTab />
-            ) : activeTab === 'AHP' ? (
-              <AhpTab />
-            ) : activeTab === 'COMPARE' ? (
-              <ComparisonTab />
-            ) : activeTab === 'AUTO' ? (
-              <StoryToMatrixTab />
-            ) : (
-              <Card className="min-h-70 flex flex-col justify-center items-center text-center p-8 border-dashed border-2 border-slate-200/90 bg-white/60">
-                <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-accent-primary flex items-center justify-center mb-3 shadow-xs">
-                  {currentRoute.icon}
-                </div>
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 text-xs font-mono font-medium mb-2">
-                  Tab ID: {activeTab}
-                </div>
-                <h2 className="text-lg font-bold text-slate-900 mb-1">
-                  Panel Komputasi {currentRoute.label}
-                </h2>
-                <p className="text-xs text-slate-500 max-w-md mb-5 leading-relaxed">
-                  {currentRoute.description}.
-                  Komponen stepper kalkulasi dan tabel hasil untuk tab ini siap dirangkai pada tahap berikutnya.
-                </p>
-                <div className="flex items-center gap-2 text-xs text-slate-400 font-mono bg-slate-50 px-3 py-1.5 rounded-control border border-slate-200/60">
-                  <Sparkles className="w-3.5 h-3.5 text-accent-primary" />
-                  <span>Transisi Spring Motion Aktif (Framer Motion)</span>
-                </div>
-              </Card>
-            )}
+            <Suspense fallback={<TabSkeleton />}>
+              {activeTab === 'SAW' ? (
+                <SawTab />
+              ) : activeTab === 'WP' ? (
+                <WpTab />
+              ) : activeTab === 'TOPSIS' ? (
+                <TopsisTab />
+              ) : activeTab === 'AHP' ? (
+                <AhpTab />
+              ) : activeTab === 'COMPARE' ? (
+                <ComparisonTab />
+              ) : activeTab === 'AUTO' ? (
+                <StoryToMatrixTab />
+              ) : (
+                <Card className="min-h-70 flex flex-col justify-center items-center text-center p-8 border-dashed border-2 border-slate-200/90 bg-white/60">
+                  <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-accent-primary flex items-center justify-center mb-3 shadow-xs">
+                    {currentRoute.icon}
+                  </div>
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 text-xs font-mono font-medium mb-2">
+                    Tab ID: {activeTab}
+                  </div>
+                  <h2 className="text-lg font-bold text-slate-900 mb-1">
+                    Panel Komputasi {currentRoute.label}
+                  </h2>
+                  <p className="text-xs text-slate-500 max-w-md mb-5 leading-relaxed">
+                    {currentRoute.description}.
+                    Komponen stepper kalkulasi dan tabel hasil untuk tab ini siap dirangkai pada tahap berikutnya.
+                  </p>
+                  <div className="flex items-center gap-2 text-xs text-slate-400 font-mono bg-slate-50 px-3 py-1.5 rounded-control border border-slate-200/60">
+                    <Sparkles className="w-3.5 h-3.5 text-accent-primary" />
+                    <span>Transisi Spring Motion Aktif (Framer Motion)</span>
+                  </div>
+                </Card>
+              )}
+            </Suspense>
           </motion.div>
         </AnimatePresence>
         </div>
