@@ -3,6 +3,7 @@ import type { MethodId } from '@/types/domain';
 import { useTourStore } from './useTourStore';
 
 export type EditorSection = 'matrix' | 'criteria' | 'alternatives';
+export type NumberSeparator = 'comma' | 'dot';
 
 export interface UiStore {
   activeTab: MethodId;
@@ -11,6 +12,8 @@ export interface UiStore {
   isGlossaryOpen: boolean;
   glossaryTargetTerm: string | null;
   isWelcomeOpen: boolean;
+  /** Format angka desimal: 'comma' (Indonesia: 3,14) atau 'dot' (Internasional: 3.14) */
+  numberFormat: NumberSeparator;
   /** Section aktif di panel Shared Input (Matrix / Kriteria / Alternatif) */
   activeEditorSection: EditorSection;
   sawActiveStep: 1 | 2 | 3;
@@ -29,6 +32,8 @@ export interface UiStore {
   closeGlossary: () => void;
   openWelcome: () => void;
   closeWelcome: () => void;
+  setNumberFormat: (format: NumberSeparator) => void;
+  toggleNumberFormat: () => void;
   setActiveEditorSection: (section: EditorSection) => void;
   setSawActiveStep: (step: 1 | 2 | 3) => void;
   setWpActiveStep: (step: 1 | 2 | 3) => void;
@@ -42,6 +47,7 @@ export interface UiStore {
 }
 
 const MATRIX_COLLAPSED_STORAGE_KEY = 'decisigraph_matrix_collapsed';
+const NUMBER_FORMAT_STORAGE_KEY = 'decisigraph_number_format';
 
 const getInitialMatrixCollapsed = (): boolean => {
   if (typeof window === 'undefined') return false;
@@ -52,6 +58,16 @@ const getInitialMatrixCollapsed = (): boolean => {
   }
 };
 
+const getInitialNumberFormat = (): NumberSeparator => {
+  if (typeof window === 'undefined') return 'comma';
+  try {
+    const saved = localStorage.getItem(NUMBER_FORMAT_STORAGE_KEY);
+    return saved === 'dot' ? 'dot' : 'comma';
+  } catch {
+    return 'comma';
+  }
+};
+
 export const useUiStore = create<UiStore>((set) => ({
   activeTab: 'SAW',
   hoveredCellId: null,
@@ -59,6 +75,7 @@ export const useUiStore = create<UiStore>((set) => ({
   isGlossaryOpen: false,
   glossaryTargetTerm: null,
   isWelcomeOpen: false,
+  numberFormat: getInitialNumberFormat(),
   activeEditorSection: 'matrix',
   sawActiveStep: 1,
   wpActiveStep: 1,
@@ -80,6 +97,25 @@ export const useUiStore = create<UiStore>((set) => ({
   closeGlossary: () => set({ isGlossaryOpen: false, glossaryTargetTerm: null }),
   openWelcome: () => set({ isWelcomeOpen: true }),
   closeWelcome: () => set({ isWelcomeOpen: false }),
+  setNumberFormat: (format) => {
+    try {
+      localStorage.setItem(NUMBER_FORMAT_STORAGE_KEY, format);
+    } catch {
+      // safe fallback
+    }
+    set({ numberFormat: format });
+  },
+  toggleNumberFormat: () => {
+    set((s) => {
+      const next = s.numberFormat === 'comma' ? 'dot' : 'comma';
+      try {
+        localStorage.setItem(NUMBER_FORMAT_STORAGE_KEY, next);
+      } catch {
+        // safe fallback
+      }
+      return { numberFormat: next };
+    });
+  },
   setActiveEditorSection: (section) => set({ activeEditorSection: section }),
   setSawActiveStep: (step) => set({ sawActiveStep: step }),
   setWpActiveStep: (step) => set({ wpActiveStep: step }),

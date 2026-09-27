@@ -76,6 +76,89 @@ describe('Story-to-Matrix Parser (Pure Logic)', () => {
         expect(result.lineErrors[0].reason).toContain('titik dua');
       }
     });
+
+    it('Kasus 5: Harus mengekstrak kriteria secara dinamis ketika kriteria awal kosong atau tidak cocok', () => {
+      const input = `
+        Kandidat: AWS, Biaya Bulanan: 15, Uptime SLA: 99.99, Fitur AI: 95
+        Kandidat: Google Cloud, Biaya Bulanan: 13, Uptime SLA: 99.95, Fitur AI: 98
+      `;
+      // Passing empty criteria
+      const result = extractAlternativesFromText(input, []);
+
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.alternatives).toHaveLength(2);
+        expect(result.criteria).toHaveLength(3);
+        const names = result.criteria.map((c) => c.name);
+        expect(names).toContain('Biaya Bulanan');
+        expect(names).toContain('Uptime SLA');
+        expect(names).toContain('Fitur AI');
+        // Auto-detect COST vs BENEFIT
+        const costCrit = result.criteria.find((c) => c.name === 'Biaya Bulanan');
+        expect(costCrit?.type).toBe('COST');
+        const slaCrit = result.criteria.find((c) => c.name === 'Uptime SLA');
+        expect(slaCrit?.type).toBe('BENEFIT');
+      }
+    });
+
+    it('Kasus 6: Harus mengenali bullet points dan nomor daftar (- , 1. )', () => {
+      const input = `
+        1. Budi Santoso: Nilai Tes: 85, Pengalaman: 3, Gaji: 5
+        2. Siti Aminah: Nilai Tes: 92, Pengalaman: 5, Gaji: 7
+        - Joko Widodo: Nilai Tes: 78, Pengalaman: 2, Gaji: 4.5
+      `;
+      const result = extractAlternativesFromText(input, mockCriteria);
+
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.alternatives).toHaveLength(3);
+        expect(result.alternatives[0].name).toBe('Budi Santoso');
+        expect(result.alternatives[1].name).toBe('Siti Aminah');
+        expect(result.alternatives[2].name).toBe('Joko Widodo');
+        expect(result.alternatives[0].values.c_test).toBe(85);
+      }
+    });
+
+    it('Kasus 7: Harus mengekstrak tabel markdown dengan rapi', () => {
+      const tableInput = `
+        | Kandidat | Biaya Bulanan | Uptime SLA | Fitur AI |
+        |---|---|---|---|
+        | AWS | 15 | 99.99 | 95 |
+        | GCP | 13 | 99.95 | 98 |
+        | Azure | 14 | 99.98 | 90 |
+      `;
+      const result = extractAlternativesFromText(tableInput, []);
+
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.alternatives).toHaveLength(3);
+        expect(result.alternatives[0].name).toBe('AWS');
+        expect(result.alternatives[1].name).toBe('GCP');
+        expect(result.alternatives[2].name).toBe('Azure');
+        expect(result.criteria).toHaveLength(3);
+      }
+    });
+
+    it('Kasus 8: Harus mengabaikan baris header instruksi dan baris perbandingan Saaty tanpa error', () => {
+      const fullPlaceholderInput = `
+        Contoh format input teks studi kasus:
+        Kandidat: Budi Santoso, Nilai Tes: 85, Pengalaman: 3 thn, Gaji: 5 jt
+        Kandidat: Siti Aminah, Nilai Tes: 92, Pengalaman: 5 thn, Gaji: 7 jt
+        Kandidat: Joko Widodo, Nilai Tes: 78, Pengalaman: 2 thn, Gaji: 4.5 jt
+
+        Atau masukkan perbandingan preferensi Saaty:
+        Pengalaman 3 kali lebih penting dari Gaji.
+      `;
+      const result = extractAlternativesFromText(fullPlaceholderInput, mockCriteria);
+
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.alternatives).toHaveLength(3);
+        expect(result.alternatives[0].name).toBe('Budi Santoso');
+        expect(result.alternatives[1].name).toBe('Siti Aminah');
+        expect(result.alternatives[2].name).toBe('Joko Widodo');
+      }
+    });
   });
 
   describe('comparisonDetector', () => {

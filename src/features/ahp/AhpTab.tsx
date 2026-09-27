@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import useAhpViewModel from './useAhpViewModel';
 import { useUiStore } from '@/store/useUiStore';
+import { useNumberFormatter } from '@/utils/numberFormat';
 import { AhpPairwiseSlider } from './components/AhpPairwiseSlider';
 import { AhpMatrixGrid } from './components/AhpMatrixGrid';
 import { AhpConsistencyGauge } from './components/AhpConsistencyGauge';
@@ -12,6 +13,7 @@ import { Sliders, Grid3X3, Activity, Sparkles, Check, RotateCcw } from 'lucide-r
 
 export const AhpTab: React.FC = () => {
   const { criteria, hasData, matrix, pairs, priorityVector, consistency, suggestion, setPairwiseValue, applySuggestion, resetMatrix, applyWeightsToProject } = useAhpViewModel();
+  const { formatNumber } = useNumberFormatter();
   const activeStep = useUiStore((s) => s.ahpActiveStep);
   const setActiveStep = useUiStore((s) => s.setAhpActiveStep);
   const [applied, setApplied] = useState(false);
@@ -40,7 +42,7 @@ export const AhpTab: React.FC = () => {
               <div className="flex items-center gap-2">
                 <span className="text-xs font-semibold text-indigo-900 uppercase tracking-wide">Analytic Hierarchy Process (AHP)</span>
                 <Badge variant={consistency.isConsistent ? 'benefit' : 'cost'} size="sm">
-                  {consistency.isConsistent ? `CR = ${consistency.cr.toFixed(4)} (Konsisten)` : `CR = ${consistency.cr.toFixed(4)} (Inkonsisten)`}
+                  {consistency.isConsistent ? `CR = ${formatNumber(consistency.cr, 4)} (Konsisten)` : `CR = ${formatNumber(consistency.cr, 4)} (Inkonsisten)`}
                 </Badge>
               </div>
               <p className="text-xs text-slate-500 mt-0.5">Hitung eigen-vektor prioritas kriteria kualitatif via perbandingan berpasangan Saaty.</p>

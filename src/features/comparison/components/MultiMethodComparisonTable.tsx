@@ -2,6 +2,7 @@ import React from 'react';
 import type { ComparisonRow } from '@/core/math/compareRankings';
 import Badge from '@/components/ui/Badge';
 import { Trophy, CheckCircle2 } from 'lucide-react';
+import { useNumberFormatter } from '@/utils/numberFormat';
 
 export interface MultiMethodComparisonTableProps {
   rows: ComparisonRow[];
@@ -14,6 +15,7 @@ function getRankBadgeVariant(rank: number): 'benefit' | 'cost' | 'primary' | 'ne
 }
 
 export const MultiMethodComparisonTable: React.FC<MultiMethodComparisonTableProps> = ({ rows }) => {
+  const { formatNumber } = useNumberFormatter();
   if (rows.length === 0) {
     return (
       <div className="p-6 text-center text-xs text-slate-500 bg-slate-50 rounded-control border border-slate-200">
@@ -78,7 +80,7 @@ export const MultiMethodComparisonTable: React.FC<MultiMethodComparisonTableProp
                   <Badge variant={getRankBadgeVariant(row.saw.rank)} size="sm" className="whitespace-nowrap">
                     #{row.saw.rank}
                   </Badge>
-                  <span className="text-slate-600">{row.saw.score.toFixed(4)}</span>
+                  <span className="text-slate-600">{formatNumber(row.saw.score, 4)}</span>
                 </div>
               </td>
 
@@ -88,7 +90,7 @@ export const MultiMethodComparisonTable: React.FC<MultiMethodComparisonTableProp
                   <Badge variant={getRankBadgeVariant(row.wp.rank)} size="sm" className="whitespace-nowrap">
                     #{row.wp.rank}
                   </Badge>
-                  <span className="text-slate-600">{row.wp.score.toFixed(4)}</span>
+                  <span className="text-slate-600">{formatNumber(row.wp.score, 4)}</span>
                 </div>
               </td>
 
@@ -98,13 +100,13 @@ export const MultiMethodComparisonTable: React.FC<MultiMethodComparisonTableProp
                   <Badge variant={getRankBadgeVariant(row.topsis.rank)} size="sm" className="whitespace-nowrap">
                     #{row.topsis.rank}
                   </Badge>
-                  <span className="text-slate-600">{row.topsis.score.toFixed(4)}</span>
+                  <span className="text-slate-600">{formatNumber(row.topsis.score, 4)}</span>
                 </div>
               </td>
 
               {/* Average Rank */}
               <td className="py-2 px-3 border-r border-slate-100 text-center font-mono font-bold text-slate-700">
-                {row.averageRank.toFixed(2)}
+                {formatNumber(row.averageRank, 2)}
               </td>
 
               {/* Consensus Status */}

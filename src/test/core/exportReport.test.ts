@@ -98,8 +98,11 @@ describe('Export PDF Report Module', () => {
     const conclusion = generateReportConclusion(payload);
     expect(conclusion).toContain('Vendor Alpha');
     expect(conclusion).toContain('Peringkat #1');
-    expect(conclusion).toContain('0.8720');
+    expect(conclusion).toContain('0,872');
     expect(conclusion).toContain('Simple Additive Weighting (SAW)');
+
+    const conclusionDot = generateReportConclusion(payload, 'dot');
+    expect(conclusionDot).toContain('0.872');
   });
 
   it('formatIndonesianDate memformat ISO date string dengan akhiran WIB', () => {

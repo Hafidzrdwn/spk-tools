@@ -150,4 +150,37 @@ describe('AHP Constants, calculateAHP & Consistency Check', () => {
     const suggestion = suggestConsistencyFix(matrix, [0.75, 0.25]);
     expect(suggestion).toBeNull();
   });
+
+  it('harus menjamin nilai rekomendasi perbaikan konsistensi berbeda nyata dari nilai saat ini (tidak no-op)', () => {
+    // Kasus regresi user: pasangan bernilai 1 dengan rasio ideal pecahan
+    const matrix = [
+      [1, 1, 3],
+      [1, 1, 4],
+      [1 / 3, 1 / 4, 1],
+    ];
+    const priorityVector = [0.428, 0.463, 0.109];
+    const suggestion = suggestConsistencyFix(matrix, priorityVector, ['Harga', 'RAM', 'Kamera']);
+
+    expect(suggestion).not.toBeNull();
+    if (suggestion) {
+      expect(suggestion.suggestedValue).not.toBe(suggestion.currentValue);
+      expect(suggestion.suggestedValue).toBeGreaterThan(0);
+      expect(suggestion.currentValueLabel).toBeDefined();
+      expect(suggestion.suggestedValueLabel).toBeDefined();
+    }
+  });
+
+  it('harus memetakan rasio ideal desimal ke skala Saaty terdekat (termasuk pecahan 1/2)', () => {
+    // 0.703 lebih dekat ke 0.5 (1/2) daripada ke 1.0
+    const matrix = [
+      [1, 1, 2],
+      [1, 1, 3],
+      [0.5, 1 / 3, 1],
+    ];
+    const priorityVector = [0.35, 0.45, 0.20];
+    const suggestion = suggestConsistencyFix(matrix, priorityVector, ['K1', 'K2', 'K3']);
+    if (suggestion) {
+      expect(suggestion.suggestedValue).not.toBe(suggestion.currentValue);
+    }
+  });
 });

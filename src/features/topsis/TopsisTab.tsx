@@ -1,6 +1,7 @@
 import React from 'react';
 import useTopsisViewModel from './useTopsisViewModel';
 import { useUiStore } from '@/store/useUiStore';
+import { useNumberFormatter } from '@/utils/numberFormat';
 import MatrixInputGrid from '@/features/shared/MatrixInputGrid';
 import TopsisIdealSolutionRow from './components/TopsisIdealSolutionRow';
 import TopsisDistanceCard from './components/TopsisDistanceCard';
@@ -19,6 +20,8 @@ export const TopsisTab: React.FC = () => {
     bestAlternative, radarData, radarAlternativeKeys, updateCellValue,
     formulaSteps,
   } = useTopsisViewModel();
+
+  const { formatNumber } = useNumberFormatter();
 
   const activeStep = useUiStore((s) => s.topsisActiveStep);
   const setActiveStep = useUiStore((s) => s.setTopsisActiveStep);
@@ -48,7 +51,7 @@ export const TopsisTab: React.FC = () => {
             </div>
             <div className="text-right font-mono bg-white/90 px-3 py-1.5 rounded-control border border-amber-200/70 shadow-2xs">
               <span className="text-[10px] text-slate-400 block">Kedekatan Relatif (C_i)</span>
-              <span className="text-base font-extrabold text-amber-700">{bestAlternative.score.toFixed(4)}</span>
+              <span className="text-base font-extrabold text-amber-700">{formatNumber(bestAlternative.score, 4)}</span>
             </div>
           </CardContent>
         </Card>

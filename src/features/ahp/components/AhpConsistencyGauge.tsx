@@ -5,6 +5,7 @@ import Badge from '@/components/ui/Badge';
 import { MathFormula } from '@/components/ui/MathFormula';
 import type { ConsistencyResult, ConsistencyFixSuggestion } from '@/core/math/ahp-consistency';
 import { AlertCircle, Wand2, ArrowRight } from 'lucide-react';
+import { useNumberFormatter } from '@/utils/numberFormat';
 
 export interface AhpConsistencyGaugeProps {
   consistency: ConsistencyResult;
@@ -17,6 +18,7 @@ export const AhpConsistencyGauge: React.FC<AhpConsistencyGaugeProps> = ({
   suggestion,
   onApplySuggestion,
 }) => {
+  const { formatNumber } = useNumberFormatter();
   const [showSuggestion, setShowSuggestion] = useState(false);
   const isConsistent = consistency.isConsistent;
 
@@ -82,26 +84,26 @@ export const AhpConsistencyGauge: React.FC<AhpConsistencyGaugeProps> = ({
                 <span className="text-[10px] text-slate-400 block mb-0.5">
                   <MathFormula math="\lambda_{\max}" inline />
                 </span>
-                <span className="font-bold text-slate-800">{consistency.lambdaMax.toFixed(4)}</span>
+                <span className="font-bold text-slate-800">{formatNumber(consistency.lambdaMax, 4)}</span>
               </div>
               <div className="p-2 rounded-lg bg-white/80 border border-slate-200/70">
                 <span className="text-[10px] text-slate-400 block mb-0.5">
                   <MathFormula math="\text{CI}" inline /> (Indeks)
                 </span>
-                <span className="font-bold text-slate-800">{consistency.ci.toFixed(4)}</span>
+                <span className="font-bold text-slate-800">{formatNumber(consistency.ci, 4)}</span>
               </div>
               <div className="p-2 rounded-lg bg-white/80 border border-slate-200/70">
                 <span className="text-[10px] text-slate-400 block mb-0.5">
                   <MathFormula math="\text{RI}" inline /> (Random)
                 </span>
-                <span className="font-bold text-slate-800">{consistency.ri.toFixed(2)}</span>
+                <span className="font-bold text-slate-800">{formatNumber(consistency.ri, 2)}</span>
               </div>
               <div className="p-2 rounded-lg bg-white/80 border border-slate-200/70">
                 <span className="text-[10px] text-slate-400 block mb-0.5">
                   Status <MathFormula math="\text{CR}" inline />
                 </span>
                 <span className={`font-bold ${isConsistent ? 'text-benefit' : 'text-cost'}`}>
-                  {(consistency.cr * 100).toFixed(2)}%
+                  {formatNumber(consistency.cr * 100, 2)}%
                 </span>
               </div>
             </div>
@@ -148,9 +150,9 @@ export const AhpConsistencyGauge: React.FC<AhpConsistencyGaugeProps> = ({
                 Pasangan: <strong>{suggestion.criterionNameI}</strong> vs <strong>{suggestion.criterionNameJ}</strong>
               </div>
               <div className="text-[11px] text-slate-500">
-                Nilai Sekarang: <span className="line-through text-rose-600 font-bold">{suggestion.currentValue}</span>
+                Nilai Sekarang: <span className="line-through text-rose-600 font-bold">{suggestion.currentValueLabel || suggestion.currentValue}</span>
                 {' ➔ '}
-                Nilai Rekomendasi: <span className="text-benefit font-bold">{suggestion.suggestedValue}</span>
+                Nilai Rekomendasi: <span className="text-benefit font-bold">{suggestion.suggestedValueLabel || suggestion.suggestedValue}</span>
               </div>
             </div>
 

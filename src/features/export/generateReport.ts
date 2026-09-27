@@ -2,6 +2,7 @@ import type { MethodId, Criterion, Alternative } from '@/types/domain';
 import type { MethodResult } from '@/core/math/types';
 import type { compareRankings } from '@/core/math/compareRankings';
 import type { ReportPayload } from './types';
+import { formatDisplayNumber } from '@/utils/numberFormat';
 
 export interface ProjectStateSubset {
   title: string;
@@ -68,7 +69,7 @@ export function getMethodFullName(method: MethodId): string {
  * Membangun narasi 1 paragraf kesimpulan otomatis berdasarkan data payload kalkulasi.
  * Menganalisis alternatif terbaik, skor preferensi, kriteria unggulan, dan konsensus perbandingan (jika ada).
  */
-export function generateReportConclusion(payload: ReportPayload): string {
+export function generateReportConclusion(payload: ReportPayload, separator: 'comma' | 'dot' = 'comma'): string {
   const { method, criteria, alternatives, result, comparisonResult } = payload;
   const rankings = result.finalRanking;
 
@@ -79,7 +80,7 @@ export function generateReportConclusion(payload: ReportPayload): string {
   const sortedRankings = [...rankings].sort((a, b) => a.rank - b.rank);
   const winner = sortedRankings[0];
   const winnerAlt = alternatives.find((a) => a.id === winner.alternativeId);
-  const scoreFormatted = Number(winner.score).toFixed(4);
+  const scoreFormatted = formatDisplayNumber(winner.score, { decimals: 4, separator });
   const methodName = getMethodFullName(method);
 
   // Analisis kriteria unggulan untuk alternatif pemenang
@@ -135,7 +136,7 @@ export function generateReportConclusion(payload: ReportPayload): string {
   const otherCount = Math.max(0, alternatives.length - 1);
   const marginNote =
     sortedRankings.length > 1
-      ? ` dengan selisih skor ${(winner.score - sortedRankings[1].score).toFixed(4)} atas runner-up (${sortedRankings[1].alternativeName})`
+      ? ` dengan selisih skor ${formatDisplayNumber(winner.score - sortedRankings[1].score, { decimals: 4, separator })} atas runner-up (${sortedRankings[1].alternativeName})`
       : '';
 
   return `Berdasarkan evaluasi komputasi metode ${methodName}, alternatif "${winner.alternativeName}" terpilih sebagai rekomendasi keputusan terbaik (Peringkat #1) dengan skor preferensi akhir sebesar ${scoreFormatted}${marginNote}${strengthSummary}. Hasil perhitungan kuantitatif ini merefleksikan performa optimal dibandingkan ${otherCount} alternatif lainnya yang dievaluasi.${consensusNote}`;

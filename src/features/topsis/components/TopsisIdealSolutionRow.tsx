@@ -4,6 +4,7 @@ import Badge from '@/components/ui/Badge';
 import { TraceableCell } from '@/features/inspector';
 import { MathFormula } from '@/components/ui/MathFormula';
 import { Sparkles, AlertOctagon } from 'lucide-react';
+import { useNumberFormatter } from '@/utils/numberFormat';
 
 export interface TopsisIdealSolutionRowProps {
   criteria: Criterion[];
@@ -20,6 +21,7 @@ export const TopsisIdealSolutionRow: React.FC<TopsisIdealSolutionRowProps> = ({
   idealPositive,
   idealNegative,
 }) => {
+  const formatNumber = useNumberFormatter();
   if (criteria.length === 0 || alternatives.length === 0) {
     return (
       <div className="p-6 text-center text-xs text-slate-500 bg-slate-50 rounded-control border border-slate-200">
@@ -48,7 +50,7 @@ export const TopsisIdealSolutionRow: React.FC<TopsisIdealSolutionRowProps> = ({
                     </Badge>
                   </div>
                   <div className="text-[10px] text-slate-500 font-mono">
-                    <MathFormula math={`w_{${idx + 1}} = ${crit.normalizedWeight.toFixed(4)}`} inline />
+                    <MathFormula math={`w_{${idx + 1}} = ${formatNumber(crit.normalizedWeight, 4)}`} inline />
                   </div>
                 </th>
               ))}
@@ -70,7 +72,7 @@ export const TopsisIdealSolutionRow: React.FC<TopsisIdealSolutionRowProps> = ({
                     cellId={`topsis-${alt.id}-${crit.id}-WEIGHTED`}
                     className="py-2.5 px-3 border-r border-slate-100 last:border-r-0 text-right font-mono text-slate-600"
                   >
-                    {(weightedMatrix[altIdx]?.[critIdx] ?? 0).toFixed(4)}
+                    {formatNumber(weightedMatrix[altIdx]?.[critIdx] ?? 0, 4)}
                   </TraceableCell>
                 ))}
               </tr>
@@ -89,7 +91,7 @@ export const TopsisIdealSolutionRow: React.FC<TopsisIdealSolutionRowProps> = ({
               </td>
               {criteria.map((crit, critIdx) => (
                 <td key={crit.id} className="py-3 px-3 border-r border-benefit/20 last:border-r-0 text-right font-mono font-bold text-benefit">
-                  {(idealPositive[critIdx] ?? 0).toFixed(4)}
+                  {formatNumber(idealPositive[critIdx] ?? 0, 4)}
                 </td>
               ))}
             </tr>
@@ -107,7 +109,7 @@ export const TopsisIdealSolutionRow: React.FC<TopsisIdealSolutionRowProps> = ({
               </td>
               {criteria.map((crit, critIdx) => (
                 <td key={crit.id} className="py-3 px-3 border-r border-cost/20 last:border-r-0 text-right font-mono font-bold text-cost">
-                  {(idealNegative[critIdx] ?? 0).toFixed(4)}
+                  {formatNumber(idealNegative[critIdx] ?? 0, 4)}
                 </td>
               ))}
             </tr>

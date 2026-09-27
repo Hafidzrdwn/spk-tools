@@ -3,12 +3,14 @@ import type { WpExponentDetail } from '../useWpViewModel';
 import { MathFormula } from '@/components/ui/MathFormula';
 import Badge from '@/components/ui/Badge';
 import { Info, CheckCircle2 } from 'lucide-react';
+import { useNumberFormatter } from '@/utils/numberFormat';
 
 export interface WpExponentPanelProps {
   exponents: WpExponentDetail[];
 }
 
 export const WpExponentPanel: React.FC<WpExponentPanelProps> = ({ exponents }) => {
+  const formatNumber = useNumberFormatter();
   if (exponents.length === 0) {
     return (
       <div className="p-6 text-center text-xs text-slate-500 bg-slate-50 rounded-control border border-slate-200">
@@ -69,7 +71,7 @@ export const WpExponentPanel: React.FC<WpExponentPanelProps> = ({ exponents }) =
                     {exp.weight}
                   </td>
                   <td className="py-2.5 px-4 text-right font-mono text-slate-700">
-                    {exp.normalizedWeight.toFixed(4)}
+                    {formatNumber(exp.normalizedWeight, 4)}
                   </td>
                   <td className="py-2.5 px-4 text-center">
                     <span
@@ -79,7 +81,7 @@ export const WpExponentPanel: React.FC<WpExponentPanelProps> = ({ exponents }) =
                           : 'bg-cost/10 text-cost border-cost/20'
                       }`}
                     >
-                      {isBenefit ? `+${exp.normalizedWeight.toFixed(4)}` : `-${exp.normalizedWeight.toFixed(4)}`}
+                      {isBenefit ? `+${formatNumber(exp.normalizedWeight, 4)}` : `-${formatNumber(exp.normalizedWeight, 4)}`}
                     </span>
                   </td>
                 </tr>
@@ -96,7 +98,7 @@ export const WpExponentPanel: React.FC<WpExponentPanelProps> = ({ exponents }) =
                 </span>
               </td>
               <td className="py-2.5 px-4 text-right font-mono text-xs text-accent-primary font-bold">
-                {totalAbsWeight.toFixed(4)}
+                {formatNumber(totalAbsWeight, 4)}
               </td>
               <td className="py-2.5 px-4 text-center">
                 <span className="inline-flex items-center gap-1 text-[11px] text-benefit font-semibold">

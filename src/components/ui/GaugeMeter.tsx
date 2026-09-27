@@ -1,5 +1,6 @@
 import React from 'react';
 import { cn } from '@/utils/cn';
+import { useNumberFormatter } from '@/utils/numberFormat';
 
 export interface GaugeMeterProps {
   value: number; // 0 to 1
@@ -34,6 +35,7 @@ export const GaugeMeter: React.FC<GaugeMeterProps> = ({
   strokeWidth = 12,
   className,
 }) => {
+  const { formatNumber } = useNumberFormatter();
   const clampedValue = Math.min(1, Math.max(0, value));
   const isOptimal = clampedValue <= threshold;
 
@@ -78,7 +80,7 @@ export const GaugeMeter: React.FC<GaugeMeterProps> = ({
         {/* Nilai di tengah */}
         <div className="absolute inset-x-0 bottom-0 flex flex-col items-center">
           <span className="font-mono text-xl font-bold tracking-tight text-slate-800">
-            {value.toFixed(4)}
+            {formatNumber(value, 4)}
           </span>
           <span className={cn('text-[11px] font-semibold uppercase tracking-wider', isOptimal ? 'text-benefit' : 'text-cost')}>
             {isOptimal ? 'Konsisten' : 'Inkonsisten'}

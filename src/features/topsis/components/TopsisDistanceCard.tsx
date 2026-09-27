@@ -1,12 +1,14 @@
 import React from 'react';
 import type { TopsisDistanceDetail } from '../useTopsisViewModel';
 import { MathFormula } from '@/components/ui/MathFormula';
+import { useNumberFormatter } from '@/utils/numberFormat';
 
 export interface TopsisDistanceCardProps {
   distances: TopsisDistanceDetail[];
 }
 
 export const TopsisDistanceCard: React.FC<TopsisDistanceCardProps> = ({ distances }) => {
+  const { formatNumber } = useNumberFormatter();
   if (distances.length === 0) {
     return (
       <div className="p-6 text-center text-xs text-slate-500 bg-slate-50 rounded-control border border-slate-200">
@@ -59,25 +61,25 @@ export const TopsisDistanceCard: React.FC<TopsisDistanceCardProps> = ({ distance
                   </div>
                 </td>
                 <td className="py-2.5 px-4 text-right font-mono text-slate-500">
-                  {row.diffPlusSum.toFixed(4)}
+                  {formatNumber(row.diffPlusSum, 4)}
                 </td>
                 <td className="py-2.5 px-4 text-right font-mono font-bold text-benefit bg-benefit/5">
                   <span className="inline-flex items-center justify-end gap-1">
-                    <MathFormula math={`\\sqrt{${row.diffPlusSum.toFixed(4)}}`} inline className="text-xs text-benefit" />
-                    <span>= {row.dPlus.toFixed(4)}</span>
+                    <MathFormula math={`\\sqrt{${formatNumber(row.diffPlusSum, 4)}}`} inline className="text-xs text-benefit" />
+                    <span>= {formatNumber(row.dPlus, 4)}</span>
                   </span>
                 </td>
                 <td className="py-2.5 px-4 text-right font-mono text-slate-500">
-                  {row.diffMinusSum.toFixed(4)}
+                  {formatNumber(row.diffMinusSum, 4)}
                 </td>
                 <td className="py-2.5 px-4 text-right font-mono font-bold text-cost bg-cost/5">
                   <span className="inline-flex items-center justify-end gap-1">
-                    <MathFormula math={`\\sqrt{${row.diffMinusSum.toFixed(4)}}`} inline className="text-xs text-cost" />
-                    <span>= {row.dMinus.toFixed(4)}</span>
+                    <MathFormula math={`\\sqrt{${formatNumber(row.diffMinusSum, 4)}}`} inline className="text-xs text-cost" />
+                    <span>= {formatNumber(row.dMinus, 4)}</span>
                   </span>
                 </td>
                 <td className="py-2.5 px-4 text-right font-mono font-extrabold text-xs text-accent-primary">
-                  {row.cScore.toFixed(4)}
+                  {formatNumber(row.cScore, 4)}
                 </td>
               </tr>
             ))}

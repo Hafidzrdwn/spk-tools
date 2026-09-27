@@ -2,6 +2,7 @@ import React from 'react';
 import type { RankingRow } from '@/core/math/types';
 import { MathFormula } from '@/components/ui/MathFormula';
 import { Trophy, Award } from 'lucide-react';
+import { useNumberFormatter } from '@/utils/numberFormat';
 
 export interface SawRankingTableProps {
   ranking: RankingRow[];
@@ -13,6 +14,7 @@ interface SawRankingRowProps {
 }
 
 const SawRankingRow: React.FC<SawRankingRowProps> = React.memo(({ row, maxScore }) => {
+  const formatNumber = useNumberFormatter();
   const isTop = row.rank === 1;
   const percentage = maxScore > 0 ? (row.score / maxScore) * 100 : 0;
 
@@ -49,7 +51,7 @@ const SawRankingRow: React.FC<SawRankingRowProps> = React.memo(({ row, maxScore 
       </td>
       <td className="py-3 px-4 text-right">
         <span className="font-mono text-sm font-bold text-slate-900 bg-slate-100/80 px-2 py-0.5 rounded border border-slate-200/60">
-          {row.score.toFixed(4)}
+          {formatNumber(row.score, 4)}
         </span>
       </td>
       <td className="py-3 px-4 hidden sm:table-cell">

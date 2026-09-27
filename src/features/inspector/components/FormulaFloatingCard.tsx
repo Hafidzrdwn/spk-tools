@@ -5,6 +5,7 @@ import type { TraceStep } from '@/core/math/types';
 import Badge from '@/components/ui/Badge';
 import { MathFormula, formatTraceToLatex } from '@/components/ui/MathFormula';
 import { Calculator, Sparkles } from 'lucide-react';
+import { useNumberFormatter } from '@/utils/numberFormat';
 
 export interface FormulaFloatingCardProps {
   formulaSteps?: TraceStep[];
@@ -15,6 +16,7 @@ export const FormulaFloatingCard: React.FC<FormulaFloatingCardProps> = ({
   formulaSteps = [],
   step: directStep,
 }) => {
+  const { formatNumber } = useNumberFormatter();
   const { hoveredCellId, activeStep: tracedStep } = useCellTrace(formulaSteps);
   const activeStep = directStep ?? tracedStep;
 
@@ -111,7 +113,7 @@ export const FormulaFloatingCard: React.FC<FormulaFloatingCardProps> = ({
         <div className="flex items-center justify-between text-[11px] pt-0.5 text-slate-500 font-mono">
           <div className="flex items-center gap-1">
             <span>Hasil =</span>
-            <span className="font-bold text-slate-900 text-xs">{activeStep.result.toFixed(4)}</span>
+            <span className="font-bold text-slate-900 text-xs">{formatNumber(activeStep.result, 4)}</span>
           </div>
           {activeStep.sourceCellIds.length > 0 && (
             <div className="flex items-center gap-1 text-[10px] text-accent-primary bg-accent-primary/10 px-2 py-0.5 rounded-full font-sans font-medium">

@@ -6,8 +6,10 @@ import Button from '@/components/ui/Button';
 import NumericInput from '@/components/ui/NumericInput';
 import GlossaryTerm from '@/features/glossary/GlossaryTerm';
 import { Plus, Trash2, Wand2 } from 'lucide-react';
+import { useNumberFormatter } from '@/utils/numberFormat';
 
 export const CriteriaEditor: React.FC = () => {
+  const { formatNumber } = useNumberFormatter();
   const { addCriterion, removeCriterion, updateCriterion, autoDistributeWeights } = useProjectStore(
     useShallow((s) => ({
       addCriterion: s.addCriterion,
@@ -130,7 +132,7 @@ export const CriteriaEditor: React.FC = () => {
                 </div>
 
                 <div className="w-16 text-right font-mono text-xs font-semibold text-slate-500">
-                  {(crit.normalizedWeight * 100).toFixed(1)}%
+                  {formatNumber(crit.normalizedWeight * 100, 1)}%
                 </div>
 
                 <button

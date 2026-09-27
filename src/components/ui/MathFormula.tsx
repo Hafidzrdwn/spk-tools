@@ -33,7 +33,7 @@ export const MathFormula: React.FC<MathFormulaProps> = ({
         displayMode: !inline,
         throwOnError: false,
         strict: false,
-        output: 'htmlAndMathml', // Full accessibility: HTML for visual, MathML for screen readers
+        output: 'html', // Pure HTML rendering avoids browser MathML validation errors (<msub/>) while role="math" + aria-label preserve full accessibility
       });
     } catch {
       return math;

@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Criterion } from '@/types/domain';
 import { MathFormula } from '@/components/ui/MathFormula';
+import { useNumberFormatter } from '@/utils/numberFormat';
 
 export interface AhpMatrixGridProps {
   criteria: Criterion[];
@@ -8,7 +9,7 @@ export interface AhpMatrixGridProps {
   priorityVector: number[];
 }
 
-function formatCell(val: number): string {
+function formatCell(val: number, formatFn: (n: number, d?: number) => string): string {
   if (val === 1) return '1';
   if (val >= 1 && Number.isInteger(val)) return val.toString();
   if (val < 1) {
@@ -17,7 +18,7 @@ function formatCell(val: number): string {
       return `1/${denom}`;
     }
   }
-  return val.toFixed(4);
+  return formatFn(val, 4);
 }
 
 export const AhpMatrixGrid: React.FC<AhpMatrixGridProps> = ({
@@ -25,6 +26,7 @@ export const AhpMatrixGrid: React.FC<AhpMatrixGridProps> = ({
   matrix,
   priorityVector,
 }) => {
+  const { formatNumber } = useNumberFormatter();
   const n = criteria.length;
   if (n === 0 || matrix.length !== n) {
     return (
@@ -92,19 +94,19 @@ export const AhpMatrixGrid: React.FC<AhpMatrixGridProps> = ({
                           isDiagonal
                             ? 'Diagonal identitas (1.0)'
                             : isReciprocal
-                            ? `Nilai kebalikan otomatis (1 / ${formatCell(matrix[j][i])})`
+                            ? `Nilai kebalikan otomatis (1 / ${formatCell(matrix[j][i], formatNumber)})`
                             : 'Nilai perbandingan langsung'
                         }
                       >
                         <span className="inline-block px-2 py-1 rounded">
-                          {formatCell(val)}
+                          {formatCell(val, formatNumber)}
                         </span>
                       </td>
                     );
                   })}
 
                   <td className="py-2.5 px-4 text-right font-mono font-bold text-accent-primary bg-indigo-50/30 border-l border-indigo-100">
-                    {(weight * 100).toFixed(2)}% ({weight.toFixed(4)})
+                    {formatNumber(weight * 100, 2)}% ({formatNumber(weight, 4)})
                   </td>
                 </tr>
               );
@@ -117,11 +119,11 @@ export const AhpMatrixGrid: React.FC<AhpMatrixGridProps> = ({
               </td>
               {colSums.map((sum, idx) => (
                 <td key={`sum-${idx}`} className="py-2.5 px-3 text-center font-mono text-xs text-slate-600 border-r border-slate-200/50">
-                  {sum.toFixed(4)}
+                  {formatNumber(sum, 4)}
                 </td>
               ))}
               <td className="py-2.5 px-4 text-right font-mono text-xs text-indigo-700 font-bold bg-indigo-50/50 border-l border-indigo-200/60">
-                100.00%
+                {formatNumber(100, 2)}%
               </td>
             </tr>
           </tfoot>

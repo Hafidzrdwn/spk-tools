@@ -3,12 +3,14 @@ import type { ComparisonResult } from '@/core/math/compareRankings';
 import Card, { CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
 import { CheckCircle2, Sparkles, Scale } from 'lucide-react';
+import { useNumberFormatter } from '@/utils/numberFormat';
 
 export interface RankingShiftExplanationProps {
   comparison: ComparisonResult;
 }
 
 export const RankingShiftExplanation: React.FC<RankingShiftExplanationProps> = ({ comparison }) => {
+  const { formatNumber } = useNumberFormatter();
   const { hasRank1Shift, rank1Winners, explanation, differences } = comparison;
 
   if (!hasRank1Shift) {
@@ -55,7 +57,7 @@ export const RankingShiftExplanation: React.FC<RankingShiftExplanationProps> = (
               <Badge variant="primary" size="sm">#1</Badge>
             </div>
             <div className="font-bold text-slate-800 text-xs truncate" title={rank1Winners.saw?.alternativeName}>{rank1Winners.saw?.alternativeName || '-'}</div>
-            <div className="text-[10px] font-mono text-slate-400 mt-0.5">Skor: {rank1Winners.saw?.score.toFixed(4)}</div>
+            <div className="text-[10px] font-mono text-slate-400 mt-0.5">Skor: {formatNumber(rank1Winners.saw?.score, 4)}</div>
           </div>
 
           <div className="p-2.5 rounded-control bg-white/90 border border-violet-100 shadow-2xs">
@@ -64,7 +66,7 @@ export const RankingShiftExplanation: React.FC<RankingShiftExplanationProps> = (
               <Badge variant="primary" size="sm">#1</Badge>
             </div>
             <div className="font-bold text-slate-800 text-xs truncate" title={rank1Winners.wp?.alternativeName}>{rank1Winners.wp?.alternativeName || '-'}</div>
-            <div className="text-[10px] font-mono text-slate-400 mt-0.5">Skor: {rank1Winners.wp?.score.toFixed(4)}</div>
+            <div className="text-[10px] font-mono text-slate-400 mt-0.5">Skor: {formatNumber(rank1Winners.wp?.score, 4)}</div>
           </div>
 
           <div className="p-2.5 rounded-control bg-white/90 border border-sky-100 shadow-2xs">
@@ -73,7 +75,7 @@ export const RankingShiftExplanation: React.FC<RankingShiftExplanationProps> = (
               <Badge variant="primary" size="sm">#1</Badge>
             </div>
             <div className="font-bold text-slate-800 text-xs truncate" title={rank1Winners.topsis?.alternativeName}>{rank1Winners.topsis?.alternativeName || '-'}</div>
-            <div className="text-[10px] font-mono text-slate-400 mt-0.5">C_i: {rank1Winners.topsis?.score.toFixed(4)}</div>
+            <div className="text-[10px] font-mono text-slate-400 mt-0.5">C_i: {formatNumber(rank1Winners.topsis?.score, 4)}</div>
           </div>
         </div>
 
@@ -94,17 +96,17 @@ export const RankingShiftExplanation: React.FC<RankingShiftExplanationProps> = (
                   <tr className="bg-slate-50 text-slate-500 font-semibold border-b border-slate-100">
                     <th className="py-1.5 px-3">Kriteria</th>
                     <th className="py-1.5 px-3 text-right">Bobot</th>
-                    <th className="py-1.5 px-3 text-right font-medium text-indigo-700 max-w-[7rem] truncate" title={`${rank1Winners.saw?.alternativeName ?? ''} (SAW)`}>{rank1Winners.saw?.alternativeName} (SAW)</th>
-                    <th className="py-1.5 px-3 text-right font-medium text-sky-700 max-w-[7rem] truncate" title={`${rank1Winners.topsis?.alternativeName ?? ''} (TOPSIS)`}>{rank1Winners.topsis?.alternativeName} (TOPSIS)</th>
+                    <th className="py-1.5 px-3 text-right font-medium text-indigo-700 max-w-28 truncate" title={`${rank1Winners.saw?.alternativeName ?? ''} (SAW)`}>{rank1Winners.saw?.alternativeName} (SAW)</th>
+                    <th className="py-1.5 px-3 text-right font-medium text-sky-700 max-w-28 truncate" title={`${rank1Winners.topsis?.alternativeName ?? ''} (TOPSIS)`}>{rank1Winners.topsis?.alternativeName} (TOPSIS)</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 font-mono">
                   {differences.map((diff) => (
                     <tr key={diff.criterionId}>
                       <td className="py-1.5 px-3 font-sans font-medium text-slate-700">{diff.criterionName}</td>
-                      <td className="py-1.5 px-3 text-right text-slate-500">{diff.weight}</td>
-                      <td className="py-1.5 px-3 text-right font-semibold text-indigo-900">{diff.valA}</td>
-                      <td className="py-1.5 px-3 text-right font-semibold text-sky-900">{diff.valB}</td>
+                      <td className="py-1.5 px-3 text-right text-slate-500">{formatNumber(diff.weight, 2)}</td>
+                      <td className="py-1.5 px-3 text-right font-semibold text-indigo-900">{formatNumber(diff.valA, 4)}</td>
+                      <td className="py-1.5 px-3 text-right font-semibold text-sky-900">{formatNumber(diff.valB, 4)}</td>
                     </tr>
                   ))}
                 </tbody>

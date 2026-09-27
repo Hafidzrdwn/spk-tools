@@ -3,6 +3,7 @@ import type { RankingRow } from '@/core/math/types';
 import Card, { CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
 import { MathFormula } from '@/components/ui/MathFormula';
 import { Trophy, Award } from 'lucide-react';
+import { useNumberFormatter } from '@/utils/numberFormat';
 
 export interface TopsisRankingTableProps {
   ranking: RankingRow[];
@@ -14,6 +15,7 @@ interface TopsisRankingRowProps {
 }
 
 const TopsisRankingRow: React.FC<TopsisRankingRowProps> = React.memo(({ row, maxScore }) => {
+  const formatNumber = useNumberFormatter();
   const isTop = row.rank === 1;
   const barWidth = maxScore > 0 ? (row.score / maxScore) * 100 : 0;
 
@@ -49,7 +51,7 @@ const TopsisRankingRow: React.FC<TopsisRankingRowProps> = React.memo(({ row, max
         </div>
       </td>
       <td className="py-2.5 px-4 text-right font-mono font-extrabold text-accent-primary">
-        {row.score.toFixed(4)}
+        {formatNumber(row.score, 4)}
       </td>
       <td className="py-2.5 px-4 hidden md:table-cell">
         <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden border border-slate-200/50">

@@ -6,6 +6,7 @@ import Logo from './Logo';
 import EditableProjectTitle from '@/features/project/EditableProjectTitle';
 import GlossaryDrawer from '@/features/glossary/GlossaryDrawer';
 import TourLauncherMenu from '@/features/tour/TourLauncherMenu';
+import DecimalFormatToggle from './DecimalFormatToggle';
 import { BookOpen } from 'lucide-react';
 import { useUiStore } from '@/store/useUiStore';
 import type { MethodId } from '@/types/domain';
@@ -57,7 +58,7 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Status Method & Aksi */}
         <div className="flex items-center gap-2.5">
-
+          <DecimalFormatToggle />
           <TourLauncherMenu />
 
           <Button

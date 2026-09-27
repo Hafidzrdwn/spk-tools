@@ -5,6 +5,7 @@ import NumericInput from '@/components/ui/NumericInput';
 import GlossaryTerm from '@/features/glossary/GlossaryTerm';
 import { useDebouncedCallback } from '@/utils/useDebouncedCallback';
 import { cn } from '@/utils/cn';
+import { useNumberFormatter } from '@/utils/numberFormat';
 
 interface MatrixCellInputProps {
   value: number;
@@ -57,6 +58,7 @@ export const MatrixInputGrid: React.FC<MatrixInputGridProps> = ({
   readOnly = false,
   className,
 }) => {
+  const { formatNumber } = useNumberFormatter();
   if (criteria.length === 0 || alternatives.length === 0) {
     const missingCrit = criteria.length === 0;
     const missingAlt = alternatives.length === 0;
@@ -108,8 +110,8 @@ export const MatrixInputGrid: React.FC<MatrixInputGridProps> = ({
                   </Badge>
                 </div>
                 <div className="flex items-center justify-between text-[11px] text-slate-400 font-mono">
-                  <span><GlossaryTerm term="Bobot (Weight)">w</GlossaryTerm> = {crit.weight}</span>
-                  <span>{(crit.normalizedWeight * 100).toFixed(1)}%</span>
+                  <span><GlossaryTerm term="Bobot (Weight)">w</GlossaryTerm> = {formatNumber(crit.weight, 2)}</span>
+                  <span>{formatNumber(crit.normalizedWeight * 100, 1)}%</span>
                 </div>
               </th>
             ))}
@@ -134,7 +136,7 @@ export const MatrixInputGrid: React.FC<MatrixInputGridProps> = ({
                   >
                     {readOnly ? (
                       <div className="font-mono text-xs py-1.5 px-2 bg-slate-50/80 rounded border border-slate-200/60 text-slate-700 text-right">
-                        {cellValue}
+                        {formatNumber(cellValue, 4)}
                       </div>
                     ) : (
                       <MatrixCellInput

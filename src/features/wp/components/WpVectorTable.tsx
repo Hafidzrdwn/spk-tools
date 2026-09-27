@@ -3,6 +3,7 @@ import type { VectorSRow } from '../useWpViewModel';
 import type { RankingRow } from '@/core/math/types';
 import { MathFormula } from '@/components/ui/MathFormula';
 import { Trophy, Award } from 'lucide-react';
+import { useNumberFormatter } from '@/utils/numberFormat';
 
 export interface WpVectorTableProps {
   vectorS: VectorSRow[];
@@ -17,6 +18,7 @@ interface WpVectorRowProps {
 }
 
 const WpVectorRow: React.FC<WpVectorRowProps> = React.memo(({ rankItem, sRow, maxV }) => {
+  const formatNumber = useNumberFormatter();
   const isTop = rankItem.rank === 1;
   const barWidth = maxV > 0 ? (rankItem.score / maxV) * 100 : 0;
 
@@ -54,11 +56,11 @@ const WpVectorRow: React.FC<WpVectorRowProps> = React.memo(({ rankItem, sRow, ma
       </td>
 
       <td className="py-3 px-4 text-right font-mono text-xs font-semibold text-accent-primary">
-        {sRow ? sRow.sValue.toFixed(4) : '-'}
+        {sRow ? formatNumber(sRow.sValue, 4) : '-'}
       </td>
 
       <td className="py-3 px-4 text-right font-mono text-xs font-extrabold text-slate-900">
-        {rankItem.score.toFixed(4)}
+        {formatNumber(rankItem.score, 4)}
       </td>
 
       <td className="py-3 px-4 hidden md:table-cell">
@@ -81,6 +83,7 @@ export const WpVectorTable: React.FC<WpVectorTableProps> = ({
   totalS,
   finalRanking,
 }) => {
+  const formatNumber = useNumberFormatter();
   if (vectorS.length === 0 || finalRanking.length === 0) {
     return (
       <div className="p-6 text-center text-xs text-slate-500 bg-slate-50 rounded-control border border-slate-200">
@@ -134,10 +137,10 @@ export const WpVectorTable: React.FC<WpVectorTableProps> = ({
                 </span>
               </td>
               <td className="py-2.5 px-4 text-right font-mono text-xs text-accent-primary font-bold">
-                {totalS.toFixed(4)}
+                {formatNumber(totalS, 4)}
               </td>
               <td className="py-2.5 px-4 text-right font-mono text-xs text-benefit font-bold">
-                1.0000 (100%)
+                {formatNumber(1, 4)} (100%)
               </td>
               <td className="hidden md:table-cell"></td>
             </tr>

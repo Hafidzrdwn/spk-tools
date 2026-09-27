@@ -1,6 +1,7 @@
 import React from 'react';
 import useWpViewModel from './useWpViewModel';
 import { useUiStore } from '@/store/useUiStore';
+import { useNumberFormatter } from '@/utils/numberFormat';
 import MatrixInputGrid from '@/features/shared/MatrixInputGrid';
 import WpZeroGuardAlert from './components/WpZeroGuardAlert';
 import WpExponentPanel from './components/WpExponentPanel';
@@ -25,6 +26,7 @@ export const WpTab: React.FC = () => {
     updateCellValue,
   } = useWpViewModel();
 
+  const { formatNumber } = useNumberFormatter();
   const activeStep = useUiStore((s) => s.wpActiveStep);
   const setActiveStep = useUiStore((s) => s.setWpActiveStep);
 
@@ -55,7 +57,7 @@ export const WpTab: React.FC = () => {
             </div>
             <div className="text-right font-mono bg-white/90 px-3 py-1.5 rounded-control border border-amber-200/70 shadow-2xs">
               <span className="text-[10px] text-slate-400 block">Nilai Preferensi (V)</span>
-              <span className="text-base font-extrabold text-amber-700">{bestAlternative.score.toFixed(4)}</span>
+              <span className="text-base font-extrabold text-amber-700">{formatNumber(bestAlternative.score, 4)}</span>
             </div>
           </CardContent>
         </Card>

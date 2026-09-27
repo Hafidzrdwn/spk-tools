@@ -7,6 +7,8 @@ import {
   generateReportConclusion,
 } from './generateReport';
 import type { TraceStep } from '@/core/math/types';
+import { formatDisplayNumber } from '@/utils/numberFormat';
+import { useUiStore } from '@/store/useUiStore';
 
 const styles = StyleSheet.create({
   page: {
@@ -261,13 +263,15 @@ const styles = StyleSheet.create({
 
 export interface DecisiPdfReportProps {
   payload: ReportPayload;
+  numberFormat?: 'comma' | 'dot';
 }
 
-export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({ payload }) => {
+export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({ payload, numberFormat: propNumberFormat }) => {
   const currentYear = new Date().getFullYear();
   const indonesianDate = formatIndonesianDate(payload.generatedAt);
   const methodFullName = getMethodFullName(payload.method);
-  const narrativeConclusion = generateReportConclusion(payload);
+  const numberFormat = propNumberFormat || useUiStore.getState().numberFormat || 'comma';
+  const narrativeConclusion = generateReportConclusion(payload, numberFormat);
 
   // Ambil 1 representasi contoh sel per tahap (formulaSteps)
   const representativeSteps: TraceStep[] = [];
@@ -329,7 +333,7 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({ payload }) => 
 
             {payload.criteria.map((crit, idx) => {
               const isEven = idx % 2 === 1;
-              const normalizedPct = (crit.normalizedWeight * 100).toFixed(1) + '%';
+              const normalizedPct = formatDisplayNumber(crit.normalizedWeight * 100, { decimals: 1, separator: numberFormat }) + '%';
               return (
                 <View
                   key={crit.id}
@@ -353,7 +357,7 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({ payload }) => 
                     )}
                   </View>
                   <Text style={[styles.tableCell, { width: '15%', textAlign: 'right' }]}>
-                    {crit.weight}
+                    {formatDisplayNumber(crit.weight, { decimals: 2, separator: numberFormat })}
                   </Text>
                   <Text style={[styles.tableCell, { width: '15%', textAlign: 'right', fontWeight: 'bold', color: '#4F46E5' }]}>
                     {normalizedPct}
@@ -407,7 +411,7 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({ payload }) => 
                           { width: `${critColWidthPercent}%`, textAlign: 'center' },
                         ]}
                       >
-                        {val !== undefined ? val : '-'}
+                        {val !== undefined ? formatDisplayNumber(val, { decimals: 4, separator: numberFormat }) : '-'}
                       </Text>
                     );
                   })}
@@ -432,7 +436,7 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({ payload }) => 
                 </View>
                 <Text style={styles.stepFormula}>{step.formulaLabel}</Text>
                 <Text style={styles.stepResultText}>
-                  Hasil komputasi sel representatif: <Text style={{ fontWeight: 'bold', color: '#0F172A' }}>{Number(step.result).toFixed(4)}</Text>
+                  Hasil komputasi sel representatif: <Text style={{ fontWeight: 'bold', color: '#0F172A' }}>{formatDisplayNumber(step.result, { decimals: 4, separator: numberFormat })}</Text>
                 </Text>
               </View>
             ))
@@ -505,7 +509,7 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({ payload }) => 
                       },
                     ]}
                   >
-                    {Number(row.score).toFixed(4)}
+                    {formatDisplayNumber(row.score, { decimals: 4, separator: numberFormat })}
                   </Text>
                   <View style={[styles.tableCell, { width: '28%', alignItems: 'center' }]}>
                     {isRank1 ? (
@@ -561,13 +565,13 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({ payload }) => 
                       {row.alternativeName} {isConsensus ? '★' : ''}
                     </Text>
                     <Text style={[styles.tableCell, { width: '17%', textAlign: 'center', fontSize: 7.5 }]}>
-                      #{row.saw.rank} ({row.saw.score.toFixed(3)})
+                      #{row.saw.rank} ({formatDisplayNumber(row.saw.score, { decimals: 3, separator: numberFormat })})
                     </Text>
                     <Text style={[styles.tableCell, { width: '17%', textAlign: 'center', fontSize: 7.5 }]}>
-                      #{row.wp.rank} ({row.wp.score.toFixed(3)})
+                      #{row.wp.rank} ({formatDisplayNumber(row.wp.score, { decimals: 3, separator: numberFormat })})
                     </Text>
                     <Text style={[styles.tableCell, { width: '17%', textAlign: 'center', fontSize: 7.5 }]}>
-                      #{row.topsis.rank} ({row.topsis.score.toFixed(3)})
+                      #{row.topsis.rank} ({formatDisplayNumber(row.topsis.score, { decimals: 3, separator: numberFormat })})
                     </Text>
                     <Text
                       style={[
@@ -580,7 +584,7 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({ payload }) => 
                         },
                       ]}
                     >
-                      Rank {row.averageRank.toFixed(1)}
+                      Rank {formatDisplayNumber(row.averageRank, { decimals: 1, separator: numberFormat })}
                     </Text>
                   </View>
                 );

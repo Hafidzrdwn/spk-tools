@@ -9,7 +9,6 @@ import {
   type ParserCasePreset,
 } from '@/core/parser';
 import type { Criterion, Alternative } from '@/types/domain';
-import { nanoid } from 'nanoid';
 
 export function useStoryToMatrixViewModel() {
   const criteria = useProjectStore((s) => s.criteria);
@@ -29,16 +28,18 @@ export function useStoryToMatrixViewModel() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isCommitted, setIsCommitted] = useState(false);
 
-  // Form ke Cerita: Generate narasi teks dari state proyek yang aktif
+  // Form ke Cerita: Generate narasi teks dari state proyek yang aktif atau pratinjau yang ada
   const generateNarrativeFromState = useCallback(() => {
-    if (alternatives.length === 0) return '';
-    return alternatives
+    const currentAlternatives = previewAlternatives.length > 0 ? previewAlternatives : alternatives;
+    const currentCriteria = tempCriteria.length > 0 ? tempCriteria : criteria;
+    if (currentAlternatives.length === 0) return '';
+    return currentAlternatives
       .map((alt) => {
-        const parts = criteria.map((c) => `${c.name}: ${alt.values[c.id] ?? 0}`);
+        const parts = currentCriteria.map((c) => `${c.name}: ${alt.values[c.id] ?? 0}`);
         return `Kandidat: ${alt.name}, ${parts.join(', ')}`;
       })
       .join('\n');
-  }, [criteria, alternatives]);
+  }, [criteria, alternatives, tempCriteria, previewAlternatives]);
 
   // Cerita ke Form: Parse teks ke alternatif & kriteria
   const handleParse = useCallback(() => {
@@ -52,33 +53,18 @@ export function useStoryToMatrixViewModel() {
       setIsAhpPromptOpen(true);
     }
 
-    // 2. Ekstrak data alternatif
-    let activeCrit = criteria.length > 0 ? criteria : tempCriteria;
-
-    // Jika kriteria masih kosong, buat otomatis dari baris pertama
-    if (activeCrit.length === 0) {
-      const firstLine = rawText.split('\n').find((l) => l.includes(':'));
-      if (firstLine) {
-        const frags = firstLine.split(/[,;]/).map((f) => f.trim());
-        const keys = frags.map((f) => f.split(':')[0].trim()).filter((k) => !['kandidat', 'nama', 'alternatif'].includes(k.toLowerCase()));
-        activeCrit = keys.map((name) => ({
-          id: `crit_${nanoid(6)}`,
-          name,
-          type: name.toLowerCase().includes('biaya') || name.toLowerCase().includes('harga') || name.toLowerCase().includes('gaji') ? 'COST' : 'BENEFIT',
-          weight: 1,
-          normalizedWeight: 1 / Math.max(1, keys.length),
-        }));
-        setTempCriteria(activeCrit);
-      }
-    }
-
-    const extractResult = extractAlternativesFromText(rawText, activeCrit);
+    // 2. Ekstrak data alternatif & kriteria
+    const baseCriteria = tempCriteria.length > 0 ? tempCriteria : criteria;
+    const extractResult = extractAlternativesFromText(rawText, baseCriteria);
     if (!extractResult.success) {
       setErrorMessage(extractResult.error);
       setPreviewAlternatives([]);
       return;
     }
 
+    if (extractResult.criteria && extractResult.criteria.length > 0) {
+      setTempCriteria(extractResult.criteria);
+    }
     setPreviewAlternatives(extractResult.alternatives);
     setUnmatchedCriteria(extractResult.unmatchedCriteria);
     setMode('form');
@@ -88,7 +74,7 @@ export function useStoryToMatrixViewModel() {
   // Terapkan hasil ekstraksi ke useProjectStore
   const handleCommit = useCallback(() => {
     if (previewAlternatives.length === 0) return;
-    const finalCriteria = criteria.length > 0 ? criteria : tempCriteria;
+    const finalCriteria = tempCriteria.length > 0 ? tempCriteria : criteria;
 
     loadProjectState({
       title: 'Proyek dari Story-to-Matrix',
@@ -113,6 +99,7 @@ export function useStoryToMatrixViewModel() {
     setRawText(narrative);
     setTempCriteria(preset.state.criteria);
     setPreviewAlternatives(preset.state.alternatives);
+    setUnmatchedCriteria([]);
     setMode('form');
     useUiStore.getState().setStoryHasExtracted(true);
     setIsTemplatePickerOpen(false);
@@ -121,7 +108,7 @@ export function useStoryToMatrixViewModel() {
 
   return {
     mode, setMode, rawText, setRawText, previewAlternatives,
-    criteria: criteria.length > 0 ? criteria : tempCriteria,
+    criteria: tempCriteria.length > 0 ? tempCriteria : criteria,
     unmatchedCriteria, detectedComparisons, isAhpPromptOpen,
     setIsAhpPromptOpen, isTemplatePickerOpen, setIsTemplatePickerOpen,
     errorMessage, isCommitted, handleParse, handleCommit,

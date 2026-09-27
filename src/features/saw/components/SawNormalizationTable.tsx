@@ -4,6 +4,8 @@ import Badge from '@/components/ui/Badge';
 import { TraceableCell } from '@/features/inspector';
 import { MathFormula } from '@/components/ui/MathFormula';
 
+import { useNumberFormatter } from '@/utils/numberFormat';
+
 export interface SawNormalizationTableProps {
   criteria: Criterion[];
   alternatives: Alternative[];
@@ -23,6 +25,8 @@ const SawNormalizationRow: React.FC<SawNormalizationRowProps> = React.memo(({
   rowValues,
   criteria,
 }) => {
+  const formatNumber = useNumberFormatter();
+
   return (
     <tr className="hover:bg-indigo-50/20 transition-colors">
       <td className="py-2.5 px-4 font-semibold text-slate-800 sticky left-0 bg-white/95 z-10 border-r border-slate-200/70 shadow-xs">
@@ -42,7 +46,7 @@ const SawNormalizationRow: React.FC<SawNormalizationRowProps> = React.memo(({
             className="py-2.5 px-3 border-r border-slate-100 last:border-r-0"
           >
             <div className="font-mono text-xs py-1 px-2 rounded bg-slate-50 border border-slate-200/60 text-slate-800 text-right font-medium">
-              {val.toFixed(4)}
+              {formatNumber(val, 4)}
             </div>
           </TraceableCell>
         );
