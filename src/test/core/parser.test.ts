@@ -143,4 +143,32 @@ describe('Story-to-Matrix Parser (Pure Logic)', () => {
       });
     });
   });
+
+  describe('Security & ReDoS Resilience (§20.2)', () => {
+    it('Harus memproses input adversarial berulang tanpa keterlambatan (kebal ReDoS)', () => {
+      // Input berulang yang berpotensi memicu catastrophic backtracking jika ada nested quantifier
+      const adversarialText = 'Kandidat ' + 'sangat '.repeat(200) + 'lebih penting dibanding ' + 'X '.repeat(200);
+      const start = performance.now();
+      const result = detectComparisonsFromText(adversarialText);
+      const duration = performance.now() - start;
+
+      // Harus selesai dalam waktu beberapa milidetik (jauh di bawah 50ms)
+      expect(duration).toBeLessThan(50);
+      expect(typeof result.success).toBe('boolean');
+    });
+
+    it('Harus memproses ekstraksi entitas teks panjang (5000 karakter) secara instan', () => {
+      const longText = Array.from({ length: 50 }, (_, i) => `Kandidat: K${i}, Nilai Tes: ${80 + (i % 10)}, Pengalaman: ${i % 5} thn, Gaji: ${(i % 8) + 3} jt`).join('\n');
+      const start = performance.now();
+      const result = extractAlternativesFromText(longText, mockCriteria);
+      const duration = performance.now() - start;
+
+      expect(duration).toBeLessThan(50);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.alternatives.length).toBe(50);
+      }
+    });
+  });
 });
+

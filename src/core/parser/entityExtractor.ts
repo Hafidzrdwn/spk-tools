@@ -21,6 +21,7 @@ export interface EntityExtractionError {
 export type EntityExtractionResult = EntityExtractionSuccess | EntityExtractionError;
 
 function stripUnitsAndParseNumber(rawStr: string): number | null {
+  // ReDoS Audit (§20.2): Alternasi kata satuan statis, linear O(N), tidak ada nested quantifier atau backtracking
   const cleaned = rawStr
     .trim()
     .replace(/(tahun|thn|juta|jt|ribu|rb|bulan|bln|hari|hr|jam|kg|%)/gi, '')
@@ -32,6 +33,7 @@ function stripUnitsAndParseNumber(rawStr: string): number | null {
 }
 
 function findMatchingCriterion(key: string, criteria: Criterion[]): Criterion | null {
+  // ReDoS Audit (§20.2): Karakter kelas tunggal [^a-z0-9], linear O(N) tanpa quantifiers bertingkat
   const cleanKey = key.toLowerCase().replace(/[^a-z0-9]/g, '');
   if (!cleanKey) return null;
 
@@ -77,6 +79,7 @@ export function extractAlternativesFromText(
       return;
     }
 
+    // ReDoS Audit (§20.2): Pemisahan delimiter koma/titik-koma berbasis karakter kelas, deterministik O(N)
     const fragments = lineText.split(/[,;]/).map((f) => f.trim()).filter(Boolean);
     let altName = '';
     const values: Record<string, number> = {};

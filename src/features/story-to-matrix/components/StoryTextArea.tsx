@@ -19,6 +19,8 @@ Kandidat: Joko Widodo, Nilai Tes: 78, Pengalaman: 2 thn, Gaji: 4.5 jt
 Atau masukkan perbandingan preferensi Saaty:
 Pengalaman 3 kali lebih penting dari Gaji.`;
 
+export const MAX_STORY_CHARS = 5000;
+
 export const StoryTextArea: React.FC<StoryTextAreaProps> = ({
   value,
   onChange,
@@ -26,6 +28,9 @@ export const StoryTextArea: React.FC<StoryTextAreaProps> = ({
   onOpenTemplates,
   errorMessage,
 }) => {
+  const isOverLimit = value.length > MAX_STORY_CHARS;
+  const isNearLimit = value.length >= MAX_STORY_CHARS * 0.9;
+
   return (
     <Card className="border border-slate-200/90 shadow-2xs">
       <CardHeader className="py-3 px-4 border-b border-slate-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
@@ -55,13 +60,31 @@ export const StoryTextArea: React.FC<StoryTextAreaProps> = ({
       </CardHeader>
 
       <CardContent className="p-4 space-y-3">
-        <textarea
-          rows={9}
-          value={value}
-          onChange={(e) => onChange.call(null, e.target.value)}
-          placeholder={PLACEHOLDER_TEXT}
-          className="w-full p-3.5 rounded-xl border border-slate-200/90 bg-slate-50/50 font-mono text-xs text-slate-800 leading-relaxed focus:bg-white focus:outline-none focus:ring-2 focus:ring-accent-primary/40 focus:border-accent-primary transition-all resize-y"
-        />
+        <div className="space-y-1.5">
+          <textarea
+            rows={9}
+            maxLength={MAX_STORY_CHARS}
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            placeholder={PLACEHOLDER_TEXT}
+            className={`w-full p-3.5 rounded-xl border bg-slate-50/50 font-mono text-xs text-slate-800 leading-relaxed focus:bg-white focus:outline-none focus:ring-2 transition-all resize-y ${
+              isOverLimit
+                ? 'border-rose-300 focus:ring-rose-200 focus:border-rose-500'
+                : 'border-slate-200/90 focus:ring-accent-primary/40 focus:border-accent-primary'
+            }`}
+          />
+          <div className="flex items-center justify-between text-2xs px-1">
+            <span className={isOverLimit ? 'text-rose-600 font-medium' : isNearLimit ? 'text-amber-600 font-medium' : 'text-slate-400'}>
+              {isOverLimit ? 'Maksimal 5.000 karakter terlampaui!' : 'Batas maksimal 5.000 karakter per proses narasi'}
+            </span>
+            <span
+              data-testid="story-char-counter"
+              className={`font-mono ${isOverLimit ? 'text-rose-600 font-bold' : isNearLimit ? 'text-amber-600 font-semibold' : 'text-slate-400'}`}
+            >
+              {value.length.toLocaleString('id-ID')} / {MAX_STORY_CHARS.toLocaleString('id-ID')}
+            </span>
+          </div>
+        </div>
 
         {errorMessage && (
           <div className="p-3 rounded-xl bg-rose-50/90 border border-rose-200 text-xs text-rose-800 flex items-start gap-2 animate-in fade-in duration-150">
@@ -87,7 +110,7 @@ export const StoryTextArea: React.FC<StoryTextAreaProps> = ({
             variant="primary"
             size="sm"
             onClick={onParse}
-            disabled={!value.trim()}
+            disabled={!value.trim() || isOverLimit}
             className="font-semibold shadow-xs cursor-pointer px-4"
           >
             <Play className="w-3.5 h-3.5 mr-1.5 fill-white" /> Parse Teks ke Matriks
