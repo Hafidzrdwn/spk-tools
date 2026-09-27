@@ -1,5 +1,4 @@
 {
-  "_comment": "CATATAN KEAMANAN (Spec §20.4): 'unsafe-inline' pada style-src sengaja diizinkan karena Framer Motion & Recharts menyuntikkan inline style secara dinamis saat runtime. WAJIB lakukan testing manual untuk transisi animasi & radar chart TOPSIS setelah header ini aktif di environment deploy sungguhan (Vercel production).",
   "headers": [
     {
       "source": "/(.*)",
