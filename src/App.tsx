@@ -1,6 +1,7 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import AppShell from '@/components/layout/AppShell';
+import { Toaster } from 'sonner';
 import Tabs from '@/components/ui/Tabs';
 import Card, { CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
@@ -313,6 +314,9 @@ export default function App() {
           />
         </Suspense>
       )}
+
+      {/* Global Toast Notification System */}
+      <Toaster richColors position="top-right" />
     </AppShell>
   );
 }

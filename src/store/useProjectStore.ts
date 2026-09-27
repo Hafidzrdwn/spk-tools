@@ -2,6 +2,8 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import { nanoid } from 'nanoid';
+import { projectStatePersistedSchema } from '@/validators/matrixSchemas';
+import { toast } from 'sonner';
 import type { DecisiProjectState, Criterion, Alternative, MethodId } from '@/types/domain';
 
 export interface ProjectStore extends DecisiProjectState {
@@ -23,12 +25,13 @@ export interface ProjectStore extends DecisiProjectState {
   resetProject: () => void;
 }
 
-const defaultInitialState: DecisiProjectState = {
+export const INITIAL_PROJECT_STATE: DecisiProjectState = {
   title: 'Proyek SPK Baru',
   activeMethod: 'SAW',
   criteria: [],
   alternatives: [],
 };
+const defaultInitialState = INITIAL_PROJECT_STATE;
 
 export const useProjectStore = create<ProjectStore>()(
   persist(
@@ -160,6 +163,27 @@ export const useProjectStore = create<ProjectStore>()(
         criteria: state.criteria,
         alternatives: state.alternatives,
       }),
+      merge: (persistedState, currentState) => {
+        if (!persistedState) {
+          return currentState;
+        }
+
+        const result = projectStatePersistedSchema.safeParse(persistedState);
+        if (!result.success) {
+          console.warn('Data tersimpan di localStorage tidak valid, mereset ke kondisi awal:', result.error);
+          setTimeout(() => {
+            toast.error('Data tersimpan tidak valid, proyek direset ke kondisi awal.');
+          }, 150);
+          return {
+            ...currentState,
+            ...INITIAL_PROJECT_STATE,
+          };
+        }
+        return {
+          ...currentState,
+          ...result.data,
+        };
+      },
       // TODO: migrate: (persisted, version) => persisted, // siapkan slot ini untuk breaking change di masa depan
     }
   )

@@ -46,3 +46,35 @@ export function wpZeroGuard(
 
   return violations;
 }
+
+/**
+ * Zod schema untuk validasi item kriteria tersimpan
+ */
+export const criterionSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  type: z.enum(['BENEFIT', 'COST']),
+  weight: z.number(),
+  normalizedWeight: z.number().optional().default(0),
+});
+
+/**
+ * Zod schema untuk validasi item alternatif tersimpan
+ */
+export const alternativeSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  values: z.record(z.string(), z.number()),
+});
+
+/**
+ * Zod schema untuk validasi state proyek yang dipersist di localStorage (Spec Addendum 2 §20.1)
+ */
+export const projectStatePersistedSchema = z.object({
+  title: z.string(),
+  activeMethod: z.enum(['SAW', 'WP', 'TOPSIS', 'AHP', 'AUTO']),
+  criteria: z.array(criterionSchema),
+  alternatives: z.array(alternativeSchema),
+});
+
+export type ProjectStatePersisted = z.infer<typeof projectStatePersistedSchema>;
