@@ -4,7 +4,7 @@ import { useTourStore } from './useTourStore';
 
 export type EditorSection = 'matrix' | 'criteria' | 'alternatives';
 export type NumberSeparator = 'comma' | 'dot';
-export type AppView = 'landing' | 'workboard' | 'community';
+export type AppView = 'landing' | 'board' | 'review' | 'analytics';
 
 export interface UiStore {
   currentView: AppView;
@@ -71,16 +71,31 @@ const getInitialNumberFormat = (): NumberSeparator => {
   }
 };
 
+export const pathToView = (pathname: string): AppView => {
+  const cleanPath = pathname.replace(/\/+$/, '').toLowerCase();
+  if (cleanPath === '' || cleanPath === '/') return 'landing';
+  if (cleanPath.startsWith('/board') || cleanPath.startsWith('/workboard')) return 'board';
+  if (cleanPath.startsWith('/review')) return 'review';
+  if (cleanPath.startsWith('/analytic')) return 'analytics';
+  return 'landing';
+};
+
 const getInitialView = (): AppView => {
-  if (typeof window === 'undefined') return 'workboard';
+  if (typeof window === 'undefined') return 'landing';
   try {
+    const path = window.location.pathname;
+    if (path && path !== '/') {
+      return pathToView(path);
+    }
+    // Backward compatibility for legacy ?view= query parameter
     const params = new URLSearchParams(window.location.search);
     const viewParam = params.get('view')?.toLowerCase();
-    if (viewParam === 'landing') return 'landing';
-    if (viewParam === 'community') return 'community';
-    return 'workboard';
+    if (viewParam === 'board' || viewParam === 'workboard') return 'board';
+    if (viewParam === 'review' || viewParam === 'community') return 'review';
+    if (viewParam === 'analytics') return 'analytics';
+    return 'landing';
   } catch {
-    return 'workboard';
+    return 'landing';
   }
 };
 
@@ -106,12 +121,19 @@ export const useUiStore = create<UiStore>((set) => ({
   setCurrentView: (view) => {
     try {
       const url = new URL(window.location.href);
-      if (view === 'workboard') {
-        url.searchParams.delete('view');
-      } else {
-        url.searchParams.set('view', view);
+      // Clean up legacy ?view= parameter if present
+      url.searchParams.delete('view');
+
+      let targetPath = '/';
+      if (view === 'board') targetPath = '/board';
+      else if (view === 'review') targetPath = '/review';
+      else if (view === 'analytics') targetPath = '/analytics';
+      else targetPath = '/';
+
+      if (url.pathname !== targetPath) {
+        url.pathname = targetPath;
+        window.history.pushState(null, '', url.pathname + url.search + url.hash);
       }
-      window.history.pushState(null, '', url.pathname + url.search + url.hash);
     } catch {
       // safe fallback
     }

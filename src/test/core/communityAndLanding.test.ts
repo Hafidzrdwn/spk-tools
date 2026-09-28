@@ -140,3 +140,32 @@ describe('Report Email Helper Module', () => {
     Object.assign(navigator, { clipboard: originalClipboard });
   });
 });
+
+describe('Clean Path Routing & pathToView Helper', () => {
+  it('memetakan path URL secara benar ke AppView', async () => {
+    const { pathToView, useUiStore } = await import('@/store/useUiStore');
+
+    expect(pathToView('/')).toBe('landing');
+    expect(pathToView('')).toBe('landing');
+    expect(pathToView('/board')).toBe('board');
+    expect(pathToView('/board/')).toBe('board');
+    expect(pathToView('/workboard')).toBe('board');
+    expect(pathToView('/review')).toBe('review');
+    expect(pathToView('/reviews')).toBe('review');
+    expect(pathToView('/analytics')).toBe('analytics');
+
+    // Test setCurrentView
+    useUiStore.getState().setCurrentView('board');
+    expect(useUiStore.getState().currentView).toBe('board');
+
+    useUiStore.getState().setCurrentView('review');
+    expect(useUiStore.getState().currentView).toBe('review');
+
+    useUiStore.getState().setCurrentView('analytics');
+    expect(useUiStore.getState().currentView).toBe('analytics');
+
+    useUiStore.getState().setCurrentView('landing');
+    expect(useUiStore.getState().currentView).toBe('landing');
+  });
+});
+

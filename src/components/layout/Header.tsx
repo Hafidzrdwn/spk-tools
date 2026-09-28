@@ -6,7 +6,7 @@ import Logo from './Logo';
 import EditableProjectTitle from '@/features/project/EditableProjectTitle';
 import GlossaryDrawer from '@/features/glossary/GlossaryDrawer';
 import TourLauncherMenu from '@/features/tour/TourLauncherMenu';
-import { BookOpen, Home, Star, LayoutDashboard } from 'lucide-react';
+import { BookOpen, Home, Star, LayoutDashboard, BarChart3 } from 'lucide-react';
 import { useUiStore } from '@/store/useUiStore';
 import type { MethodId } from '@/types/domain';
 
@@ -75,10 +75,10 @@ export const Header: React.FC<HeaderProps> = ({
           </button>
           <button
             type="button"
-            onClick={() => setCurrentView('workboard')}
+            onClick={() => setCurrentView('board')}
             className={cn(
               'px-2.5 py-1 rounded-md transition-all font-medium flex items-center gap-1.5 cursor-pointer',
-              currentView === 'workboard'
+              currentView === 'board'
                 ? 'bg-white text-indigo-700 shadow-2xs font-bold'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
             )}
@@ -89,31 +89,65 @@ export const Header: React.FC<HeaderProps> = ({
           </button>
           <button
             type="button"
-            onClick={() => setCurrentView('community')}
+            onClick={() => setCurrentView('review')}
             className={cn(
               'px-2.5 py-1 rounded-md transition-all font-medium flex items-center gap-1.5 cursor-pointer',
-              currentView === 'community'
+              currentView === 'review'
                 ? 'bg-white text-amber-700 shadow-2xs font-bold'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
             )}
-            title="Ulasan & Web Analytics"
+            title="Ulasan & Masukan Pengguna"
           >
             <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-400" />
-            <span>Review & Analitik</span>
+            <span>Review</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setCurrentView('analytics')}
+            className={cn(
+              'px-2.5 py-1 rounded-md transition-all font-medium flex items-center gap-1.5 cursor-pointer',
+              currentView === 'analytics'
+                ? 'bg-white text-indigo-700 shadow-2xs font-bold'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
+            )}
+            title="Statistik Web & Pengunjung"
+          >
+            <BarChart3 className="w-3.5 h-3.5 text-indigo-600" />
+            <span>Analitik</span>
           </button>
         </div>
 
         {/* Status Method & Aksi */}
         <div className="flex items-center gap-2">
-          {/* Quick Review Button for mobile/tablet */}
-          <button
-            type="button"
-            onClick={() => setCurrentView('community')}
-            className="lg:hidden p-1.5 rounded-lg border border-slate-200 text-slate-600 hover:text-amber-600 bg-white"
-            title="Review & Web Analytics"
-          >
-            <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-400" />
-          </button>
+          {/* Quick Nav for mobile/tablet */}
+          <div className="lg:hidden flex items-center gap-1">
+            <button
+              type="button"
+              onClick={() => setCurrentView('review')}
+              className={cn(
+                'p-1.5 rounded-lg border text-xs',
+                currentView === 'review'
+                  ? 'border-amber-300 bg-amber-50 text-amber-700'
+                  : 'border-slate-200 text-slate-600 bg-white hover:text-amber-600'
+              )}
+              title="Review Pengguna"
+            >
+              <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-400" />
+            </button>
+            <button
+              type="button"
+              onClick={() => setCurrentView('analytics')}
+              className={cn(
+                'p-1.5 rounded-lg border text-xs',
+                currentView === 'analytics'
+                  ? 'border-indigo-300 bg-indigo-50 text-indigo-700'
+                  : 'border-slate-200 text-slate-600 bg-white hover:text-indigo-600'
+              )}
+              title="Web Analytics"
+            >
+              <BarChart3 className="w-3.5 h-3.5 text-indigo-600" />
+            </button>
+          </div>
 
           <TourLauncherMenu />
 

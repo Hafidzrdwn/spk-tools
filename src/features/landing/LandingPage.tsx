@@ -27,9 +27,8 @@ export const LandingPage: React.FC = () => {
       id: 'SAW',
       title: 'Simple Additive Weighting',
       acronym: 'SAW',
-      formula: 'V_i = \\sum w_j r_{ij}',
       tag: 'Aditif Linear',
-      color: 'from-indigo-500/10 via-indigo-500/5 to-transparent border-indigo-200/80 text-indigo-700',
+      accentBg: 'bg-indigo-50 text-indigo-700 border-indigo-200/80',
       icon: <Calculator className="w-4 h-4 text-indigo-600" />,
       desc: 'Normalisasi matriks terbobot linear. Ideal untuk penilaian kriteria proporsional langsung.',
     },
@@ -37,9 +36,8 @@ export const LandingPage: React.FC = () => {
       id: 'WP',
       title: 'Weighted Product',
       acronym: 'WP',
-      formula: 'S_i = \\prod x_{ij}^{w_j}',
       tag: 'Perkalian Pangkat',
-      color: 'from-violet-500/10 via-violet-500/5 to-transparent border-violet-200/80 text-violet-700',
+      accentBg: 'bg-violet-50 text-violet-700 border-violet-200/80',
       icon: <Layers className="w-4 h-4 text-violet-600" />,
       desc: 'Perkalian eksponensial matematis. Efektif menangani skala nilai multi-dimensi.',
     },
@@ -47,59 +45,71 @@ export const LandingPage: React.FC = () => {
       id: 'TOPSIS',
       title: 'Technique for Order Preference',
       acronym: 'TOPSIS',
-      formula: 'C_i = \\frac{D_i^-}{D_i^+ + D_i^-}',
       tag: 'Jarak Geometris',
-      color: 'from-sky-500/10 via-sky-500/5 to-transparent border-sky-200/80 text-sky-700',
+      accentBg: 'bg-sky-50 text-sky-700 border-sky-200/80',
       icon: <Compass className="w-4 h-4 text-sky-600" />,
-      desc: 'Mengukur kedekatan jarak Euclidean relatif terhadap solusi ideal positif (A+) & negatif (A−).',
+      desc: 'Mengukur kedekatan Euclidean relatif terhadap solusi ideal positif (A+) dan negatif (A−).',
     },
     {
       id: 'AHP',
       title: 'Analytic Hierarchy Process',
       acronym: 'AHP',
-      formula: 'CR = \\frac{CI}{RI} \\le 0.10',
       tag: 'Uji Konsistensi',
-      color: 'from-purple-500/10 via-purple-500/5 to-transparent border-purple-200/80 text-purple-700',
+      accentBg: 'bg-purple-50 text-purple-700 border-purple-200/80',
       icon: <Sliders className="w-4 h-4 text-purple-600" />,
       desc: 'Matriks perbandingan berpasangan Saaty dengan kalkulasi otomatis rasio konsistensi (CR).',
     },
   ];
 
   return (
-    <div className="h-screen max-h-screen w-full overflow-hidden flex flex-col justify-between bg-slate-900 text-slate-100 relative select-none">
-      {/* Background Decorative Gradients & Grid Pattern */}
-      <div className="absolute inset-0 bg-[radial-gradient(#312e81_1px,transparent_1px)] [background-size:24px_24px] opacity-25 pointer-events-none" />
-      <div className="absolute top-0 -left-40 w-96 h-96 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 -right-40 w-96 h-96 bg-purple-600/20 rounded-full blur-3xl pointer-events-none" />
+    <div className="h-screen max-h-screen w-full overflow-hidden flex flex-col justify-between bg-surface bg-dot-grid text-slate-800 relative select-none">
+      {/* Background Decorative Ambient Glows */}
+      <div className="absolute top-0 -left-20 w-80 h-80 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-0 -right-20 w-80 h-80 bg-violet-500/10 rounded-full blur-3xl pointer-events-none" />
 
       {/* =========================================================================
           TOP NAVBAR
       ========================================================================== */}
-      <header className="relative z-10 w-full px-6 py-3 border-b border-slate-800/80 bg-slate-900/60 backdrop-blur-md">
+      <header className="relative z-10 w-full px-6 py-3 border-b border-slate-200/80 bg-white/80 backdrop-blur-md">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Logo size="md" showWordmark />
-            <span className="text-slate-700">|</span>
+            <span className="text-slate-300">|</span>
             <Badge variant="primary" size="sm" className="font-bold text-[10px]">
-              v1.1 Refinement
+              v1.1
             </Badge>
           </div>
 
-          <nav className="flex items-center gap-3">
+          <nav className="flex items-center gap-2 sm:gap-3">
             <button
               type="button"
-              onClick={() => setCurrentView('community')}
-              className="text-xs text-slate-300 hover:text-white transition-colors flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-slate-800/60 cursor-pointer"
+              onClick={() => setCurrentView('board')}
+              className="text-xs font-semibold text-slate-600 hover:text-indigo-600 transition-colors px-3 py-1.5 rounded-lg hover:bg-slate-100 cursor-pointer hidden sm:block"
             >
-              <Star className="w-3.5 h-3.5 text-amber-400" />
-              <span>Review & Web Analytics</span>
+              Workboard
+            </button>
+            <button
+              type="button"
+              onClick={() => setCurrentView('review')}
+              className="text-xs font-semibold text-slate-600 hover:text-amber-600 transition-colors flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-amber-50/60 cursor-pointer"
+            >
+              <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-400" />
+              <span>Review</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setCurrentView('analytics')}
+              className="text-xs font-semibold text-slate-600 hover:text-indigo-600 transition-colors flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-indigo-50/60 cursor-pointer"
+            >
+              <BarChart3 className="w-3.5 h-3.5 text-indigo-600" />
+              <span>Analitik</span>
             </button>
 
             <a
               href="https://github.com/hafidzrdwn"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs text-slate-400 hover:text-white transition-colors p-1.5 rounded-lg hover:bg-slate-800/60"
+              className="text-xs text-slate-400 hover:text-slate-800 transition-colors p-1.5 rounded-lg hover:bg-slate-100"
               title="GitHub Repository"
               aria-label="GitHub Repository"
             >
@@ -109,8 +119,8 @@ export const LandingPage: React.FC = () => {
             <Button
               variant="primary"
               size="sm"
-              onClick={() => setCurrentView('workboard')}
-              className="shadow-lg shadow-indigo-500/20 text-xs font-semibold"
+              onClick={() => setCurrentView('board')}
+              className="shadow-sm text-xs font-semibold"
             >
               <span>Buka Workboard</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -120,77 +130,77 @@ export const LandingPage: React.FC = () => {
       </header>
 
       {/* =========================================================================
-          HERO MAIN CONTENT (FITS EXACT VIEWPORT)
+          HERO MAIN CONTENT (FITS EXACT VIEWPORT, NO-SCROLL)
       ========================================================================== */}
       <main className="relative z-10 flex-1 max-w-6xl mx-auto w-full px-6 flex flex-col justify-center gap-4 py-2">
         {/* Headline & Value Proposition */}
         <div className="text-center space-y-2.5 max-w-3xl mx-auto">
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
+            initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-400/30 text-indigo-300 text-xs font-medium"
+            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-200/80 text-indigo-700 text-xs font-semibold"
           >
-            <Sparkles className="w-3.5 h-3.5 text-indigo-400 animate-pulse" />
+            <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
             <span>Multi-Criteria Decision Analysis Engine & Transparency Inspector</span>
           </motion.div>
 
           <motion.h1
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-2xl sm:text-4xl md:text-[42px] font-extrabold tracking-tight text-white leading-tight"
+            className="text-2xl sm:text-4xl md:text-[40px] font-extrabold tracking-tight text-slate-900 leading-tight"
           >
             Kalkulasi Transparan, <br className="hidden sm:inline" />
-            <span className="bg-linear-to-r from-indigo-400 via-purple-300 to-sky-400 bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-indigo-700 via-indigo-600 to-violet-700 bg-clip-text text-transparent">
               Keputusan Lebih Percaya Diri.
             </span>
           </motion.h1>
 
           <motion.p
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-2xl mx-auto"
+            transition={{ delay: 0.15 }}
+            className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-2xl mx-auto"
           >
-            Evaluasi alternatif keputusan menggunakan 4 metode teruji (SAW, WP, TOPSIS, AHP) secara simultan. Dilengkapi inspeksi rumus KaTeX per sel matriks dan konversi cerita ke matriks (*Story-to-Matrix*) secara otomatis.
+            Evaluasi alternatif keputusan menggunakan 4 metode teruji (SAW, WP, TOPSIS, AHP) secara simultan dengan inspeksi rumus KaTeX per sel matriks dan konversi cerita ke matriks otomatis.
           </motion.p>
 
           {/* Action CTAs */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
+            initial={{ opacity: 0, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.3 }}
+            transition={{ delay: 0.2 }}
             className="flex items-center justify-center gap-3 pt-1"
           >
             <Button
               variant="primary"
               size="md"
-              onClick={() => setCurrentView('workboard')}
-              className="px-6 py-2.5 text-sm font-bold shadow-xl shadow-indigo-600/30 bg-indigo-600 hover:bg-indigo-500 cursor-pointer"
+              onClick={() => setCurrentView('board')}
+              className="px-6 py-2.5 text-sm font-bold shadow-md shadow-indigo-500/20 cursor-pointer"
             >
-              <span>Mulai Evaluasi SPK Sekarang</span>
+              <span>Mulai Evaluasi SPK</span>
               <ArrowRight className="w-4 h-4" />
             </Button>
 
             <Button
               variant="secondary"
               size="md"
-              onClick={() => setCurrentView('community')}
-              className="px-5 py-2.5 text-sm font-semibold bg-slate-800/80 text-slate-200 border-slate-700 hover:bg-slate-700 hover:text-white cursor-pointer"
+              onClick={() => setCurrentView('review')}
+              className="px-5 py-2.5 text-sm font-semibold border-slate-300 text-slate-700 hover:text-slate-900 cursor-pointer"
             >
-              <BarChart3 className="w-4 h-4 text-accent-primary" />
-              <span>Lihat Review & Analytics</span>
+              <Star className="w-4 h-4 text-amber-500 fill-amber-400" />
+              <span>Ulasan Komunitas</span>
             </Button>
           </motion.div>
         </div>
 
         {/* =======================================================================
-            4 METHOD SHOWCASE CARDS (COMPACT & MODERN)
+            4 METHOD SHOWCASE CARDS (LIGHT, CRISP, & INTERACTIVE)
         ======================================================================== */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
+          transition={{ delay: 0.3 }}
           className="grid grid-cols-2 md:grid-cols-4 gap-3 pt-2"
         >
           {methods.map((m) => (
@@ -198,53 +208,53 @@ export const LandingPage: React.FC = () => {
               key={m.id}
               onClick={() => {
                 useUiStore.getState().setActiveTab(m.id as any);
-                setCurrentView('workboard');
+                setCurrentView('board');
               }}
-              className="group p-3 rounded-xl bg-slate-800/50 hover:bg-slate-800/80 border border-slate-700/70 hover:border-indigo-400/50 transition-all duration-200 cursor-pointer flex flex-col justify-between space-y-2 backdrop-blur-xs shadow-lg hover:shadow-indigo-500/10 hover:-translate-y-0.5"
+              className="group p-3.5 rounded-xl bg-white border border-slate-200/90 hover:border-indigo-400/80 transition-all duration-200 cursor-pointer flex flex-col justify-between space-y-2 shadow-2xs hover:shadow-md hover:-translate-y-0.5"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="p-1.5 rounded-lg bg-slate-700/60 group-hover:bg-indigo-500/20 transition-colors">
+                  <div className="p-1.5 rounded-lg bg-slate-100 group-hover:bg-indigo-50 transition-colors">
                     {m.icon}
                   </div>
-                  <span className="font-mono font-bold text-sm text-white group-hover:text-indigo-300 transition-colors">
+                  <span className="font-mono font-bold text-sm text-slate-900 group-hover:text-indigo-600 transition-colors">
                     {m.acronym}
                   </span>
                 </div>
-                <span className="text-[10px] font-medium text-slate-400 px-1.5 py-0.5 rounded bg-slate-700/50">
+                <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${m.accentBg}`}>
                   {m.tag}
                 </span>
               </div>
 
-              <p className="text-[11px] text-slate-400 leading-snug line-clamp-2">
+              <p className="text-[11px] text-slate-600 leading-snug line-clamp-2">
                 {m.desc}
               </p>
 
-              <div className="pt-1 border-t border-slate-700/50 flex items-center justify-between text-[10px] text-slate-500 font-mono">
-                <span className="truncate">Klik untuk kalkulasi</span>
-                <ArrowRight className="w-3 h-3 text-slate-400 group-hover:text-indigo-400 group-hover:translate-x-0.5 transition-all" />
+              <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500 font-medium">
+                <span className="truncate group-hover:text-indigo-600 transition-colors">Buka Kalkulasi</span>
+                <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-indigo-600 group-hover:translate-x-0.5 transition-all" />
               </div>
             </div>
           ))}
         </motion.div>
 
-        {/* Feature Badges Pill Row */}
-        <div className="flex items-center justify-center gap-4 text-[11px] text-slate-400 pt-1">
+        {/* Feature Highlights Row (No technical jargon) */}
+        <div className="flex items-center justify-center gap-5 text-[11px] text-slate-500 pt-1">
           <span className="inline-flex items-center gap-1.5">
-            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
             <span>Traceability KaTeX Per Sel</span>
           </span>
           <span className="inline-flex items-center gap-1.5">
-            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-            <span>Multi-Method Rank Shift Analysis</span>
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+            <span>Analisis Pergeseran Peringkat</span>
           </span>
           <span className="inline-flex items-center gap-1.5">
-            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-            <span>Ekspor PDF Siap Cetak (A4)</span>
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+            <span>Laporan PDF Siap Cetak (A4)</span>
           </span>
           <span className="inline-flex items-center gap-1.5">
-            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-            <span>Firebase Realtime DB</span>
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+            <span>Ekstraksi Cerita Otomatis</span>
           </span>
         </div>
       </main>
@@ -252,11 +262,11 @@ export const LandingPage: React.FC = () => {
       {/* =========================================================================
           BOTTOM STATUS BAR
       ========================================================================== */}
-      <footer className="relative z-10 w-full px-6 py-2.5 border-t border-slate-800/80 bg-slate-900/80 text-xs text-slate-500">
+      <footer className="relative z-10 w-full px-6 py-2.5 border-t border-slate-200/80 bg-white/80 text-xs text-slate-500">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <span>&copy; {currentYear} DecisiGraph v1.1 &mdash; Dibuat oleh Hafidz Ridwan</span>
+          <span>&copy; {currentYear} DecisiGraph v1.1 &mdash; Sistem Pendukung Keputusan Multikriteria</span>
           <div className="flex items-center gap-2">
-            <span className="text-[11px] text-slate-400 hidden sm:inline">Pemisah Desimal:</span>
+            <span className="text-[11px] text-slate-500 hidden sm:inline">Pemisah Desimal:</span>
             <DecimalFormatToggle />
           </div>
         </div>

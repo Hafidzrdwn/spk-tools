@@ -80,7 +80,7 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (!hasSeenWelcome && currentView === 'workboard') {
+    if (!hasSeenWelcome && currentView === 'board') {
       openWelcome();
     }
   }, [hasSeenWelcome, openWelcome, currentView]);
@@ -94,7 +94,7 @@ export default function App() {
     );
   }
 
-  if (currentView === 'community') {
+  if (currentView === 'review' || currentView === 'analytics') {
     return (
       <Suspense fallback={<TabSkeleton />}>
         <CommunityPage />
