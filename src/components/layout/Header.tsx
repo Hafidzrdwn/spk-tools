@@ -6,7 +6,7 @@ import Logo from './Logo';
 import EditableProjectTitle from '@/features/project/EditableProjectTitle';
 import GlossaryDrawer from '@/features/glossary/GlossaryDrawer';
 import TourLauncherMenu from '@/features/tour/TourLauncherMenu';
-import { BookOpen } from 'lucide-react';
+import { BookOpen, Home, Star, LayoutDashboard } from 'lucide-react';
 import { useUiStore } from '@/store/useUiStore';
 import type { MethodId } from '@/types/domain';
 
@@ -25,6 +25,8 @@ export const Header: React.FC<HeaderProps> = ({
   actions,
   className,
 }) => {
+  const currentView = useUiStore((s) => s.currentView);
+  const setCurrentView = useUiStore((s) => s.setCurrentView);
   const isGlossaryOpen = useUiStore((s) => s.isGlossaryOpen);
   const glossaryTargetTerm = useUiStore((s) => s.glossaryTargetTerm);
   const openGlossary = useUiStore((s) => s.openGlossary);
@@ -41,7 +43,7 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
         {/* Logo & Identitas */}
         <div className="flex items-center gap-3">
-          <h1 className="m-0 p-0 text-inherit font-inherit inline-flex items-center">
+          <h1 className="m-0 p-0 text-inherit font-inherit inline-flex items-center cursor-pointer" onClick={() => setCurrentView('landing')}>
             <Logo size="md" showWordmark />
           </h1>
           <div className="flex items-center gap-2 border-l border-slate-200/80 pl-3">
@@ -55,8 +57,64 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
 
+        {/* View Navigation Switcher */}
+        <div className="hidden lg:flex items-center gap-1 p-1 bg-slate-100/90 rounded-lg border border-slate-200/80 text-xs">
+          <button
+            type="button"
+            onClick={() => setCurrentView('landing')}
+            className={cn(
+              'px-2.5 py-1 rounded-md transition-all font-medium flex items-center gap-1.5 cursor-pointer',
+              currentView === 'landing'
+                ? 'bg-white text-slate-900 shadow-2xs font-bold'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
+            )}
+            title="Halaman Depan (Landing Page)"
+          >
+            <Home className="w-3.5 h-3.5" />
+            <span>Beranda</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setCurrentView('workboard')}
+            className={cn(
+              'px-2.5 py-1 rounded-md transition-all font-medium flex items-center gap-1.5 cursor-pointer',
+              currentView === 'workboard'
+                ? 'bg-white text-indigo-700 shadow-2xs font-bold'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
+            )}
+            title="Workboard Perhitungan SPK"
+          >
+            <LayoutDashboard className="w-3.5 h-3.5 text-accent-primary" />
+            <span>Workboard</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setCurrentView('community')}
+            className={cn(
+              'px-2.5 py-1 rounded-md transition-all font-medium flex items-center gap-1.5 cursor-pointer',
+              currentView === 'community'
+                ? 'bg-white text-amber-700 shadow-2xs font-bold'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
+            )}
+            title="Ulasan & Web Analytics"
+          >
+            <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-400" />
+            <span>Review & Analitik</span>
+          </button>
+        </div>
+
         {/* Status Method & Aksi */}
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2">
+          {/* Quick Review Button for mobile/tablet */}
+          <button
+            type="button"
+            onClick={() => setCurrentView('community')}
+            className="lg:hidden p-1.5 rounded-lg border border-slate-200 text-slate-600 hover:text-amber-600 bg-white"
+            title="Review & Web Analytics"
+          >
+            <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-400" />
+          </button>
+
           <TourLauncherMenu />
 
           <Button
@@ -69,7 +127,7 @@ export const Header: React.FC<HeaderProps> = ({
             className="flex items-center gap-1.5 text-slate-700 hover:text-accent-primary"
           >
             <BookOpen className="w-3.5 h-3.5 text-accent-primary" />
-            <span className="font-medium text-xs">Glosarium</span>
+            <span className="font-medium text-xs hidden sm:inline">Glosarium</span>
           </Button>
 
           {actions && <div className="flex items-center gap-2">{actions}</div>}

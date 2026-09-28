@@ -4,8 +4,10 @@ import { useTourStore } from './useTourStore';
 
 export type EditorSection = 'matrix' | 'criteria' | 'alternatives';
 export type NumberSeparator = 'comma' | 'dot';
+export type AppView = 'landing' | 'workboard' | 'community';
 
 export interface UiStore {
+  currentView: AppView;
   activeTab: MethodId;
   hoveredCellId: string | null;
   isInspectorOpen: boolean;
@@ -24,6 +26,7 @@ export interface UiStore {
   storyHasExtracted: boolean;
   storyMode: 'story' | 'form';
   isSharedMatrixCollapsed: boolean;
+  setCurrentView: (view: AppView) => void;
   setHoveredCell: (id: string | null) => void;
   setActiveTab: (tab: MethodId) => void;
   setInspectorOpen: (open: boolean) => void;
@@ -68,7 +71,21 @@ const getInitialNumberFormat = (): NumberSeparator => {
   }
 };
 
+const getInitialView = (): AppView => {
+  if (typeof window === 'undefined') return 'workboard';
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const viewParam = params.get('view')?.toLowerCase();
+    if (viewParam === 'landing') return 'landing';
+    if (viewParam === 'community') return 'community';
+    return 'workboard';
+  } catch {
+    return 'workboard';
+  }
+};
+
 export const useUiStore = create<UiStore>((set) => ({
+  currentView: getInitialView(),
   activeTab: 'SAW',
   hoveredCellId: null,
   isInspectorOpen: false,
@@ -86,6 +103,20 @@ export const useUiStore = create<UiStore>((set) => ({
   storyMode: 'story',
   isSharedMatrixCollapsed: getInitialMatrixCollapsed(),
 
+  setCurrentView: (view) => {
+    try {
+      const url = new URL(window.location.href);
+      if (view === 'workboard') {
+        url.searchParams.delete('view');
+      } else {
+        url.searchParams.set('view', view);
+      }
+      window.history.pushState(null, '', url.pathname + url.search + url.hash);
+    } catch {
+      // safe fallback
+    }
+    set({ currentView: view });
+  },
   setHoveredCell: (id) => set({ hoveredCellId: id }),
   setActiveTab: (tab) => {
     useTourStore.getState().markTabVisited(tab);

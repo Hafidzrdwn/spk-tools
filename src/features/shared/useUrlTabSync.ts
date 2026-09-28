@@ -16,15 +16,24 @@ const VALID_METHOD_MAP: Record<string, MethodId> = {
 export function useUrlTabSync() {
   const activeTab = useUiStore((s) => s.activeTab);
   const setActiveTab = useUiStore((s) => s.setActiveTab);
+  const currentView = useUiStore((s) => s.currentView);
+  const setCurrentView = useUiStore((s) => s.setCurrentView);
   const isInitialized = useRef(false);
 
-  // 1. Baca ?tab= dari URL saat mount pertama kali
+  // 1. Baca ?tab= dan ?view= dari URL saat mount pertama kali
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
     try {
       const searchParams = new URLSearchParams(window.location.search);
       const tabParam = searchParams.get('tab');
+      const viewParam = searchParams.get('view')?.toLowerCase();
+
+      if (viewParam === 'landing' || viewParam === 'community' || viewParam === 'workboard') {
+        if (viewParam !== currentView) {
+          setCurrentView(viewParam);
+        }
+      }
 
       if (tabParam) {
         const normalized = tabParam.trim().toLowerCase();
@@ -38,7 +47,7 @@ export function useUrlTabSync() {
     }
 
     isInitialized.current = true;
-  }, [setActiveTab]);
+  }, [setActiveTab, setCurrentView, currentView]);
 
   // 2. Sinkronisasi activeTab ke URL saat terjadi perubahan (menggunakan replaceState)
   useEffect(() => {

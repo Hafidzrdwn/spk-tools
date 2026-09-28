@@ -38,6 +38,9 @@ import { storyTourDefinition } from '@/core/tour/storyTourSteps';
 import { useTourStore } from '@/store/useTourStore';
 
 const TourRunner = lazy(() => import('@/features/tour/TourRunner'));
+const LandingPage = lazy(() => import('@/features/landing/LandingPage'));
+const CommunityPage = lazy(() => import('@/features/community/CommunityPage'));
+import { trackPageView } from '@/services/firebase';
 import { Sparkles, FolderOpen, ChevronDown, ChevronUp } from 'lucide-react';
 import type { MethodId } from '@/types/domain';
 
@@ -70,11 +73,35 @@ export default function App() {
   const openWelcome = useUiStore((s) => s.openWelcome);
   const closeWelcome = useUiStore((s) => s.closeWelcome);
 
+  const currentView = useUiStore((s) => s.currentView);
+
   useEffect(() => {
-    if (!hasSeenWelcome) {
+    trackPageView(window.location.pathname + window.location.search);
+  }, []);
+
+  useEffect(() => {
+    if (!hasSeenWelcome && currentView === 'workboard') {
       openWelcome();
     }
-  }, [hasSeenWelcome, openWelcome]);
+  }, [hasSeenWelcome, openWelcome, currentView]);
+
+  if (currentView === 'landing') {
+    return (
+      <Suspense fallback={<TabSkeleton />}>
+        <LandingPage />
+        <Toaster position="bottom-right" richColors />
+      </Suspense>
+    );
+  }
+
+  if (currentView === 'community') {
+    return (
+      <Suspense fallback={<TabSkeleton />}>
+        <CommunityPage />
+        <Toaster position="bottom-right" richColors />
+      </Suspense>
+    );
+  }
 
   const currentRoute = ROUTES.find((r) => r.id === activeTab) || ROUTES[0];
 
