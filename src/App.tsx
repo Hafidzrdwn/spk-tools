@@ -25,6 +25,7 @@ const StoryToMatrixTab = lazy(() => import('@/features/story-to-matrix/StoryToMa
 import TemplateSelectorModal from '@/components/layout/TemplateSelectorModal';
 import ResetProjectButton from '@/features/project/ResetProjectButton';
 import ExportButton from '@/features/export/ExportButton';
+import DecimalFormatToggle from '@/components/layout/DecimalFormatToggle';
 import useUrlTabSync from '@/features/shared/useUrlTabSync';
 import GlossaryTerm from '@/features/glossary/GlossaryTerm';
 import WelcomeModal from '@/features/tour/WelcomeModal';
@@ -178,7 +179,13 @@ export default function App() {
               </div>
             </div>
 
-            <div className="flex items-center gap-2 self-end sm:self-auto">
+            <div className="flex items-center gap-2.5 self-end sm:self-auto">
+              {!isSharedMatrixCollapsed && activeEditorSection === 'matrix' && (
+                <div onClick={(e) => e.stopPropagation()} className="hidden md:flex items-center gap-1.5">
+                  <span className="text-[11px] text-slate-400 font-medium">Format:</span>
+                  <DecimalFormatToggle />
+                </div>
+              )}
               {!isSharedMatrixCollapsed && (
                 <div
                   className="flex items-center gap-1.5 p-1 bg-slate-100 rounded-control"

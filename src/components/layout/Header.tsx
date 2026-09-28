@@ -6,7 +6,6 @@ import Logo from './Logo';
 import EditableProjectTitle from '@/features/project/EditableProjectTitle';
 import GlossaryDrawer from '@/features/glossary/GlossaryDrawer';
 import TourLauncherMenu from '@/features/tour/TourLauncherMenu';
-import DecimalFormatToggle from './DecimalFormatToggle';
 import { BookOpen } from 'lucide-react';
 import { useUiStore } from '@/store/useUiStore';
 import type { MethodId } from '@/types/domain';
@@ -46,8 +45,8 @@ export const Header: React.FC<HeaderProps> = ({
             <Logo size="md" showWordmark />
           </h1>
           <div className="flex items-center gap-2 border-l border-slate-200/80 pl-3">
-            <Badge variant="primary" size="sm">
-              v1.0
+            <Badge variant="primary" size="sm" className="font-bold">
+              v1.1
             </Badge>
             <EditableProjectTitle
               initialTitle={title}
@@ -58,7 +57,6 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Status Method & Aksi */}
         <div className="flex items-center gap-2.5">
-          <DecimalFormatToggle />
           <TourLauncherMenu />
 
           <Button
