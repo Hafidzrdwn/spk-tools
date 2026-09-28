@@ -6,7 +6,7 @@ import Logo from './Logo';
 import EditableProjectTitle from '@/features/project/EditableProjectTitle';
 import GlossaryDrawer from '@/features/glossary/GlossaryDrawer';
 import TourLauncherMenu from '@/features/tour/TourLauncherMenu';
-import { BookOpen, Home, Star, LayoutDashboard, BarChart3 } from 'lucide-react';
+import { BookOpen } from 'lucide-react';
 import { useUiStore } from '@/store/useUiStore';
 import type { MethodId } from '@/types/domain';
 
@@ -25,8 +25,6 @@ export const Header: React.FC<HeaderProps> = ({
   actions,
   className,
 }) => {
-  const currentView = useUiStore((s) => s.currentView);
-  const setCurrentView = useUiStore((s) => s.setCurrentView);
   const isGlossaryOpen = useUiStore((s) => s.isGlossaryOpen);
   const glossaryTargetTerm = useUiStore((s) => s.glossaryTargetTerm);
   const openGlossary = useUiStore((s) => s.openGlossary);
@@ -43,9 +41,9 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
         {/* Logo & Identitas */}
         <div className="flex items-center gap-3">
-          <h1 className="m-0 p-0 text-inherit font-inherit inline-flex items-center cursor-pointer" onClick={() => setCurrentView('landing')}>
+          <a href="/" className="m-0 p-0 text-inherit font-inherit inline-flex items-center cursor-pointer">
             <Logo size="md" showWordmark />
-          </h1>
+          </a>
           <div className="flex items-center gap-2 border-l border-slate-200/80 pl-3">
             <Badge variant="primary" size="sm" className="font-bold">
               v1.1
@@ -57,97 +55,8 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
 
-        {/* View Navigation Switcher */}
-        <div className="hidden lg:flex items-center gap-1 p-1 bg-slate-100/90 rounded-lg border border-slate-200/80 text-xs">
-          <button
-            type="button"
-            onClick={() => setCurrentView('landing')}
-            className={cn(
-              'px-2.5 py-1 rounded-md transition-all font-medium flex items-center gap-1.5 cursor-pointer',
-              currentView === 'landing'
-                ? 'bg-white text-slate-900 shadow-2xs font-bold'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
-            )}
-            title="Halaman Depan (Landing Page)"
-          >
-            <Home className="w-3.5 h-3.5" />
-            <span>Beranda</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setCurrentView('board')}
-            className={cn(
-              'px-2.5 py-1 rounded-md transition-all font-medium flex items-center gap-1.5 cursor-pointer',
-              currentView === 'board'
-                ? 'bg-white text-indigo-700 shadow-2xs font-bold'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
-            )}
-            title="Workboard Perhitungan SPK"
-          >
-            <LayoutDashboard className="w-3.5 h-3.5 text-accent-primary" />
-            <span>Workboard</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setCurrentView('review')}
-            className={cn(
-              'px-2.5 py-1 rounded-md transition-all font-medium flex items-center gap-1.5 cursor-pointer',
-              currentView === 'review'
-                ? 'bg-white text-amber-700 shadow-2xs font-bold'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
-            )}
-            title="Ulasan & Masukan Pengguna"
-          >
-            <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-400" />
-            <span>Review</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setCurrentView('analytics')}
-            className={cn(
-              'px-2.5 py-1 rounded-md transition-all font-medium flex items-center gap-1.5 cursor-pointer',
-              currentView === 'analytics'
-                ? 'bg-white text-indigo-700 shadow-2xs font-bold'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
-            )}
-            title="Statistik Web & Pengunjung"
-          >
-            <BarChart3 className="w-3.5 h-3.5 text-indigo-600" />
-            <span>Analitik</span>
-          </button>
-        </div>
-
         {/* Status Method & Aksi */}
         <div className="flex items-center gap-2">
-          {/* Quick Nav for mobile/tablet */}
-          <div className="lg:hidden flex items-center gap-1">
-            <button
-              type="button"
-              onClick={() => setCurrentView('review')}
-              className={cn(
-                'p-1.5 rounded-lg border text-xs',
-                currentView === 'review'
-                  ? 'border-amber-300 bg-amber-50 text-amber-700'
-                  : 'border-slate-200 text-slate-600 bg-white hover:text-amber-600'
-              )}
-              title="Review Pengguna"
-            >
-              <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-400" />
-            </button>
-            <button
-              type="button"
-              onClick={() => setCurrentView('analytics')}
-              className={cn(
-                'p-1.5 rounded-lg border text-xs',
-                currentView === 'analytics'
-                  ? 'border-indigo-300 bg-indigo-50 text-indigo-700'
-                  : 'border-slate-200 text-slate-600 bg-white hover:text-indigo-600'
-              )}
-              title="Web Analytics"
-            >
-              <BarChart3 className="w-3.5 h-3.5 text-indigo-600" />
-            </button>
-          </div>
 
           <TourLauncherMenu />
 

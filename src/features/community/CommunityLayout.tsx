@@ -1,6 +1,6 @@
 import React from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, Star, BarChart3 } from 'lucide-react';
-import { useUiStore } from '@/store/useUiStore';
 import Button from '@/components/ui/Button';
 import Logo from '@/components/layout/Logo';
 
@@ -13,7 +13,7 @@ export const CommunityLayout: React.FC<CommunityLayoutProps> = ({
   activeTab,
   children,
 }) => {
-  const setCurrentView = useUiStore((s) => s.setCurrentView);
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-surface bg-dot-grid text-slate-800 pb-16 antialiased">
@@ -24,25 +24,24 @@ export const CommunityLayout: React.FC<CommunityLayoutProps> = ({
             <Button
               variant="secondary"
               size="sm"
-              onClick={() => setCurrentView('board')}
+              onClick={() => navigate('/board')}
               className="gap-1.5 text-slate-600 hover:text-slate-900 cursor-pointer shadow-2xs"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>Kembali ke Workboard</span>
             </Button>
             <div className="h-4 w-px bg-slate-200 hidden sm:block" />
-            <div className="hidden sm:flex items-center gap-2">
+            <Link to="/" className="hidden sm:flex items-center gap-2 hover:opacity-80 transition-opacity">
               <Logo size="sm" showWordmark={false} />
               <span className="text-xs font-bold text-slate-700 tracking-tight">DecisiGraph Community</span>
-            </div>
+            </Link>
           </div>
 
           {/* Clean Sub-Navigation Tabs */}
           <div className="flex items-center gap-1 p-1 bg-slate-100 rounded-xl border border-slate-200/80 text-xs">
-            <button
-              type="button"
-              onClick={() => setCurrentView('review')}
-              className={`px-3 py-1.5 font-semibold rounded-lg transition-all cursor-pointer flex items-center gap-1.5 ${
+            <Link
+              to="/review"
+              className={`px-3 py-1.5 font-semibold rounded-lg transition-all flex items-center gap-1.5 cursor-pointer ${
                 activeTab === 'review'
                   ? 'bg-white text-slate-900 shadow-2xs font-bold'
                   : 'text-slate-500 hover:text-slate-800'
@@ -50,11 +49,10 @@ export const CommunityLayout: React.FC<CommunityLayoutProps> = ({
             >
               <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-400" />
               <span>Ulasan & Masukan</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setCurrentView('analytics')}
-              className={`px-3 py-1.5 font-semibold rounded-lg transition-all cursor-pointer flex items-center gap-1.5 ${
+            </Link>
+            <Link
+              to="/analytics"
+              className={`px-3 py-1.5 font-semibold rounded-lg transition-all flex items-center gap-1.5 cursor-pointer ${
                 activeTab === 'analytics'
                   ? 'bg-white text-indigo-700 shadow-2xs font-bold'
                   : 'text-slate-500 hover:text-slate-800'
@@ -62,7 +60,7 @@ export const CommunityLayout: React.FC<CommunityLayoutProps> = ({
             >
               <BarChart3 className="w-3.5 h-3.5 text-indigo-600" />
               <span>Statistik Web</span>
-            </button>
+            </Link>
           </div>
         </div>
       </header>

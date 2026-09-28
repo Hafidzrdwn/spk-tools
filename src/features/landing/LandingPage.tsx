@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Logo from '@/components/layout/Logo';
 import Badge from '@/components/ui/Badge';
@@ -19,7 +20,7 @@ import {
 } from 'lucide-react';
 
 export const LandingPage: React.FC = () => {
-  const setCurrentView = useUiStore((s) => s.setCurrentView);
+  const navigate = useNavigate();
   const currentYear = new Date().getFullYear();
 
   const methods = [
@@ -61,6 +62,11 @@ export const LandingPage: React.FC = () => {
     },
   ];
 
+  const handleMethodCardClick = (methodId: string) => {
+    useUiStore.getState().setActiveTab(methodId as any);
+    navigate(`/board?tab=${methodId.toLowerCase()}`);
+  };
+
   return (
     <div className="h-screen max-h-screen w-full overflow-hidden flex flex-col justify-between bg-surface bg-dot-grid text-slate-800 relative select-none">
       {/* Background Decorative Ambient Glows */}
@@ -73,7 +79,9 @@ export const LandingPage: React.FC = () => {
       <header className="relative z-10 w-full px-6 py-3 border-b border-slate-200/80 bg-white/80 backdrop-blur-md">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Logo size="md" showWordmark />
+            <Link to="/" className="inline-flex items-center">
+              <Logo size="md" showWordmark />
+            </Link>
             <span className="text-slate-300">|</span>
             <Badge variant="primary" size="sm" className="font-bold text-[10px]">
               v1.1
@@ -81,29 +89,26 @@ export const LandingPage: React.FC = () => {
           </div>
 
           <nav className="flex items-center gap-2 sm:gap-3">
-            <button
-              type="button"
-              onClick={() => setCurrentView('board')}
+            <Link
+              to="/board"
               className="text-xs font-semibold text-slate-600 hover:text-indigo-600 transition-colors px-3 py-1.5 rounded-lg hover:bg-slate-100 cursor-pointer hidden sm:block"
             >
               Workboard
-            </button>
-            <button
-              type="button"
-              onClick={() => setCurrentView('review')}
+            </Link>
+            <Link
+              to="/review"
               className="text-xs font-semibold text-slate-600 hover:text-amber-600 transition-colors flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-amber-50/60 cursor-pointer"
             >
               <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-400" />
               <span>Review</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setCurrentView('analytics')}
+            </Link>
+            <Link
+              to="/analytics"
               className="text-xs font-semibold text-slate-600 hover:text-indigo-600 transition-colors flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-indigo-50/60 cursor-pointer"
             >
               <BarChart3 className="w-3.5 h-3.5 text-indigo-600" />
               <span>Analitik</span>
-            </button>
+            </Link>
 
             <a
               href="https://github.com/hafidzrdwn"
@@ -119,7 +124,7 @@ export const LandingPage: React.FC = () => {
             <Button
               variant="primary"
               size="sm"
-              onClick={() => setCurrentView('board')}
+              onClick={() => navigate('/board')}
               className="shadow-sm text-xs font-semibold"
             >
               <span>Buka Workboard</span>
@@ -175,7 +180,7 @@ export const LandingPage: React.FC = () => {
             <Button
               variant="primary"
               size="md"
-              onClick={() => setCurrentView('board')}
+              onClick={() => navigate('/board')}
               className="px-6 py-2.5 text-sm font-bold shadow-md shadow-indigo-500/20 cursor-pointer"
             >
               <span>Mulai Evaluasi SPK</span>
@@ -185,7 +190,7 @@ export const LandingPage: React.FC = () => {
             <Button
               variant="secondary"
               size="md"
-              onClick={() => setCurrentView('review')}
+              onClick={() => navigate('/review')}
               className="px-5 py-2.5 text-sm font-semibold border-slate-300 text-slate-700 hover:text-slate-900 cursor-pointer"
             >
               <Star className="w-4 h-4 text-amber-500 fill-amber-400" />
@@ -206,10 +211,7 @@ export const LandingPage: React.FC = () => {
           {methods.map((m) => (
             <div
               key={m.id}
-              onClick={() => {
-                useUiStore.getState().setActiveTab(m.id as any);
-                setCurrentView('board');
-              }}
+              onClick={() => handleMethodCardClick(m.id)}
               className="group p-3.5 rounded-xl bg-white border border-slate-200/90 hover:border-indigo-400/80 transition-all duration-200 cursor-pointer flex flex-col justify-between space-y-2 shadow-2xs hover:shadow-md hover:-translate-y-0.5"
             >
               <div className="flex items-center justify-between">
@@ -264,7 +266,7 @@ export const LandingPage: React.FC = () => {
       ========================================================================== */}
       <footer className="relative z-10 w-full px-6 py-2.5 border-t border-slate-200/80 bg-white/80 text-xs text-slate-500">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <span>&copy; {currentYear} DecisiGraph v1.1 &mdash; Sistem Pendukung Keputusan Multikriteria</span>
+          <span>&copy; {currentYear} DecisiGraph v1.1</span>
           <div className="flex items-center gap-2">
             <span className="text-[11px] text-slate-500 hidden sm:inline">Pemisah Desimal:</span>
             <DecimalFormatToggle />

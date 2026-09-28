@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
-import { useUiStore, pathToView } from '@/store/useUiStore';
+import { useSearchParams } from 'react-router-dom';
+import { useUiStore } from '@/store/useUiStore';
 import type { MethodId } from '@/types/domain';
 
 const VALID_METHOD_MAP: Record<string, MethodId> = {
@@ -14,65 +15,35 @@ const VALID_METHOD_MAP: Record<string, MethodId> = {
 };
 
 export function useUrlTabSync() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const activeTab = useUiStore((s) => s.activeTab);
   const setActiveTab = useUiStore((s) => s.setActiveTab);
-  const currentView = useUiStore((s) => s.currentView);
   const isInitialized = useRef(false);
 
-  // 1. Baca pathname & ?tab= dari URL saat mount pertama kali
+  // 1. Baca ?tab= dari URL saat pertama kali mount di /board
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-
-    try {
-      const viewFromPath = pathToView(window.location.pathname);
-      if (viewFromPath !== currentView) {
-        useUiStore.setState({ currentView: viewFromPath });
+    const tabParam = searchParams.get('tab');
+    if (tabParam) {
+      const normalized = tabParam.trim().toLowerCase();
+      const matchedMethod = VALID_METHOD_MAP[normalized];
+      if (matchedMethod && matchedMethod !== activeTab) {
+        setActiveTab(matchedMethod);
       }
-
-      const searchParams = new URLSearchParams(window.location.search);
-      const tabParam = searchParams.get('tab');
-      if (tabParam) {
-        const normalized = tabParam.trim().toLowerCase();
-        const matchedMethod = VALID_METHOD_MAP[normalized];
-        if (matchedMethod && matchedMethod !== activeTab) {
-          setActiveTab(matchedMethod);
-        }
-      }
-    } catch {
-      // Abaikan jika URL tidak bisa di-parse
+    } else {
+      setSearchParams({ tab: activeTab.toLowerCase() }, { replace: true });
     }
-
     isInitialized.current = true;
-  }, [setActiveTab, currentView]);
-
-  // 2. Browser Back/Forward navigation listener (popstate)
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-
-    const handlePopState = () => {
-      const targetView = pathToView(window.location.pathname);
-      useUiStore.setState({ currentView: targetView });
-    };
-
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
-  // 3. Sinkronisasi activeTab ke URL saat terjadi perubahan tab pada view 'board'
+  // 2. Sinkronkan ke URL saat activeTab berubah
   useEffect(() => {
-    if (typeof window === 'undefined' || !isInitialized.current) return;
-
-    const currentUrl = new URL(window.location.href);
-    if (currentView === 'board') {
-      const currentTabParam = currentUrl.searchParams.get('tab')?.toLowerCase();
-      const targetTabParam = activeTab.toLowerCase();
-
-      if (currentTabParam !== targetTabParam) {
-        currentUrl.searchParams.set('tab', targetTabParam);
-        window.history.replaceState(null, '', currentUrl.pathname + currentUrl.search + currentUrl.hash);
-      }
+    if (!isInitialized.current) return;
+    const currentTab = searchParams.get('tab')?.toLowerCase();
+    const targetTab = activeTab.toLowerCase();
+    if (currentTab !== targetTab) {
+      setSearchParams({ tab: targetTab }, { replace: true });
     }
-  }, [activeTab, currentView]);
+  }, [activeTab, searchParams, setSearchParams]);
 }
 
 export default useUrlTabSync;
