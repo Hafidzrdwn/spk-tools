@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Logo from '@/components/layout/Logo';
@@ -62,6 +62,45 @@ export const LandingPage: React.FC = () => {
     },
   ];
 
+  // Preload Workboard bundle in the background when user lands on this page
+  const prefetchWorkboard = useCallback(() => {
+    import('@/features/workboard/WorkboardPage');
+    import('@/features/saw/SawTab');
+  }, []);
+
+  const prefetchMethodTab = useCallback((methodId: string) => {
+    prefetchWorkboard();
+    switch (methodId) {
+      case 'SAW':
+        import('@/features/saw/SawTab');
+        break;
+      case 'WP':
+        import('@/features/wp/WpTab');
+        break;
+      case 'TOPSIS':
+        import('@/features/topsis/TopsisTab');
+        break;
+      case 'AHP':
+        import('@/features/ahp/AhpTab');
+        break;
+    }
+  }, [prefetchWorkboard]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    // Use requestIdleCallback or short delay to prefetch without blocking initial render
+    if ('requestIdleCallback' in window) {
+      const handle = (window as any).requestIdleCallback(prefetchWorkboard, { timeout: 1200 });
+      return () => {
+        if ('cancelIdleCallback' in window) (window as any).cancelIdleCallback(handle);
+      };
+    } else {
+      const timer = setTimeout(prefetchWorkboard, 400);
+      return () => clearTimeout(timer);
+    }
+  }, [prefetchWorkboard]);
+
   const handleMethodCardClick = (methodId: string) => {
     useUiStore.getState().setActiveTab(methodId as any);
     navigate(`/board?tab=${methodId.toLowerCase()}`);
@@ -91,6 +130,8 @@ export const LandingPage: React.FC = () => {
           <nav className="flex items-center gap-2 sm:gap-3">
             <Link
               to="/board"
+              onMouseEnter={prefetchWorkboard}
+              onFocus={prefetchWorkboard}
               className="text-xs font-semibold text-slate-600 hover:text-indigo-600 transition-colors px-3 py-1.5 rounded-lg hover:bg-slate-100 cursor-pointer hidden sm:block"
             >
               Workboard
@@ -124,6 +165,8 @@ export const LandingPage: React.FC = () => {
             <Button
               variant="primary"
               size="sm"
+              onMouseEnter={prefetchWorkboard}
+              onFocus={prefetchWorkboard}
               onClick={() => navigate('/board')}
               className="shadow-sm text-xs font-semibold"
             >
@@ -180,6 +223,8 @@ export const LandingPage: React.FC = () => {
             <Button
               variant="primary"
               size="md"
+              onMouseEnter={prefetchWorkboard}
+              onFocus={prefetchWorkboard}
               onClick={() => navigate('/board')}
               className="px-6 py-2.5 text-sm font-bold shadow-md shadow-indigo-500/20 cursor-pointer"
             >
@@ -211,6 +256,7 @@ export const LandingPage: React.FC = () => {
           {methods.map((m) => (
             <div
               key={m.id}
+              onMouseEnter={() => prefetchMethodTab(m.id)}
               onClick={() => handleMethodCardClick(m.id)}
               className="group p-3.5 rounded-xl bg-white border border-slate-200/90 hover:border-indigo-400/80 transition-all duration-200 cursor-pointer flex flex-col justify-between space-y-2 shadow-2xs hover:shadow-md hover:-translate-y-0.5"
             >

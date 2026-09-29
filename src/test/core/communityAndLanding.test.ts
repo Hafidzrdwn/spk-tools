@@ -18,64 +18,39 @@ describe('Firebase Service & Fallback Store', () => {
     localStorage.clear();
   });
 
-  it('subscribeToReviews mengembalikan daftar review default saat database lokal kosong', () => {
-    let capturedReviews: any[] = [];
+  it('subscribeToReviews mengembalikan array kosong saat database belum berisi data (tanpa dummy localstorage)', () => {
+    let capturedReviews: any[] | null = null;
     const unsub = subscribeToReviews((revs) => {
       capturedReviews = revs;
     });
 
-    expect(capturedReviews.length).toBeGreaterThanOrEqual(1);
-    expect(capturedReviews[0]).toHaveProperty('name');
-    expect(capturedReviews[0]).toHaveProperty('rating');
-    expect(capturedReviews[0]).toHaveProperty('comment');
+    expect(capturedReviews).toEqual([]);
     unsub();
   });
 
-  it('submitReview berhasil menambahkan ulasan baru ke store realtime', async () => {
-    const res = await submitReview({
-      name: 'Tester Unit',
-      role: 'QA Engineer',
-      rating: 5,
-      comment: 'Kalkulasi TOPSIS sangat akurat dan transparan.',
-    });
-
-    expect(res.success).toBe(true);
-    expect(res.id).toBeDefined();
-
-    let updatedReviews: any[] = [];
-    const unsub = subscribeToReviews((revs) => {
-      updatedReviews = revs;
-    });
-
-    const found = updatedReviews.find((r) => r.name === 'Tester Unit');
-    expect(found).toBeDefined();
-    expect(found?.rating).toBe(5);
-    expect(found?.comment).toContain('TOPSIS');
-    unsub();
+  it('submitReview melempar error informatif saat Firebase DB belum terkonfigurasi di env', async () => {
+    await expect(
+      submitReview({
+        name: 'Tester Unit',
+        role: 'QA Engineer',
+        rating: 5,
+        comment: 'Kalkulasi TOPSIS sangat akurat dan transparan.',
+      })
+    ).rejects.toThrow('Firebase Realtime Database belum terkonfigurasi');
   });
 
-  it('subscribeToAnalytics menyediakan metrik page views dan breakdown perangkat', () => {
+  it('subscribeToAnalytics menyediakan struktur metrik analitik dengan default nol', () => {
     let analyticsData: any = null;
     const unsub = subscribeToAnalytics((data) => {
       analyticsData = data;
     });
 
     expect(analyticsData).not.toBeNull();
-    expect(analyticsData.totalViews).toBeGreaterThan(0);
+    expect(analyticsData.totalViews).toBe(0);
+    expect(analyticsData.viewsToday).toBe(0);
     expect(analyticsData.deviceBreakdown).toHaveProperty('desktop');
     expect(analyticsData.deviceBreakdown).toHaveProperty('mobile');
-    unsub();
-  });
-
-  it('trackPageView mencatat penambahan view dan visit log', async () => {
-    await trackPageView('/test-path');
-
-    let analyticsData: any = null;
-    const unsub = subscribeToAnalytics((data) => {
-      analyticsData = data;
-    });
-
-    expect(analyticsData.recentVisits.some((v: any) => v.path === '/test-path')).toBe(true);
+    expect(analyticsData.dailyHistory).toEqual([]);
     unsub();
   });
 
@@ -84,6 +59,10 @@ describe('Firebase Service & Fallback Store', () => {
     expect(info).toHaveProperty('device');
     expect(info).toHaveProperty('browser');
     expect(info).toHaveProperty('os');
+  });
+
+  it('trackPageView berjalan dengan aman tanpa error saat database unconfigured', async () => {
+    await expect(trackPageView('/board')).resolves.toBeUndefined();
   });
 });
 

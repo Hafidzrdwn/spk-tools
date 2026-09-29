@@ -165,10 +165,10 @@ export const ReviewsPage: React.FC = () => {
   };
 
   // Average Rating
-  const avgRating =
-    reviews.length > 0
-      ? (reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length).toFixed(1)
-      : '5.0';
+  const hasReviews = reviews.length > 0;
+  const avgRating = hasReviews
+    ? (reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length).toFixed(1)
+    : '-';
 
   return (
     <div className="space-y-6">
@@ -457,13 +457,19 @@ export const ReviewsPage: React.FC = () => {
               <div className="flex items-center gap-2 mb-1">
                 <span className="text-2xl font-black text-slate-900 tracking-tight">{avgRating}</span>
                 <div className="flex items-center text-amber-400">
-                  {[1, 2, 3, 4, 5].map((s) => (
-                    <Star key={s} className="w-4 h-4 fill-amber-400" />
-                  ))}
+                  {hasReviews ? (
+                    [1, 2, 3, 4, 5].map((s) => (
+                      <Star key={s} className="w-4 h-4 fill-amber-400" />
+                    ))
+                  ) : (
+                    <span className="text-xs font-semibold text-slate-400">Belum ada rating</span>
+                  )}
                 </div>
               </div>
               <span className="text-xs text-slate-500">
-                Berdasarkan {reviews.length} ulasan pengguna aktif
+                {hasReviews
+                  ? `Berdasarkan ${reviews.length} ulasan pengguna aktif`
+                  : 'Belum ada ulasan yang tersimpan'}
               </span>
             </div>
 
@@ -484,8 +490,14 @@ export const ReviewsPage: React.FC = () => {
                 Memuat data ulasan...
               </div>
             ) : reviews.length === 0 ? (
-              <div className="p-8 text-center text-xs text-slate-500 bg-white rounded-xl border border-dashed border-slate-300">
-                Belum ada ulasan yang masuk. Jadilah yang pertama memberikan ulasan!
+              <div className="p-8 text-center bg-white rounded-xl border border-dashed border-slate-300 space-y-2.5">
+                <div className="w-10 h-10 rounded-full bg-amber-50 text-amber-500 mx-auto flex items-center justify-center">
+                  <Star className="w-5 h-5 fill-amber-400" />
+                </div>
+                <h4 className="text-sm font-bold text-slate-800">Belum Ada Ulasan Masuk</h4>
+                <p className="text-xs text-slate-500 max-w-sm mx-auto leading-relaxed">
+                  Belum ada ulasan di database. Jadilah pengguna pertama yang membagikan pengalaman evaluasi SPK Anda melalui formulir di samping!
+                </p>
               </div>
             ) : (
               reviews.map((rev) => (

@@ -2,7 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
   subscribeToAnalytics,
+  subscribeToReviews,
+  isRealtimeDbConnected,
   type AnalyticsData,
+  type ReviewItem,
 } from '@/services/firebase';
 import Badge from '@/components/ui/Badge';
 import {
@@ -11,18 +14,27 @@ import {
   Smartphone,
   Tablet,
   Star,
+  Database,
+  Info,
 } from 'lucide-react';
 
 export const AnalyticsPage: React.FC = () => {
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
+  const [reviews, setReviews] = useState<ReviewItem[]>([]);
+  const isConnected = isRealtimeDbConnected();
 
   useEffect(() => {
-    const unsub = subscribeToAnalytics((data) => {
+    const unsubAnalytics = subscribeToAnalytics((data) => {
       setAnalytics(data);
     });
 
+    const unsubReviews = subscribeToReviews((data) => {
+      setReviews(data);
+    });
+
     return () => {
-      unsub();
+      unsubAnalytics();
+      unsubReviews();
     };
   }, []);
 
@@ -33,6 +45,21 @@ export const AnalyticsPage: React.FC = () => {
       </div>
     );
   }
+
+  const hasReviews = reviews.length > 0;
+  const avgRating = hasReviews
+    ? (reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length).toFixed(1)
+    : '-';
+
+  const hasVisits = analytics.totalViews > 0;
+  const totalDevices =
+    (analytics.deviceBreakdown?.desktop || 0) +
+    (analytics.deviceBreakdown?.mobile || 0) +
+    (analytics.deviceBreakdown?.tablet || 0);
+
+  const desktopPct = totalDevices > 0 ? Math.round(((analytics.deviceBreakdown?.desktop || 0) / totalDevices) * 100) : 0;
+  const mobilePct = totalDevices > 0 ? Math.round(((analytics.deviceBreakdown?.mobile || 0) / totalDevices) * 100) : 0;
+  const tabletPct = totalDevices > 0 ? Math.round(((analytics.deviceBreakdown?.tablet || 0) / totalDevices) * 100) : 0;
 
   return (
     <div className="space-y-6">
@@ -47,6 +74,19 @@ export const AnalyticsPage: React.FC = () => {
         </p>
       </div>
 
+      {/* Info Banner when Firebase not yet configured */}
+      {!isConnected && (
+        <div className="p-3.5 bg-amber-50/70 border border-amber-200 rounded-xl flex items-start gap-3 text-xs text-amber-900">
+          <Database className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+          <div className="space-y-0.5 leading-relaxed">
+            <span className="font-bold block">Koneksi Firebase Realtime Database Belum Aktif</span>
+            <span className="text-amber-800">
+              Salin kredensial Firebase Anda ke file <code className="bg-amber-100/80 px-1.5 py-0.5 rounded font-mono text-[11px]">.env</code> untuk mengaktifkan pencatatan metrik dan ulasan langsung dari Firebase Realtime DB.
+            </span>
+          </div>
+        </div>
+      )}
+
       {/* Top 4 KPI Metric Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
         <div className="p-4 rounded-xl bg-white border border-slate-200/90 shadow-2xs space-y-1">
@@ -56,8 +96,8 @@ export const AnalyticsPage: React.FC = () => {
           <span className="text-2xl font-black text-slate-900 tracking-tight font-mono">
             {analytics.totalViews.toLocaleString('id-ID')}
           </span>
-          <span className="text-[10px] text-emerald-600 font-semibold block">
-            Aktivitas halaman akumulatif
+          <span className="text-[10px] text-slate-500 font-medium block">
+            {hasVisits ? 'Aktivitas halaman akumulatif' : 'Belum ada kunjungan terekam'}
           </span>
         </div>
 
@@ -69,7 +109,7 @@ export const AnalyticsPage: React.FC = () => {
             {analytics.viewsToday.toLocaleString('id-ID')}
           </span>
           <span className="text-[10px] text-slate-500 font-medium block">
-            Akses aktif 24 jam terakhir
+            {analytics.viewsToday > 0 ? 'Akses aktif 24 jam terakhir' : '0 kunjungan hari ini'}
           </span>
         </div>
 
@@ -80,7 +120,7 @@ export const AnalyticsPage: React.FC = () => {
           <span className="text-2xl font-black text-slate-900 tracking-tight font-mono">
             {analytics.viewsThisMonth.toLocaleString('id-ID')}
           </span>
-          <span className="text-[10px] text-indigo-600 font-medium block">
+          <span className="text-[10px] text-slate-500 font-medium block">
             Periode bulan berjalan
           </span>
         </div>
@@ -90,11 +130,11 @@ export const AnalyticsPage: React.FC = () => {
             Indeks Kepuasan
           </span>
           <span className="text-2xl font-black text-amber-600 tracking-tight font-mono flex items-center gap-1">
-            <span>5.0</span>
+            <span>{avgRating}</span>
             <Star className="w-5 h-5 fill-amber-400 text-amber-500" />
           </span>
           <span className="text-[10px] text-slate-500 font-medium block">
-            Berdasarkan rating pengguna
+            {hasReviews ? `Dari ${reviews.length} ulasan pengguna` : 'Belum ada ulasan'}
           </span>
         </div>
       </div>
@@ -111,40 +151,50 @@ export const AnalyticsPage: React.FC = () => {
             <Badge variant="primary" size="sm">Harian</Badge>
           </div>
 
-          {/* SVG Bar Chart */}
-          <div className="h-44 w-full flex items-end justify-between gap-2 pt-4 px-2">
-            {analytics.dailyHistory.map((item, idx) => {
-              const maxVal = Math.max(...analytics.dailyHistory.map((d) => d.views), 1);
-              const heightPercent = Math.max(15, (item.views / maxVal) * 100);
-              const isLast = idx === analytics.dailyHistory.length - 1;
+          {/* SVG Bar Chart or Empty State */}
+          {analytics.dailyHistory && analytics.dailyHistory.length > 0 ? (
+            <div className="h-44 w-full flex items-end justify-between gap-2 pt-4 px-2">
+              {analytics.dailyHistory.map((item, idx) => {
+                const maxVal = Math.max(...analytics.dailyHistory.map((d) => d.views), 1);
+                const heightPercent = Math.max(15, (item.views / maxVal) * 100);
+                const isLast = idx === analytics.dailyHistory.length - 1;
 
-              return (
-                <div key={item.date} className="flex-1 flex flex-col items-center gap-2 group">
-                  <span className="text-[10px] font-mono text-slate-400 group-hover:text-indigo-600 font-bold">
-                    {item.views}
-                  </span>
-                  <div className="w-full bg-slate-100 rounded-t-lg h-32 flex items-end">
-                    <motion.div
-                      initial={{ height: 0 }}
-                      animate={{ height: `${heightPercent}%` }}
-                      transition={{ duration: 0.5, delay: idx * 0.05 }}
-                      className={`w-full rounded-t-lg transition-colors ${
-                        isLast
-                          ? 'bg-indigo-600 group-hover:bg-indigo-500'
-                          : 'bg-indigo-300 group-hover:bg-indigo-400'
-                      }`}
-                    />
+                return (
+                  <div key={item.date} className="flex-1 flex flex-col items-center gap-2 group">
+                    <span className="text-[10px] font-mono text-slate-400 group-hover:text-indigo-600 font-bold">
+                      {item.views}
+                    </span>
+                    <div className="w-full bg-slate-100 rounded-t-lg h-32 flex items-end">
+                      <motion.div
+                        initial={{ height: 0 }}
+                        animate={{ height: `${heightPercent}%` }}
+                        transition={{ duration: 0.5, delay: idx * 0.05 }}
+                        className={`w-full rounded-t-lg transition-colors ${
+                          isLast
+                            ? 'bg-indigo-600 group-hover:bg-indigo-500'
+                            : 'bg-indigo-300 group-hover:bg-indigo-400'
+                        }`}
+                      />
+                    </div>
+                    <span className="text-[10px] text-slate-500 font-mono truncate max-w-12">
+                      {item.date.slice(5)}
+                    </span>
                   </div>
-                  <span className="text-[10px] text-slate-500 font-mono truncate max-w-12">
-                    {item.date.slice(5)}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="h-44 flex flex-col items-center justify-center border border-dashed border-slate-200 rounded-lg text-center p-6 space-y-2">
+              <Info className="w-6 h-6 text-slate-400" />
+              <span className="text-xs font-semibold text-slate-700">Belum Ada Data Tren Kunjungan</span>
+              <p className="text-[11px] text-slate-500 max-w-xs">
+                Grafik akan otomatis terisi saat pengunjung mengakses halaman aplikasi melalui Firebase Realtime DB.
+              </p>
+            </div>
+          )}
         </div>
 
-        {/* Device & Browser Breakdown (Right 5 Cols) */}
+        {/* Device Breakdown (Right 5 Cols) */}
         <div className="lg:col-span-5 p-5 rounded-xl bg-white border border-slate-200/90 shadow-2xs space-y-4">
           <div>
             <h3 className="text-sm font-bold text-slate-800">Distribusi Perangkat Pengguna</h3>
@@ -158,10 +208,10 @@ export const AnalyticsPage: React.FC = () => {
                 <span className="flex items-center gap-1.5 font-medium">
                   <Laptop className="w-3.5 h-3.5 text-indigo-600" /> Desktop / Laptop
                 </span>
-                <span className="font-mono font-bold">{analytics.deviceBreakdown.desktop}%</span>
+                <span className="font-mono font-bold">{desktopPct}%</span>
               </div>
               <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
-                <div className="h-full bg-indigo-600 rounded-full" style={{ width: `${analytics.deviceBreakdown.desktop}%` }} />
+                <div className="h-full bg-indigo-600 rounded-full" style={{ width: `${desktopPct}%` }} />
               </div>
             </div>
 
@@ -171,10 +221,10 @@ export const AnalyticsPage: React.FC = () => {
                 <span className="flex items-center gap-1.5 font-medium">
                   <Smartphone className="w-3.5 h-3.5 text-sky-600" /> Smartphone / Mobile
                 </span>
-                <span className="font-mono font-bold">{analytics.deviceBreakdown.mobile}%</span>
+                <span className="font-mono font-bold">{mobilePct}%</span>
               </div>
               <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
-                <div className="h-full bg-sky-500 rounded-full" style={{ width: `${analytics.deviceBreakdown.mobile}%` }} />
+                <div className="h-full bg-sky-500 rounded-full" style={{ width: `${mobilePct}%` }} />
               </div>
             </div>
 
@@ -184,17 +234,17 @@ export const AnalyticsPage: React.FC = () => {
                 <span className="flex items-center gap-1.5 font-medium">
                   <Tablet className="w-3.5 h-3.5 text-purple-600" /> Tablet / iPad
                 </span>
-                <span className="font-mono font-bold">{analytics.deviceBreakdown.tablet}%</span>
+                <span className="font-mono font-bold">{tabletPct}%</span>
               </div>
               <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
-                <div className="h-full bg-purple-500 rounded-full" style={{ width: `${analytics.deviceBreakdown.tablet}%` }} />
+                <div className="h-full bg-purple-500 rounded-full" style={{ width: `${tabletPct}%` }} />
               </div>
             </div>
           </div>
 
-          <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
-            <span>Browser Populer:</span>
-            <span className="font-semibold text-slate-700">Chrome (64%), Firefox (16%), Safari (12%)</span>
+          <div className="pt-3 border-t border-slate-100 text-[11px] text-slate-500 flex items-center justify-between">
+            <span>Total Perangkat Terdeteksi:</span>
+            <span className="font-bold font-mono text-slate-700">{totalDevices} perangkat</span>
           </div>
         </div>
       </div>
@@ -224,17 +274,25 @@ export const AnalyticsPage: React.FC = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 font-mono text-[11px]">
-              {analytics.recentVisits.map((v) => (
-                <tr key={v.id} className="hover:bg-slate-50/60 transition-colors">
-                  <td className="py-2 px-3 text-slate-600">
-                    {new Date(v.timestamp).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+              {analytics.recentVisits && analytics.recentVisits.length > 0 ? (
+                analytics.recentVisits.map((v) => (
+                  <tr key={v.id} className="hover:bg-slate-50/60 transition-colors">
+                    <td className="py-2 px-3 text-slate-600">
+                      {new Date(v.timestamp).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                    </td>
+                    <td className="py-2 px-3 font-sans font-medium text-slate-800">{v.device}</td>
+                    <td className="py-2 px-3 text-slate-600">{v.os}</td>
+                    <td className="py-2 px-3 text-slate-600">{v.browser}</td>
+                    <td className="py-2 px-3 text-right text-indigo-700 font-bold">{v.path}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={5} className="py-8 text-center text-slate-400 font-sans">
+                    Belum ada riwayat kunjungan real-time yang tercatat.
                   </td>
-                  <td className="py-2 px-3 font-sans font-medium text-slate-800">{v.device}</td>
-                  <td className="py-2 px-3 text-slate-600">{v.os}</td>
-                  <td className="py-2 px-3 text-slate-600">{v.browser}</td>
-                  <td className="py-2 px-3 text-right text-indigo-700 font-bold">{v.path}</td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>

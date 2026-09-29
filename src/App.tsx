@@ -1,7 +1,12 @@
 import { lazy, Suspense, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Toaster } from 'sonner';
-import TabSkeleton from '@/components/ui/TabSkeleton';
+import {
+  LandingSkeleton,
+  WorkboardSkeleton,
+  ReviewSkeleton,
+  AnalyticsSkeleton,
+} from '@/components/ui/skeletons';
 import { trackPageView } from '@/services/firebase';
 
 const LandingPage = lazy(() => import('@/features/landing/LandingPage'));
@@ -24,32 +29,48 @@ export default function App() {
   return (
     <BrowserRouter>
       <PageViewTracker />
-      <Suspense fallback={<TabSkeleton />}>
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/board" element={<WorkboardPage />} />
-          <Route
-            path="/review"
-            element={
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <Suspense fallback={<LandingSkeleton />}>
+              <LandingPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/board"
+          element={
+            <Suspense fallback={<WorkboardSkeleton />}>
+              <WorkboardPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/review"
+          element={
+            <Suspense fallback={<ReviewSkeleton />}>
               <CommunityLayout activeTab="review">
                 <ReviewsPage />
               </CommunityLayout>
-            }
-          />
-          <Route
-            path="/analytics"
-            element={
+            </Suspense>
+          }
+        />
+        <Route
+          path="/analytics"
+          element={
+            <Suspense fallback={<AnalyticsSkeleton />}>
               <CommunityLayout activeTab="analytics">
                 <AnalyticsPage />
               </CommunityLayout>
-            }
-          />
-          {/* Legacy & Fallback redirects */}
-          <Route path="/workboard" element={<Navigate to="/board" replace />} />
-          <Route path="/community" element={<Navigate to="/review" replace />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </Suspense>
+            </Suspense>
+          }
+        />
+        {/* Legacy & Fallback redirects */}
+        <Route path="/workboard" element={<Navigate to="/board" replace />} />
+        <Route path="/community" element={<Navigate to="/review" replace />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
       <Toaster richColors position="top-right" />
     </BrowserRouter>
   );
