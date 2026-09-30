@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, Star, BarChart3 } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Logo from '@/components/layout/Logo';
+import { prefetchRoute, scheduleAllRemainingPrefetch } from '@/services/routePrefetch';
 
 export interface CommunityLayoutProps {
   activeTab: 'review' | 'analytics';
@@ -15,6 +16,11 @@ export const CommunityLayout: React.FC<CommunityLayoutProps> = ({
 }) => {
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const cancel = scheduleAllRemainingPrefetch(activeTab);
+    return () => cancel();
+  }, [activeTab]);
+
   return (
     <div className="min-h-screen bg-surface bg-dot-grid text-slate-800 pb-16 antialiased">
       {/* Top Bar Header */}
@@ -24,6 +30,8 @@ export const CommunityLayout: React.FC<CommunityLayoutProps> = ({
             <Button
               variant="secondary"
               size="sm"
+              onMouseEnter={() => prefetchRoute.board()}
+              onFocus={() => prefetchRoute.board()}
               onClick={() => navigate('/board')}
               className="gap-1.5 text-slate-600 hover:text-slate-900 cursor-pointer shadow-2xs"
             >
@@ -31,7 +39,12 @@ export const CommunityLayout: React.FC<CommunityLayoutProps> = ({
               <span>Kembali ke Workboard</span>
             </Button>
             <div className="h-4 w-px bg-slate-200 hidden sm:block" />
-            <Link to="/" className="hidden sm:flex items-center gap-2 hover:opacity-80 transition-opacity">
+            <Link
+              to="/"
+              onMouseEnter={prefetchRoute.landing}
+              onFocus={prefetchRoute.landing}
+              className="hidden sm:flex items-center gap-2 hover:opacity-80 transition-opacity"
+            >
               <Logo size="sm" showWordmark={false} />
               <span className="text-xs font-bold text-slate-700 tracking-tight">DecisiGraph Community</span>
             </Link>
@@ -41,6 +54,8 @@ export const CommunityLayout: React.FC<CommunityLayoutProps> = ({
           <div className="flex items-center gap-1 p-1 bg-slate-100 rounded-xl border border-slate-200/80 text-xs">
             <Link
               to="/review"
+              onMouseEnter={prefetchRoute.review}
+              onFocus={prefetchRoute.review}
               className={`px-3 py-1.5 font-semibold rounded-lg transition-all flex items-center gap-1.5 cursor-pointer ${
                 activeTab === 'review'
                   ? 'bg-white text-slate-900 shadow-2xs font-bold'
@@ -52,6 +67,8 @@ export const CommunityLayout: React.FC<CommunityLayoutProps> = ({
             </Link>
             <Link
               to="/analytics"
+              onMouseEnter={prefetchRoute.analytics}
+              onFocus={prefetchRoute.analytics}
               className={`px-3 py-1.5 font-semibold rounded-lg transition-all flex items-center gap-1.5 cursor-pointer ${
                 activeTab === 'analytics'
                   ? 'bg-white text-indigo-700 shadow-2xs font-bold'

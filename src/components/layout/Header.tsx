@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { cn } from '@/utils/cn';
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
@@ -8,6 +9,7 @@ import GlossaryDrawer from '@/features/glossary/GlossaryDrawer';
 import TourLauncherMenu from '@/features/tour/TourLauncherMenu';
 import { BookOpen } from 'lucide-react';
 import { useUiStore } from '@/store/useUiStore';
+import { prefetchRoute } from '@/services/routePrefetch';
 import type { MethodId } from '@/types/domain';
 
 export interface HeaderProps {
@@ -41,9 +43,15 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
         {/* Logo & Identitas */}
         <div className="flex items-center gap-3">
-          <a href="/" className="m-0 p-0 text-inherit font-inherit inline-flex items-center cursor-pointer">
+          <Link
+            to="/"
+            onMouseEnter={prefetchRoute.landing}
+            onFocus={prefetchRoute.landing}
+            className="m-0 p-0 text-inherit font-inherit inline-flex items-center cursor-pointer"
+            title="Kembali ke Beranda"
+          >
             <Logo size="md" showWordmark />
-          </a>
+          </Link>
           <div className="flex items-center gap-2 border-l border-slate-200/80 pl-3">
             <Badge variant="primary" size="sm" className="font-bold">
               v1.1

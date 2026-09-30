@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Home, Star, BarChart3, Sparkles } from 'lucide-react';
+import { prefetchRoute } from '@/services/routePrefetch';
 
 export const WorkboardTopBar: React.FC = () => {
   return (
@@ -20,6 +21,8 @@ export const WorkboardTopBar: React.FC = () => {
       <div className="flex items-center gap-1.5 self-end sm:self-auto text-xs">
         <Link
           to="/"
+          onMouseEnter={prefetchRoute.landing}
+          onFocus={prefetchRoute.landing}
           className="px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors flex items-center gap-1.5 font-medium cursor-pointer"
           title="Kembali ke Landing Page (Beranda)"
         >
@@ -28,6 +31,8 @@ export const WorkboardTopBar: React.FC = () => {
         </Link>
         <Link
           to="/review"
+          onMouseEnter={prefetchRoute.review}
+          onFocus={prefetchRoute.review}
           className="px-2.5 py-1 rounded-lg text-slate-600 hover:text-amber-700 hover:bg-amber-50/70 transition-colors flex items-center gap-1.5 font-medium cursor-pointer"
           title="Buka Ulasan Komunitas & Masukan"
         >
@@ -36,6 +41,8 @@ export const WorkboardTopBar: React.FC = () => {
         </Link>
         <Link
           to="/analytics"
+          onMouseEnter={prefetchRoute.analytics}
+          onFocus={prefetchRoute.analytics}
           className="px-2.5 py-1 rounded-lg text-slate-600 hover:text-indigo-700 hover:bg-indigo-50/70 transition-colors flex items-center gap-1.5 font-medium cursor-pointer"
           title="Buka Statistik Web"
         >

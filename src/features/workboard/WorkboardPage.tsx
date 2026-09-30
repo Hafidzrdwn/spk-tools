@@ -15,6 +15,7 @@ import AlternativeEditor from '@/features/shared/AlternativeEditor';
 import MatrixInputGrid from '@/features/shared/MatrixInputGrid';
 import TabSkeleton from '@/components/ui/TabSkeleton';
 import WorkboardTopBar from '@/components/layout/WorkboardTopBar';
+import { scheduleAllRemainingPrefetch } from '@/services/routePrefetch';
 
 const SawTab = lazy(() => import('@/features/saw/SawTab'));
 const WpTab = lazy(() => import('@/features/wp/WpTab'));
@@ -44,6 +45,11 @@ import type { MethodId } from '@/types/domain';
 
 export const WorkboardPage: React.FC = () => {
   useUrlTabSync();
+
+  useEffect(() => {
+    const cancelPrefetch = scheduleAllRemainingPrefetch('board');
+    return () => cancelPrefetch();
+  }, []);
 
   const { activeTab, setActiveTab } = useUiStore(
     useShallow((s) => ({

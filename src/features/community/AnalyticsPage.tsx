@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import {
   subscribeToAnalytics,
   subscribeToReviews,
-  isRealtimeDbConnected,
   type AnalyticsData,
   type ReviewItem,
 } from '@/services/firebase';
@@ -14,14 +13,12 @@ import {
   Smartphone,
   Tablet,
   Star,
-  Database,
   Info,
 } from 'lucide-react';
 
 export const AnalyticsPage: React.FC = () => {
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
   const [reviews, setReviews] = useState<ReviewItem[]>([]);
-  const isConnected = isRealtimeDbConnected();
 
   useEffect(() => {
     const unsubAnalytics = subscribeToAnalytics((data) => {
@@ -73,19 +70,6 @@ export const AnalyticsPage: React.FC = () => {
           Metrik interaksi pengunjung dan volume akses pengguna pada sistem DecisiGraph yang tercatat secara real-time.
         </p>
       </div>
-
-      {/* Info Banner when Firebase not yet configured */}
-      {!isConnected && (
-        <div className="p-3.5 bg-amber-50/70 border border-amber-200 rounded-xl flex items-start gap-3 text-xs text-amber-900">
-          <Database className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-          <div className="space-y-0.5 leading-relaxed">
-            <span className="font-bold block">Koneksi Firebase Realtime Database Belum Aktif</span>
-            <span className="text-amber-800">
-              Salin kredensial Firebase Anda ke file <code className="bg-amber-100/80 px-1.5 py-0.5 rounded font-mono text-[11px]">.env</code> untuk mengaktifkan pencatatan metrik dan ulasan langsung dari Firebase Realtime DB.
-            </span>
-          </div>
-        </div>
-      )}
 
       {/* Top 4 KPI Metric Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
@@ -188,7 +172,7 @@ export const AnalyticsPage: React.FC = () => {
               <Info className="w-6 h-6 text-slate-400" />
               <span className="text-xs font-semibold text-slate-700">Belum Ada Data Tren Kunjungan</span>
               <p className="text-[11px] text-slate-500 max-w-xs">
-                Grafik akan otomatis terisi saat pengunjung mengakses halaman aplikasi melalui Firebase Realtime DB.
+                Grafik akan otomatis terisi seiring aktivitas kunjungan pengguna pada aplikasi.
               </p>
             </div>
           )}
