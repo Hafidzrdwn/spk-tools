@@ -14,8 +14,7 @@ export const LandingSkeleton: React.FC = () => {
           </div>
           <div className="flex items-center gap-2.5">
             <div className="w-16 h-6 rounded bg-slate-200 hidden sm:block" />
-            <div className="w-16 h-6 rounded bg-slate-200" />
-            <div className="w-16 h-6 rounded bg-slate-200" />
+            <div className="w-20 h-6 rounded bg-slate-200" />
             <div className="w-28 h-8 rounded-lg bg-indigo-200" />
           </div>
         </div>

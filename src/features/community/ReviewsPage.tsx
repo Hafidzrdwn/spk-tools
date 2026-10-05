@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
 import {
   subscribeToReviews,
   submitReview,
@@ -10,6 +9,7 @@ import {
   copyReportToClipboard,
   type ReportEmailPayload,
 } from '@/utils/reportEmail';
+import { formatRelativeTime } from '@/utils/dateFormatter';
 import StarRatingInput from '@/components/ui/StarRatingInput';
 import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
@@ -17,14 +17,11 @@ import Card, { CardHeader, CardTitle, CardDescription, CardContent } from '@/com
 import { toast } from 'sonner';
 import {
   Star,
-  Bug,
   Send,
   Upload,
   X,
   Copy,
   ExternalLink,
-  Sparkles,
-  CheckCircle2,
 } from 'lucide-react';
 
 export const ReviewsPage: React.FC = () => {
@@ -40,6 +37,7 @@ export const ReviewsPage: React.FC = () => {
   const [ratingScore, setRatingScore] = useState(5);
   const [reviewComment, setReviewComment] = useState('');
   const [isSubmittingReview, setIsSubmittingReview] = useState(false);
+  const [reviewErrors, setReviewErrors] = useState<{ name?: string; comment?: string }>({});
 
   // Form Bug Report State
   const [bugName, setBugName] = useState('');
@@ -49,6 +47,12 @@ export const ReviewsPage: React.FC = () => {
   const [bugDescription, setBugDescription] = useState('');
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [bugErrors, setBugErrors] = useState<{
+    name?: string;
+    email?: string;
+    title?: string;
+    description?: string;
+  }>({});
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -90,14 +94,27 @@ export const ReviewsPage: React.FC = () => {
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
-  // Submit Review
+  // Submit Review with structured validation
   const handleSubmitReview = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!reviewerName.trim() || !reviewComment.trim()) {
-      toast.error('Silakan isi nama dan ulasan Anda.');
+
+    const errors: { name?: string; comment?: string } = {};
+    if (!reviewerName.trim()) {
+      errors.name = 'Nama lengkap wajib diisi.';
+    }
+    if (!reviewComment.trim()) {
+      errors.comment = 'Ulasan wajib diisi.';
+    } else if (reviewComment.trim().length < 5) {
+      errors.comment = 'Ulasan minimal 5 karakter.';
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setReviewErrors(errors);
+      toast.error('Silakan lengkapi formulir ulasan dengan benar.');
       return;
     }
 
+    setReviewErrors({});
     setIsSubmittingReview(true);
     try {
       await submitReview({
@@ -106,8 +123,9 @@ export const ReviewsPage: React.FC = () => {
         rating: ratingScore,
         comment: reviewComment.trim(),
       });
-      toast.success('Terima kasih! Ulasan Anda berhasil dikirim.');
+      toast.success('Terima kasih! Ulasan Anda berhasil diterbitkan.');
       setReviewComment('');
+      setReviewerName('');
     } catch {
       toast.error('Gagal mengirim ulasan. Silakan coba sesaat lagi.');
     } finally {
@@ -115,11 +133,39 @@ export const ReviewsPage: React.FC = () => {
     }
   };
 
+  // Validate Bug Report fields
+  const validateBugReport = (): boolean => {
+    const errors: { name?: string; email?: string; title?: string; description?: string } = {};
+
+    if (!bugName.trim()) {
+      errors.name = 'Nama pelapor wajib diisi.';
+    }
+
+    if (!bugEmail.trim()) {
+      errors.email = 'Email kontak wajib diisi.';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(bugEmail.trim())) {
+      errors.email = 'Format alamat email tidak valid.';
+    }
+
+    if (!bugTitle.trim()) {
+      errors.title = 'Topik kendala wajib diisi.';
+    }
+
+    if (!bugDescription.trim()) {
+      errors.description = 'Rincian kendala wajib diisi.';
+    } else if (bugDescription.trim().length < 10) {
+      errors.description = 'Jelaskan kendala minimal 10 karakter.';
+    }
+
+    setBugErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   // Send Bug Report Email
   const handleSendBugReportEmail = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!bugName.trim() || !bugEmail.trim() || !bugTitle.trim() || !bugDescription.trim()) {
-      toast.error('Harap lengkapi semua kolom laporan wajib.');
+    if (!validateBugReport()) {
+      toast.error('Harap lengkapi semua kolom bertanda * dengan benar.');
       return;
     }
 
@@ -137,13 +183,13 @@ export const ReviewsPage: React.FC = () => {
     if (success) {
       toast.success('Aplikasi email dibuka dengan draf laporan terformat rapi!');
     } else {
-      toast.info('Silakan gunakan tombol "Salin Teks" untuk menyalin format laporan.');
+      toast.info('Gunakan tombol "Salin Teks" untuk menyalin draf laporan.');
     }
   };
 
   const handleCopyBugReport = async () => {
-    if (!bugName.trim() || !bugTitle.trim() || !bugDescription.trim()) {
-      toast.error('Isi formulir laporan terlebih dahulu untuk disalin.');
+    if (!validateBugReport()) {
+      toast.error('Lengkapi formulir bertanda * terlebih dahulu sebelum menyalin.');
       return;
     }
 
@@ -158,7 +204,7 @@ export const ReviewsPage: React.FC = () => {
 
     const copied = await copyReportToClipboard(payload);
     if (copied) {
-      toast.success('Teks laporan berhasil disalin ke clipboard!');
+      toast.success('Draf laporan berhasil disalin ke clipboard!');
     } else {
       toast.error('Gagal menyalin ke clipboard.');
     }
@@ -173,67 +219,63 @@ export const ReviewsPage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Page Title & Intro */}
-      <div className="space-y-1">
-        <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
-          <Star className="w-5 h-5 text-amber-500 fill-amber-400" />
-          <span>Ulasan Komunitas & Pusat Masukan</span>
+      <div className="space-y-1 text-left">
+        <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+          Ulasan Komunitas & Pusat Masukan
         </h1>
         <p className="text-xs sm:text-sm text-slate-500">
-          Sampaikan pengalaman Anda menggunakan DecisiGraph, kirim evaluasi bintang, atau laporkan kendala teknis.
+          Sampaikan evaluasi pengalaman Anda menggunakan DecisiGraph atau laporkan kendala operasional untuk penyempurnaan sistem.
         </p>
       </div>
 
-      {/* Main Grid: Form (Left) & Reviews Stream (Right) */}
+      {/* Main Grid: Form (Left 5 Cols) & Reviews Stream (Right 7 Cols) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        {/* Form Container (Left 5 Cols) */}
+        {/* Left Form Container */}
         <div className="lg:col-span-5 space-y-4">
-          {/* Form Mode Selector */}
-          <div className="p-1 bg-slate-100 rounded-xl flex items-center gap-1 text-xs border border-slate-200/80">
+          {/* Neutral Clean Form Mode Selector */}
+          <div className="p-1 bg-slate-100 rounded-lg flex items-center gap-1 text-xs border border-slate-200">
             <button
               type="button"
               onClick={() => setFormMode('review')}
-              className={`flex-1 py-1.5 rounded-lg font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+              className={`flex-1 py-1.5 rounded-md transition-colors cursor-pointer text-center font-medium ${
                 formMode === 'review'
-                  ? 'bg-white text-amber-700 shadow-2xs'
+                  ? 'bg-white text-slate-900 shadow-2xs font-bold'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-400" />
-              <span>Beri Review</span>
+              Beri Ulasan
             </button>
             <button
               type="button"
               onClick={() => setFormMode('bug')}
-              className={`flex-1 py-1.5 rounded-lg font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+              className={`flex-1 py-1.5 rounded-md transition-colors cursor-pointer text-center font-medium ${
                 formMode === 'bug'
-                  ? 'bg-white text-rose-700 shadow-2xs'
+                  ? 'bg-white text-slate-900 shadow-2xs font-bold'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              <Bug className="w-3.5 h-3.5 text-rose-500" />
-              <span>Lapor Kendala</span>
+              Lapor Kendala
             </button>
           </div>
 
           {/* Form A: Kirim Ulasan */}
           {formMode === 'review' && (
-            <Card className="border-slate-200/90 shadow-2xs">
+            <Card className="border-slate-200 shadow-2xs">
               <CardHeader className="pb-3 border-b border-slate-100">
-                <CardTitle className="text-sm flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-amber-500" />
-                  <span>Bagikan Penilaian Anda</span>
+                <CardTitle className="text-sm font-bold text-slate-900">
+                  Tulis Penilaian & Ulasan
                 </CardTitle>
-                <CardDescription className="text-xs">
-                  Ulasan Anda akan langsung tampil secara terbuka untuk komunitas pengguna.
+                <CardDescription className="text-xs text-slate-500">
+                  Ulasan Anda akan langsung tampil secara terbuka pada linimasa komunitas.
                 </CardDescription>
               </CardHeader>
               <CardContent className="pt-4">
                 <form onSubmit={handleSubmitReview} className="space-y-4 text-xs">
-                  {/* Interactive Star Rating */}
-                  <div className="p-3.5 bg-amber-50/60 rounded-xl border border-amber-200/70 text-center space-y-2">
-                    <span className="text-[11px] font-semibold text-amber-900 uppercase tracking-wide block">
-                      Tingkat Kepuasan Anda:
-                    </span>
+                  {/* Clean Interactive Star Rating Input */}
+                  <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-center space-y-1.5">
+                    <label className="text-[11px] font-semibold text-slate-700 block">
+                      Tingkat Kepuasan Anda <span className="text-rose-500">*</span>
+                    </label>
                     <StarRatingInput
                       value={ratingScore}
                       onChange={setRatingScore}
@@ -242,24 +284,42 @@ export const ReviewsPage: React.FC = () => {
                     />
                   </div>
 
+                  {/* Name Input */}
                   <div className="space-y-1">
-                    <label className="font-semibold text-slate-700">Nama Lengkap:</label>
+                    <label className="font-semibold text-slate-700 block">
+                      Nama Lengkap <span className="text-rose-500">*</span>
+                    </label>
                     <input
                       type="text"
-                      required
                       value={reviewerName}
-                      onChange={(e) => setReviewerName(e.target.value)}
+                      onChange={(e) => {
+                        setReviewerName(e.target.value);
+                        if (reviewErrors.name) setReviewErrors((prev) => ({ ...prev, name: undefined }));
+                      }}
                       placeholder="Contoh: Rian Anggoro"
-                      className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg outline-none focus:bg-white focus:ring-1 focus:ring-accent-primary font-medium"
+                      className={`w-full px-3 py-2 bg-slate-50 border rounded-lg outline-none transition-colors font-medium text-slate-900 ${
+                        reviewErrors.name
+                          ? 'border-rose-400 bg-rose-50/20 focus:ring-1 focus:ring-rose-500'
+                          : 'border-slate-200 focus:bg-white focus:ring-1 focus:ring-indigo-500'
+                      }`}
                     />
+                    {reviewErrors.name && (
+                      <span className="text-[11px] text-rose-600 font-medium block">
+                        {reviewErrors.name}
+                      </span>
+                    )}
                   </div>
 
+                  {/* Role Selector (Optional) */}
                   <div className="space-y-1">
-                    <label className="font-semibold text-slate-700">Peran / Profesi:</label>
+                    <label className="font-semibold text-slate-700 flex items-center justify-between">
+                      <span>Peran / Profesi</span>
+                      <span className="text-[10px] text-slate-400 font-normal">(Opsional)</span>
+                    </label>
                     <select
                       value={reviewerRole}
                       onChange={(e) => setReviewerRole(e.target.value)}
-                      className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg outline-none focus:bg-white focus:ring-1 focus:ring-accent-primary font-medium"
+                      className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg outline-none focus:bg-white focus:ring-1 focus:ring-indigo-500 font-medium text-slate-800"
                     >
                       <option value="Pengambil Keputusan">Pengambil Keputusan / Manajer</option>
                       <option value="Mahasiswa">Mahasiswa / Peneliti</option>
@@ -269,26 +329,40 @@ export const ReviewsPage: React.FC = () => {
                     </select>
                   </div>
 
+                  {/* Comment Textarea */}
                   <div className="space-y-1">
-                    <label className="font-semibold text-slate-700">Ulasan & Masukan:</label>
+                    <label className="font-semibold text-slate-700 block">
+                      Ulasan & Masukan <span className="text-rose-500">*</span>
+                    </label>
                     <textarea
-                      required
                       rows={3}
                       value={reviewComment}
-                      onChange={(e) => setReviewComment(e.target.value)}
-                      placeholder="Bagikan pengalaman Anda menggunakan kalkulasi SPK, transparansi KaTeX, atau perbandingan multi-metode..."
-                      className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg outline-none focus:bg-white focus:ring-1 focus:ring-accent-primary font-medium resize-none leading-relaxed"
+                      onChange={(e) => {
+                        setReviewComment(e.target.value);
+                        if (reviewErrors.comment) setReviewErrors((prev) => ({ ...prev, comment: undefined }));
+                      }}
+                      placeholder="Bagikan pengalaman kalkulasi SPK, transparansi KaTeX, atau kemudahan komparasi metode..."
+                      className={`w-full px-3 py-2 bg-slate-50 border rounded-lg outline-none transition-colors font-medium resize-none leading-relaxed text-slate-900 ${
+                        reviewErrors.comment
+                          ? 'border-rose-400 bg-rose-50/20 focus:ring-1 focus:ring-rose-500'
+                          : 'border-slate-200 focus:bg-white focus:ring-1 focus:ring-indigo-500'
+                      }`}
                     />
+                    {reviewErrors.comment && (
+                      <span className="text-[11px] text-rose-600 font-medium block">
+                        {reviewErrors.comment}
+                      </span>
+                    )}
                   </div>
 
                   <Button
                     type="submit"
                     variant="primary"
                     disabled={isSubmittingReview}
-                    className="w-full justify-center py-2 text-xs font-bold shadow-sm"
+                    className="w-full justify-center py-2 text-xs font-semibold shadow-2xs gap-1.5"
                   >
-                    <Send className="w-3.5 h-3.5 mr-1" />
-                    <span>{isSubmittingReview ? 'Mengirim...' : 'Kirim Ulasan Sekarang'}</span>
+                    <Send className="w-3.5 h-3.5" />
+                    <span>{isSubmittingReview ? 'Mengirim...' : 'Kirim Ulasan'}</span>
                   </Button>
                 </form>
               </CardContent>
@@ -297,50 +371,70 @@ export const ReviewsPage: React.FC = () => {
 
           {/* Form B: Lapor Kendala / Bug */}
           {formMode === 'bug' && (
-            <Card className="border-rose-200/90 shadow-2xs">
-              <CardHeader className="pb-3 border-b border-rose-100 bg-rose-50/30">
-                <CardTitle className="text-sm flex items-center gap-2 text-rose-900">
-                  <Bug className="w-4 h-4 text-rose-600" />
-                  <span>Laporkan Kendala atau Bug</span>
+            <Card className="border-slate-200 shadow-2xs">
+              <CardHeader className="pb-3 border-b border-slate-100">
+                <CardTitle className="text-sm font-bold text-slate-900">
+                  Laporkan Kendala Teknis
                 </CardTitle>
-                <CardDescription className="text-xs">
-                  Laporan dan tangkapan layar langsung diformat untuk dikirim ke email pengembang.
+                <CardDescription className="text-xs text-slate-500">
+                  Rincian laporan dan gambar akan diformat rapi untuk dikirimkan ke email pengembang.
                 </CardDescription>
               </CardHeader>
               <CardContent className="pt-4">
-                <form onSubmit={handleSendBugReportEmail} className="space-y-3 text-xs">
-                  <div className="grid grid-cols-2 gap-2.5">
+                <form onSubmit={handleSendBugReportEmail} className="space-y-3.5 text-xs">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div className="space-y-1">
-                      <label className="font-semibold text-slate-700">Nama Anda:</label>
+                      <label className="font-semibold text-slate-700 block">
+                        Nama Anda <span className="text-rose-500">*</span>
+                      </label>
                       <input
                         type="text"
-                        required
                         value={bugName}
-                        onChange={(e) => setBugName(e.target.value)}
+                        onChange={(e) => {
+                          setBugName(e.target.value);
+                          if (bugErrors.name) setBugErrors((prev) => ({ ...prev, name: undefined }));
+                        }}
                         placeholder="Nama pelapor"
-                        className="w-full px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg outline-none focus:bg-white focus:ring-1 focus:ring-rose-500 font-medium"
+                        className={`w-full px-3 py-1.5 bg-slate-50 border rounded-lg outline-none font-medium text-slate-900 ${
+                          bugErrors.name ? 'border-rose-400 focus:ring-1 focus:ring-rose-500' : 'border-slate-200 focus:ring-1 focus:ring-indigo-500'
+                        }`}
                       />
+                      {bugErrors.name && (
+                        <span className="text-[10px] text-rose-600 block">{bugErrors.name}</span>
+                      )}
                     </div>
+
                     <div className="space-y-1">
-                      <label className="font-semibold text-slate-700">Email Kontak:</label>
+                      <label className="font-semibold text-slate-700 block">
+                        Email Kontak <span className="text-rose-500">*</span>
+                      </label>
                       <input
                         type="email"
-                        required
                         value={bugEmail}
-                        onChange={(e) => setBugEmail(e.target.value)}
+                        onChange={(e) => {
+                          setBugEmail(e.target.value);
+                          if (bugErrors.email) setBugErrors((prev) => ({ ...prev, email: undefined }));
+                        }}
                         placeholder="email@anda.com"
-                        className="w-full px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg outline-none focus:bg-white focus:ring-1 focus:ring-rose-500 font-medium"
+                        className={`w-full px-3 py-1.5 bg-slate-50 border rounded-lg outline-none font-medium text-slate-900 ${
+                          bugErrors.email ? 'border-rose-400 focus:ring-1 focus:ring-rose-500' : 'border-slate-200 focus:ring-1 focus:ring-indigo-500'
+                        }`}
                       />
+                      {bugErrors.email && (
+                        <span className="text-[10px] text-rose-600 block">{bugErrors.email}</span>
+                      )}
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-2.5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div className="space-y-1">
-                      <label className="font-semibold text-slate-700">Kategori:</label>
+                      <label className="font-semibold text-slate-700 block">
+                        Kategori <span className="text-rose-500">*</span>
+                      </label>
                       <select
                         value={bugCategory}
                         onChange={(e) => setBugCategory(e.target.value as any)}
-                        className="w-full px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg outline-none focus:bg-white focus:ring-1 focus:ring-rose-500 font-medium"
+                        className="w-full px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg outline-none focus:bg-white focus:ring-1 focus:ring-indigo-500 font-medium text-slate-800"
                       >
                         <option value="BUG">Bug / Error Kalkulasi</option>
                         <option value="KELUHAN">Kendala Tampilan / UX</option>
@@ -348,53 +442,72 @@ export const ReviewsPage: React.FC = () => {
                         <option value="FEEDBACK">Masukan Umum</option>
                       </select>
                     </div>
+
                     <div className="space-y-1">
-                      <label className="font-semibold text-slate-700">Topik / Judul:</label>
+                      <label className="font-semibold text-slate-700 block">
+                        Topik / Judul <span className="text-rose-500">*</span>
+                      </label>
                       <input
                         type="text"
-                        required
                         value={bugTitle}
-                        onChange={(e) => setBugTitle(e.target.value)}
-                        placeholder="Ringkasan topik"
-                        className="w-full px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg outline-none focus:bg-white focus:ring-1 focus:ring-rose-500 font-medium"
+                        onChange={(e) => {
+                          setBugTitle(e.target.value);
+                          if (bugErrors.title) setBugErrors((prev) => ({ ...prev, title: undefined }));
+                        }}
+                        placeholder="Ringkasan topik kendala"
+                        className={`w-full px-3 py-1.5 bg-slate-50 border rounded-lg outline-none font-medium text-slate-900 ${
+                          bugErrors.title ? 'border-rose-400 focus:ring-1 focus:ring-rose-500' : 'border-slate-200 focus:ring-1 focus:ring-indigo-500'
+                        }`}
                       />
+                      {bugErrors.title && (
+                        <span className="text-[10px] text-rose-600 block">{bugErrors.title}</span>
+                      )}
                     </div>
                   </div>
 
                   <div className="space-y-1">
-                    <label className="font-semibold text-slate-700">Rincian Kendala:</label>
+                    <label className="font-semibold text-slate-700 block">
+                      Rincian Kendala <span className="text-rose-500">*</span>
+                    </label>
                     <textarea
-                      required
                       rows={3}
                       value={bugDescription}
-                      onChange={(e) => setBugDescription(e.target.value)}
-                      placeholder="Jelaskan langkah-langkah yang memicu kendala, angka matriks, atau pesan error yang muncul..."
-                      className="w-full px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg outline-none focus:bg-white focus:ring-1 focus:ring-rose-500 font-medium resize-none leading-relaxed"
+                      onChange={(e) => {
+                        setBugDescription(e.target.value);
+                        if (bugErrors.description) setBugErrors((prev) => ({ ...prev, description: undefined }));
+                      }}
+                      placeholder="Jelaskan langkah yang memicu kendala, angka matriks, atau pesan error yang muncul..."
+                      className={`w-full px-3 py-1.5 bg-slate-50 border rounded-lg outline-none font-medium resize-none leading-relaxed text-slate-900 ${
+                        bugErrors.description ? 'border-rose-400 focus:ring-1 focus:ring-rose-500' : 'border-slate-200 focus:ring-1 focus:ring-indigo-500'
+                      }`}
                     />
+                    {bugErrors.description && (
+                      <span className="text-[10px] text-rose-600 block">{bugErrors.description}</span>
+                    )}
                   </div>
 
-                  {/* Screenshot upload preview */}
+                  {/* Screenshot upload */}
                   <div className="space-y-1">
                     <label className="font-semibold text-slate-700 flex items-center justify-between">
-                      <span>Bukti Tangkapan Layar (Opsional):</span>
-                      <span className="text-[10px] text-slate-400 font-normal">Maks 5MB</span>
+                      <span>Tangkapan Layar</span>
+                      <span className="text-[10px] text-slate-400 font-normal">(Opsional, maks 5MB)</span>
                     </label>
 
                     {!imagePreview ? (
                       <div
                         onClick={() => fileInputRef.current?.click()}
-                        className="p-3 border-2 border-dashed border-slate-300 hover:border-rose-400 rounded-xl bg-slate-50 hover:bg-rose-50/20 text-center cursor-pointer transition-colors"
+                        className="p-3 border border-dashed border-slate-300 hover:border-slate-400 rounded-lg bg-slate-50 hover:bg-slate-100/60 text-center cursor-pointer transition-colors"
                       >
                         <Upload className="w-4 h-4 mx-auto text-slate-400 mb-1" />
-                        <span className="text-xs font-semibold text-slate-700 block">Klik untuk lampirkan gambar</span>
-                        <span className="text-[10px] text-slate-400">PNG, JPG, atau WebP</span>
+                        <span className="text-xs font-medium text-slate-700 block">Lampirkan bukti gambar</span>
+                        <span className="text-[10px] text-slate-400">Format PNG, JPG, atau WebP</span>
                       </div>
                     ) : (
-                      <div className="relative rounded-xl border border-slate-200 p-2 bg-slate-50 flex items-center gap-3">
+                      <div className="relative rounded-lg border border-slate-200 p-2 bg-slate-50 flex items-center gap-3">
                         <img
                           src={imagePreview}
                           alt="Preview tangkapan layar"
-                          className="w-16 h-12 object-cover rounded-lg border border-slate-200"
+                          className="w-14 h-11 object-cover rounded border border-slate-200"
                         />
                         <div className="flex-1 truncate">
                           <span className="font-semibold text-slate-800 text-xs block truncate">
@@ -407,7 +520,7 @@ export const ReviewsPage: React.FC = () => {
                         <button
                           type="button"
                           onClick={removeImage}
-                          className="p-1 rounded-full text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+                          className="p-1 rounded text-slate-400 hover:text-slate-700 hover:bg-slate-200 transition-colors cursor-pointer"
                           title="Hapus gambar"
                         >
                           <X className="w-4 h-4" />
@@ -427,11 +540,11 @@ export const ReviewsPage: React.FC = () => {
                   <div className="flex items-center gap-2 pt-1">
                     <Button
                       type="submit"
-                      variant="danger"
-                      className="flex-1 justify-center py-2 text-xs font-bold"
+                      variant="primary"
+                      className="flex-1 justify-center py-2 text-xs font-semibold shadow-2xs gap-1.5"
                     >
-                      <ExternalLink className="w-3.5 h-3.5 mr-1" />
-                      <span>Kirim via Email</span>
+                      <ExternalLink className="w-3.5 h-3.5" />
+                      <span>Kirim Laporan via Email</span>
                     </Button>
                     <Button
                       type="button"
@@ -452,10 +565,10 @@ export const ReviewsPage: React.FC = () => {
         {/* Live Reviews Stream (Right 7 Cols) */}
         <div className="lg:col-span-7 space-y-4">
           {/* Summary Score Card */}
-          <div className="p-4 rounded-xl bg-white border border-slate-200/90 shadow-2xs flex items-center justify-between">
-            <div>
-              <div className="flex items-center gap-2 mb-1">
-                <span className="text-2xl font-black text-slate-900 tracking-tight">{avgRating}</span>
+          <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-2xs flex items-center justify-between">
+            <div className="space-y-0.5">
+              <div className="flex items-center gap-2">
+                <span className="text-2xl font-black text-slate-900 tracking-tight font-mono">{avgRating}</span>
                 <div className="flex items-center text-amber-400">
                   {hasReviews ? (
                     [1, 2, 3, 4, 5].map((s) => (
@@ -466,23 +579,22 @@ export const ReviewsPage: React.FC = () => {
                   )}
                 </div>
               </div>
-              <span className="text-xs text-slate-500">
+              <span className="text-xs text-slate-500 block">
                 {hasReviews
                   ? `Berdasarkan ${reviews.length} ulasan pengguna aktif`
                   : 'Belum ada ulasan yang tersimpan'}
               </span>
             </div>
 
-            <Badge variant="benefit" size="sm">
-              <CheckCircle2 className="w-3.5 h-3.5 mr-1" />
-              <span>Pembaruan Langsung</span>
+            <Badge variant="neutral" size="sm" className="font-mono text-[10px]">
+              Linimasa Komunitas
             </Badge>
           </div>
 
           {/* Reviews List */}
           <div className="space-y-3">
-            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider px-1">
-              Daftar Ulasan Komunitas:
+            <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider px-1">
+              Daftar Ulasan Pengguna:
             </h3>
 
             {isLoadingReviews ? (
@@ -490,30 +602,25 @@ export const ReviewsPage: React.FC = () => {
                 Memuat data ulasan...
               </div>
             ) : reviews.length === 0 ? (
-              <div className="p-8 text-center bg-white rounded-xl border border-dashed border-slate-300 space-y-2.5">
-                <div className="w-10 h-10 rounded-full bg-amber-50 text-amber-500 mx-auto flex items-center justify-center">
-                  <Star className="w-5 h-5 fill-amber-400" />
-                </div>
+              <div className="p-8 text-center bg-white rounded-xl border border-dashed border-slate-300 space-y-2">
                 <h4 className="text-sm font-bold text-slate-800">Belum Ada Ulasan Masuk</h4>
                 <p className="text-xs text-slate-500 max-w-sm mx-auto leading-relaxed">
-                  Belum ada ulasan di database. Jadilah pengguna pertama yang membagikan pengalaman evaluasi SPK Anda melalui formulir di samping!
+                  Jadilah pengguna pertama yang membagikan masukan evaluasi metode SPK di DecisiGraph melalui formulir di samping.
                 </p>
               </div>
             ) : (
               reviews.map((rev) => (
-                <motion.div
+                <div
                   key={rev.id}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-2xs hover:border-slate-300 transition-all space-y-2.5"
+                  className="p-4 rounded-xl bg-white border border-slate-200 shadow-2xs space-y-2.5 transition-colors"
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-full bg-indigo-50 text-indigo-700 font-bold text-xs flex items-center justify-center border border-indigo-200/80">
+                      <div className="w-8 h-8 rounded-full bg-slate-100 text-slate-700 font-bold text-xs flex items-center justify-center border border-slate-200">
                         {rev.name.slice(0, 1).toUpperCase()}
                       </div>
                       <div>
-                        <h4 className="text-xs font-bold text-slate-800">{rev.name}</h4>
+                        <h4 className="text-xs font-bold text-slate-900">{rev.name}</h4>
                         <span className="text-[10px] text-slate-400">{rev.role || 'Pengguna'}</span>
                       </div>
                     </div>
@@ -525,15 +632,17 @@ export const ReviewsPage: React.FC = () => {
                     </div>
                   </div>
 
-                  <p className="text-xs text-slate-600 leading-relaxed pl-0.5">
+                  <p className="text-xs text-slate-600 leading-relaxed">
                     "{rev.comment}"
                   </p>
 
-                  <div className="pt-2 flex items-center justify-between text-[10px] text-slate-400 border-t border-slate-100 font-mono">
-                    <span>{new Date(rev.createdAt).toLocaleDateString('id-ID', { dateStyle: 'medium' })}</span>
-                    <span className="text-emerald-600 font-semibold font-sans">Terverifikasi</span>
+                  <div className="pt-2 flex items-center justify-between text-[10px] text-slate-400 border-t border-slate-100">
+                    <span title={new Date(rev.createdAt).toLocaleString('id-ID')}>
+                      {formatRelativeTime(rev.createdAt)}
+                    </span>
+                    <span className="text-slate-500 font-medium">Terverifikasi</span>
                   </div>
-                </motion.div>
+                </div>
               ))
             )}
           </div>

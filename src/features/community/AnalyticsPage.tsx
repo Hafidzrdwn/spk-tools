@@ -7,6 +7,7 @@ import {
   type ReviewItem,
 } from '@/services/firebase';
 import Badge from '@/components/ui/Badge';
+import { formatRelativeTime } from '@/utils/dateFormatter';
 import {
   BarChart3,
   Laptop,
@@ -261,8 +262,8 @@ export const AnalyticsPage: React.FC = () => {
               {analytics.recentVisits && analytics.recentVisits.length > 0 ? (
                 analytics.recentVisits.map((v) => (
                   <tr key={v.id} className="hover:bg-slate-50/60 transition-colors">
-                    <td className="py-2 px-3 text-slate-600">
-                      {new Date(v.timestamp).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                    <td className="py-2 px-3 text-slate-600 font-sans" title={new Date(v.timestamp).toLocaleString('id-ID')}>
+                      {formatRelativeTime(v.timestamp)}
                     </td>
                     <td className="py-2 px-3 font-sans font-medium text-slate-800">{v.device}</td>
                     <td className="py-2 px-3 text-slate-600">{v.os}</td>

@@ -9,8 +9,6 @@ import { useUiStore } from '@/store/useUiStore';
 import { prefetchRoute, scheduleAllRemainingPrefetch } from '@/services/routePrefetch';
 import {
   ArrowRight,
-  BarChart3,
-  Star,
   Github,
   CheckCircle2,
   FileText,
@@ -251,19 +249,9 @@ export const LandingPage: React.FC = () => {
               to="/review"
               onMouseEnter={prefetchRoute.review}
               onFocus={prefetchRoute.review}
-              className="text-xs font-semibold text-slate-600 hover:text-slate-900 flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-slate-100 transition-colors"
+              className="text-xs font-semibold text-slate-600 hover:text-slate-900 px-3 py-1.5 rounded-lg hover:bg-slate-100 transition-colors"
             >
-              <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-400" />
-              <span>Review</span>
-            </Link>
-            <Link
-              to="/analytics"
-              onMouseEnter={prefetchRoute.analytics}
-              onFocus={prefetchRoute.analytics}
-              className="text-xs font-semibold text-slate-600 hover:text-slate-900 flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-slate-100 transition-colors"
-            >
-              <BarChart3 className="w-3.5 h-3.5 text-indigo-600" />
-              <span>Analitik</span>
+              Komunitas
             </Link>
 
             <a

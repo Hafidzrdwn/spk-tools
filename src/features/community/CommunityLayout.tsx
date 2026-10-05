@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Star, BarChart3 } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Logo from '@/components/layout/Logo';
 import { prefetchRoute, scheduleAllRemainingPrefetch } from '@/services/routePrefetch';
@@ -24,7 +24,7 @@ export const CommunityLayout: React.FC<CommunityLayoutProps> = ({
   return (
     <div className="min-h-screen bg-surface bg-dot-grid text-slate-800 pb-16 antialiased">
       {/* Top Bar Header */}
-      <header className="sticky top-0 z-30 bg-white/85 backdrop-blur-md border-b border-slate-200/80 px-4 sm:px-6 py-3.5 shadow-2xs">
+      <header className="sticky top-0 z-30 bg-white/90 backdrop-blur-xs border-b border-slate-200 px-4 sm:px-6 py-3 shadow-2xs">
         <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <Button
@@ -33,7 +33,7 @@ export const CommunityLayout: React.FC<CommunityLayoutProps> = ({
               onMouseEnter={() => prefetchRoute.board()}
               onFocus={() => prefetchRoute.board()}
               onClick={() => navigate('/board')}
-              className="gap-1.5 text-slate-600 hover:text-slate-900 cursor-pointer shadow-2xs"
+              className="gap-1.5 text-slate-600 hover:text-slate-900 cursor-pointer shadow-2xs text-xs font-semibold"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>Kembali ke Workboard</span>
@@ -51,32 +51,30 @@ export const CommunityLayout: React.FC<CommunityLayoutProps> = ({
           </div>
 
           {/* Clean Sub-Navigation Tabs */}
-          <div className="flex items-center gap-1 p-1 bg-slate-100 rounded-xl border border-slate-200/80 text-xs">
+          <div className="flex items-center gap-1 p-1 bg-slate-100 rounded-lg border border-slate-200 text-xs">
             <Link
               to="/review"
               onMouseEnter={prefetchRoute.review}
               onFocus={prefetchRoute.review}
-              className={`px-3 py-1.5 font-semibold rounded-lg transition-all flex items-center gap-1.5 cursor-pointer ${
+              className={`px-3 py-1.5 rounded-md transition-colors cursor-pointer ${
                 activeTab === 'review'
                   ? 'bg-white text-slate-900 shadow-2xs font-bold'
-                  : 'text-slate-500 hover:text-slate-800'
+                  : 'text-slate-600 hover:text-slate-900 font-medium'
               }`}
             >
-              <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-400" />
-              <span>Ulasan & Masukan</span>
+              Ulasan Komunitas
             </Link>
             <Link
               to="/analytics"
               onMouseEnter={prefetchRoute.analytics}
               onFocus={prefetchRoute.analytics}
-              className={`px-3 py-1.5 font-semibold rounded-lg transition-all flex items-center gap-1.5 cursor-pointer ${
+              className={`px-3 py-1.5 rounded-md transition-colors cursor-pointer ${
                 activeTab === 'analytics'
-                  ? 'bg-white text-indigo-700 shadow-2xs font-bold'
-                  : 'text-slate-500 hover:text-slate-800'
+                  ? 'bg-white text-slate-900 shadow-2xs font-bold'
+                  : 'text-slate-600 hover:text-slate-900 font-medium'
               }`}
             >
-              <BarChart3 className="w-3.5 h-3.5 text-indigo-600" />
-              <span>Statistik Web</span>
+              Statistik Penggunaan
             </Link>
           </div>
         </div>
