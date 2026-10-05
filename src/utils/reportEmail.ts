@@ -1,4 +1,5 @@
 import { getClientEnvironmentInfo } from '@/services/firebase';
+import { sanitizeText } from '@/utils/security';
 
 export interface ReportEmailPayload {
   name: string;
@@ -8,6 +9,7 @@ export interface ReportEmailPayload {
   description: string;
   attachmentName?: string;
   attachmentDataUrl?: string; // base64 data url for preview
+  botHoneypot?: string; // Silent bot-catcher field to safeguard free API quota
 }
 
 const DEFAULT_TARGET_EMAIL =
@@ -83,14 +85,17 @@ export interface SendReportResult {
   message?: string;
 }
 
-/**
- * Kirim laporan kendala langsung ke email tujuan via Web3Forms API
- * tanpa membuka aplikasi email client pengguna.
- */
 export async function sendReportEmailDirect(
   payload: ReportEmailPayload,
   accessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY
 ): Promise<SendReportResult> {
+  if (payload.botHoneypot && payload.botHoneypot.trim() !== '') {
+    return {
+      success: true,
+      message: 'Laporan kendala berhasil dikirim otomatis ke email tim pengembang.',
+    };
+  }
+
   if (!accessKey) {
     return {
       success: false,
@@ -98,19 +103,24 @@ export async function sendReportEmailDirect(
     };
   }
 
+  const cleanName = sanitizeText(payload.name, 100);
+  const cleanEmail = sanitizeText(payload.email, 100);
+  const cleanTitle = sanitizeText(payload.title, 150);
+  const cleanDescription = sanitizeText(payload.description, 2000);
+
   const env = getClientEnvironmentInfo();
   const timestamp = new Date().toLocaleString('id-ID', { dateStyle: 'full', timeStyle: 'long' });
-  const subject = `[DecisiGraph ${payload.category}] ${payload.title} - dari ${payload.name}`;
+  const subject = `[DecisiGraph ${payload.category}] ${cleanTitle} - dari ${cleanName}`;
 
   const bodyData: Record<string, string> = {
     access_key: accessKey,
     subject: subject,
-    from_name: `DecisiGraph (${payload.name})`,
-    name: payload.name,
-    email: payload.email,
+    from_name: `DecisiGraph (${cleanName})`,
+    name: cleanName,
+    email: cleanEmail,
     category: payload.category,
-    title: payload.title,
-    message: payload.description,
+    title: cleanTitle,
+    message: cleanDescription,
     device: env.device,
     browser: env.browser,
     os: env.os,
@@ -118,7 +128,7 @@ export async function sendReportEmailDirect(
   };
 
   if (payload.attachmentName) {
-    bodyData.attachment_name = payload.attachmentName;
+    bodyData.attachment_name = sanitizeText(payload.attachmentName, 100);
   }
 
   try {

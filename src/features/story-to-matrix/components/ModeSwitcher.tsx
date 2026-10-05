@@ -18,7 +18,7 @@ export const ModeSwitcher: React.FC<ModeSwitcherProps> = ({
         <button
           type="button"
           onClick={onSwitchToStory}
-          className={`flex items-center justify-center gap-1.5 sm:gap-2 px-3 py-2 text-xs font-semibold rounded-lg transition-all cursor-pointer min-h-[38px] ${
+          className={`flex items-center justify-center gap-1.5 sm:gap-2 px-3 py-2 text-xs font-semibold rounded-lg transition-all cursor-pointer min-h-9.5 ${
             mode === 'story'
               ? 'bg-white text-slate-900 shadow-2xs border border-slate-200/80'
               : 'text-slate-500 hover:text-slate-800 hover:bg-white/40'
@@ -32,7 +32,7 @@ export const ModeSwitcher: React.FC<ModeSwitcherProps> = ({
         <button
           type="button"
           onClick={onSwitchToForm}
-          className={`flex items-center justify-center gap-1.5 sm:gap-2 px-3 py-2 text-xs font-semibold rounded-lg transition-all cursor-pointer min-h-[38px] ${
+          className={`flex items-center justify-center gap-1.5 sm:gap-2 px-3 py-2 text-xs font-semibold rounded-lg transition-all cursor-pointer min-h-9.5 ${
             mode === 'form'
               ? 'bg-white text-slate-900 shadow-2xs border border-slate-200/80'
               : 'text-slate-500 hover:text-slate-800 hover:bg-white/40'

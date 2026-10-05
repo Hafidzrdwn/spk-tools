@@ -7,7 +7,7 @@
 [![Vite](https://img.shields.io/badge/Vite-5-646CFF?style=flat-square&logo=vite&logoColor=white)](https://vitejs.dev/)
 [![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green?style=flat-square)](./LICENSE)
-[![Version](https://img.shields.io/badge/version-1.0.0-blueviolet?style=flat-square)](./package.json)
+[![Version](https://img.shields.io/badge/version-1.1.0-blueviolet?style=flat-square)](./package.json)
 
 ---
 
@@ -44,6 +44,11 @@ Proyek ini lahir untuk menjawab kebutuhan nyata mahasiswa, peneliti, dan praktis
 - **📖 Glosarium Istilah** - Hover pada istilah teknis (Benefit, Cost, CR, λmax, dll.) untuk membaca penjelasan kontekstual tanpa meninggalkan halaman.
 - **📐 Shared Decision Matrix** - Satu input matriks dipakai lintas semua metode - ubah satu nilai, semua tab langsung terupdate secara reaktif.
 - **📋 Template Studi Kasus** - Muat contoh kasus nyata (pemilihan laptop, rekrutmen karyawan, dll.) untuk eksplorasi instan tanpa input manual.
+- **💬 Community Board & Reviews** - Linimasa ulasan pengguna real-time via Firebase, rating bintang interaktif, dan masukan terbuka lintas pengambil keputusan.
+- **🛡️ In-App Bug Reporter & Anti-Spam** - Kirim laporan kendala, bukti screenshot, dan feedback otomatis ke email pengembang tanpa mail client (didukung Web3Forms API dengan invisible bot honeypot, sanitasi input XSS, dan rate limit cooldown).
+- **📈 Real-time Web Analytics & Transparansi** - Pantau statistik kunjungan web (total kunjungan, view harian, bulanan, tahunan, breakdown perangkat & browser) secara transparan dan terdeduplikasi.
+- **🔄 Story-to-Matrix Pro** - Pengalih mode interaktif (Mode Cerita Narasi vs Mode Form Matriks) dengan validasi NLP reaktif dan indikator sinkronisasi dua arah.
+- **🌐 Clean URL Routing** - Navigasi browser mulus dengan rute `/`, `/board`, `/reviews`, dan `/analytics`.
 
 ---
 
@@ -51,7 +56,7 @@ Proyek ini lahir untuk menjawab kebutuhan nyata mahasiswa, peneliti, dan praktis
 
 DecisiGraph dikembangkan secara bertahap dengan visi jangka panjang menjadi platform SPK yang komprehensif.
 
-### ✅ v1.0 - _Foundation (MVP)_ · **Sekarang**
+### ✅ v1.0 - _Foundation (MVP)_
 
 > Fokus: fondasi sistem pendukung keputusan interaktif dengan beberapa metode dasar.
 
@@ -76,12 +81,16 @@ Pada tahap MVP ini, arsitektur UI menyajikan seluruh metode secara langsung dala
 
 ---
 
-### 🔧 v1.1 - _Refinement_
+### ✅ v1.1 - _Refinement & Community Ecosystem_ · **Rilis Saat Ini**
 
-> Fokus: stabilitas dan kenyamanan berdasarkan umpan balik pengguna nyata.
+> Fokus: stabilitas, keamanan kuota, pengalaman komunitas interaktif, dan kenyamanan berbasis masukan pengguna nyata.
 
-- [ ] Perbaikan bug yang ditemukan pasca-rilis
-- [ ] Peningkatan UX berdasarkan testimoni pengguna - teks lebih jelas, alur lebih intuitif, responsivitas mobile lebih baik
+- [x] **Perbaikan & Optimasi Akurasi Sistem** — perbaikan deteksi akurat sistem operasi/browser (iOS, Android, Firefox, Edge, Safari), formatting waktu relatif responsif, dan normalisasi desimal.
+- [x] **Community Board & Reviews** — linimasa ulasan pengguna real-time dengan rating bintang interaktif dan pembagian peran pengguna.
+- [x] **In-App Bug Reporter Terintegrasi** — pengiriman kendala teknis dan tangkapan layar otomatis ke email pengembang via Web3Forms API.
+- [x] **Pertahanan Keamanan & Anti-Spam (Free-Tier Quota Guard)** — bot honeypot trap tersembunyi, client-side cooldown (60 detik), batas harian pengiriman, validasi ketat berkas raster (anti-SVG Stored XSS), dan sanitasi input.
+- [x] **Real-time Web Analytics & Deduplikasi** — pelacakan kunjungan harian terdeduplikasi dengan garbage collection otomatis di localStorage.
+- [x] **Peningkatan UX & Responsivitas Mobile** — navigasi clean URL (`/`, `/board`, `/reviews`, `/analytics`), mode switcher bilingual, dan optimasi sentuhan pada perangkat seluler.
 
 ---
 
@@ -210,11 +219,23 @@ cd decisigraph
 # 2. Install dependensi
 npm install
 
-# 3. Jalankan server pengembangan
+# 3. Konfigurasi Environment Variables (Opsional untuk fitur realtime & pengiriman email)
+cp .env.example .env
+# Sesuaikan kredensial Firebase dan Web3Forms Anda pada berkas .env
+
+# 4. Jalankan server pengembangan
 npm run dev
 ```
 
 Aplikasi akan berjalan di `http://localhost:5173` secara default.
+
+### Konfigurasi `.env`
+
+| Variabel | Deskripsi | Layanan |
+| --- | --- | --- |
+| `VITE_FIREBASE_*` | Kredensial Firebase Realtime Database & Analytics | Google Firebase |
+| `VITE_WEB3FORMS_ACCESS_KEY` | Kunci akses pengiriman email kendala otomatis | [Web3Forms](https://web3forms.com/) |
+| `VITE_ADMIN_REPORT_EMAIL` | Alamat email tujuan penerima laporan kendala | Email Tim |
 
 ### Perintah Lainnya
 
@@ -282,5 +303,5 @@ Dibuat dengan ☕ dan antusiasme tinggi oleh:
 ---
 
 <div align="center">
-  <sub>DecisiGraph v1.0 - Kalkulasi transparan, keputusan lebih percaya diri.</sub>
+  <sub>DecisiGraph v1.1 - Kalkulasi transparan, keputusan lebih percaya diri.</sub>
 </div>

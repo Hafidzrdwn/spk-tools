@@ -9,6 +9,13 @@ import {
   copyReportToClipboard,
   type ReportEmailPayload,
 } from '@/utils/reportEmail';
+import {
+  sanitizeText,
+  isValidEmail,
+  validateImageUpload,
+  checkRateLimit,
+  recordRateLimitSubmission,
+} from '@/utils/security';
 import { formatRelativeTime } from '@/utils/dateFormatter';
 import StarRatingInput from '@/components/ui/StarRatingInput';
 import Button from '@/components/ui/Button';
@@ -47,6 +54,7 @@ export const ReviewsPage: React.FC = () => {
   const [bugCategory, setBugCategory] = useState<'BUG' | 'KELUHAN' | 'FEEDBACK' | 'FEATURE_REQUEST'>('BUG');
   const [bugTitle, setBugTitle] = useState('');
   const [bugDescription, setBugDescription] = useState('');
+  const [botHoneypot, setBotHoneypot] = useState(''); // Anti-bot honeypot trap
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [bugErrors, setBugErrors] = useState<{
@@ -78,12 +86,10 @@ export const ReviewsPage: React.FC = () => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (!file.type.startsWith('image/')) {
-      toast.error('File harus berupa gambar (JPG, PNG, WebP).');
-      return;
-    }
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error('Ukuran gambar maksimal 5MB.');
+    const validation = validateImageUpload(file, 5 * 1024 * 1024);
+    if (!validation.valid) {
+      toast.error(validation.error || 'Format berkas gambar tidak diizinkan demi keamanan.');
+      if (fileInputRef.current) fileInputRef.current.value = '';
       return;
     }
 
@@ -101,17 +107,26 @@ export const ReviewsPage: React.FC = () => {
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
-  // Submit Review with structured validation
   const handleSubmitReview = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Rate Limit: 30 detik cooldown, maksimal 5 ulasan/hari
+    const rateCheck = checkRateLimit('community_review', { cooldownSeconds: 30, maxPerDay: 5 });
+    if (!rateCheck.allowed) {
+      toast.error(rateCheck.reason || 'Batas pengiriman ulasan tercapai.');
+      return;
+    }
+
+    const cleanName = sanitizeText(reviewerName, 60);
+    const cleanComment = sanitizeText(reviewComment, 1000);
+
     const errors: { name?: string; comment?: string } = {};
-    if (!reviewerName.trim()) {
+    if (!cleanName) {
       errors.name = 'Nama lengkap wajib diisi.';
     }
-    if (!reviewComment.trim()) {
+    if (!cleanComment) {
       errors.comment = 'Ulasan wajib diisi.';
-    } else if (reviewComment.trim().length < 5) {
+    } else if (cleanComment.length < 5) {
       errors.comment = 'Ulasan minimal 5 karakter.';
     }
 
@@ -125,11 +140,12 @@ export const ReviewsPage: React.FC = () => {
     setIsSubmittingReview(true);
     try {
       await submitReview({
-        name: reviewerName.trim(),
-        role: reviewerRole.trim(),
+        name: cleanName,
+        role: sanitizeText(reviewerRole, 50),
         rating: ratingScore,
-        comment: reviewComment.trim(),
+        comment: cleanComment,
       });
+      recordRateLimitSubmission('community_review');
       toast.success('Terima kasih! Ulasan Anda berhasil diterbitkan.');
       setReviewComment('');
       setReviewerName('');
@@ -144,23 +160,28 @@ export const ReviewsPage: React.FC = () => {
   const validateBugReport = (): boolean => {
     const errors: { name?: string; email?: string; title?: string; description?: string } = {};
 
-    if (!bugName.trim()) {
+    const cleanName = sanitizeText(bugName, 60);
+    const cleanEmail = sanitizeText(bugEmail, 100);
+    const cleanTitle = sanitizeText(bugTitle, 120);
+    const cleanDesc = sanitizeText(bugDescription, 2000);
+
+    if (!cleanName) {
       errors.name = 'Nama pelapor wajib diisi.';
     }
 
-    if (!bugEmail.trim()) {
+    if (!cleanEmail) {
       errors.email = 'Email kontak wajib diisi.';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(bugEmail.trim())) {
-      errors.email = 'Format alamat email tidak valid.';
+    } else if (!isValidEmail(cleanEmail)) {
+      errors.email = 'Format alamat email tidak valid (maksimal 100 karakter).';
     }
 
-    if (!bugTitle.trim()) {
+    if (!cleanTitle) {
       errors.title = 'Topik kendala wajib diisi.';
     }
 
-    if (!bugDescription.trim()) {
+    if (!cleanDesc) {
       errors.description = 'Rincian kendala wajib diisi.';
-    } else if (bugDescription.trim().length < 10) {
+    } else if (cleanDesc.length < 10) {
       errors.description = 'Jelaskan kendala minimal 10 karakter.';
     }
 
@@ -168,31 +189,63 @@ export const ReviewsPage: React.FC = () => {
     return Object.keys(errors).length === 0;
   };
 
-  // Send Bug Report Email Otomatis
+  // Send Bug Report Email Otomatis dengan proteksi kuota & anti-bot
   const handleSendBugReportEmail = async (e: React.FormEvent) => {
     e.preventDefault();
     setBugSubmitStatus(null);
+
+    // 1. Silent Honeypot Trap: Jika bot mengisi field tersembunyi, langsung tanggapi sukses
+    // tanpa pernah memanggil Web3Forms API agar kuota 250/bulan tetap aman
+    if (botHoneypot && botHoneypot.trim() !== '') {
+      toast.success('Laporan berhasil dikirim langsung ke email pengembang!');
+      setBugSubmitStatus({
+        type: 'success',
+        message: 'Terima kasih! Laporan kendala Anda telah kami terima dan akan segera ditindaklanjuti oleh pengembang.',
+      });
+      setBugName('');
+      setBugEmail('');
+      setBugCategory('BUG');
+      setBugTitle('');
+      setBugDescription('');
+      setBotHoneypot('');
+      removeImage();
+      setBugErrors({});
+      return;
+    }
 
     if (!validateBugReport()) {
       toast.error('Harap lengkapi semua kolom bertanda * dengan benar.');
       return;
     }
 
+    // 2. Rate Limit & Cooldown Check: 60 detik cooldown, maksimal 3 laporan per hari
+    const rateCheck = checkRateLimit('bug_report_email', { cooldownSeconds: 60, maxPerDay: 3 });
+    if (!rateCheck.allowed) {
+      toast.error(rateCheck.reason || 'Batas pengiriman laporan tercapai.');
+      setBugSubmitStatus({
+        type: 'error',
+        message: rateCheck.reason || 'Batas pengiriman laporan harian telah tercapai untuk mencegah spam.',
+      });
+      return;
+    }
+
     setIsSubmittingBug(true);
 
     const payload: ReportEmailPayload = {
-      name: bugName.trim(),
-      email: bugEmail.trim(),
+      name: sanitizeText(bugName, 60),
+      email: sanitizeText(bugEmail, 100),
       category: bugCategory,
-      title: bugTitle.trim(),
-      description: bugDescription.trim(),
-      attachmentName: imageFile ? imageFile.name : undefined,
+      title: sanitizeText(bugTitle, 120),
+      description: sanitizeText(bugDescription, 2000),
+      attachmentName: imageFile ? sanitizeText(imageFile.name, 100) : undefined,
       attachmentDataUrl: imagePreview || undefined,
+      botHoneypot: botHoneypot,
     };
 
     try {
       const result = await sendReportEmailDirect(payload);
       if (result.success) {
+        recordRateLimitSubmission('bug_report_email');
         toast.success('Laporan berhasil dikirim langsung ke email pengembang!');
         setBugSubmitStatus({
           type: 'success',
@@ -204,6 +257,7 @@ export const ReviewsPage: React.FC = () => {
         setBugCategory('BUG');
         setBugTitle('');
         setBugDescription('');
+        setBotHoneypot('');
         removeImage();
         setBugErrors({});
       } else {
@@ -229,12 +283,12 @@ export const ReviewsPage: React.FC = () => {
     }
 
     const payload: ReportEmailPayload = {
-      name: bugName.trim(),
-      email: bugEmail.trim() || 'user@decisigraph.app',
+      name: sanitizeText(bugName, 60),
+      email: sanitizeText(bugEmail, 100) || 'user@decisigraph.app',
       category: bugCategory,
-      title: bugTitle.trim(),
-      description: bugDescription.trim(),
-      attachmentName: imageFile ? imageFile.name : undefined,
+      title: sanitizeText(bugTitle, 120),
+      description: sanitizeText(bugDescription, 2000),
+      attachmentName: imageFile ? sanitizeText(imageFile.name, 100) : undefined,
     };
 
     const copied = await copyReportToClipboard(payload);
@@ -326,6 +380,7 @@ export const ReviewsPage: React.FC = () => {
                     </label>
                     <input
                       type="text"
+                      maxLength={60}
                       value={reviewerName}
                       onChange={(e) => {
                         setReviewerName(e.target.value);
@@ -371,6 +426,7 @@ export const ReviewsPage: React.FC = () => {
                     </label>
                     <textarea
                       rows={3}
+                      maxLength={1000}
                       value={reviewComment}
                       onChange={(e) => {
                         setReviewComment(e.target.value);
@@ -448,6 +504,20 @@ export const ReviewsPage: React.FC = () => {
                       </button>
                     </div>
                   )}
+                  {/* Honeypot Anti-Spam Bot Trap (Invisible to real users, catches automated spam bots) */}
+                  <div className="hidden" aria-hidden="true">
+                    <label htmlFor="company_website">Website</label>
+                    <input
+                      id="company_website"
+                      type="text"
+                      name="company_website"
+                      value={botHoneypot}
+                      onChange={(e) => setBotHoneypot(e.target.value)}
+                      tabIndex={-1}
+                      autoComplete="off"
+                    />
+                  </div>
+
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div className="space-y-1">
                       <label className="font-semibold text-slate-700 block">
@@ -455,6 +525,7 @@ export const ReviewsPage: React.FC = () => {
                       </label>
                       <input
                         type="text"
+                        maxLength={60}
                         value={bugName}
                         onChange={(e) => {
                           setBugName(e.target.value);
@@ -476,6 +547,7 @@ export const ReviewsPage: React.FC = () => {
                       </label>
                       <input
                         type="email"
+                        maxLength={100}
                         value={bugEmail}
                         onChange={(e) => {
                           setBugEmail(e.target.value);
@@ -515,6 +587,7 @@ export const ReviewsPage: React.FC = () => {
                       </label>
                       <input
                         type="text"
+                        maxLength={120}
                         value={bugTitle}
                         onChange={(e) => {
                           setBugTitle(e.target.value);
@@ -537,6 +610,7 @@ export const ReviewsPage: React.FC = () => {
                     </label>
                     <textarea
                       rows={3}
+                      maxLength={2000}
                       value={bugDescription}
                       onChange={(e) => {
                         setBugDescription(e.target.value);
@@ -598,7 +672,7 @@ export const ReviewsPage: React.FC = () => {
                     <input
                       ref={fileInputRef}
                       type="file"
-                      accept="image/*"
+                      accept="image/jpeg,image/png,image/webp"
                       onChange={handleImageChange}
                       className="hidden"
                     />
