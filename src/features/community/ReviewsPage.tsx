@@ -5,7 +5,7 @@ import {
   type ReviewItem,
 } from '@/services/firebase';
 import {
-  openEmailClientWithReport,
+  sendReportEmailDirect,
   copyReportToClipboard,
   type ReportEmailPayload,
 } from '@/utils/reportEmail';
@@ -21,7 +21,9 @@ import {
   Upload,
   X,
   Copy,
-  ExternalLink,
+  CheckCircle2,
+  AlertCircle,
+  Loader2,
 } from 'lucide-react';
 
 export const ReviewsPage: React.FC = () => {
@@ -53,6 +55,11 @@ export const ReviewsPage: React.FC = () => {
     title?: string;
     description?: string;
   }>({});
+  const [isSubmittingBug, setIsSubmittingBug] = useState(false);
+  const [bugSubmitStatus, setBugSubmitStatus] = useState<{
+    type: 'success' | 'error';
+    message: string;
+  } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -161,13 +168,17 @@ export const ReviewsPage: React.FC = () => {
     return Object.keys(errors).length === 0;
   };
 
-  // Send Bug Report Email
-  const handleSendBugReportEmail = (e: React.FormEvent) => {
+  // Send Bug Report Email Otomatis
+  const handleSendBugReportEmail = async (e: React.FormEvent) => {
     e.preventDefault();
+    setBugSubmitStatus(null);
+
     if (!validateBugReport()) {
       toast.error('Harap lengkapi semua kolom bertanda * dengan benar.');
       return;
     }
+
+    setIsSubmittingBug(true);
 
     const payload: ReportEmailPayload = {
       name: bugName.trim(),
@@ -179,11 +190,35 @@ export const ReviewsPage: React.FC = () => {
       attachmentDataUrl: imagePreview || undefined,
     };
 
-    const success = openEmailClientWithReport(payload);
-    if (success) {
-      toast.success('Aplikasi email dibuka dengan draf laporan terformat rapi!');
-    } else {
-      toast.info('Gunakan tombol "Salin Teks" untuk menyalin draf laporan.');
+    try {
+      const result = await sendReportEmailDirect(payload);
+      if (result.success) {
+        toast.success('Laporan berhasil dikirim langsung ke email pengembang!');
+        setBugSubmitStatus({
+          type: 'success',
+          message: 'Terima kasih! Laporan kendala Anda telah kami terima dan akan segera ditindaklanjuti oleh pengembang.',
+        });
+        // Reset form
+        setBugName('');
+        setBugEmail('');
+        setBugCategory('BUG');
+        setBugTitle('');
+        setBugDescription('');
+        removeImage();
+        setBugErrors({});
+      } else {
+        toast.error(result.message || 'Gagal mengirim laporan kendala.');
+        setBugSubmitStatus({
+          type: 'error',
+          message: result.message || 'Gagal mengirim laporan. Periksa koneksi internet atau kunci akses API.',
+        });
+      }
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Terjadi kendala saat mengirim laporan.';
+      toast.error(msg);
+      setBugSubmitStatus({ type: 'error', message: msg });
+    } finally {
+      setIsSubmittingBug(false);
     }
   };
 
@@ -377,11 +412,42 @@ export const ReviewsPage: React.FC = () => {
                   Laporkan Kendala Teknis
                 </CardTitle>
                 <CardDescription className="text-xs text-slate-500">
-                  Rincian laporan dan gambar akan diformat rapi untuk dikirimkan ke email pengembang.
+                  Kirimkan detail kendala, bug kalkulasi, atau masukan sistem langsung secara otomatis ke email tim pengembang.
                 </CardDescription>
               </CardHeader>
               <CardContent className="pt-4">
                 <form onSubmit={handleSendBugReportEmail} className="space-y-3.5 text-xs">
+                  {/* Status Banner (Success / Error Feedback) */}
+                  {bugSubmitStatus && (
+                    <div
+                      className={`p-3 rounded-xl border flex items-start gap-2.5 animate-in fade-in duration-200 ${
+                        bugSubmitStatus.type === 'success'
+                          ? 'bg-emerald-50/90 border-emerald-200 text-emerald-800'
+                          : 'bg-rose-50/90 border-rose-200 text-rose-800'
+                      }`}
+                    >
+                      {bugSubmitStatus.type === 'success' ? (
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                      ) : (
+                        <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+                      )}
+                      <div className="flex-1 text-xs leading-relaxed">
+                        <span className="font-semibold block mb-0.5">
+                          {bugSubmitStatus.type === 'success' ? 'Laporan Terkirim!' : 'Gagal Mengirim Laporan'}
+                        </span>
+                        <span>{bugSubmitStatus.message}</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setBugSubmitStatus(null)}
+                        className="text-slate-400 hover:text-slate-600 p-0.5 cursor-pointer"
+                        title="Tutup pesan"
+                        aria-label="Tutup pesan notifikasi"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  )}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div className="space-y-1">
                       <label className="font-semibold text-slate-700 block">
@@ -542,10 +608,20 @@ export const ReviewsPage: React.FC = () => {
                     <Button
                       type="submit"
                       variant="primary"
-                      className="flex-1 min-h-11 justify-center py-2.5 text-xs font-semibold shadow-2xs gap-1.5 cursor-pointer"
+                      disabled={isSubmittingBug}
+                      className="flex-1 min-h-11 justify-center py-2.5 text-xs font-semibold shadow-2xs gap-1.5 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
                     >
-                      <ExternalLink className="w-3.5 h-3.5" />
-                      <span>Kirim Laporan via Email</span>
+                      {isSubmittingBug ? (
+                        <>
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          <span>Mengirim Laporan...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Send className="w-3.5 h-3.5" />
+                          <span>Kirim Laporan Otomatis</span>
+                        </>
+                      )}
                     </Button>
                     <Button
                       type="button"

@@ -9,6 +9,7 @@ import {
 import {
   formatReportEmailBody,
   openEmailClientWithReport,
+  sendReportEmailDirect,
   copyReportToClipboard,
   type ReportEmailPayload,
 } from '@/utils/reportEmail';
@@ -113,6 +114,42 @@ describe('Report Email Helper Module', () => {
     expect(writeTextMock).toHaveBeenCalled();
 
     Object.assign(navigator, { clipboard: originalClipboard });
+  });
+
+  it('sendReportEmailDirect mengembalikan pesan kesalahan jika accessKey tidak tersedia', async () => {
+    const res = await sendReportEmailDirect(dummyPayload, '');
+    expect(res.success).toBe(false);
+    expect(res.message).toContain('Kunci akses Web3Forms belum dikonfigurasi');
+  });
+
+  it('sendReportEmailDirect berhasil mengirim request ke Web3Forms API dan merespon sukses', async () => {
+    const originalFetch = globalThis.fetch;
+    globalThis.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ success: true, message: 'Form submitted successfully' }),
+    });
+
+    const res = await sendReportEmailDirect(dummyPayload, 'mock-access-key');
+    expect(res.success).toBe(true);
+    expect(globalThis.fetch).toHaveBeenCalledWith(
+      'https://api.web3forms.com/submit',
+      expect.objectContaining({
+        method: 'POST',
+      })
+    );
+
+    globalThis.fetch = originalFetch;
+  });
+
+  it('sendReportEmailDirect menangani kegagalan API atau jaringan dengan baik', async () => {
+    const originalFetch = globalThis.fetch;
+    globalThis.fetch = vi.fn().mockRejectedValue(new Error('Network offline'));
+
+    const res = await sendReportEmailDirect(dummyPayload, 'mock-access-key');
+    expect(res.success).toBe(false);
+    expect(res.message).toBe('Network offline');
+
+    globalThis.fetch = originalFetch;
   });
 });
 

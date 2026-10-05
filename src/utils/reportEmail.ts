@@ -77,3 +77,78 @@ export async function copyReportToClipboard(payload: ReportEmailPayload): Promis
     return false;
   }
 }
+
+export interface SendReportResult {
+  success: boolean;
+  message?: string;
+}
+
+/**
+ * Kirim laporan kendala langsung ke email tujuan via Web3Forms API
+ * tanpa membuka aplikasi email client pengguna.
+ */
+export async function sendReportEmailDirect(
+  payload: ReportEmailPayload,
+  accessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY
+): Promise<SendReportResult> {
+  if (!accessKey) {
+    return {
+      success: false,
+      message: 'Kunci akses Web3Forms belum dikonfigurasi. Harap isi VITE_WEB3FORMS_ACCESS_KEY pada file .env.',
+    };
+  }
+
+  const env = getClientEnvironmentInfo();
+  const timestamp = new Date().toLocaleString('id-ID', { dateStyle: 'full', timeStyle: 'long' });
+  const subject = `[DecisiGraph ${payload.category}] ${payload.title} - dari ${payload.name}`;
+
+  const bodyData: Record<string, string> = {
+    access_key: accessKey,
+    subject: subject,
+    from_name: `DecisiGraph (${payload.name})`,
+    name: payload.name,
+    email: payload.email,
+    category: payload.category,
+    title: payload.title,
+    message: payload.description,
+    device: env.device,
+    browser: env.browser,
+    os: env.os,
+    sent_at: timestamp,
+  };
+
+  if (payload.attachmentName) {
+    bodyData.attachment_name = payload.attachmentName;
+  }
+
+  try {
+    const response = await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify(bodyData),
+    });
+
+    const data = await response.json();
+
+    if (response.ok && data.success) {
+      return {
+        success: true,
+        message: 'Laporan kendala berhasil dikirim otomatis ke email tim pengembang.',
+      };
+    }
+
+    return {
+      success: false,
+      message: data.message || 'Gagal mengirim laporan ke server email.',
+    };
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : 'Terjadi kendala jaringan saat mengirim laporan.';
+    return {
+      success: false,
+      message: msg,
+    };
+  }
+}
