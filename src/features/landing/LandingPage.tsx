@@ -214,34 +214,35 @@ export const LandingPage: React.FC = () => {
   const currentStudio = STUDIO_METHODS[activeStudioMethod];
 
   return (
-    <div className="min-h-screen w-full flex flex-col justify-between bg-surface bg-dot-grid text-slate-800 antialiased selection:bg-indigo-100 selection:text-indigo-900">
+    <div className="min-h-dvh w-full flex flex-col justify-between bg-surface bg-dot-grid text-slate-800 antialiased selection:bg-indigo-100 selection:text-indigo-900">
       {/* =========================================================================
           TOP NAVBAR
       ========================================================================== */}
-      <header className="sticky top-0 z-40 w-full px-4 sm:px-6 py-3 border-b border-slate-200/90 bg-white/95 backdrop-blur-xs">
-        <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
-          <div className="flex items-center gap-2.5">
+      <header className="sticky top-0 z-40 w-full px-3 sm:px-6 py-2 sm:py-2.5 border-b border-slate-200/90 bg-white/95 backdrop-blur-xs">
+        <div className="max-w-6xl mx-auto flex items-center justify-between gap-2 sm:gap-4">
+          <div className="flex items-center gap-1.5 sm:gap-2.5">
             <Link
               to="/"
               onMouseEnter={prefetchRoute.landing}
               onFocus={prefetchRoute.landing}
-              className="inline-flex items-center focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded"
+              className="inline-flex items-center min-h-11 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded"
               title="DecisiGraph SPK"
             >
-              <Logo size="md" showWordmark />
+              <Logo size="md" showWordmark={false} className="sm:hidden" />
+              <Logo size="md" showWordmark={true} className="hidden sm:flex" />
             </Link>
-            <span className="text-slate-300">|</span>
-            <Badge variant="primary" size="sm" className="font-bold text-[10px] py-0 px-1.5">
+            <span className="text-slate-300 hidden xs:inline">|</span>
+            <Badge variant="primary" size="sm" className="font-bold text-[10px] py-0 px-1.5 hidden xs:inline-flex">
               v1.1
             </Badge>
           </div>
 
-          <nav className="flex items-center gap-1.5 sm:gap-2">
+          <nav className="flex items-center gap-1 sm:gap-2">
             <Link
               to="/board"
               onMouseEnter={() => prefetchRoute.board()}
               onFocus={() => prefetchRoute.board()}
-              className="text-xs font-semibold text-slate-600 hover:text-slate-900 px-3 py-1.5 rounded-lg hover:bg-slate-100 transition-colors hidden sm:block"
+              className="hidden sm:inline-flex text-xs font-semibold text-slate-600 hover:text-slate-900 px-3 min-h-11 items-center rounded-lg hover:bg-slate-100 transition-colors"
             >
               Workboard
             </Link>
@@ -249,7 +250,7 @@ export const LandingPage: React.FC = () => {
               to="/review"
               onMouseEnter={prefetchRoute.review}
               onFocus={prefetchRoute.review}
-              className="text-xs font-semibold text-slate-600 hover:text-slate-900 px-3 py-1.5 rounded-lg hover:bg-slate-100 transition-colors"
+              className="text-xs font-semibold text-slate-600 hover:text-slate-900 px-2 sm:px-3 min-h-11 inline-flex items-center rounded-lg hover:bg-slate-100 transition-colors"
             >
               Komunitas
             </Link>
@@ -258,7 +259,7 @@ export const LandingPage: React.FC = () => {
               href="https://github.com/hafidzrdwn"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-slate-400 hover:text-slate-700 p-1.5 rounded-lg hover:bg-slate-100 transition-colors"
+              className="text-slate-400 hover:text-slate-700 p-2 min-h-11 min-w-11 hidden xs:inline-flex items-center justify-center rounded-lg hover:bg-slate-100 transition-colors"
               title="GitHub Repository"
               aria-label="GitHub Repository"
             >
@@ -273,9 +274,10 @@ export const LandingPage: React.FC = () => {
               onMouseEnter={() => prefetchRoute.board()}
               onFocus={() => prefetchRoute.board()}
               onClick={() => navigate('/board')}
-              className="text-xs font-semibold shadow-2xs gap-1.5"
+              className="text-xs font-semibold shadow-2xs gap-1.5 min-h-11 px-2.5 sm:px-3.5 py-2 inline-flex items-center justify-center shrink-0 cursor-pointer"
             >
-              <span>Mulai Evaluasi</span>
+              <span className="hidden sm:inline">Mulai Evaluasi</span>
+              <span className="sm:hidden">Mulai</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Button>
           </nav>
@@ -285,7 +287,7 @@ export const LandingPage: React.FC = () => {
       {/* =========================================================================
           HERO & LIVE DECISION PREVIEW
       ========================================================================== */}
-      <main className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 py-8 sm:py-12 space-y-14">
+      <main className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 py-6 sm:py-12 space-y-12 sm:space-y-14 overflow-hidden">
         <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           {/* Left Column: Context & Primary CTAs (6 cols) */}
           <div className="lg:col-span-6 space-y-5 text-left">
@@ -295,22 +297,22 @@ export const LandingPage: React.FC = () => {
             </div>
 
             <div className="space-y-3">
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight wrap-break-word">
                 Evaluasi Alternatif Keputusan Secara Terukur & Objektif.
               </h1>
-              <p className="text-sm text-slate-600 leading-relaxed">
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed wrap-break-word">
                 Bandingkan peringkat alternatif secara simultan melalui 4 metode matematis teruji: SAW, WP, TOPSIS, dan AHP. Dilengkapi inspeksi rumus KaTeX per sel matriks dan validasi konsistensi hierarki.
               </p>
             </div>
 
-            <div className="flex flex-wrap items-center gap-3 pt-1">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-1 w-full">
               <Button
                 variant="primary"
                 size="md"
                 onMouseEnter={() => prefetchRoute.board()}
                 onFocus={() => prefetchRoute.board()}
                 onClick={() => navigate('/board')}
-                className="px-5 py-2.5 text-xs sm:text-sm font-semibold shadow-2xs gap-2"
+                className="w-full sm:w-auto min-h-11 px-5 py-2.5 text-xs sm:text-sm font-semibold shadow-2xs gap-2 justify-center"
               >
                 <span>Buka Workboard Evaluasi</span>
                 <ArrowRight className="w-4 h-4" />
@@ -322,14 +324,14 @@ export const LandingPage: React.FC = () => {
                 onMouseEnter={prefetchRoute.review}
                 onFocus={prefetchRoute.review}
                 onClick={() => navigate('/review')}
-                className="px-4 py-2.5 text-xs sm:text-sm font-medium border-slate-200 text-slate-700 hover:text-slate-900"
+                className="w-full sm:w-auto min-h-11 px-4 py-2.5 text-xs sm:text-sm font-medium border-slate-200 text-slate-700 hover:text-slate-900 justify-center"
               >
                 <span>Ulasan & Masukan</span>
               </Button>
             </div>
 
             {/* Micro Feature Proof */}
-            <div className="pt-2 border-t border-slate-200/80 grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs text-slate-600 font-medium">
+            <div className="pt-2 border-t border-slate-200/80 grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3 text-xs text-slate-600 font-medium">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
                 <span>Formula KaTeX per Sel</span>
@@ -338,7 +340,7 @@ export const LandingPage: React.FC = () => {
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
                 <span>Uji Konsistensi CR &lt; 0.1</span>
               </div>
-              <div className="flex items-center gap-2 col-span-2 sm:col-span-1">
+              <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
                 <span>Laporan Siap Cetak (A4)</span>
               </div>
@@ -346,22 +348,22 @@ export const LandingPage: React.FC = () => {
           </div>
 
           {/* Right Column: Live Interactive Decision Simulation (6 cols) */}
-          <div className="lg:col-span-6">
+          <div className="lg:col-span-6 w-full">
             <div className="bg-white rounded-xl border border-slate-200 shadow-2xs overflow-hidden">
               {/* Preview Header & Method Switcher */}
-              <div className="bg-slate-50 border-b border-slate-200 px-4 py-2.5 flex flex-wrap items-center justify-between gap-2">
+              <div className="bg-slate-50 border-b border-slate-200 px-3 sm:px-4 py-2.5 flex flex-wrap items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
                   <span className="text-xs font-semibold text-slate-700">Simulasi Matriks Keputusan</span>
                 </div>
 
-                <div className="flex items-center bg-slate-200/70 p-0.5 rounded-lg text-[11px] font-mono">
+                <div className="flex items-center bg-slate-200/70 p-0.5 rounded-lg text-xs font-mono">
                   {(['SAW', 'WP', 'TOPSIS', 'AHP'] as CoreMethodId[]).map((m) => (
                     <button
                       key={m}
                       type="button"
                       onClick={() => setActivePreviewMethod(m)}
-                      className={`px-2.5 py-1 rounded font-bold transition-colors cursor-pointer ${
+                      className={`min-h-9.5 sm:min-h-7.5 px-3 py-1.5 rounded font-bold transition-colors cursor-pointer flex items-center justify-center ${
                         activePreviewMethod === m
                           ? 'bg-white text-indigo-700 shadow-2xs'
                           : 'text-slate-600 hover:text-slate-900'
@@ -375,7 +377,7 @@ export const LandingPage: React.FC = () => {
 
               {/* Scenario Context */}
               <div className="p-4 space-y-3.5">
-                <div className="flex items-center justify-between text-xs">
+                <div className="flex items-center justify-between text-xs gap-2">
                   <span className="font-semibold text-slate-800 truncate pr-2">{currentHeroSim.scenario}</span>
                   <Badge variant="neutral" size="sm" className="font-mono text-[10px] shrink-0">
                     {activePreviewMethod}
@@ -383,10 +385,10 @@ export const LandingPage: React.FC = () => {
                 </div>
 
                 {/* Mini Matrix Preview Table */}
-                <div className="border border-slate-200 rounded-lg overflow-x-auto">
-                  <table className="w-full text-left text-xs border-collapse font-sans">
+                <div className="border border-slate-200 rounded-lg overflow-x-auto w-full">
+                  <table className="w-full min-w-85 text-left text-xs border-collapse font-sans">
                     <thead>
-                      <tr className="bg-slate-50/80 border-b border-slate-200 text-slate-600 text-[11px] font-semibold">
+                      <tr className="bg-slate-50/80 border-b border-slate-200 text-slate-600 text-[11px] font-semibold whitespace-nowrap">
                         {currentHeroSim.headers.map((h, idx) => (
                           <th key={idx} className={`py-2 px-3 ${idx > 0 ? 'text-center font-mono' : ''}`}>
                             {h}
@@ -395,7 +397,7 @@ export const LandingPage: React.FC = () => {
                         <th className="py-2 px-3 text-right font-mono">Skor Akhir</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100 text-[11px]">
+                    <tbody className="divide-y divide-slate-100 text-[11px] whitespace-nowrap">
                       {currentHeroSim.rows.map((r) => (
                         <tr
                           key={r.name}
@@ -430,27 +432,27 @@ export const LandingPage: React.FC = () => {
                 </div>
 
                 {/* KaTeX Formula Box in Hero Simulation */}
-                <div className="p-3 rounded-lg bg-slate-50 border border-slate-200/90 space-y-1.5">
-                  <div className="flex items-center justify-between text-[11px]">
-                    <span className="text-slate-500 font-medium">{currentHeroSim.formulaSubtitle}</span>
-                    <span className="text-indigo-600 font-mono font-semibold text-[10px]">
+                <div className="p-3 rounded-lg bg-slate-50 border border-slate-200/90 space-y-1.5 overflow-hidden">
+                  <div className="flex flex-wrap items-center justify-between gap-1 text-[11px]">
+                    <span className="text-slate-500 font-medium truncate">{currentHeroSim.formulaSubtitle}</span>
+                    <span className="text-indigo-600 font-mono font-semibold text-[10px] shrink-0">
                       Peringkat #1: {currentHeroSim.rows[0].name}
                     </span>
                   </div>
-                  <div className="bg-white px-3 py-1.5 rounded border border-slate-200 overflow-x-auto text-xs text-slate-800">
+                  <div className="bg-white px-3 py-1.5 rounded border border-slate-200 overflow-x-auto text-xs text-slate-800 max-w-full">
                     <MathFormula math={currentHeroSim.formulaLatex} className="my-0 py-0.5 text-xs text-slate-800" />
                   </div>
                 </div>
 
                 {/* Direct Action Link */}
-                <div className="pt-1 flex items-center justify-between text-xs">
+                <div className="pt-1 flex flex-wrap items-center justify-between gap-2 text-xs">
                   <span className="text-slate-500 text-[11px]">Buka studi kasus lengkap pada workboard</span>
                   <button
                     type="button"
                     onClick={() => handleOpenMethod(activePreviewMethod)}
                     onMouseEnter={() => prefetchRoute.board(activePreviewMethod.toLowerCase())}
                     onFocus={() => prefetchRoute.board(activePreviewMethod.toLowerCase())}
-                    className="inline-flex items-center gap-1 font-semibold text-indigo-600 hover:text-indigo-800 transition-colors cursor-pointer"
+                    className="min-h-11 inline-flex items-center gap-1 font-semibold text-indigo-600 hover:text-indigo-800 transition-colors cursor-pointer"
                   >
                     <span>Lanjutkan ke {activePreviewMethod}</span>
                     <ArrowRight className="w-3.5 h-3.5" />
@@ -488,7 +490,7 @@ export const LandingPage: React.FC = () => {
                   key={mId}
                   type="button"
                   onClick={() => setActiveStudioMethod(mId)}
-                  className={`p-3 rounded-lg text-left transition-all cursor-pointer flex flex-col justify-between gap-1 ${
+                  className={`p-3 rounded-lg text-left transition-all cursor-pointer flex flex-col justify-between gap-1.5 min-h-16 ${
                     isActive
                       ? 'bg-white border border-slate-300/80 shadow-xs'
                       : 'hover:bg-white/50 text-slate-600'
@@ -516,7 +518,7 @@ export const LandingPage: React.FC = () => {
           <div className="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden">
             <div className="grid grid-cols-1 lg:grid-cols-12 divide-y lg:divide-y-0 lg:divide-x divide-slate-200">
               {/* Left Column: Mathematical Formulation Stage (6 cols) */}
-              <div className="lg:col-span-6 p-6 sm:p-7 space-y-5">
+              <div className="lg:col-span-6 p-5 sm:p-7 space-y-5">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
                     <span className="font-mono text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200/60">
@@ -526,10 +528,10 @@ export const LandingPage: React.FC = () => {
                       {currentStudio.category}
                     </span>
                   </div>
-                  <h3 className="text-lg font-bold text-slate-900 tracking-tight">
+                  <h3 className="text-lg font-bold text-slate-900 tracking-tight wrap-break-word">
                     {currentStudio.name}
                   </h3>
-                  <p className="text-xs text-slate-600 leading-relaxed">
+                  <p className="text-xs text-slate-600 leading-relaxed wrap-break-word">
                     {currentStudio.summary}
                   </p>
                 </div>
@@ -539,13 +541,17 @@ export const LandingPage: React.FC = () => {
                   <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block">
                     Formula Matematis Utama:
                   </span>
-                  <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 space-y-3">
-                    <MathFormula math={currentStudio.primaryFormula} className="text-sm sm:text-base font-semibold py-1" />
-                    <div className="border-t border-slate-200/80 pt-2.5">
+                  <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 space-y-3 overflow-hidden">
+                    <div className="overflow-x-auto max-w-full py-1">
+                      <MathFormula math={currentStudio.primaryFormula} className="text-sm sm:text-base font-semibold py-1" />
+                    </div>
+                    <div className="border-t border-slate-200/80 pt-2.5 overflow-hidden">
                       <span className="text-[10px] font-semibold text-slate-500 block mb-1">
                         Persamaan Normalisasi / Uji Pendukung:
                       </span>
-                      <MathFormula math={currentStudio.normalizationFormula} className="text-xs sm:text-sm py-0.5" />
+                      <div className="overflow-x-auto max-w-full py-0.5">
+                        <MathFormula math={currentStudio.normalizationFormula} className="text-xs sm:text-sm py-0.5" />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -557,11 +563,11 @@ export const LandingPage: React.FC = () => {
                   </span>
                   <div className="grid grid-cols-1 gap-1.5 text-xs text-slate-600">
                     {currentStudio.legend.map((item, idx) => (
-                      <div key={idx} className="flex items-center gap-2 bg-slate-50/70 px-2.5 py-1.5 rounded-lg border border-slate-200/70">
+                      <div key={idx} className="flex items-center gap-2 bg-slate-50/70 px-2.5 py-2 rounded-lg border border-slate-200/70 min-h-11">
                         <span className="font-mono font-bold text-indigo-700 shrink-0 min-w-8">
                           <MathFormula math={item.symbol} inline className="font-bold" />
                         </span>
-                        <span className="text-slate-700 text-[11px]">{item.meaning}</span>
+                        <span className="text-slate-700 text-[11px] wrap-break-word">{item.meaning}</span>
                       </div>
                     ))}
                   </div>
@@ -575,7 +581,7 @@ export const LandingPage: React.FC = () => {
                     onClick={() => handleOpenMethod(currentStudio.id)}
                     onMouseEnter={() => prefetchRoute.board(currentStudio.id.toLowerCase())}
                     onFocus={() => prefetchRoute.board(currentStudio.id.toLowerCase())}
-                    className="w-full sm:w-auto px-6 py-2.5 text-xs sm:text-sm font-semibold shadow-2xs gap-2"
+                    className="w-full sm:w-auto min-h-11 justify-center px-6 py-2.5 text-xs sm:text-sm font-semibold shadow-2xs gap-2"
                   >
                     <span>Buka Evaluasi {currentStudio.acronym} di Workboard</span>
                     <ArrowRight className="w-4 h-4" />
@@ -584,7 +590,7 @@ export const LandingPage: React.FC = () => {
               </div>
 
               {/* Right Column: Pipeline Architecture & Data Profile (6 cols) */}
-              <div className="lg:col-span-6 p-6 sm:p-7 bg-slate-50/50 space-y-6 flex flex-col justify-between">
+              <div className="lg:col-span-6 p-5 sm:p-7 bg-slate-50/50 space-y-6 flex flex-col justify-between">
                 {/* 3-Stage Calculation Pipeline */}
                 <div className="space-y-3">
                   <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block">
@@ -600,7 +606,7 @@ export const LandingPage: React.FC = () => {
                           <span className="text-xs font-bold text-slate-800 block">
                             {idx === 0 ? 'Fase Input Data' : idx === 1 ? 'Fase Transformasi Matriks' : 'Fase Penentuan Peringkat'}
                           </span>
-                          <span className="text-[11px] text-slate-600 leading-snug block">
+                          <span className="text-[11px] text-slate-600 leading-snug block wrap-break-word">
                             {step}
                           </span>
                         </div>
@@ -614,22 +620,22 @@ export const LandingPage: React.FC = () => {
                   <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block">
                     Profil Karakteristik Analisis:
                   </span>
-                  <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                     <div className="p-2.5 rounded-lg bg-white border border-slate-200 space-y-0.5">
                       <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block">Karakter Skala:</span>
-                      <span className="text-[11px] font-bold text-slate-800 block">{currentStudio.specs.scaleType}</span>
+                      <span className="text-[11px] font-bold text-slate-800 block wrap-break-word">{currentStudio.specs.scaleType}</span>
                     </div>
                     <div className="p-2.5 rounded-lg bg-white border border-slate-200 space-y-0.5">
                       <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block">Sensitivitas:</span>
-                      <span className="text-[11px] font-bold text-slate-800 block">{currentStudio.specs.sensitivity}</span>
+                      <span className="text-[11px] font-bold text-slate-800 block wrap-break-word">{currentStudio.specs.sensitivity}</span>
                     </div>
-                    <div className="p-2.5 rounded-lg bg-white border border-slate-200 space-y-0.5 col-span-2">
+                    <div className="p-2.5 rounded-lg bg-white border border-slate-200 space-y-0.5 sm:col-span-2">
                       <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block">Asumsi Dasar:</span>
-                      <span className="text-[11px] text-slate-700 block">{currentStudio.specs.assumptions}</span>
+                      <span className="text-[11px] text-slate-700 block wrap-break-word">{currentStudio.specs.assumptions}</span>
                     </div>
-                    <div className="p-2.5 rounded-lg bg-white border border-slate-200 space-y-0.5 col-span-2">
+                    <div className="p-2.5 rounded-lg bg-white border border-slate-200 space-y-0.5 sm:col-span-2">
                       <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block">Rekomendasi Kasus:</span>
-                      <span className="text-[11px] text-indigo-700 font-medium block">{currentStudio.specs.idealFor}</span>
+                      <span className="text-[11px] text-indigo-700 font-medium block wrap-break-word">{currentStudio.specs.idealFor}</span>
                     </div>
                   </div>
                 </div>
@@ -667,12 +673,12 @@ export const LandingPage: React.FC = () => {
               </div>
 
               {/* Realistic Cell Inspection Preview */}
-              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 font-mono text-xs space-y-1.5">
-                <div className="flex items-center justify-between text-[11px] text-slate-500">
-                  <span>Pratinjau Inspeksi Sel Matriks (Baris A1, Kolom C2):</span>
-                  <span className="text-emerald-700 font-bold">Terverifikasi</span>
+              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 font-mono text-xs space-y-1.5 overflow-hidden">
+                <div className="flex flex-wrap items-center justify-between gap-1 text-[11px] text-slate-500">
+                  <span className="truncate">Pratinjau Inspeksi Sel Matriks (Baris A1, Kolom C2):</span>
+                  <span className="text-emerald-700 font-bold shrink-0">Terverifikasi</span>
                 </div>
-                <div className="bg-white p-2.5 rounded-lg border border-slate-200">
+                <div className="bg-white p-2.5 rounded-lg border border-slate-200 overflow-x-auto max-w-full">
                   <MathFormula math="r_{12} = \frac{x_{12}}{\max(x_2)} = \frac{75}{85} = 0.8824" className="text-xs py-0 text-slate-800" />
                 </div>
               </div>
@@ -684,10 +690,10 @@ export const LandingPage: React.FC = () => {
                 <span className="text-xs font-mono font-semibold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200/60 inline-block">
                   Analisis Komparasi
                 </span>
-                <h3 className="text-base font-bold text-slate-900">
+                <h3 className="text-base font-bold text-slate-900 wrap-break-word">
                   Deteksi Pergeseran Peringkat (Rank Shift)
                 </h3>
-                <p className="text-xs text-slate-600 leading-relaxed">
+                <p className="text-xs text-slate-600 leading-relaxed wrap-break-word">
                   Evaluasi sensitivitas keputusan secara berdampingan. Ketahui apakah alternatif peringkat #1 konsisten di seluruh metode atau sensitif terhadap model matematis tertentu.
                 </p>
               </div>
@@ -698,7 +704,7 @@ export const LandingPage: React.FC = () => {
                   <span>Stabilitas Alternatif A1:</span>
                   <Badge variant="primary" size="sm" className="font-mono text-[10px]">98% Konsisten</Badge>
                 </div>
-                <div className="grid grid-cols-4 gap-1 text-center font-mono text-[10px]">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 text-center font-mono text-[10px]">
                   <div className="bg-white p-1 rounded border border-slate-200">SAW #1</div>
                   <div className="bg-white p-1 rounded border border-slate-200">WP #1</div>
                   <div className="bg-white p-1 rounded border border-slate-200">TOPSIS #2</div>

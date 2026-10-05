@@ -237,7 +237,7 @@ export const ReviewsPage: React.FC = () => {
             <button
               type="button"
               onClick={() => setFormMode('review')}
-              className={`flex-1 py-1.5 rounded-md transition-colors cursor-pointer text-center font-medium ${
+              className={`flex-1 min-h-11 flex items-center justify-center py-2 px-3 rounded-md transition-colors cursor-pointer text-center font-medium ${
                 formMode === 'review'
                   ? 'bg-white text-slate-900 shadow-2xs font-bold'
                   : 'text-slate-600 hover:text-slate-900'
@@ -248,7 +248,7 @@ export const ReviewsPage: React.FC = () => {
             <button
               type="button"
               onClick={() => setFormMode('bug')}
-              className={`flex-1 py-1.5 rounded-md transition-colors cursor-pointer text-center font-medium ${
+              className={`flex-1 min-h-11 flex items-center justify-center py-2 px-3 rounded-md transition-colors cursor-pointer text-center font-medium ${
                 formMode === 'bug'
                   ? 'bg-white text-slate-900 shadow-2xs font-bold'
                   : 'text-slate-600 hover:text-slate-900'
@@ -297,7 +297,7 @@ export const ReviewsPage: React.FC = () => {
                         if (reviewErrors.name) setReviewErrors((prev) => ({ ...prev, name: undefined }));
                       }}
                       placeholder="Contoh: Rian Anggoro"
-                      className={`w-full px-3 py-2 bg-slate-50 border rounded-lg outline-none transition-colors font-medium text-slate-900 ${
+                      className={`w-full px-3 py-1.5 sm:py-2 bg-slate-50 border rounded-lg outline-none transition-colors font-medium text-slate-900 text-sm sm:text-xs min-h-10 sm:min-h-9 ${
                         reviewErrors.name
                           ? 'border-rose-400 bg-rose-50/20 focus:ring-1 focus:ring-rose-500'
                           : 'border-slate-200 focus:bg-white focus:ring-1 focus:ring-indigo-500'
@@ -319,7 +319,7 @@ export const ReviewsPage: React.FC = () => {
                     <select
                       value={reviewerRole}
                       onChange={(e) => setReviewerRole(e.target.value)}
-                      className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg outline-none focus:bg-white focus:ring-1 focus:ring-indigo-500 font-medium text-slate-800"
+                      className="w-full px-3 py-1.5 sm:py-2 bg-slate-50 border border-slate-200 rounded-lg outline-none focus:bg-white focus:ring-1 focus:ring-indigo-500 font-medium text-slate-800 text-sm sm:text-xs min-h-10 sm:min-h-9"
                     >
                       <option value="Pengambil Keputusan">Pengambil Keputusan / Manajer</option>
                       <option value="Mahasiswa">Mahasiswa / Peneliti</option>
@@ -342,7 +342,7 @@ export const ReviewsPage: React.FC = () => {
                         if (reviewErrors.comment) setReviewErrors((prev) => ({ ...prev, comment: undefined }));
                       }}
                       placeholder="Bagikan pengalaman kalkulasi SPK, transparansi KaTeX, atau kemudahan komparasi metode..."
-                      className={`w-full px-3 py-2 bg-slate-50 border rounded-lg outline-none transition-colors font-medium resize-none leading-relaxed text-slate-900 ${
+                      className={`w-full px-3 py-1.5 sm:py-2 bg-slate-50 border rounded-lg outline-none transition-colors font-medium resize-none leading-relaxed text-slate-900 text-sm sm:text-xs min-h-20 sm:min-h-18 ${
                         reviewErrors.comment
                           ? 'border-rose-400 bg-rose-50/20 focus:ring-1 focus:ring-rose-500'
                           : 'border-slate-200 focus:bg-white focus:ring-1 focus:ring-indigo-500'
@@ -359,7 +359,7 @@ export const ReviewsPage: React.FC = () => {
                     type="submit"
                     variant="primary"
                     disabled={isSubmittingReview}
-                    className="w-full justify-center py-2 text-xs font-semibold shadow-2xs gap-1.5"
+                    className="w-full min-h-11 justify-center py-2.5 text-xs font-semibold shadow-2xs gap-1.5 cursor-pointer"
                   >
                     <Send className="w-3.5 h-3.5" />
                     <span>{isSubmittingReview ? 'Mengirim...' : 'Kirim Ulasan'}</span>
@@ -395,7 +395,7 @@ export const ReviewsPage: React.FC = () => {
                           if (bugErrors.name) setBugErrors((prev) => ({ ...prev, name: undefined }));
                         }}
                         placeholder="Nama pelapor"
-                        className={`w-full px-3 py-1.5 bg-slate-50 border rounded-lg outline-none font-medium text-slate-900 ${
+                        className={`w-full px-3 py-1.5 sm:py-2 bg-slate-50 border rounded-lg outline-none font-medium text-slate-900 text-sm sm:text-xs min-h-10 sm:min-h-9 ${
                           bugErrors.name ? 'border-rose-400 focus:ring-1 focus:ring-rose-500' : 'border-slate-200 focus:ring-1 focus:ring-indigo-500'
                         }`}
                       />
@@ -416,7 +416,7 @@ export const ReviewsPage: React.FC = () => {
                           if (bugErrors.email) setBugErrors((prev) => ({ ...prev, email: undefined }));
                         }}
                         placeholder="email@anda.com"
-                        className={`w-full px-3 py-1.5 bg-slate-50 border rounded-lg outline-none font-medium text-slate-900 ${
+                        className={`w-full px-3 py-1.5 sm:py-2 bg-slate-50 border rounded-lg outline-none font-medium text-slate-900 text-sm sm:text-xs min-h-10 sm:min-h-9 ${
                           bugErrors.email ? 'border-rose-400 focus:ring-1 focus:ring-rose-500' : 'border-slate-200 focus:ring-1 focus:ring-indigo-500'
                         }`}
                       />
@@ -434,7 +434,7 @@ export const ReviewsPage: React.FC = () => {
                       <select
                         value={bugCategory}
                         onChange={(e) => setBugCategory(e.target.value as any)}
-                        className="w-full px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg outline-none focus:bg-white focus:ring-1 focus:ring-indigo-500 font-medium text-slate-800"
+                        className="w-full px-3 py-1.5 sm:py-2 bg-slate-50 border border-slate-200 rounded-lg outline-none focus:bg-white focus:ring-1 focus:ring-indigo-500 font-medium text-slate-800 text-sm sm:text-xs min-h-10 sm:min-h-9"
                       >
                         <option value="BUG">Bug / Error Kalkulasi</option>
                         <option value="KELUHAN">Kendala Tampilan / UX</option>
@@ -455,7 +455,7 @@ export const ReviewsPage: React.FC = () => {
                           if (bugErrors.title) setBugErrors((prev) => ({ ...prev, title: undefined }));
                         }}
                         placeholder="Ringkasan topik kendala"
-                        className={`w-full px-3 py-1.5 bg-slate-50 border rounded-lg outline-none font-medium text-slate-900 ${
+                        className={`w-full px-3 py-1.5 sm:py-2 bg-slate-50 border rounded-lg outline-none font-medium text-slate-900 text-sm sm:text-xs min-h-10 sm:min-h-9 ${
                           bugErrors.title ? 'border-rose-400 focus:ring-1 focus:ring-rose-500' : 'border-slate-200 focus:ring-1 focus:ring-indigo-500'
                         }`}
                       />
@@ -477,7 +477,7 @@ export const ReviewsPage: React.FC = () => {
                         if (bugErrors.description) setBugErrors((prev) => ({ ...prev, description: undefined }));
                       }}
                       placeholder="Jelaskan langkah yang memicu kendala, angka matriks, atau pesan error yang muncul..."
-                      className={`w-full px-3 py-1.5 bg-slate-50 border rounded-lg outline-none font-medium resize-none leading-relaxed text-slate-900 ${
+                      className={`w-full px-3 py-1.5 sm:py-2 bg-slate-50 border rounded-lg outline-none font-medium resize-none leading-relaxed text-slate-900 text-sm sm:text-xs min-h-20 sm:min-h-18 ${
                         bugErrors.description ? 'border-rose-400 focus:ring-1 focus:ring-rose-500' : 'border-slate-200 focus:ring-1 focus:ring-indigo-500'
                       }`}
                     />
@@ -496,7 +496,7 @@ export const ReviewsPage: React.FC = () => {
                     {!imagePreview ? (
                       <div
                         onClick={() => fileInputRef.current?.click()}
-                        className="p-3 border border-dashed border-slate-300 hover:border-slate-400 rounded-lg bg-slate-50 hover:bg-slate-100/60 text-center cursor-pointer transition-colors"
+                        className="p-4 border border-dashed border-slate-300 hover:border-slate-400 rounded-lg bg-slate-50 hover:bg-slate-100/60 text-center cursor-pointer transition-colors min-h-14 flex flex-col items-center justify-center"
                       >
                         <Upload className="w-4 h-4 mx-auto text-slate-400 mb-1" />
                         <span className="text-xs font-medium text-slate-700 block">Lampirkan bukti gambar</span>
@@ -507,9 +507,9 @@ export const ReviewsPage: React.FC = () => {
                         <img
                           src={imagePreview}
                           alt="Preview tangkapan layar"
-                          className="w-14 h-11 object-cover rounded border border-slate-200"
+                          className="w-14 h-11 object-cover rounded border border-slate-200 shrink-0"
                         />
-                        <div className="flex-1 truncate">
+                        <div className="flex-1 min-w-0 truncate">
                           <span className="font-semibold text-slate-800 text-xs block truncate">
                             {imageFile?.name}
                           </span>
@@ -520,8 +520,9 @@ export const ReviewsPage: React.FC = () => {
                         <button
                           type="button"
                           onClick={removeImage}
-                          className="p-1 rounded text-slate-400 hover:text-slate-700 hover:bg-slate-200 transition-colors cursor-pointer"
+                          className="min-h-11 min-w-11 flex items-center justify-center rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200 transition-colors cursor-pointer shrink-0"
                           title="Hapus gambar"
+                          aria-label="Hapus gambar"
                         >
                           <X className="w-4 h-4" />
                         </button>
@@ -541,7 +542,7 @@ export const ReviewsPage: React.FC = () => {
                     <Button
                       type="submit"
                       variant="primary"
-                      className="flex-1 justify-center py-2 text-xs font-semibold shadow-2xs gap-1.5"
+                      className="flex-1 min-h-11 justify-center py-2.5 text-xs font-semibold shadow-2xs gap-1.5 cursor-pointer"
                     >
                       <ExternalLink className="w-3.5 h-3.5" />
                       <span>Kirim Laporan via Email</span>
@@ -550,8 +551,9 @@ export const ReviewsPage: React.FC = () => {
                       type="button"
                       variant="secondary"
                       onClick={handleCopyBugReport}
-                      className="px-3 py-2 text-xs font-medium cursor-pointer"
+                      className="min-h-11 min-w-11 flex items-center justify-center px-3 py-2 text-xs font-medium cursor-pointer shrink-0"
                       title="Salin teks laporan ke clipboard"
+                      aria-label="Salin teks laporan ke clipboard"
                     >
                       <Copy className="w-3.5 h-3.5" />
                     </Button>
@@ -565,8 +567,8 @@ export const ReviewsPage: React.FC = () => {
         {/* Live Reviews Stream (Right 7 Cols) */}
         <div className="lg:col-span-7 space-y-4">
           {/* Summary Score Card */}
-          <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-2xs flex items-center justify-between">
-            <div className="space-y-0.5">
+          <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-2xs flex flex-wrap items-center justify-between gap-3">
+            <div className="space-y-0.5 min-w-0">
               <div className="flex items-center gap-2">
                 <span className="text-2xl font-black text-slate-900 tracking-tight font-mono">{avgRating}</span>
                 <div className="flex items-center text-amber-400">
@@ -579,14 +581,14 @@ export const ReviewsPage: React.FC = () => {
                   )}
                 </div>
               </div>
-              <span className="text-xs text-slate-500 block">
+              <span className="text-xs text-slate-500 block truncate sm:whitespace-normal">
                 {hasReviews
                   ? `Berdasarkan ${reviews.length} ulasan pengguna aktif`
                   : 'Belum ada ulasan yang tersimpan'}
               </span>
             </div>
 
-            <Badge variant="neutral" size="sm" className="font-mono text-[10px]">
+            <Badge variant="neutral" size="sm" className="font-mono text-[10px] hidden sm:inline-flex shrink-0">
               Linimasa Komunitas
             </Badge>
           </div>
@@ -612,35 +614,35 @@ export const ReviewsPage: React.FC = () => {
               reviews.map((rev) => (
                 <div
                   key={rev.id}
-                  className="p-4 rounded-xl bg-white border border-slate-200 shadow-2xs space-y-2.5 transition-colors"
+                  className="p-4 rounded-xl bg-white border border-slate-200 shadow-2xs space-y-2.5 transition-colors w-full overflow-hidden"
                 >
                   <div className="flex items-start justify-between gap-2">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-full bg-slate-100 text-slate-700 font-bold text-xs flex items-center justify-center border border-slate-200">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div className="w-8 h-8 rounded-full bg-slate-100 text-slate-700 font-bold text-xs flex items-center justify-center border border-slate-200 shrink-0">
                         {rev.name.slice(0, 1).toUpperCase()}
                       </div>
-                      <div>
-                        <h4 className="text-xs font-bold text-slate-900">{rev.name}</h4>
-                        <span className="text-[10px] text-slate-400">{rev.role || 'Pengguna'}</span>
+                      <div className="min-w-0">
+                        <h4 className="text-xs font-bold text-slate-900 truncate">{rev.name}</h4>
+                        <span className="text-[10px] text-slate-400 block truncate">{rev.role || 'Pengguna'}</span>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-0.5 text-amber-400">
+                    <div className="flex items-center gap-0.5 text-amber-400 shrink-0">
                       {Array.from({ length: rev.rating }).map((_, i) => (
                         <Star key={i} className="w-3.5 h-3.5 fill-amber-400" />
                       ))}
                     </div>
                   </div>
 
-                  <p className="text-xs text-slate-600 leading-relaxed">
+                  <p className="text-xs text-slate-600 leading-relaxed wrap-break-word">
                     "{rev.comment}"
                   </p>
 
-                  <div className="pt-2 flex items-center justify-between text-[10px] text-slate-400 border-t border-slate-100">
-                    <span title={new Date(rev.createdAt).toLocaleString('id-ID')}>
+                  <div className="pt-2 flex items-center justify-between text-[10px] text-slate-400 border-t border-slate-100 gap-2">
+                    <span className="truncate" title={new Date(rev.createdAt).toLocaleString('id-ID')}>
                       {formatRelativeTime(rev.createdAt)}
                     </span>
-                    <span className="text-slate-500 font-medium">Terverifikasi</span>
+                    <span className="text-slate-500 font-medium shrink-0">Terverifikasi</span>
                   </div>
                 </div>
               ))

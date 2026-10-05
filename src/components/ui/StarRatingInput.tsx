@@ -58,7 +58,7 @@ export const StarRatingInput: React.FC<StarRatingInputProps> = ({
               whileHover={!readOnly ? { scale: 1.22, rotate: [0, -5, 5, 0] } : {}}
               whileTap={!readOnly ? { scale: 0.9 } : {}}
               className={cn(
-                'relative p-1 rounded-full transition-colors outline-none focus-visible:ring-2 focus-visible:ring-amber-400',
+                'relative min-h-11 min-w-11 flex items-center justify-center p-1 rounded-full transition-colors outline-none focus-visible:ring-2 focus-visible:ring-amber-400',
                 readOnly ? 'cursor-default' : 'cursor-pointer'
               )}
               title={`${star} Bintang - ${RATING_LABELS[star].text}`}

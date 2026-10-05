@@ -73,7 +73,7 @@ export const AnalyticsPage: React.FC = () => {
       </div>
 
       {/* Top 4 KPI Metric Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
         <div className="p-4 rounded-xl bg-white border border-slate-200/90 shadow-2xs space-y-1">
           <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">
             Total Kunjungan
@@ -138,14 +138,14 @@ export const AnalyticsPage: React.FC = () => {
 
           {/* SVG Bar Chart or Empty State */}
           {analytics.dailyHistory && analytics.dailyHistory.length > 0 ? (
-            <div className="h-44 w-full flex items-end justify-between gap-2 pt-4 px-2">
+            <div className="h-44 w-full flex items-end justify-between gap-1.5 sm:gap-2 pt-4 px-1 sm:px-2 overflow-x-auto">
               {analytics.dailyHistory.map((item, idx) => {
                 const maxVal = Math.max(...analytics.dailyHistory.map((d) => d.views), 1);
                 const heightPercent = Math.max(15, (item.views / maxVal) * 100);
                 const isLast = idx === analytics.dailyHistory.length - 1;
 
                 return (
-                  <div key={item.date} className="flex-1 flex flex-col items-center gap-2 group">
+                  <div key={item.date} className="flex-1 flex flex-col items-center gap-2 group min-w-8">
                     <span className="text-[10px] font-mono text-slate-400 group-hover:text-indigo-600 font-bold">
                       {item.views}
                     </span>
@@ -247,10 +247,10 @@ export const AnalyticsPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="overflow-x-auto rounded-lg border border-slate-200">
-          <table className="w-full text-left text-xs border-collapse">
+        <div className="overflow-x-auto rounded-lg border border-slate-200 w-full">
+          <table className="w-full min-w-130 text-left text-xs border-collapse">
             <thead>
-              <tr className="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold">
+              <tr className="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold whitespace-nowrap">
                 <th className="py-2.5 px-3">Waktu Akses</th>
                 <th className="py-2.5 px-3">Perangkat</th>
                 <th className="py-2.5 px-3">Sistem Operasi</th>
@@ -258,7 +258,7 @@ export const AnalyticsPage: React.FC = () => {
                 <th className="py-2.5 px-3 text-right">Rute yang Diakses</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 font-mono text-[11px]">
+            <tbody className="divide-y divide-slate-100 font-mono text-[11px] whitespace-nowrap">
               {analytics.recentVisits && analytics.recentVisits.length > 0 ? (
                 analytics.recentVisits.map((v) => (
                   <tr key={v.id} className="hover:bg-slate-50/60 transition-colors">
