@@ -66,13 +66,17 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
   // Close dropdown on click outside
   useEffect(() => {
     if (!isOpen) return;
-    const handleClickOutside = (e: MouseEvent) => {
+    const handleClickOutside = (e: MouseEvent | TouchEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
         setIsOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
   }, [isOpen]);
 
   // Resolve method calculation if not directly passed
@@ -239,7 +243,7 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
   };
 
   const sizeClasses =
-    size === 'sm' ? 'px-3 py-1.5 text-xs' : 'px-4 py-2 text-sm';
+    size === 'sm' ? 'h-9 px-3 py-1.5 text-xs' : 'px-4 py-2 text-sm';
 
   const variantClasses =
     variant === 'primary'
@@ -256,14 +260,14 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
       : effectiveMethod;
 
   return (
-    <div ref={dropdownRef} className="relative inline-flex flex-col items-end">
+    <div ref={dropdownRef} className="relative inline-flex flex-col items-end flex-1 sm:flex-initial">
       <button
         type="button"
         data-tour-id="export-pdf-btn"
         onClick={() => setIsOpen((prev) => !prev)}
         disabled={isGenerating}
         title="Pilih opsi ekspor laporan ke dokumen PDF"
-        className={`inline-flex items-center gap-1.5 font-semibold rounded-control border transition-all cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed ${sizeClasses} ${variantClasses} ${className}`}
+        className={`w-full sm:w-auto inline-flex items-center justify-center gap-1.5 font-semibold rounded-lg border transition-all cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed ${sizeClasses} ${variantClasses} ${className}`}
       >
         {isGenerating ? (
           <>
@@ -272,18 +276,18 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
                 variant === 'primary' ? 'text-white' : 'text-accent-primary'
               }`}
             />
-            <span>Membuat PDF ({exportingLabel})...</span>
+            <span className="truncate">Membuat PDF ({exportingLabel})...</span>
           </>
         ) : (
           <>
             <Download
-              className={`w-3.5 h-3.5 ${
+              className={`w-3.5 h-3.5 shrink-0 ${
                 variant === 'primary' ? 'text-white' : 'text-accent-primary'
               }`}
             />
-            <span>Export PDF</span>
+            <span className="whitespace-nowrap">Export PDF</span>
             <ChevronDown
-              className={`w-3.5 h-3.5 transition-transform duration-200 ${
+              className={`w-3.5 h-3.5 shrink-0 transition-transform duration-200 ${
                 isOpen ? 'rotate-180' : ''
               } ${
                 variant === 'primary' ? 'text-white/80' : 'text-slate-400'
@@ -297,7 +301,7 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
       {isOpen && (
         <div
           role="menu"
-          className="absolute top-full right-0 mt-1.5 w-72 bg-white rounded-xl border border-slate-200/90 shadow-xl z-50 overflow-hidden animate-in fade-in zoom-in-95"
+          className="absolute top-full right-0 mt-1.5 w-72 max-w-[calc(100vw-1.5rem)] bg-white rounded-xl border border-slate-200/90 shadow-xl z-50 overflow-hidden animate-in fade-in zoom-in-95"
         >
           <div className="px-3.5 py-2.5 bg-slate-50/90 border-b border-slate-100">
             <p className="text-xs font-bold text-slate-800">Pilihan Dokumen PDF</p>

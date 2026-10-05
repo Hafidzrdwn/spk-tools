@@ -97,7 +97,7 @@ export function useStoryToMatrixViewModel() {
       .join('\n');
 
     setRawText(narrative);
-    setTempCriteria(preset.state.criteria);
+    setTempCriteria(preset.state.criteria.map((c) => ({ ...c })));
     setPreviewAlternatives(preset.state.alternatives);
     setUnmatchedCriteria([]);
     setMode('form');

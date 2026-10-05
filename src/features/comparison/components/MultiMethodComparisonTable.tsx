@@ -26,11 +26,11 @@ export const MultiMethodComparisonTable: React.FC<MultiMethodComparisonTableProp
   }
 
   return (
-    <div className="w-full overflow-x-auto rounded-card border border-slate-200/80 bg-white/90 shadow-2xs">
+    <div className="w-full overflow-x-auto rounded-card border border-slate-200/80 bg-white/90 shadow-2xs touch-pan-x">
       <table className="w-full text-left border-collapse text-xs">
         <thead>
           <tr className="bg-slate-50/90 border-b border-slate-200 text-slate-600 font-semibold">
-            <th className="py-3 px-4 w-44 sticky left-0 bg-slate-50/95 z-10 border-r border-slate-200/70">
+            <th className="py-3 px-3 sm:px-4 w-32 sm:w-44 min-w-32 sm:min-w-44 sticky left-0 bg-slate-50/95 z-10 border-r border-slate-200/70">
               Alternatif
             </th>
             <th className="py-3 px-3 text-center border-r border-slate-200/50">
@@ -62,7 +62,7 @@ export const MultiMethodComparisonTable: React.FC<MultiMethodComparisonTableProp
                 row.isConsensusRank1 ? 'bg-amber-50/30' : ''
               }`}
             >
-              <td className="py-2.5 px-4 font-semibold text-slate-800 sticky left-0 bg-white/95 z-10 border-r border-slate-200/70 shadow-xs">
+              <td className="py-2.5 px-3 sm:px-4 font-semibold text-slate-800 sticky left-0 bg-white/95 z-10 border-r border-slate-200/70 shadow-xs">
                 <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
                   <span className="text-slate-400 font-mono text-[11px] w-5">#{idx + 1}</span>
                   <span className="truncate font-semibold" title={row.alternativeName}>{row.alternativeName}</span>

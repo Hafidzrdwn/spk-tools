@@ -24,12 +24,12 @@ export const AlternativeEditor: React.FC = () => {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-2.5">
         <div>
           <h3 className="text-sm font-bold text-slate-800 tracking-tight">Daftar Alternatif</h3>
           <p className="text-xs text-slate-500">Kelola kandidat/opsi keputusan yang akan diperingkatkan</p>
         </div>
-        <Button variant="primary" size="sm" onClick={() => addAlternative()} data-tour-id="add-alternative-btn">
+        <Button variant="primary" size="sm" onClick={() => addAlternative()} data-tour-id="add-alternative-btn" className="min-h-9 sm:min-h-10 text-xs self-start xs:self-auto cursor-pointer">
           <Plus className="w-3.5 h-3.5" />
           <span>Tambah Alternatif</span>
         </Button>
@@ -61,7 +61,7 @@ export const AlternativeEditor: React.FC = () => {
               <button
                 type="button"
                 onClick={() => removeAlternative(alt.id)}
-                className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"
+                className="p-2 min-h-9 min-w-9 inline-flex items-center justify-center text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-control transition-colors cursor-pointer"
                 title="Hapus alternatif"
                 aria-label="Hapus alternatif"
               >

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Pencil } from 'lucide-react';
+import { Pencil, Check } from 'lucide-react';
 import { useProjectStore } from '@/store/useProjectStore';
 import { cn } from '@/utils/cn';
 
@@ -60,7 +60,7 @@ export const EditableProjectTitle: React.FC<EditableProjectTitleProps> = ({
 
   if (isEditing) {
     return (
-      <div className={cn('relative inline-flex items-center', className)}>
+      <div className={cn('relative inline-flex items-center gap-1', className)}>
         <input
           ref={inputRef}
           type="text"
@@ -70,8 +70,20 @@ export const EditableProjectTitle: React.FC<EditableProjectTitleProps> = ({
           onBlur={handleSave}
           onKeyDown={handleKeyDown}
           aria-label="Nama proyek"
-          className="text-xs sm:text-sm font-semibold text-slate-900 bg-white border border-accent-primary/60 rounded px-1.5 py-0.5 outline-none ring-2 ring-accent-primary/20 shadow-xs transition-all w-48 sm:w-64"
+          className="text-xs sm:text-sm font-semibold text-slate-900 bg-white border border-accent-primary rounded-md px-2 py-0.5 outline-none ring-2 ring-accent-primary/20 shadow-xs transition-all w-48 sm:w-64"
         />
+        <button
+          type="button"
+          onMouseDown={(e) => {
+            e.preventDefault();
+            handleSave();
+          }}
+          className="p-1 rounded bg-accent-primary text-white hover:bg-accent-primary/90 transition-colors cursor-pointer"
+          title="Simpan nama proyek (Enter)"
+          aria-label="Simpan nama proyek"
+        >
+          <Check className="w-3.5 h-3.5" />
+        </button>
       </div>
     );
   }
@@ -89,17 +101,19 @@ export const EditableProjectTitle: React.FC<EditableProjectTitleProps> = ({
         }
       }}
       className={cn(
-        'group inline-flex items-center gap-1.5 px-1.5 py-0.5 rounded cursor-pointer select-none',
-        'hover:bg-slate-100/70 border border-transparent hover:border-slate-200/60 transition-colors',
+        'group inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md cursor-pointer select-none',
+        'bg-slate-50/90 hover:bg-slate-100 border border-slate-200/90 hover:border-accent-primary/50 shadow-2xs transition-all duration-150',
         className
       )}
       title="Klik untuk mengubah nama proyek"
       aria-label="Ubah nama proyek"
     >
-      <span className="text-xs sm:text-sm font-semibold text-slate-700 group-hover:text-slate-900 transition-colors truncate max-w-35 sm:max-w-xs">
+      <span className="text-xs sm:text-sm font-semibold text-slate-800 group-hover:text-accent-primary transition-colors truncate max-w-35 sm:max-w-xs border-b border-dashed border-slate-300 group-hover:border-accent-primary/60 pb-px">
         {activeTitle}
       </span>
-      <Pencil className="w-3 h-3 text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
+      <span className="inline-flex items-center justify-center w-4 h-4 rounded bg-slate-200/70 group-hover:bg-accent-primary/10 text-slate-400 group-hover:text-accent-primary transition-colors shrink-0">
+        <Pencil className="w-2.5 h-2.5" />
+      </span>
     </div>
   );
 };

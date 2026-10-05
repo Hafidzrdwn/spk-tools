@@ -4,8 +4,10 @@ import { useTourStore } from './useTourStore';
 
 export type EditorSection = 'matrix' | 'criteria' | 'alternatives';
 export type NumberSeparator = 'comma' | 'dot';
+export type AppView = 'landing' | 'board' | 'review' | 'analytics';
 
 export interface UiStore {
+  currentView: AppView;
   activeTab: MethodId;
   hoveredCellId: string | null;
   isInspectorOpen: boolean;
@@ -24,6 +26,7 @@ export interface UiStore {
   storyHasExtracted: boolean;
   storyMode: 'story' | 'form';
   isSharedMatrixCollapsed: boolean;
+  setCurrentView: (view: AppView) => void;
   setHoveredCell: (id: string | null) => void;
   setActiveTab: (tab: MethodId) => void;
   setInspectorOpen: (open: boolean) => void;
@@ -68,7 +71,36 @@ const getInitialNumberFormat = (): NumberSeparator => {
   }
 };
 
+export const pathToView = (pathname: string): AppView => {
+  const cleanPath = pathname.replace(/\/+$/, '').toLowerCase();
+  if (cleanPath === '' || cleanPath === '/') return 'landing';
+  if (cleanPath.startsWith('/board') || cleanPath.startsWith('/workboard')) return 'board';
+  if (cleanPath.startsWith('/review')) return 'review';
+  if (cleanPath.startsWith('/analytic')) return 'analytics';
+  return 'landing';
+};
+
+const getInitialView = (): AppView => {
+  if (typeof window === 'undefined') return 'landing';
+  try {
+    const path = window.location.pathname;
+    if (path && path !== '/') {
+      return pathToView(path);
+    }
+    // Backward compatibility for legacy ?view= query parameter
+    const params = new URLSearchParams(window.location.search);
+    const viewParam = params.get('view')?.toLowerCase();
+    if (viewParam === 'board' || viewParam === 'workboard') return 'board';
+    if (viewParam === 'review' || viewParam === 'community') return 'review';
+    if (viewParam === 'analytics') return 'analytics';
+    return 'landing';
+  } catch {
+    return 'landing';
+  }
+};
+
 export const useUiStore = create<UiStore>((set) => ({
+  currentView: getInitialView(),
   activeTab: 'SAW',
   hoveredCellId: null,
   isInspectorOpen: false,
@@ -86,6 +118,27 @@ export const useUiStore = create<UiStore>((set) => ({
   storyMode: 'story',
   isSharedMatrixCollapsed: getInitialMatrixCollapsed(),
 
+  setCurrentView: (view) => {
+    try {
+      const url = new URL(window.location.href);
+      // Clean up legacy ?view= parameter if present
+      url.searchParams.delete('view');
+
+      let targetPath = '/';
+      if (view === 'board') targetPath = '/board';
+      else if (view === 'review') targetPath = '/review';
+      else if (view === 'analytics') targetPath = '/analytics';
+      else targetPath = '/';
+
+      if (url.pathname !== targetPath) {
+        url.pathname = targetPath;
+        window.history.pushState(null, '', url.pathname + url.search + url.hash);
+      }
+    } catch {
+      // safe fallback
+    }
+    set({ currentView: view });
+  },
   setHoveredCell: (id) => set({ hoveredCellId: id }),
   setActiveTab: (tab) => {
     useTourStore.getState().markTabVisited(tab);

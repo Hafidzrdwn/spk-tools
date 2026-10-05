@@ -65,7 +65,7 @@ export function Tabs<T extends string = string>({
       role="tablist"
       aria-label="Navigasi Metode SPK"
       className={cn(
-        'inline-flex items-center p-1 bg-slate-100/90 rounded-control border border-slate-200/60 gap-1 overflow-x-auto max-w-full scrollbar-none',
+        'inline-flex items-center p-1 bg-slate-100/90 rounded-control border border-slate-200/60 gap-1 overflow-x-auto max-w-full scrollbar-none touch-pan-x',
         className
       )}
     >
@@ -80,7 +80,7 @@ export function Tabs<T extends string = string>({
             data-tour-id={`nav-tab-${tab.id}`}
             onClick={() => onChange(tab.id)}
             className={cn(
-              'h-9 px-3.5 flex items-center justify-center gap-2 text-xs font-semibold rounded-[0.55rem] transition-colors duration-150 select-none whitespace-nowrap shrink-0 cursor-pointer',
+              'min-h-10 sm:min-h-9 px-3 sm:px-3.5 flex items-center justify-center gap-1.5 sm:gap-2 text-xs font-semibold rounded-[0.55rem] transition-colors duration-150 select-none whitespace-nowrap shrink-0 cursor-pointer',
               isActive
                 ? 'bg-white text-slate-900 shadow-2xs shadow-slate-200 font-bold'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'

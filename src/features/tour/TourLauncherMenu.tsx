@@ -13,7 +13,13 @@ const METHOD_TOURS = [
   { id: 'story', label: 'Tour: Story-to-Matrix', methodTab: 'AUTO' },
 ] as const;
 
-export const TourLauncherMenu: React.FC = () => {
+import { cn } from '@/utils/cn';
+
+export interface TourLauncherMenuProps {
+  className?: string;
+}
+
+export const TourLauncherMenu: React.FC<TourLauncherMenuProps> = ({ className }) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -24,13 +30,17 @@ export const TourLauncherMenu: React.FC = () => {
 
   useEffect(() => {
     if (!isOpen) return;
-    const handleClickOutside = (e: MouseEvent) => {
+    const handleClickOutside = (e: MouseEvent | TouchEvent) => {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
         setIsOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
   }, [isOpen]);
 
   const handleStartGeneralTour = () => {
@@ -45,21 +55,21 @@ export const TourLauncherMenu: React.FC = () => {
   };
 
   return (
-    <div className="relative inline-block" ref={menuRef}>
+    <div className={cn('relative inline-block w-full sm:w-auto', className)} ref={menuRef}>
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
         data-tour-id="help-launcher"
         title="Buka Menu Bantuan & Panduan Tour SPK"
         aria-label="Buka menu bantuan dan panduan tour SPK"
-        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 hover:text-accent-primary text-xs font-medium transition-all shadow-2xs cursor-pointer"
+        className="w-full sm:w-auto h-9 px-3 py-1.5 rounded-lg border border-slate-200/90 bg-white hover:bg-slate-50 text-slate-700 hover:text-accent-primary text-xs font-semibold transition-all shadow-2xs cursor-pointer flex items-center justify-center gap-1.5"
       >
-        <HelpCircle className="w-3.5 h-3.5 text-accent-primary" />
+        <HelpCircle className="w-3.5 h-3.5 text-accent-primary shrink-0" />
         <span>Bantuan</span>
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-64 rounded-2xl bg-white border border-slate-200/90 shadow-2xl z-50 p-1.5 space-y-1 animate-in fade-in zoom-in-95 duration-100">
+        <div className="absolute left-0 sm:left-auto sm:right-0 mt-2 w-64 max-w-[calc(100vw-2rem)] rounded-2xl bg-white border border-slate-200/90 shadow-2xl z-50 p-1.5 space-y-1 animate-in fade-in zoom-in-95 duration-100">
           <div className="px-3 py-2 border-b border-slate-100">
             <span className="text-[11px] font-bold text-slate-900 block">Pusat Bantuan SPK</span>
             <span className="text-[10px] text-slate-400 block">Panduan interaktif & materi belajar</span>
