@@ -16,7 +16,7 @@
     "clsx": "^2.1.0",
     "decimal.js": "^10.4.0",
     "firebase": "^12.19.0",
-    "framer-motion": "^11.3.0",
+    "framer-motion": "^14.0.0",
     "immer": "^10.1.0",
     "katex": "^0.18.9",
     "lucide-react": "^0.400.0",
