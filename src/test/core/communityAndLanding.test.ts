@@ -14,6 +14,7 @@ import {
   copyReportToClipboard,
   type ReportEmailPayload,
 } from '@/utils/reportEmail';
+import { formatRelativeTime } from '@/utils/dateFormatter';
 
 describe('Firebase Service & Fallback Store', () => {
   beforeEach(() => {
@@ -57,6 +58,54 @@ describe('Firebase Service & Fallback Store', () => {
     expect(info).toHaveProperty('device');
     expect(info).toHaveProperty('browser');
     expect(info).toHaveProperty('os');
+  });
+
+  it('getClientEnvironmentInfo mendeteksi Android Mobile secara akurat (bukan Linux)', () => {
+    // Android Chrome
+    const androidChromeUA = 'Mozilla/5.0 (Linux; Android 14; SM-S918B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36';
+    const res1 = getClientEnvironmentInfo(androidChromeUA);
+    expect(res1.os).toBe('Android');
+    expect(res1.device).toBe('Mobile');
+    expect(res1.browser).toBe('Chrome');
+
+    // Android Firefox
+    const androidFirefoxUA = 'Mozilla/5.0 (Android 14; Mobile; rv:120.0) Gecko/120.0 Firefox/120.0';
+    const res2 = getClientEnvironmentInfo(androidFirefoxUA);
+    expect(res2.os).toBe('Android');
+    expect(res2.device).toBe('Mobile');
+    expect(res2.browser).toBe('Firefox');
+  });
+
+  it('getClientEnvironmentInfo mendeteksi iPhone iOS dan Firefox iOS (FxiOS) secara akurat', () => {
+    // iPhone Safari
+    const iPhoneSafariUA = 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.1 Mobile/15E148 Safari/604.1';
+    const res1 = getClientEnvironmentInfo(iPhoneSafariUA);
+    expect(res1.os).toBe('iOS');
+    expect(res1.device).toBe('Mobile');
+    expect(res1.browser).toBe('Safari');
+
+    // iPhone Firefox (FxiOS)
+    const iPhoneFirefoxUA = 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) FxiOS/120.0 Mobile/15E148 Safari/605.1.15';
+    const res2 = getClientEnvironmentInfo(iPhoneFirefoxUA);
+    expect(res2.os).toBe('iOS');
+    expect(res2.device).toBe('Mobile');
+    expect(res2.browser).toBe('Firefox');
+  });
+
+  it('getClientEnvironmentInfo mendeteksi Desktop Windows Edge dan Desktop Linux Firefox', () => {
+    // Windows Edge
+    const winEdgeUA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0';
+    const res1 = getClientEnvironmentInfo(winEdgeUA);
+    expect(res1.os).toBe('Windows');
+    expect(res1.device).toBe('Desktop');
+    expect(res1.browser).toBe('Edge');
+
+    // Desktop Linux Firefox
+    const linuxFirefoxUA = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:120.0) Gecko/20100101 Firefox/120.0';
+    const res2 = getClientEnvironmentInfo(linuxFirefoxUA);
+    expect(res2.os).toBe('Linux');
+    expect(res2.device).toBe('Desktop');
+    expect(res2.browser).toBe('Firefox');
   });
 
   it('trackPageView mencatat kunjungan pertama dan mengabaikan refresh berulang pada rute yang sama', async () => {
@@ -205,6 +254,56 @@ describe('Clean Path Routing & pathToView Helper', () => {
 
     useUiStore.getState().setCurrentView('landing');
     expect(useUiStore.getState().currentView).toBe('landing');
+  });
+});
+
+describe('formatRelativeTime Utility', () => {
+  const baseTime = new Date('2026-10-06T12:00:00.000Z');
+
+  it('mengembalikan "-" untuk input kosong atau tanggal tidak valid', () => {
+    expect(formatRelativeTime('')).toBe('-');
+    expect(formatRelativeTime('invalid-date')).toBe('-');
+  });
+
+  it('mengembalikan "Baru saja" untuk waktu kurang dari 60 detik (bukan "0 menit yang lalu")', () => {
+    // 0 detik
+    expect(formatRelativeTime(baseTime, baseTime)).toBe('Baru saja');
+
+    // 30 detik yang lalu
+    const thirtySecAgo = new Date(baseTime.getTime() - 30 * 1000);
+    expect(formatRelativeTime(thirtySecAgo, baseTime)).toBe('Baru saja');
+
+    // 45 detik yang lalu (kasus spesifik yang sebelumnya bug "0 menit yang lalu")
+    const fortyFiveSecAgo = new Date(baseTime.getTime() - 45 * 1000);
+    expect(formatRelativeTime(fortyFiveSecAgo, baseTime)).toBe('Baru saja');
+
+    // 59 detik yang lalu
+    const fiftyNineSecAgo = new Date(baseTime.getTime() - 59 * 1000);
+    expect(formatRelativeTime(fiftyNineSecAgo, baseTime)).toBe('Baru saja');
+  });
+
+  it('mengembalikan format menit yang tepat mulai detik ke-60', () => {
+    // 60 detik yang lalu -> 1 menit
+    const oneMinAgo = new Date(baseTime.getTime() - 60 * 1000);
+    expect(formatRelativeTime(oneMinAgo, baseTime)).toBe('1 menit yang lalu');
+
+    // 119 detik yang lalu -> 1 menit
+    const almostTwoMinAgo = new Date(baseTime.getTime() - 119 * 1000);
+    expect(formatRelativeTime(almostTwoMinAgo, baseTime)).toBe('1 menit yang lalu');
+
+    // 120 detik yang lalu -> 2 menit
+    const twoMinAgo = new Date(baseTime.getTime() - 120 * 1000);
+    expect(formatRelativeTime(twoMinAgo, baseTime)).toBe('2 menit yang lalu');
+  });
+
+  it('mengembalikan format jam dan hari yang tepat', () => {
+    // 1 jam yang lalu
+    const oneHourAgo = new Date(baseTime.getTime() - 3600 * 1000);
+    expect(formatRelativeTime(oneHourAgo, baseTime)).toBe('1 jam yang lalu');
+
+    // 2 hari yang lalu
+    const twoDaysAgo = new Date(baseTime.getTime() - 2 * 86400 * 1000);
+    expect(formatRelativeTime(twoDaysAgo, baseTime)).toBe('2 hari yang lalu');
   });
 });
 

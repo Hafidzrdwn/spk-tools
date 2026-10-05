@@ -170,28 +170,63 @@ export function subscribeToAnalytics(callback: (data: AnalyticsData) => void): (
 }
 
 /**
- * Deteksi info perangkat & browser dari navigator
+ * Deteksi info perangkat & browser dari navigator atau custom user-agent
  */
-export function getClientEnvironmentInfo() {
-  if (typeof window === 'undefined') {
+export function getClientEnvironmentInfo(customUa?: string) {
+  if (typeof window === 'undefined' && !customUa) {
     return { device: 'Desktop', browser: 'Chrome', os: 'Windows' };
   }
 
-  const ua = navigator.userAgent;
-  let device = 'Desktop';
-  if (/mobile/i.test(ua)) device = 'Mobile';
-  else if (/tablet|ipad/i.test(ua)) device = 'Tablet';
+  const ua = customUa || (typeof navigator !== 'undefined' ? navigator.userAgent : '');
+  const maxTouchPoints = typeof navigator !== 'undefined' ? (navigator.maxTouchPoints || 0) : 0;
 
-  let browser = 'Chrome';
-  if (/firefox/i.test(ua)) browser = 'Firefox';
-  else if (/edg/i.test(ua)) browser = 'Edge';
-  else if (/safari/i.test(ua) && !/chrome/i.test(ua)) browser = 'Safari';
+  // 1. Deteksi Perangkat (Tablet vs Mobile vs Desktop)
+  let device: 'Desktop' | 'Mobile' | 'Tablet' = 'Desktop';
+  const isIpadLike = /ipad/i.test(ua) || (/macintosh/i.test(ua) && maxTouchPoints > 1);
+  const isTablet = isIpadLike || /tablet|playbook|silk/i.test(ua) || (/android/i.test(ua) && !/mobile/i.test(ua));
+  const isMobile = !isTablet && (/mobile|android|iphone|ipod|blackberry|iemobile|opera mini/i.test(ua));
 
-  let os = 'Windows';
-  if (/mac/i.test(ua)) os = 'macOS';
-  else if (/linux/i.test(ua)) os = 'Linux';
-  else if (/android/i.test(ua)) os = 'Android';
-  else if (/iphone|ipad/i.test(ua)) os = 'iOS';
+  if (isTablet) {
+    device = 'Tablet';
+  } else if (isMobile) {
+    device = 'Mobile';
+  } else {
+    device = 'Desktop';
+  }
+
+  // 2. Deteksi Sistem Operasi (Prioritaskan Mobile OS sebelum Desktop Linux/macOS)
+  let os = 'Lainnya';
+  if (/android/i.test(ua)) {
+    os = 'Android';
+  } else if (/iphone|ipad|ipod/i.test(ua) || isIpadLike) {
+    os = 'iOS';
+  } else if (/windows phone/i.test(ua)) {
+    os = 'Windows Phone';
+  } else if (/win/i.test(ua)) {
+    os = 'Windows';
+  } else if (/macintosh|mac os x/i.test(ua)) {
+    os = 'macOS';
+  } else if (/cros/i.test(ua)) {
+    os = 'ChromeOS';
+  } else if (/linux/i.test(ua)) {
+    os = 'Linux';
+  }
+
+  // 3. Deteksi Browser (Pencocokan spesifik sebelum fallback)
+  let browser = 'Browser Web';
+  if (/firefox|fxios/i.test(ua)) {
+    browser = 'Firefox';
+  } else if (/opr|opera/i.test(ua)) {
+    browser = 'Opera';
+  } else if (/edg|edge|edga|edgios/i.test(ua)) {
+    browser = 'Edge';
+  } else if (/samsungbrowser/i.test(ua)) {
+    browser = 'Samsung Internet';
+  } else if (/chrome|crios/i.test(ua)) {
+    browser = 'Chrome';
+  } else if (/safari/i.test(ua)) {
+    browser = 'Safari';
+  }
 
   return { device, browser, os };
 }
