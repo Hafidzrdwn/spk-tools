@@ -259,6 +259,25 @@ const styles = StyleSheet.create({
     color: '#64748B',
     fontWeight: 'bold',
   },
+
+  // Epsilon-Guard Note
+  adjustmentNoteBox: {
+    backgroundColor: '#EFF6FF',
+    borderLeftWidth: 3,
+    borderLeftColor: '#3B82F6',
+    borderTopWidth: 0.5,
+    borderRightWidth: 0.5,
+    borderBottomWidth: 0.5,
+    borderColor: '#BFDBFE',
+    borderRadius: 3,
+    padding: 6,
+    marginTop: 6,
+  },
+  adjustmentNoteText: {
+    fontSize: 7.2,
+    color: '#1E40AF',
+    lineHeight: 1.35,
+  },
 });
 
 export interface DecisiPdfReportProps {
@@ -524,6 +543,13 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({ payload, numbe
               );
             })}
           </View>
+          {payload.result.hasZeroCostAdjustment && (
+            <View style={styles.adjustmentNoteBox} wrap={false}>
+              <Text style={styles.adjustmentNoteText}>
+                * Catatan Matematis (Weighted Product): Terdeteksi nilai 0 pada kriteria bertipe Cost. Sesuai standar komputasi MCDM, nilai 0 disesuaikan dengan nilai positif terkecil (ε = 0,0001) guna mencegah pembagian tak hingga (0^-w = ∞) sehingga kalkulasi eksponensial dan peringkat konsensus tetap konsisten dan valid.
+              </Text>
+            </View>
+          )}
         </View>
 
         {/* ===================================================================

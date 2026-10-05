@@ -96,8 +96,13 @@ export function calculateSAW(
         normInputs.max = maxX;
       } else {
         // COST
-        r = x > 0 ? new Decimal(minX).dividedBy(x).toNumber() : 0;
-        normFormulaLabel = `Cost ⟹ x${rowIdx}${colIdx} = min(X)/x${rowIdx}${colIdx} = ${formatNumber(minX)}/${formatNumber(x)} = ${formatNumber(r)}`;
+        if (x === 0 && minX === 0) {
+          r = 1;
+          normFormulaLabel = `Cost ⟹ x${rowIdx}${colIdx} = min(X)/x${rowIdx}${colIdx} = 0/0 = 1 (nilai optimal)`;
+        } else {
+          r = x > 0 ? new Decimal(minX).dividedBy(x).toNumber() : 0;
+          normFormulaLabel = `Cost ⟹ x${rowIdx}${colIdx} = min(X)/x${rowIdx}${colIdx} = ${formatNumber(minX)}/${formatNumber(x)} = ${formatNumber(r)}`;
+        }
         normInputs.min = minX;
         normInputs.x = x;
       }

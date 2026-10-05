@@ -189,5 +189,64 @@ describe('Export PDF Report Module', () => {
     expect(useUiStore.getState().isSharedMatrixCollapsed).toBe(false);
     expect(localStorage.getItem('decisigraph_matrix_collapsed')).toBe('false');
   });
+
+  it('berhasil memproses ekspor laporan multi-metode untuk kasus employee-3x5 dengan kriteria Cost bernilai 0', async () => {
+    const { CASE_TEMPLATES } = await import('@/core/constants/caseTemplates');
+    const { calculateSAW } = await import('@/core/math/saw');
+    const { calculateSafeWP } = await import('@/core/math/wp');
+    const { calculateTOPSIS } = await import('@/core/math/topsis');
+    const { compareRankings } = await import('@/core/math/compareRankings');
+
+    const employeeTemplate = CASE_TEMPLATES.find((t) => t.id === 'employee-3x5');
+    expect(employeeTemplate).toBeDefined();
+
+    const { criteria, alternatives, title } = employeeTemplate!.state;
+    // Verifikasi ada nilai 0 pada kriteria Cost di template ini
+    const costCrit = criteria.find((c) => c.type === 'COST');
+    expect(costCrit).toBeDefined();
+    const hasZero = alternatives.some((a) => a.values[costCrit!.id] === 0);
+    expect(hasZero).toBe(true);
+
+    // Hitung seluruh metode
+    const sawRes = calculateSAW(criteria, alternatives);
+    const wpRes = calculateSafeWP(criteria, alternatives);
+    const topsisRes = calculateTOPSIS(criteria, alternatives);
+
+    expect(wpRes.hasZeroCostAdjustment).toBe(true);
+    expect(wpRes.finalRanking.length).toBe(3);
+
+    const compRes = compareRankings(
+      sawRes.finalRanking,
+      wpRes.finalRanking,
+      topsisRes.finalRanking,
+      criteria,
+      alternatives
+    );
+    expect(compRes.rows.length).toBe(3);
+
+    const fullResult: MethodResult = {
+      intermediateMatrices: {},
+      formulaSteps: [],
+      finalRanking: compRes.rows.map((row, idx) => ({
+        alternativeId: row.alternativeId,
+        alternativeName: row.alternativeName,
+        score: Number((1 / Math.max(0.1, row.averageRank)).toFixed(4)),
+        rank: idx + 1,
+      })),
+      hasZeroCostAdjustment: wpRes.hasZeroCostAdjustment,
+    };
+
+    const payload = generateReport(
+      { title, criteria, alternatives },
+      'COMPARE',
+      fullResult,
+      compRes
+    );
+
+    expect(payload.result.hasZeroCostAdjustment).toBe(true);
+    const element = React.createElement(DecisiPdfReport, { payload });
+    expect(element).toBeDefined();
+  });
 });
+
 

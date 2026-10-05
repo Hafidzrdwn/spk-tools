@@ -27,6 +27,11 @@ function formatNumber(val: number): string {
   return Number(val.toFixed(4)).toString();
 }
 
+export interface CalculateWpOptions {
+  safeZeroHandling?: boolean;
+  epsilon?: number;
+}
+
 /**
  * Implementasi WP (Weighted Product)
  * Rumus:
@@ -40,7 +45,8 @@ function formatNumber(val: number): string {
  */
 export function calculateWP(
   criteria: Criterion[],
-  alternatives: Alternative[]
+  alternatives: Alternative[],
+  options?: CalculateWpOptions
 ): MethodResult {
   if (criteria.length === 0 || alternatives.length === 0) {
     return {
@@ -50,12 +56,15 @@ export function calculateWP(
       },
       formulaSteps: [],
       finalRanking: [],
+      hasZeroCostAdjustment: false,
     };
   }
 
   // Langkah 0: Validasi Zero-Guard untuk kriteria Cost
   const violations = wpZeroGuard(alternatives, criteria);
-  if (violations.length > 0) {
+  const hasZeroCostViolation = violations.length > 0;
+
+  if (hasZeroCostViolation && !options?.safeZeroHandling) {
     const errorDetails = violations.map((v) => {
       const alt = alternatives.find((a) => a.id === v.alternativeId);
       const crit = criteria.find((c) => c.id === v.criterionId);
@@ -101,9 +110,20 @@ export function calculateWP(
     const sourceCellIdsForS: string[] = [];
     let sAlt = new Decimal(1);
 
+    const epsilon = options?.epsilon ?? 0.0001;
+
     criteria.forEach((crit, critIndex) => {
       const colIdx = critIndex + 1;
-      const x = alt.values[crit.id] ?? 0;
+      const rawX = alt.values[crit.id] ?? 0;
+      let x = rawX;
+      let isZeroAdjusted = false;
+
+      // Pada kriteria Cost dengan nilai <= 0, gunakan epsilon smoothing jika opsi safeZeroHandling aktif
+      if (crit.type === 'COST' && rawX <= 0 && options?.safeZeroHandling) {
+        x = epsilon;
+        isZeroAdjusted = true;
+      }
+
       const wStar = weightPowers[crit.id];
       const w = normalizedWeights[crit.id];
 
@@ -117,7 +137,9 @@ export function calculateWP(
       sourceCellIdsForS.push(termCellId);
 
       const signStr = crit.type === 'BENEFIT' ? `+${formatNumber(w)}` : `-${formatNumber(w)}`;
-      const formulaLabel = `${crit.type} ⟹ x${rowIdx}${colIdx}^(w${colIdx}*) = ${formatNumber(x)}^(${signStr}) = ${formatNumber(termValue)}`;
+      const formulaLabel = isZeroAdjusted
+        ? `${crit.type} ⟹ x${rowIdx}${colIdx}^(w${colIdx}*) = (${formatNumber(x)} disesuaikan)^(${signStr}) = ${formatNumber(termValue)} (Epsilon-Guard: nilai ${rawX} disesuaikan ke ${x})`
+        : `${crit.type} ⟹ x${rowIdx}${colIdx}^(w${colIdx}*) = ${formatNumber(x)}^(${signStr}) = ${formatNumber(termValue)}`;
 
       formulaSteps.push({
         cellId: termCellId,
@@ -125,6 +147,7 @@ export function calculateWP(
         formulaLabel,
         inputs: {
           x,
+          rawX,
           w: wStar,
         },
         sourceCellIds: [rawCellId],
@@ -203,5 +226,23 @@ export function calculateWP(
     },
     formulaSteps,
     finalRanking,
+    hasZeroCostAdjustment: hasZeroCostViolation && Boolean(options?.safeZeroHandling),
+    adjustedViolations: hasZeroCostViolation && Boolean(options?.safeZeroHandling) ? violations : undefined,
   };
 }
+
+/**
+ * Helper kalkulasi WP yang aman dari pembagian nol (zero-division safe).
+ * Menggunakan pendekatan epsilon smoothing standar MCDM untuk kriteria Cost bernilai 0.
+ */
+export function calculateSafeWP(
+  criteria: Criterion[],
+  alternatives: Alternative[],
+  epsilon: number = 0.0001
+): MethodResult {
+  return calculateWP(criteria, alternatives, {
+    safeZeroHandling: true,
+    epsilon,
+  });
+}
+

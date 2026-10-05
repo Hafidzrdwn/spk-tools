@@ -5,7 +5,7 @@ import { useProjectStore } from '@/store/useProjectStore';
 import { useUiStore } from '@/store/useUiStore';
 import { useNormalizedCriteria } from '@/store/selectors';
 import { calculateSAW } from '@/core/math/saw';
-import { calculateWP } from '@/core/math/wp';
+import { calculateWP, calculateSafeWP, WpZeroGuardError } from '@/core/math/wp';
 import { calculateTOPSIS } from '@/core/math/topsis';
 import { compareRankings } from '@/core/math/compareRankings';
 import type { MethodId } from '@/types/domain';
@@ -89,14 +89,33 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
     }
 
     if (targetMethod === 'WP') {
-      return { res: calculateWP(criteria, alternatives) };
+      if (result && (!method || method === targetMethod) && result.finalRanking && result.finalRanking.length > 0) {
+        return { res: result, comp: comparisonResult };
+      }
+      try {
+        return { res: calculateWP(criteria, alternatives) };
+      } catch (err) {
+        if (err instanceof WpZeroGuardError) {
+          return { res: calculateSafeWP(criteria, alternatives) };
+        }
+        throw err;
+      }
     }
     if (targetMethod === 'TOPSIS') {
       return { res: calculateTOPSIS(criteria, alternatives) };
     }
     if (targetMethod === 'COMPARE') {
       const sawRes = calculateSAW(criteria, alternatives);
-      const wpRes = calculateWP(criteria, alternatives);
+      let wpRes: MethodResult;
+      try {
+        wpRes = calculateWP(criteria, alternatives);
+      } catch (err) {
+        if (err instanceof WpZeroGuardError) {
+          wpRes = calculateSafeWP(criteria, alternatives);
+        } else {
+          throw err;
+        }
+      }
       const topsisRes = calculateTOPSIS(criteria, alternatives);
       const comp = compareRankings(
         sawRes.finalRanking,
@@ -114,6 +133,8 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
           score: Number((1 / Math.max(0.1, row.averageRank)).toFixed(4)),
           rank: idx + 1,
         })),
+        hasZeroCostAdjustment: wpRes.hasZeroCostAdjustment,
+        adjustedViolations: wpRes.adjustedViolations,
       };
       return { res, comp };
     }
@@ -189,7 +210,16 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
 
       // Compute all individual methods
       const sawRes = calculateSAW(criteria, alternatives);
-      const wpRes = calculateWP(criteria, alternatives);
+      let wpRes: MethodResult;
+      try {
+        wpRes = calculateWP(criteria, alternatives);
+      } catch (err) {
+        if (err instanceof WpZeroGuardError) {
+          wpRes = calculateSafeWP(criteria, alternatives);
+        } else {
+          throw err;
+        }
+      }
       const topsisRes = calculateTOPSIS(criteria, alternatives);
 
       // Compute multi-method consensus
@@ -210,6 +240,8 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
           score: Number((1 / Math.max(0.1, row.averageRank)).toFixed(4)),
           rank: idx + 1,
         })),
+        hasZeroCostAdjustment: wpRes.hasZeroCostAdjustment,
+        adjustedViolations: wpRes.adjustedViolations,
       };
 
       const payload = generateReport(

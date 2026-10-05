@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useProjectStore } from '@/store/useProjectStore';
 import { useNormalizedCriteria } from '@/store/selectors';
 import { calculateSAW } from '@/core/math/saw';
-import { calculateWP } from '@/core/math/wp';
+import { calculateWP, calculateSafeWP, WpZeroGuardError } from '@/core/math/wp';
 import { calculateTOPSIS } from '@/core/math/topsis';
 import { compareRankings, type ComparisonResult } from '@/core/math/compareRankings';
 import type { Criterion, Alternative } from '@/types/domain';
@@ -34,7 +34,16 @@ export function useComparisonViewModel(): ComparisonViewModel {
     }
 
     const sawRes = calculateSAW(criteria, alternatives);
-    const wpRes = calculateWP(criteria, alternatives);
+    let wpRes;
+    try {
+      wpRes = calculateWP(criteria, alternatives);
+    } catch (err) {
+      if (err instanceof WpZeroGuardError) {
+        wpRes = calculateSafeWP(criteria, alternatives);
+      } else {
+        throw err;
+      }
+    }
     const topsisRes = calculateTOPSIS(criteria, alternatives);
 
     return compareRankings(

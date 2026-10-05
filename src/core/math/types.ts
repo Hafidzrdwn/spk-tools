@@ -19,4 +19,8 @@ export interface MethodResult<TRanking = RankingRow> {
   intermediateMatrices: Record<string, number[][]>; // { normalized: [...], weighted: [...] }
   formulaSteps: TraceStep[];
   finalRanking: TRanking[];
+  hasZeroCostAdjustment?: boolean;
+  adjustedViolations?: { alternativeId: string; criterionId: string }[];
+  warningNote?: string;
 }
+
