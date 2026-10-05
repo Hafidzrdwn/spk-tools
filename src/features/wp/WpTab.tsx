@@ -65,7 +65,7 @@ export const WpTab: React.FC = () => {
 
       {/* Stepper Navigation */}
       <div data-tour-id="wp-stepper" className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-2 bg-slate-100/80 rounded-card border border-slate-200/70">
-        <div className="flex items-center gap-1.5 w-full sm:w-auto">
+        <div className="flex items-center gap-1.5 w-full sm:w-auto overflow-x-auto scrollbar-none touch-pan-x pb-0.5 sm:pb-0">
           {steps.map((s) => (
             <button
               key={s.step}
@@ -73,7 +73,7 @@ export const WpTab: React.FC = () => {
               data-tour-id={`wp-step-btn-${s.step}`}
               disabled={hasZeroGuardViolation && s.step > 1}
               onClick={() => setActiveStep(s.step)}
-              className={`flex-1 sm:flex-none flex items-center gap-2 px-3 py-1.5 text-xs font-semibold rounded-control transition-all ${
+              className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 text-xs font-semibold rounded-control transition-all whitespace-nowrap shrink-0 ${
                 activeStep === s.step
                   ? 'bg-white text-slate-900 shadow-2xs border border-slate-200/60'
                   : hasZeroGuardViolation && s.step > 1
@@ -82,7 +82,8 @@ export const WpTab: React.FC = () => {
               }`}
             >
               {s.icon}
-              <span>{s.label}</span>
+              <span className="hidden xs:inline">{s.label}</span>
+              <span className="xs:hidden">{s.step === 1 ? '1. Matriks' : s.step === 2 ? '2. Pangkat' : '3. Vektor'}</span>
             </button>
           ))}
         </div>

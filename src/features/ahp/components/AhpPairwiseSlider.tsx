@@ -116,10 +116,16 @@ export const AhpPairwiseSlider: React.FC<AhpPairwiseSliderProps> = ({
                   className="w-full h-2.5 bg-linear-to-r from-indigo-200 via-slate-200 to-violet-200 rounded-lg appearance-none cursor-pointer accent-accent-primary"
                 />
 
-                <div className="flex justify-between text-[10px] font-mono text-slate-400 px-0.5">
-                  <span className={isA ? 'text-indigo-600 font-bold' : ''}>← {pair.criterionA.name} (9:1)</span>
-                  <span className={isEqual ? 'text-slate-900 font-bold' : ''}>Setara (1:1)</span>
-                  <span className={isB ? 'text-violet-600 font-bold' : ''}>{pair.criterionB.name} (1:9) →</span>
+                <div className="flex justify-between items-center gap-1 text-[10px] font-mono text-slate-400 px-0.5">
+                  <span className={`truncate max-w-[38%] ${isA ? 'text-indigo-600 font-bold' : ''}`} title={pair.criterionA.name}>
+                    ← {pair.criterionA.name} (9:1)
+                  </span>
+                  <span className={`shrink-0 text-center ${isEqual ? 'text-slate-900 font-bold' : ''}`}>
+                    Setara (1:1)
+                  </span>
+                  <span className={`truncate max-w-[38%] text-right ${isB ? 'text-violet-600 font-bold' : ''}`} title={pair.criterionB.name}>
+                    {pair.criterionB.name} (1:9) →
+                  </span>
                 </div>
               </div>
             </div>

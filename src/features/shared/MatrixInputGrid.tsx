@@ -85,11 +85,11 @@ export const MatrixInputGrid: React.FC<MatrixInputGridProps> = ({
   }
 
   return (
-    <div className={cn('w-full overflow-x-auto rounded-card border border-slate-200/80 bg-white/90 shadow-2xs', className)}>
+    <div className={cn('w-full overflow-x-auto rounded-card border border-slate-200/80 bg-white/90 shadow-2xs touch-pan-x', className)}>
       <table className="w-full text-left border-collapse text-xs">
         <thead>
           <tr className="bg-slate-50/90 border-b border-slate-200 text-slate-600 font-semibold">
-            <th className="py-3 px-4 w-48 min-w-48 sticky left-0 bg-slate-50/95 z-10 border-r border-slate-200/70">
+            <th className="py-3 px-3 sm:px-4 w-36 sm:w-48 min-w-36 sm:min-w-48 sticky left-0 bg-slate-50/95 z-10 border-r border-slate-200/70">
               <GlossaryTerm term="Alternatif">Alternatif</GlossaryTerm> \ <GlossaryTerm term="Kriteria">Kriteria</GlossaryTerm>
             </th>
             {criteria.map((crit, idx) => (
@@ -120,7 +120,7 @@ export const MatrixInputGrid: React.FC<MatrixInputGridProps> = ({
         <tbody className="divide-y divide-slate-100">
           {alternatives.map((alt, altIdx) => (
             <tr key={alt.id} className="hover:bg-indigo-50/20 transition-colors">
-              <td className="py-2.5 px-4 font-semibold text-slate-800 sticky left-0 bg-white/95 z-10 border-r border-slate-200/70 shadow-xs">
+              <td className="py-2.5 px-3 sm:px-4 font-semibold text-slate-800 sticky left-0 bg-white/95 z-10 border-r border-slate-200/70 shadow-xs">
                 <div className="flex items-center gap-2">
                   <span className="text-slate-400 font-mono text-[11px] w-5">A{altIdx + 1}</span>
                   <span className="truncate">{alt.name}</span>

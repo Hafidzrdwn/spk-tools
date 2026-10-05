@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
-import Button from '@/components/ui/Button';
+import { Link } from 'react-router-dom';
+import { Home, LayoutDashboard } from 'lucide-react';
 import Logo from '@/components/layout/Logo';
 import { prefetchRoute, scheduleAllRemainingPrefetch } from '@/services/routePrefetch';
 
@@ -14,8 +13,6 @@ export const CommunityLayout: React.FC<CommunityLayoutProps> = ({
   activeTab,
   children,
 }) => {
-  const navigate = useNavigate();
-
   useEffect(() => {
     const cancel = scheduleAllRemainingPrefetch(activeTab);
     return () => cancel();
@@ -26,29 +23,40 @@ export const CommunityLayout: React.FC<CommunityLayoutProps> = ({
       {/* Top Bar Header */}
       <header className="sticky top-0 z-30 bg-white/90 backdrop-blur-xs border-b border-slate-200 px-3 sm:px-6 py-2 sm:py-2.5 shadow-2xs">
         <div className="max-w-6xl mx-auto flex items-center justify-between gap-1.5 sm:gap-4">
-          <div className="flex items-center gap-2 sm:gap-3">
-            <Button
-              variant="secondary"
-              size="sm"
-              onMouseEnter={() => prefetchRoute.board()}
-              onFocus={() => prefetchRoute.board()}
-              onClick={() => navigate('/board')}
-              className="min-h-11 px-2.5 sm:px-3 py-2 gap-1.5 text-slate-600 hover:text-slate-900 cursor-pointer shadow-2xs text-xs font-semibold shrink-0"
-              title="Kembali ke Workboard"
-            >
-              <ArrowLeft className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Kembali ke Workboard</span>
-              <span className="sm:hidden">Kembali</span>
-            </Button>
-            <div className="h-4 w-px bg-slate-200 hidden md:block" />
+          <div className="flex items-center gap-1 sm:gap-2.5">
             <Link
               to="/"
               onMouseEnter={prefetchRoute.landing}
               onFocus={prefetchRoute.landing}
-              className="hidden md:flex items-center gap-2 hover:opacity-80 transition-opacity min-h-11"
+              className="hidden lg:flex items-center gap-2 hover:opacity-85 transition-opacity min-h-11 mr-1"
+              title="DecisiGraph SPK"
             >
-              <Logo size="sm" showWordmark={false} />
-              <span className="text-xs font-bold text-slate-700 tracking-tight">DecisiGraph Community</span>
+              <Logo size="sm" showWordmark={true} />
+            </Link>
+            <div className="h-4 w-px bg-slate-200 hidden lg:block" />
+
+            <Link
+              to="/"
+              onMouseEnter={prefetchRoute.landing}
+              onFocus={prefetchRoute.landing}
+              className="min-h-11 px-2 sm:px-2.5 py-1.5 inline-flex items-center gap-1 sm:gap-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-100 transition-colors"
+              title="Kembali ke Beranda (Landing Page)"
+            >
+              <Home className="w-3.5 h-3.5 text-slate-500" />
+              <span>Beranda</span>
+            </Link>
+
+            <span className="text-slate-200">|</span>
+
+            <Link
+              to="/board"
+              onMouseEnter={() => prefetchRoute.board()}
+              onFocus={() => prefetchRoute.board()}
+              className="min-h-11 px-2 sm:px-2.5 py-1.5 inline-flex items-center gap-1 sm:gap-1.5 text-xs font-semibold text-slate-600 hover:text-indigo-600 rounded-lg hover:bg-slate-100 transition-colors"
+              title="Buka Workboard Evaluasi SPK"
+            >
+              <LayoutDashboard className="w-3.5 h-3.5 text-indigo-600" />
+              <span>Workboard</span>
             </Link>
           </div>
 

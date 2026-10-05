@@ -22,7 +22,7 @@ export const CriteriaEditor: React.FC = () => {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h3 className="text-sm font-bold text-slate-800 tracking-tight">Kriteria Keputusan</h3>
           <p className="text-xs text-slate-500">
@@ -32,12 +32,13 @@ export const CriteriaEditor: React.FC = () => {
             <GlossaryTerm term="Cost">Cost</GlossaryTerm>)
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="secondary" size="sm" onClick={autoDistributeWeights}>
+        <div className="flex flex-wrap items-center gap-2">
+          <Button variant="secondary" size="sm" onClick={autoDistributeWeights} className="min-h-9 sm:min-h-10 text-xs cursor-pointer">
             <Wand2 className="w-3.5 h-3.5 text-accent-primary" />
-            <span>Ratakan Bobot</span>
+            <span className="hidden xs:inline">Ratakan Bobot</span>
+            <span className="xs:hidden">Ratakan</span>
           </Button>
-          <Button variant="primary" size="sm" onClick={() => addCriterion()} data-tour-id="add-criterion-btn">
+          <Button variant="primary" size="sm" onClick={() => addCriterion()} data-tour-id="add-criterion-btn" className="min-h-9 sm:min-h-10 text-xs cursor-pointer">
             <Plus className="w-3.5 h-3.5" />
             <span>Tambah Kriteria</span>
           </Button>

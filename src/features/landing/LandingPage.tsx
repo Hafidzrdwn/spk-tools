@@ -228,7 +228,7 @@ export const LandingPage: React.FC = () => {
               className="inline-flex items-center min-h-11 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded"
               title="DecisiGraph SPK"
             >
-              <Logo size="md" showWordmark={false} className="sm:hidden" />
+              <Logo size="sm" showWordmark={true} className="sm:hidden" />
               <Logo size="md" showWordmark={true} className="hidden sm:flex" />
             </Link>
             <span className="text-slate-300 hidden xs:inline">|</span>
@@ -764,23 +764,20 @@ export const LandingPage: React.FC = () => {
       {/* =========================================================================
           BOTTOM FOOTER STATUS BAR
       ========================================================================== */}
-      <footer className="w-full px-4 sm:px-6 py-3 border-t border-slate-200 bg-white/90 text-xs text-slate-500">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="flex items-center gap-2 font-medium">
-            <span>&copy; {currentYear} DecisiGraph</span>
-            <span className="text-slate-300">&bull;</span>
+      <footer className="w-full px-4 sm:px-6 py-4 sm:py-3.5 border-t border-slate-200 bg-white/90 text-xs text-slate-500">
+        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 text-center sm:text-left">
+          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-1.5 sm:gap-2 font-medium">
+            <span className="text-slate-700 font-semibold">&copy; {currentYear} DecisiGraph</span>
             <Badge variant="primary" size="sm" className="text-[10px] py-0 px-1.5 font-bold">
               v1.1
             </Badge>
-            <span className="text-slate-300">&bull;</span>
-            <span>Platform Evaluasi SPK Terpadu</span>
+            <span className="text-slate-300 hidden xs:inline">&bull;</span>
+            <span className="text-slate-500 hidden xs:inline">Platform Evaluasi SPK Terpadu</span>
           </div>
 
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2">
-              <span className="text-[11px] text-slate-500 hidden sm:inline">Pemisah Desimal:</span>
-              <DecimalFormatToggle />
-            </div>
+          <div className="flex items-center justify-center gap-2 text-[11px] text-slate-500">
+            <span className="text-slate-500 font-medium">Format Desimal:</span>
+            <DecimalFormatToggle />
           </div>
         </div>
       </footer>

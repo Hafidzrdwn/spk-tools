@@ -48,11 +48,11 @@ export const AhpTab: React.FC = () => {
               <p className="text-xs text-slate-500 mt-0.5">Hitung eigen-vektor prioritas kriteria kualitatif via perbandingan berpasangan Saaty.</p>
             </div>
           </div>
-          <div className="flex items-center gap-2" data-tour-id="ahp-apply-btn">
-            <Button variant="ghost" size="sm" onClick={resetMatrix} title="Reset Matriks ke 1.0">
+          <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto" data-tour-id="ahp-apply-btn">
+            <Button variant="ghost" size="sm" onClick={resetMatrix} title="Reset Matriks ke 1.0" className="min-h-9 sm:min-h-10 text-xs">
               <RotateCcw className="w-3.5 h-3.5 mr-1" /> Reset
             </Button>
-            <Button variant="primary" size="sm" onClick={handleApply} disabled={!hasData || !consistency.isConsistent} className="font-medium shadow-xs">
+            <Button variant="primary" size="sm" onClick={handleApply} disabled={!hasData || !consistency.isConsistent} className="min-h-9 sm:min-h-10 text-xs font-medium shadow-xs">
               {applied ? <><Check className="w-3.5 h-3.5 mr-1 text-emerald-300" /> Bobot Diterapkan!</> : 'Terapkan Bobot ke Proyek'}
             </Button>
           </div>
@@ -60,18 +60,20 @@ export const AhpTab: React.FC = () => {
       </Card>
 
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-2 bg-slate-100/80 rounded-card border border-slate-200/70">
-        <div className="flex items-center gap-1.5 w-full sm:w-auto">
+        <div className="flex items-center gap-1.5 w-full sm:w-auto overflow-x-auto scrollbar-none touch-pan-x pb-0.5 sm:pb-0">
           {steps.map((s) => (
             <button
               key={s.step}
               type="button"
               data-tour-id={`ahp-step-btn-${s.step}`}
               onClick={() => setActiveStep(s.step)}
-              className={`flex-1 sm:flex-none flex items-center gap-2 px-3 py-1.5 text-xs font-semibold rounded-control transition-all ${
-                activeStep === s.step ? 'bg-white text-slate-900 shadow-2xs border border-slate-200/60' : 'text-slate-500 hover:text-slate-800 hover:bg-white/40 cursor-pointer'
+              className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 text-xs font-semibold rounded-control transition-all whitespace-nowrap shrink-0 cursor-pointer ${
+                activeStep === s.step ? 'bg-white text-slate-900 shadow-2xs border border-slate-200/60' : 'text-slate-500 hover:text-slate-800 hover:bg-white/40'
               }`}
             >
-              {s.icon}<span>{s.label}</span>
+              {s.icon}
+              <span className="hidden xs:inline">{s.label}</span>
+              <span className="xs:hidden">{s.step === 1 ? '1. Perbandingan' : s.step === 2 ? '2. Prioritas' : '3. Konsistensi'}</span>
             </button>
           ))}
         </div>

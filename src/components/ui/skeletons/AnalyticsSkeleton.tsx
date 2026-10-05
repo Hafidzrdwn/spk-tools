@@ -4,12 +4,12 @@ export const AnalyticsSkeleton: React.FC = () => {
   return (
     <div className="min-h-dvh w-full bg-surface bg-dot-grid text-slate-800 pb-16 antialiased animate-pulse">
       {/* Top Bar Header */}
-      <header className="sticky top-0 z-30 bg-white/85 backdrop-blur-md border-b border-slate-200/80 px-4 sm:px-6 py-3.5">
-        <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-28 sm:w-36 h-9 rounded-lg bg-slate-200" />
-            <div className="h-4 w-px bg-slate-200 hidden sm:block" />
-            <div className="w-32 h-5 rounded bg-slate-200 hidden sm:block" />
+      <header className="sticky top-0 z-30 bg-white/85 backdrop-blur-md border-b border-slate-200/80 px-3 sm:px-6 py-2 sm:py-2.5">
+        <div className="max-w-6xl mx-auto flex items-center justify-between gap-2 sm:gap-4">
+          <div className="flex items-center gap-2 sm:gap-2.5">
+            <div className="w-18 sm:w-20 h-9 rounded-lg bg-slate-200" />
+            <div className="h-4 w-px bg-slate-200" />
+            <div className="w-20 sm:w-24 h-9 rounded-lg bg-slate-200" />
           </div>
           <div className="flex items-center gap-1 p-1 bg-slate-100 rounded-xl">
             <div className="w-20 sm:w-24 h-9 rounded-lg bg-slate-200" />

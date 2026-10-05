@@ -131,7 +131,7 @@ export const WorkboardPage: React.FC = () => {
 
         {/* Navigation Tabs Bar & Fully Visible Method Description */}
         <div className="space-y-2.5 p-3 rounded-card bg-white/80 backdrop-blur-md border border-slate-200/80 shadow-2xs">
-          <div data-tour-id="nav-tabs" className="overflow-x-auto pb-0.5 scrollbar-none">
+          <div data-tour-id="nav-tabs" className="overflow-x-auto pb-0.5 scrollbar-none touch-pan-x">
             <Tabs<MethodId> items={tabItems} activeTab={activeTab} onChange={setActiveTab} />
           </div>
           <div className="flex flex-col sm:flex-row sm:items-center gap-2 px-3 py-2 bg-indigo-50/50 rounded-control border border-indigo-100/60 text-xs">
@@ -157,7 +157,7 @@ export const WorkboardPage: React.FC = () => {
         <Card data-tour-id="shared-matrix-card" className="transition-all duration-200 shadow-2xs">
           <CardHeader
             onClick={toggleSharedMatrix}
-            className="border-b border-slate-100 flex flex-col sm:flex-row items-start sm:items-center justify-between py-2.5 px-4 gap-2 cursor-pointer select-none hover:bg-slate-50/50 transition-colors"
+            className="border-b border-slate-100 flex flex-col sm:flex-row items-start sm:items-center justify-between py-2.5 px-3 sm:px-4 gap-2 cursor-pointer select-none hover:bg-slate-50/50 transition-colors"
           >
             <div className="flex items-center gap-2.5">
               <button
@@ -178,7 +178,7 @@ export const WorkboardPage: React.FC = () => {
                 )}
               </button>
               <div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                   <CardTitle className="text-sm">Matriks Keputusan Bersama (Shared Input)</CardTitle>
                   {isSharedMatrixCollapsed && (
                     <span className="text-[10px] font-mono bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded-full font-semibold border border-indigo-200/60">
@@ -194,7 +194,7 @@ export const WorkboardPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="flex items-center gap-2.5 self-end sm:self-auto">
+            <div className="flex items-center gap-2 self-start sm:self-auto flex-wrap sm:flex-nowrap">
               {!isSharedMatrixCollapsed && activeEditorSection === 'matrix' && (
                 <div onClick={(e) => e.stopPropagation()} className="hidden md:flex items-center gap-1.5">
                   <span className="text-[11px] text-slate-400 font-medium">Format:</span>
@@ -203,14 +203,14 @@ export const WorkboardPage: React.FC = () => {
               )}
               {!isSharedMatrixCollapsed && (
                 <div
-                  className="flex items-center gap-1.5 p-1 bg-slate-100 rounded-control"
+                  className="flex items-center gap-1 sm:gap-1.5 p-1 bg-slate-100 rounded-control overflow-x-auto max-w-full scrollbar-none touch-pan-x"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <button
                     type="button"
                     data-tour-id="editor-tab-matrix"
                     onClick={() => setActiveEditorSection('matrix')}
-                    className={`px-3 py-1 text-xs font-semibold rounded cursor-pointer ${activeEditorSection === 'matrix' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-500 hover:text-slate-800'}`}
+                    className={`min-h-9 px-2.5 sm:px-3 py-1 text-xs font-semibold rounded cursor-pointer whitespace-nowrap ${activeEditorSection === 'matrix' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-500 hover:text-slate-800'}`}
                   >
                     Tabel Matriks
                   </button>
@@ -218,7 +218,7 @@ export const WorkboardPage: React.FC = () => {
                     type="button"
                     data-tour-id="editor-tab-criteria"
                     onClick={() => setActiveEditorSection('criteria')}
-                    className={`px-3 py-1 text-xs font-semibold rounded cursor-pointer ${activeEditorSection === 'criteria' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-500 hover:text-slate-800'}`}
+                    className={`min-h-9 px-2.5 sm:px-3 py-1 text-xs font-semibold rounded cursor-pointer whitespace-nowrap ${activeEditorSection === 'criteria' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-500 hover:text-slate-800'}`}
                   >
                     Kriteria ({criteria.length})
                   </button>
@@ -226,7 +226,7 @@ export const WorkboardPage: React.FC = () => {
                     type="button"
                     data-tour-id="editor-tab-alternatives"
                     onClick={() => setActiveEditorSection('alternatives')}
-                    className={`px-3 py-1 text-xs font-semibold rounded cursor-pointer ${activeEditorSection === 'alternatives' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-500 hover:text-slate-800'}`}
+                    className={`min-h-9 px-2.5 sm:px-3 py-1 text-xs font-semibold rounded cursor-pointer whitespace-nowrap ${activeEditorSection === 'alternatives' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-500 hover:text-slate-800'}`}
                   >
                     Alternatif ({alternatives.length})
                   </button>

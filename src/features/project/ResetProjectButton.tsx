@@ -28,7 +28,8 @@ export const ResetProjectButton: React.FC<ResetProjectButtonProps> = ({
         title="Reset seluruh data proyek ke kondisi awal kosong"
       >
         <RotateCcw className="w-3.5 h-3.5 text-slate-500" />
-        <span>Reset Proyek</span>
+        <span className="hidden sm:inline">Reset Proyek</span>
+        <span className="sm:hidden">Reset</span>
       </Button>
 
       <ResetConfirmDialog

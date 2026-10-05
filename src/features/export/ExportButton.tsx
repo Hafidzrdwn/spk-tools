@@ -281,7 +281,8 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
                 variant === 'primary' ? 'text-white' : 'text-accent-primary'
               }`}
             />
-            <span>Export PDF</span>
+            <span className="hidden sm:inline">Export PDF</span>
+            <span className="sm:hidden">PDF</span>
             <ChevronDown
               className={`w-3.5 h-3.5 transition-transform duration-200 ${
                 isOpen ? 'rotate-180' : ''

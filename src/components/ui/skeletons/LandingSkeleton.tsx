@@ -150,8 +150,8 @@ export const LandingSkeleton: React.FC = () => {
       </main>
 
       {/* Footer Skeleton */}
-      <footer className="w-full px-4 sm:px-6 py-3 border-t border-slate-200 bg-white/90">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+      <footer className="w-full px-4 sm:px-6 py-4 sm:py-3.5 border-t border-slate-200 bg-white/90">
+        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
           <div className="w-48 h-4 rounded bg-slate-200" />
           <div className="w-28 h-5 rounded bg-slate-200" />
         </div>

@@ -59,19 +59,20 @@ export const TopsisTab: React.FC = () => {
 
       {/* Stepper Navigation */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-2 bg-slate-100/80 rounded-card border border-slate-200/70">
-        <div className="flex items-center gap-1.5 w-full sm:w-auto">
+        <div className="flex items-center gap-1.5 w-full sm:w-auto overflow-x-auto scrollbar-none touch-pan-x pb-0.5 sm:pb-0">
           {steps.map((s) => (
             <button
               key={s.step}
               type="button"
               data-tour-id={`topsis-step-btn-${s.step}`}
               onClick={() => setActiveStep(s.step)}
-              className={`flex-1 sm:flex-none flex items-center gap-2 px-3 py-1.5 text-xs font-semibold rounded-control transition-all ${
-                activeStep === s.step ? 'bg-white text-slate-900 shadow-2xs border border-slate-200/60' : 'text-slate-500 hover:text-slate-800 hover:bg-white/40 cursor-pointer'
+              className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 text-xs font-semibold rounded-control transition-all whitespace-nowrap shrink-0 cursor-pointer ${
+                activeStep === s.step ? 'bg-white text-slate-900 shadow-2xs border border-slate-200/60' : 'text-slate-500 hover:text-slate-800 hover:bg-white/40'
               }`}
             >
               {s.icon}
-              <span>{s.label}</span>
+              <span className="hidden xs:inline">{s.label}</span>
+              <span className="xs:hidden">{s.step === 1 ? '1. Matriks' : s.step === 2 ? '2. Solusi Ideal' : '3. Ranking'}</span>
             </button>
           ))}
         </div>
