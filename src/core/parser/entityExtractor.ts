@@ -163,7 +163,7 @@ function parseTableRows(
     dataRows = parsedGrid.slice(1);
   }
 
-  const pool: Criterion[] = [...criteria];
+  const pool: Criterion[] = criteria.map((c) => ({ ...c }));
   const colCriteria: (Criterion | null)[] = [];
   const colCount = Math.max(...dataRows.map((r) => r.length));
 
@@ -208,10 +208,12 @@ function parseTableRows(
   if (alternatives.length === 0) return null;
 
   const usedCritIds = new Set(alternatives.flatMap((a) => Object.keys(a.values)));
-  const activeCriteria = pool.filter((c) => usedCritIds.has(c.id));
-  activeCriteria.forEach((c) => {
-    c.normalizedWeight = 1 / Math.max(1, activeCriteria.length);
-  });
+  const activeCriteria = pool
+    .filter((c) => usedCritIds.has(c.id))
+    .map((c, _, arr) => ({
+      ...c,
+      normalizedWeight: 1 / Math.max(1, arr.length),
+    }));
   const unmatchedCriteria = criteria.filter((c) => !usedCritIds.has(c.id)).map((c) => c.name);
 
   return { alternatives, criteria: activeCriteria, unmatchedCriteria };
@@ -246,7 +248,7 @@ export function extractAlternativesFromText(
 
   const alternatives: Alternative[] = [];
   const lineErrors: LineError[] = [];
-  const criteriaPool: Criterion[] = [...criteria];
+  const criteriaPool: Criterion[] = criteria.map((c) => ({ ...c }));
 
   rawLines.forEach((originalLine, idx) => {
     const lineNum = idx + 1;
@@ -389,10 +391,12 @@ export function extractAlternativesFromText(
   }
 
   const usedCritIds = new Set(alternatives.flatMap((a) => Object.keys(a.values)));
-  const activeCriteria = criteriaPool.filter((c) => usedCritIds.has(c.id));
-  activeCriteria.forEach((c) => {
-    c.normalizedWeight = 1 / Math.max(1, activeCriteria.length);
-  });
+  const activeCriteria = criteriaPool
+    .filter((c) => usedCritIds.has(c.id))
+    .map((c, _, arr) => ({
+      ...c,
+      normalizedWeight: 1 / Math.max(1, arr.length),
+    }));
   const unmatchedCriteria = criteria.filter((c) => !usedCritIds.has(c.id)).map((c) => c.name);
 
   return {

@@ -107,16 +107,17 @@ export const WorkboardPage: React.FC = () => {
         activeMethod: activeTab,
         onTitleChange: setTitle,
         actions: (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2 w-full sm:w-auto">
             <Button
               variant="secondary"
               size="sm"
               onClick={() => setIsTemplateModalOpen(true)}
               data-tour-id="load-template-btn"
               title="Buka pilihan template studi kasus SPK"
-              className="cursor-pointer"
+              className="flex-1 sm:flex-initial h-9 px-3 py-1.5 text-xs font-semibold rounded-lg border border-slate-200/90 bg-white hover:bg-slate-50 text-slate-700 hover:text-accent-primary shadow-2xs cursor-pointer flex items-center justify-center gap-1.5"
             >
-              <FolderOpen className="w-3.5 h-3.5 text-accent-primary" />
+              <FolderOpen className="w-3.5 h-3.5 text-accent-primary shrink-0" />
+              <span className="sm:hidden">Muat Kasus</span>
               <span className="hidden sm:inline">Muat Contoh Kasus</span>
             </Button>
             <ResetProjectButton />
