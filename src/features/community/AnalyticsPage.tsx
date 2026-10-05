@@ -38,8 +38,86 @@ export const AnalyticsPage: React.FC = () => {
 
   if (!analytics) {
     return (
-      <div className="p-12 text-center text-xs text-slate-400 bg-white rounded-xl border border-slate-200">
-        Memuat statistik web...
+      <div className="space-y-6 animate-pulse" role="status" aria-label="Memuat statistik web...">
+        {/* Page Title & Intro */}
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <div className="w-5 h-5 rounded bg-indigo-200 shrink-0" />
+            <div className="w-64 sm:w-80 h-7 rounded bg-slate-300" />
+          </div>
+          <div className="w-full max-w-md h-4 rounded bg-slate-200" />
+        </div>
+
+        {/* 4 KPI Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="p-4 rounded-xl bg-white border border-slate-200/90 shadow-2xs space-y-2">
+              <div className="w-24 h-3.5 rounded bg-slate-200" />
+              <div className="w-20 h-7 rounded bg-slate-300" />
+              <div className="w-32 h-3 rounded bg-slate-100" />
+            </div>
+          ))}
+        </div>
+
+        {/* Grid: 7-Day Trend Chart & Device Breakdown */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div className="lg:col-span-7 p-4 sm:p-5 rounded-xl bg-white border border-slate-200/90 shadow-2xs space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <div className="w-44 sm:w-56 h-4 rounded bg-slate-300" />
+                <div className="w-56 sm:w-72 h-3 rounded bg-slate-200" />
+              </div>
+              <div className="w-14 h-5 rounded-full bg-slate-100 shrink-0" />
+            </div>
+            <div className="h-44 w-full flex items-end justify-between gap-1.5 sm:gap-3 pt-4 px-1 sm:px-2 overflow-x-auto">
+              {[35, 60, 25, 80, 50, 90, 65].map((h, idx) => (
+                <div key={idx} className="flex-1 min-w-8 flex flex-col items-center gap-2">
+                  <div className="w-full bg-slate-100 rounded-t-md" style={{ height: `${h}%` }} />
+                  <div className="w-8 h-2.5 rounded bg-slate-200" />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="lg:col-span-5 p-4 sm:p-5 rounded-xl bg-white border border-slate-200/90 shadow-2xs space-y-4">
+            <div className="space-y-1">
+              <div className="w-40 sm:w-48 h-4 rounded bg-slate-300" />
+              <div className="w-48 sm:w-60 h-3 rounded bg-slate-200" />
+            </div>
+            <div className="space-y-4 pt-2">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="space-y-2">
+                  <div className="flex justify-between">
+                    <div className="w-24 h-4 rounded bg-slate-200" />
+                    <div className="w-10 h-4 rounded bg-slate-300" />
+                  </div>
+                  <div className="w-full h-2 rounded-full bg-slate-100" />
+                </div>
+              ))}
+            </div>
+            <div className="pt-3 border-t border-slate-100 flex justify-between">
+              <div className="w-32 h-3.5 rounded bg-slate-200" />
+              <div className="w-16 h-3.5 rounded bg-slate-300" />
+            </div>
+          </div>
+        </div>
+
+        {/* Live Visits Table Skeleton */}
+        <div className="p-4 sm:p-5 rounded-xl bg-white border border-slate-200/90 shadow-2xs space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="space-y-1">
+              <div className="w-40 sm:w-48 h-4 rounded bg-slate-300" />
+              <div className="w-48 sm:w-64 h-3 rounded bg-slate-200" />
+            </div>
+            <div className="w-20 h-5 rounded-full bg-emerald-100 shrink-0" />
+          </div>
+          <div className="space-y-2 overflow-x-auto">
+            <div className="w-full min-w-[340px] h-9 rounded bg-slate-100" />
+            <div className="w-full min-w-[340px] h-8 rounded bg-slate-50" />
+            <div className="w-full min-w-[340px] h-8 rounded bg-slate-50" />
+            <div className="w-full min-w-[340px] h-8 rounded bg-slate-50" />
+          </div>
+        </div>
       </div>
     );
   }

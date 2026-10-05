@@ -750,8 +750,29 @@ export const ReviewsPage: React.FC = () => {
             </h3>
 
             {isLoadingReviews ? (
-              <div className="p-8 text-center text-xs text-slate-400 bg-white rounded-xl border border-slate-200">
-                Memuat data ulasan...
+              <div className="space-y-3 animate-pulse" role="status" aria-label="Memuat ulasan...">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="p-4 rounded-xl bg-white border border-slate-200 shadow-2xs space-y-2.5">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <div className="w-8 h-8 rounded-full bg-slate-200 shrink-0" />
+                        <div className="space-y-1">
+                          <div className="w-24 sm:w-32 h-3.5 rounded bg-slate-300" />
+                          <div className="w-16 sm:w-20 h-2.5 rounded bg-slate-200" />
+                        </div>
+                      </div>
+                      <div className="w-16 sm:w-20 h-4 rounded bg-amber-100 shrink-0" />
+                    </div>
+                    <div className="space-y-1.5 pt-1">
+                      <div className="w-full h-3 rounded bg-slate-100" />
+                      <div className="w-4/5 h-3 rounded bg-slate-100" />
+                    </div>
+                    <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
+                      <div className="w-16 h-2.5 rounded bg-slate-200" />
+                      <div className="w-20 h-4 rounded-full bg-slate-100" />
+                    </div>
+                  </div>
+                ))}
               </div>
             ) : reviews.length === 0 ? (
               <div className="p-8 text-center bg-white rounded-xl border border-dashed border-slate-300 space-y-2">
