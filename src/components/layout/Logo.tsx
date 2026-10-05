@@ -38,43 +38,39 @@ export const Logo: React.FC<LogoProps> = ({
       role="img"
       aria-label="DecisiGraph"
     >
-      {/* Inline SVG Decision Graph Mark */}
-      <svg
-        viewBox="0 0 32 32"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        className={cn(cfg.mark, 'shrink-0 rounded-control shadow-xs overflow-hidden')}
-        aria-hidden="true"
+      {/* Decision Graph Mark with robust gradient container */}
+      <div
+        className={cn(
+          cfg.mark,
+          'shrink-0 rounded-control shadow-xs overflow-hidden flex items-center justify-center p-0.5 select-none'
+        )}
+        style={{ background: 'linear-gradient(135deg, #4F46E5 0%, #8B5CF6 100%)' }}
       >
-        <defs>
-          <linearGradient id="decisi-logo-bg" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#4F46E5" />
-            <stop offset="100%" stopColor="#8B5CF6" />
-          </linearGradient>
-          <linearGradient id="decisi-logo-node" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#FFFFFF" />
-            <stop offset="100%" stopColor="#EDE9FE" />
-          </linearGradient>
-        </defs>
-        {/* Background squircle with primary-secondary gradient */}
-        <rect width="32" height="32" rx="7" fill="url(#decisi-logo-bg)" />
-        {/* Graph Edges / Decision Tree Branches */}
-        <path
-          d="M16 8.5L8.5 23.5M16 8.5L23.5 23.5M8.5 23.5H23.5"
-          stroke="rgba(255, 255, 255, 0.45)"
-          strokeWidth="1.75"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        {/* 3 Graph Nodes (Decision Hub & Alternatives) */}
-        <circle cx="16" cy="8.5" r="3.5" fill="url(#decisi-logo-node)" />
-        <circle cx="8.5" cy="23.5" r="3" fill="url(#decisi-logo-node)" />
-        <circle cx="23.5" cy="23.5" r="3" fill="url(#decisi-logo-node)" />
-        {/* Inner Node Accents */}
-        <circle cx="16" cy="8.5" r="1.5" fill="#4F46E5" />
-        <circle cx="8.5" cy="23.5" r="1.2" fill="#4F46E5" />
-        <circle cx="23.5" cy="23.5" r="1.2" fill="#4F46E5" />
-      </svg>
+        <svg
+          viewBox="0 0 32 32"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-full h-full"
+          aria-hidden="true"
+        >
+          {/* Graph Edges / Decision Tree Branches */}
+          <path
+            d="M16 8.5L8.5 23.5M16 8.5L23.5 23.5M8.5 23.5H23.5"
+            stroke="rgba(255, 255, 255, 0.65)"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          {/* 3 Graph Nodes (Decision Hub & Alternatives) */}
+          <circle cx="16" cy="8.5" r="3.5" fill="#FFFFFF" />
+          <circle cx="8.5" cy="23.5" r="3" fill="#FFFFFF" />
+          <circle cx="23.5" cy="23.5" r="3" fill="#FFFFFF" />
+          {/* Inner Node Accents */}
+          <circle cx="16" cy="8.5" r="1.5" fill="#4F46E5" />
+          <circle cx="8.5" cy="23.5" r="1.2" fill="#4F46E5" />
+          <circle cx="23.5" cy="23.5" r="1.2" fill="#4F46E5" />
+        </svg>
+      </div>
 
       {/* Wordmark Text */}
       {showWordmark && (
