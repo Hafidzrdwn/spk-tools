@@ -33,16 +33,16 @@ export const StoryTextArea: React.FC<StoryTextAreaProps> = ({
 
   return (
     <Card className="border border-slate-200/90 shadow-2xs">
-      <CardHeader className="py-3 px-4 border-b border-slate-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-        <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-control bg-indigo-50 text-accent-primary flex items-center justify-center">
-            <FileText className="w-4 h-4" />
+      <CardHeader className="py-3 px-3.5 sm:px-4 border-b border-slate-100 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4">
+        <div className="flex items-start gap-2.5 min-w-0">
+          <div className="w-8 h-8 rounded-lg bg-indigo-50 border border-indigo-100 text-accent-primary flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
+            <FileText className="w-4 h-4 shrink-0" />
           </div>
-          <div>
-            <CardTitle className="text-sm font-bold text-slate-900">
+          <div className="min-w-0">
+            <CardTitle className="text-sm font-bold text-slate-900 leading-tight">
               Input Cerita / Narasi Studi Kasus
             </CardTitle>
-            <CardDescription className="text-xs">
+            <CardDescription className="text-xs text-slate-500 mt-0.5 leading-snug">
               Ketik atau tempel teks kasus dengan format &quot;Kandidat: Nama, Kriteria: Nilai&quot;
             </CardDescription>
           </div>
@@ -52,10 +52,10 @@ export const StoryTextArea: React.FC<StoryTextAreaProps> = ({
           variant="secondary"
           size="sm"
           onClick={onOpenTemplates}
-          className="text-xs font-semibold cursor-pointer shrink-0 shadow-2xs"
+          className="w-full sm:w-auto text-xs font-semibold cursor-pointer shrink-0 shadow-2xs h-9 px-3 flex items-center justify-center"
         >
-          <Sparkles className="w-3.5 h-3.5 mr-1.5 text-accent-primary" />
-          Coba Contoh Template
+          <Sparkles className="w-3.5 h-3.5 mr-1.5 text-accent-primary shrink-0" />
+          <span>Coba Contoh Template</span>
         </Button>
       </CardHeader>
 

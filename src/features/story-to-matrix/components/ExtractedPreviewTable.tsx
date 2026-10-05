@@ -32,24 +32,25 @@ export const ExtractedPreviewTable: React.FC<ExtractedPreviewTableProps> = ({
 
   return (
     <Card className="border border-slate-200/90 shadow-2xs space-y-4">
-      <CardHeader className="py-3 px-4 border-b border-slate-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-control bg-indigo-50 text-accent-primary flex items-center justify-center">
-            <TableProperties className="w-4 h-4" />
+      <CardHeader className="py-3 px-3.5 sm:px-4 border-b border-slate-100 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4">
+        <div className="flex items-start gap-2.5 min-w-0">
+          <div className="w-8 h-8 rounded-lg bg-indigo-50 border border-indigo-100 text-accent-primary flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
+            <TableProperties className="w-4 h-4 shrink-0" />
           </div>
-          <div>
-            <CardTitle className="text-sm font-bold text-slate-900">
+          <div className="min-w-0">
+            <CardTitle className="text-sm font-bold text-slate-900 leading-tight">
               Pratinjau Matriks Hasil Ekstraksi
             </CardTitle>
-            <CardDescription className="text-xs">
+            <CardDescription className="text-xs text-slate-500 mt-0.5 leading-snug">
               Verifikasi kelengkapan nilai sebelum menerapkan data ke proyek utama
             </CardDescription>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          <Button variant="ghost" size="sm" onClick={onBackToEdit} className="text-xs">
-            <Edit3 className="w-3.5 h-3.5 mr-1" /> Edit Narasi
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          <Button variant="secondary" size="sm" onClick={onBackToEdit} className="flex-1 sm:flex-initial text-xs h-9 px-3">
+            <Edit3 className="w-3.5 h-3.5 mr-1 shrink-0" />
+            <span>Edit Narasi</span>
           </Button>
 
           <Button
@@ -57,15 +58,15 @@ export const ExtractedPreviewTable: React.FC<ExtractedPreviewTableProps> = ({
             size="sm"
             data-tour-id="story-commit-btn"
             onClick={onCommit}
-            className="font-semibold shadow-xs cursor-pointer px-4"
+            className="flex-1 sm:flex-initial font-semibold shadow-xs cursor-pointer px-4 h-9"
           >
             {isCommitted ? (
               <>
-                <Check className="w-3.5 h-3.5 mr-1.5 text-emerald-300" />
-                Data Diterapkan!
+                <Check className="w-3.5 h-3.5 mr-1.5 text-emerald-300 shrink-0" />
+                <span>Data Diterapkan!</span>
               </>
             ) : (
-              'Terapkan ke Proyek'
+              <span>Terapkan ke Proyek</span>
             )}
           </Button>
         </div>
