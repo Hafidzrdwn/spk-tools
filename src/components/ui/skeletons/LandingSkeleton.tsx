@@ -21,15 +21,16 @@ export const LandingSkeleton: React.FC = () => {
         </div>
       </header>
 
-      {/* Main Skeleton: Two Column Asymmetric Hero */}
-      <main className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 py-8 sm:py-12 space-y-12">
+      {/* Main Skeleton */}
+      <main className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 py-8 sm:py-12 space-y-14">
+        {/* Section 1: Hero & Simulation Skeleton */}
         <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           {/* Left Column Skeleton (6 cols) */}
           <div className="lg:col-span-6 space-y-5">
             <div className="w-56 h-6 rounded bg-slate-200" />
             <div className="space-y-2.5">
-              <div className="w-full h-8 rounded bg-slate-300" />
-              <div className="w-4/5 h-8 rounded bg-slate-300" />
+              <div className="w-full h-9 rounded bg-slate-300" />
+              <div className="w-4/5 h-9 rounded bg-slate-300" />
               <div className="w-full h-4 rounded bg-slate-200 mt-2" />
               <div className="w-5/6 h-4 rounded bg-slate-200" />
             </div>
@@ -49,10 +50,10 @@ export const LandingSkeleton: React.FC = () => {
             <div className="bg-white rounded-xl border border-slate-200 p-4 space-y-4 shadow-2xs">
               <div className="flex items-center justify-between pb-2 border-b border-slate-100">
                 <div className="w-40 h-5 rounded bg-slate-200" />
-                <div className="w-28 h-6 rounded bg-slate-200" />
+                <div className="w-32 h-6 rounded bg-slate-200" />
               </div>
               <div className="w-full h-32 rounded bg-slate-100" />
-              <div className="w-full h-10 rounded bg-slate-200" />
+              <div className="w-full h-12 rounded bg-slate-200" />
               <div className="flex items-center justify-between pt-1">
                 <div className="w-48 h-4 rounded bg-slate-200" />
                 <div className="w-24 h-4 rounded bg-indigo-200" />
@@ -61,46 +62,90 @@ export const LandingSkeleton: React.FC = () => {
           </div>
         </section>
 
-        {/* 4 Methods Bento Grid Skeleton */}
-        <section className="space-y-4 pt-4">
-          <div className="space-y-1.5">
-            <div className="w-72 h-6 rounded bg-slate-300" />
+        {/* Section 2: Method Studio Master-Detail Skeleton */}
+        <section className="space-y-6">
+          <div className="space-y-2">
+            <div className="w-48 h-4 rounded bg-indigo-100" />
+            <div className="w-72 h-7 rounded bg-slate-300" />
             <div className="w-96 h-4 rounded bg-slate-200" />
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
+          {/* 4 Horizontal Tabs Skeleton */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 p-1.5 bg-slate-100 rounded-xl border border-slate-200">
             {[1, 2, 3, 4].map((i) => (
-              <div
-                key={i}
-                className="p-4 rounded-xl bg-white border border-slate-200 space-y-3 shadow-2xs"
-              >
+              <div key={i} className="p-3 rounded-lg bg-white space-y-2">
                 <div className="flex items-center justify-between">
-                  <div className="w-12 h-6 rounded bg-slate-200" />
-                  <div className="w-16 h-4 rounded bg-slate-100" />
+                  <div className="w-12 h-4 rounded bg-slate-200" />
+                  <div className="w-14 h-4 rounded bg-slate-100" />
                 </div>
-                <div className="space-y-1.5">
-                  <div className="w-28 h-4 rounded bg-slate-300" />
-                  <div className="w-full h-3 rounded bg-slate-200" />
-                  <div className="w-4/5 h-3 rounded bg-slate-200" />
-                </div>
-                <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
-                  <div className="w-20 h-3 rounded bg-slate-200" />
-                  <div className="w-16 h-3 rounded bg-indigo-200" />
-                </div>
+                <div className="w-24 h-4 rounded bg-slate-200" />
               </div>
             ))}
+          </div>
+
+          {/* Master Detail Split Panel Skeleton */}
+          <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden grid grid-cols-1 lg:grid-cols-12 divide-y lg:divide-y-0 lg:divide-x divide-slate-200">
+            <div className="lg:col-span-6 p-6 sm:p-7 space-y-5">
+              <div className="space-y-2">
+                <div className="w-24 h-5 rounded bg-indigo-100" />
+                <div className="w-56 h-6 rounded bg-slate-300" />
+                <div className="w-full h-4 rounded bg-slate-200" />
+              </div>
+              <div className="w-full h-32 rounded-xl bg-slate-100" />
+              <div className="space-y-2">
+                <div className="w-full h-8 rounded bg-slate-50" />
+                <div className="w-full h-8 rounded bg-slate-50" />
+              </div>
+              <div className="w-56 h-10 rounded-lg bg-indigo-200" />
+            </div>
+
+            <div className="lg:col-span-6 p-6 sm:p-7 bg-slate-50/50 space-y-6">
+              <div className="space-y-3">
+                <div className="w-40 h-4 rounded bg-slate-200" />
+                <div className="w-full h-14 rounded-xl bg-white" />
+                <div className="w-full h-14 rounded-xl bg-white" />
+                <div className="w-full h-14 rounded-xl bg-white" />
+              </div>
+              <div className="w-full h-24 rounded-lg bg-white" />
+            </div>
           </div>
         </section>
 
-        {/* Feature Pillars Skeleton */}
-        <section className="p-5 rounded-xl bg-white border border-slate-200 shadow-2xs">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="space-y-2">
-                <div className="w-36 h-4 rounded bg-slate-300" />
-                <div className="w-full h-3 rounded bg-slate-200" />
-                <div className="w-3/4 h-3 rounded bg-slate-200" />
-              </div>
-            ))}
+        {/* Section 3: Feature Architecture Matrix Skeleton (2x2 Asymmetric) */}
+        <section className="space-y-4">
+          <div className="space-y-1.5">
+            <div className="w-64 h-6 rounded bg-slate-300" />
+            <div className="w-96 h-4 rounded bg-slate-200" />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+            <div className="md:col-span-7 p-6 rounded-2xl bg-white border border-slate-200 space-y-4">
+              <div className="w-32 h-5 rounded bg-indigo-100" />
+              <div className="w-56 h-5 rounded bg-slate-300" />
+              <div className="w-full h-4 rounded bg-slate-200" />
+              <div className="w-full h-16 rounded-xl bg-slate-50" />
+            </div>
+
+            <div className="md:col-span-5 p-6 rounded-2xl bg-white border border-slate-200 space-y-4">
+              <div className="w-32 h-5 rounded bg-indigo-100" />
+              <div className="w-48 h-5 rounded bg-slate-300" />
+              <div className="w-full h-4 rounded bg-slate-200" />
+              <div className="w-full h-16 rounded-xl bg-slate-50" />
+            </div>
+
+            <div className="md:col-span-5 p-6 rounded-2xl bg-white border border-slate-200 space-y-4">
+              <div className="w-32 h-5 rounded bg-indigo-100" />
+              <div className="w-48 h-5 rounded bg-slate-300" />
+              <div className="w-full h-4 rounded bg-slate-200" />
+              <div className="w-full h-12 rounded-xl bg-slate-50" />
+            </div>
+
+            <div className="md:col-span-7 p-6 rounded-2xl bg-white border border-slate-200 space-y-4">
+              <div className="w-32 h-5 rounded bg-indigo-100" />
+              <div className="w-56 h-5 rounded bg-slate-300" />
+              <div className="w-full h-4 rounded bg-slate-200" />
+              <div className="w-full h-12 rounded-xl bg-slate-50" />
+            </div>
           </div>
         </section>
       </main>
