@@ -196,15 +196,46 @@ export function getClientEnvironmentInfo() {
   return { device, browser, os };
 }
 
-/**
- * Catat 1 page view secara real-time ke Firebase
- */
-export async function trackPageView(path: string = '/'): Promise<void> {
-  if (!db) return;
+export const PV_CACHE_PREFIX = 'decisi_pv_';
 
-  const env = getClientEnvironmentInfo();
+export function shouldTrackRouteToday(path: string, dateStr: string): boolean {
+  if (typeof window === 'undefined' || !window.localStorage) {
+    return true;
+  }
+
+  try {
+    const cleanPath = path.split('?')[0].replace(/\/+$/, '') || '/';
+    const key = `${PV_CACHE_PREFIX}${dateStr}_${cleanPath}`;
+
+    if (localStorage.getItem(key)) {
+      return false; 
+    }
+
+    for (let i = localStorage.length - 1; i >= 0; i--) {
+      const k = localStorage.key(i);
+      if (k && k.startsWith(PV_CACHE_PREFIX) && !k.startsWith(`${PV_CACHE_PREFIX}${dateStr}`)) {
+        localStorage.removeItem(k);
+      }
+    }
+
+    localStorage.setItem(key, '1');
+    return true;
+  } catch {
+    return true;
+  }
+}
+
+export async function trackPageView(path: string = '/'): Promise<boolean> {
+  if (!db) return false;
+
   const now = new Date();
   const dateStr = now.toISOString().slice(0, 10);
+
+  if (!shouldTrackRouteToday(path, dateStr)) {
+    return false;
+  }
+
+  const env = getClientEnvironmentInfo();
 
   try {
     const analyticsRef = ref(db, 'analytics');
@@ -231,19 +262,22 @@ export async function trackPageView(path: string = '/'): Promise<void> {
     }
 
     // Recent visits (maksimal 20 item)
+    const cleanPath = path.split('?')[0].replace(/\/+$/, '') || '/';
     const visit = {
       id: `v-${Date.now()}`,
       timestamp: now.toISOString(),
       device: env.device,
       browser: env.browser,
       os: env.os,
-      path,
+      path: cleanPath,
     };
     current.recentVisits = [visit, ...(current.recentVisits || []).slice(0, 19)];
 
     await set(analyticsRef, current);
+    return true;
   } catch (e) {
     console.warn('Gagal mencatat view ke Firebase:', e);
+    return false;
   }
 }
 

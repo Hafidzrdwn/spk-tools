@@ -4,6 +4,7 @@ import {
   submitReview,
   subscribeToAnalytics,
   trackPageView,
+  shouldTrackRouteToday,
   getClientEnvironmentInfo,
 } from '@/services/firebase';
 import {
@@ -58,8 +59,34 @@ describe('Firebase Service & Fallback Store', () => {
     expect(info).toHaveProperty('os');
   });
 
-  it('trackPageView berjalan dengan aman tanpa error saat database unconfigured', async () => {
-    await expect(trackPageView('/board')).resolves.toBeUndefined();
+  it('trackPageView mencatat kunjungan pertama dan mengabaikan refresh berulang pada rute yang sama', async () => {
+    const firstCall = await trackPageView('/test-route');
+    expect(typeof firstCall).toBe('boolean');
+
+    // Kunjungan kedua (refresh) pada rute yang sama langsung di-skip (false)
+    const secondCall = await trackPageView('/test-route');
+    expect(secondCall).toBe(false);
+  });
+
+  it('shouldTrackRouteToday mendeduplikasi kunjungan pada hari dan rute yang sama', () => {
+    const today = '2026-10-06';
+    // Kunjungan pertama rute /
+    expect(shouldTrackRouteToday('/', today)).toBe(true);
+
+    // Kunjungan kedua (refresh) pada rute / di hari yang sama -> di-skip
+    expect(shouldTrackRouteToday('/', today)).toBe(false);
+    expect(shouldTrackRouteToday('/?ref=navbar', today)).toBe(false);
+
+    // Kunjungan pertama ke rute lain (/board) pada hari yang sama -> dicatat
+    expect(shouldTrackRouteToday('/board', today)).toBe(true);
+
+    // Refresh pada rute /board -> di-skip
+    expect(shouldTrackRouteToday('/board', today)).toBe(false);
+
+    // Kunjungan pada hari berikutnya (tanggal baru) -> dicatat kembali dan membersihkan cache lama
+    const tomorrow = '2026-10-07';
+    expect(shouldTrackRouteToday('/', tomorrow)).toBe(true);
+    expect(shouldTrackRouteToday('/board', tomorrow)).toBe(true);
   });
 });
 
