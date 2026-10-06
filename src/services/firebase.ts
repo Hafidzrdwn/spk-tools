@@ -92,10 +92,21 @@ if (isFirebaseConfigured) {
 
 export function subscribeToReviews(callback: (reviews: ReviewItem[]) => void): () => void {
   if (db) {
+    let hasReceivedInitial = false;
+    const timeoutId = setTimeout(() => {
+      if (!hasReceivedInitial) {
+        hasReceivedInitial = true;
+        console.warn('Waktu tunggu koneksi Firebase ulasan berakhir (timeout), memuat fallback data kosong.');
+        callback([]);
+      }
+    }, 7000);
+
     const reviewsRef = ref(db, 'reviews');
     const unsubscribe = onValue(
       reviewsRef,
       (snapshot) => {
+        hasReceivedInitial = true;
+        clearTimeout(timeoutId);
         if (!snapshot.exists()) {
           callback([]);
           return;
@@ -110,11 +121,16 @@ export function subscribeToReviews(callback: (reviews: ReviewItem[]) => void): (
         callback(list);
       },
       (error) => {
+        hasReceivedInitial = true;
+        clearTimeout(timeoutId);
         console.warn('Gagal membaca ulasan dari Firebase:', error);
         callback([]);
       }
     );
-    return () => unsubscribe();
+    return () => {
+      clearTimeout(timeoutId);
+      unsubscribe();
+    };
   }
 
   // Jika belum terkoneksi Firebase, tampilkan empty state jujur
@@ -147,10 +163,21 @@ export async function submitReview(review: Omit<ReviewItem, 'id' | 'createdAt'>)
 
 export function subscribeToAnalytics(callback: (data: AnalyticsData) => void): () => void {
   if (db) {
+    let hasReceivedInitial = false;
+    const timeoutId = setTimeout(() => {
+      if (!hasReceivedInitial) {
+        hasReceivedInitial = true;
+        console.warn('Waktu tunggu koneksi Firebase analytics berakhir (timeout), memuat fallback data kosong.');
+        callback(EMPTY_ANALYTICS);
+      }
+    }, 7000);
+
     const analyticsRef = ref(db, 'analytics');
     const unsubscribe = onValue(
       analyticsRef,
       (snapshot) => {
+        hasReceivedInitial = true;
+        clearTimeout(timeoutId);
         if (!snapshot.exists()) {
           callback(EMPTY_ANALYTICS);
           return;
@@ -158,11 +185,16 @@ export function subscribeToAnalytics(callback: (data: AnalyticsData) => void): (
         callback(snapshot.val() as AnalyticsData);
       },
       (error) => {
+        hasReceivedInitial = true;
+        clearTimeout(timeoutId);
         console.warn('Gagal membaca analytics dari Firebase:', error);
         callback(EMPTY_ANALYTICS);
       }
     );
-    return () => unsubscribe();
+    return () => {
+      clearTimeout(timeoutId);
+      unsubscribe();
+    };
   }
 
   callback(EMPTY_ANALYTICS);
