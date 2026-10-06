@@ -310,22 +310,55 @@ export async function trackPageView(path: string = '/'): Promise<boolean> {
     let current: AnalyticsData = snap.exists() ? snap.val() : { ...EMPTY_ANALYTICS };
 
     current.totalViews = (current.totalViews || 0) + 1;
-    current.viewsToday = (current.viewsToday || 0) + 1;
-    current.viewsThisMonth = (current.viewsThisMonth || 0) + 1;
-    current.viewsThisYear = (current.viewsThisYear || 0) + 1;
 
     // Perangkat breakdown
     const devKey = env.device.toLowerCase() as 'desktop' | 'mobile' | 'tablet';
     if (!current.deviceBreakdown) current.deviceBreakdown = { desktop: 0, mobile: 0, tablet: 0 };
     current.deviceBreakdown[devKey] = (current.deviceBreakdown[devKey] || 0) + 1;
 
-    // Riwayat harian
+    // Browser breakdown
+    const rawBrowser = env.browser.toLowerCase();
+    let browserKey: 'chrome' | 'firefox' | 'safari' | 'edge' | 'other' = 'other';
+    if (rawBrowser.includes('chrome')) browserKey = 'chrome';
+    else if (rawBrowser.includes('firefox')) browserKey = 'firefox';
+    else if (rawBrowser.includes('safari')) browserKey = 'safari';
+    else if (rawBrowser.includes('edge')) browserKey = 'edge';
+
+    if (!current.browserBreakdown) {
+      current.browserBreakdown = { chrome: 0, firefox: 0, safari: 0, edge: 0, other: 0 };
+    }
+    current.browserBreakdown[browserKey] = (current.browserBreakdown[browserKey] || 0) + 1;
+
+    // Riwayat harian & sinkronisasi viewsToday
     if (!current.dailyHistory) current.dailyHistory = [];
     const todayIndex = current.dailyHistory.findIndex((d) => d.date === dateStr);
     if (todayIndex >= 0) {
       current.dailyHistory[todayIndex].views += 1;
+      current.viewsToday = (current.viewsToday || 0) + 1;
     } else {
       current.dailyHistory = [...current.dailyHistory.slice(-6), { date: dateStr, views: 1 }];
+      current.viewsToday = 1;
+    }
+
+    // Riwayat bulanan & sinkronisasi viewsThisMonth
+    const monthStr = dateStr.slice(0, 7);
+    if (!current.monthlyHistory) current.monthlyHistory = [];
+    const monthIndex = current.monthlyHistory.findIndex((m) => m.month === monthStr);
+    if (monthIndex >= 0) {
+      current.monthlyHistory[monthIndex].views += 1;
+      current.viewsThisMonth = (current.viewsThisMonth || 0) + 1;
+    } else {
+      current.monthlyHistory = [...current.monthlyHistory.slice(-11), { month: monthStr, views: 1 }];
+      current.viewsThisMonth = 1;
+    }
+
+    // Sinkronisasi viewsThisYear
+    const yearStr = dateStr.slice(0, 4);
+    const lastVisitYear = current.recentVisits?.[0]?.timestamp?.slice(0, 4);
+    if (lastVisitYear && lastVisitYear !== yearStr) {
+      current.viewsThisYear = 1;
+    } else {
+      current.viewsThisYear = (current.viewsThisYear || 0) + 1;
     }
 
     // Recent visits (maksimal 20 item)
@@ -344,6 +377,16 @@ export async function trackPageView(path: string = '/'): Promise<boolean> {
     return true;
   } catch (e) {
     console.warn('Gagal mencatat view ke Firebase:', e);
+    // Hapus flag deduplikasi jika gagal agar pelacakan dapat mencoba kembali saat koneksi pulih
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        const cleanPath = path.split('?')[0].replace(/\/+$/, '') || '/';
+        const key = `${PV_CACHE_PREFIX}${dateStr}_${cleanPath}`;
+        localStorage.removeItem(key);
+      }
+    } catch {
+      // ignore
+    }
     return false;
   }
 }
