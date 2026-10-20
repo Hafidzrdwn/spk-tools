@@ -1,16 +1,23 @@
-import { useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useProjectStore } from '@/store/useProjectStore';
 import { useNormalizedCriteria } from '@/store/selectors';
 import { calculateSAW } from '@/core/math/saw';
 import { calculateWP } from '@/core/math/wp';
 import { calculateTOPSIS } from '@/core/math/topsis';
-import { compareRankings, type ComparisonResult } from '@/core/math/compareRankings';
+import {
+  compareRankings,
+  type ComparisonResult,
+  type CompareMethod,
+} from '@/core/math/compareRankings';
 import type { Criterion, Alternative } from '@/types/domain';
 
 export interface ComparisonViewModel {
   criteria: Criterion[];
   alternatives: Alternative[];
   hasData: boolean;
+  selectedMethods: CompareMethod[];
+  setSelectedMethods: (methods: CompareMethod[]) => void;
+  toggleMethod: (method: CompareMethod) => void;
   comparison: ComparisonResult;
   loadShiftDemoCase: () => void;
 }
@@ -20,16 +27,39 @@ export function useComparisonViewModel(): ComparisonViewModel {
   const alternatives = useProjectStore((state) => state.alternatives);
   const loadProjectState = useProjectStore((state) => state.loadProjectState);
 
+  const [selectedMethods, setSelectedMethods] = useState<CompareMethod[]>([
+    'saw',
+    'wp',
+    'topsis',
+  ]);
+
+  const toggleMethod = (method: CompareMethod) => {
+    setSelectedMethods((prev) => {
+      if (prev.includes(method)) {
+        // Minimal harus ada 2 metode untuk dibandingkan
+        if (prev.length <= 2) return prev;
+        return prev.filter((m) => m !== method);
+      }
+      return [...prev, method];
+    });
+  };
+
   const hasData = criteria.length > 0 && alternatives.length > 0;
 
   const comparison = useMemo<ComparisonResult>(() => {
     if (!hasData) {
       return {
+        activeMethods: selectedMethods,
         rows: [],
         hasRank1Shift: false,
         rank1Winners: {},
         explanation: 'Belum ada data kriteria dan alternatif untuk dibandingkan.',
         differences: [],
+        sensitivity: {
+          hasTightMargins: false,
+          statement: '',
+          gaps: [],
+        },
       };
     }
 
@@ -42,9 +72,10 @@ export function useComparisonViewModel(): ComparisonViewModel {
       wpRes.finalRanking,
       topsisRes.finalRanking,
       criteria,
-      alternatives
+      alternatives,
+      selectedMethods
     );
-  }, [criteria, alternatives, hasData]);
+  }, [criteria, alternatives, hasData, selectedMethods]);
 
   const loadShiftDemoCase = () => {
     loadProjectState({
@@ -79,6 +110,9 @@ export function useComparisonViewModel(): ComparisonViewModel {
     criteria,
     alternatives,
     hasData,
+    selectedMethods,
+    setSelectedMethods,
+    toggleMethod,
     comparison,
     loadShiftDemoCase,
   };

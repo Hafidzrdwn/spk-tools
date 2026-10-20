@@ -93,4 +93,77 @@ describe('compareRankings & Rank Shift Analysis', () => {
     expect(comparison.rows[0].isConsensusRank1).toBe(true);
     expect(comparison.explanation).toContain('konsensus');
   });
+
+  it('harus mendukung komparasi 2 metode saja (misal SAW & WP) dan menghitung rerata peringkat secara dinamis', () => {
+    const criteria: Criterion[] = [
+      { id: 'c1', name: 'K1', type: 'BENEFIT', weight: 50, normalizedWeight: 0.5 },
+      { id: 'c2', name: 'K2', type: 'BENEFIT', weight: 50, normalizedWeight: 0.5 },
+    ];
+
+    const alternatives: Alternative[] = [
+      { id: 'a1', name: 'Alt 1', values: { c1: 90, c2: 70 } },
+      { id: 'a2', name: 'Alt 2', values: { c1: 80, c2: 85 } },
+    ];
+
+    const sawRes = calculateSAW(criteria, alternatives);
+    const wpRes = calculateWP(criteria, alternatives);
+    const topsisRes = calculateTOPSIS(criteria, alternatives);
+
+    // Bandingkan hanya SAW dan WP
+    const comparison = compareRankings(
+      sawRes.finalRanking,
+      wpRes.finalRanking,
+      topsisRes.finalRanking,
+      criteria,
+      alternatives,
+      ['saw', 'wp']
+    );
+
+    expect(comparison.activeMethods).toEqual(['saw', 'wp']);
+    // Rerata peringkat hanya dibagi 2 (SAW + WP), bukan 3
+    comparison.rows.forEach((row) => {
+      const manualAvg = Number(((row.saw.rank + row.wp.rank) / 2).toFixed(2));
+      expect(row.averageRank).toBe(manualAvg);
+      expect(row.shift).toBeDefined();
+      expect(['stable', 'up', 'down', 'divergent']).toContain(row.shift!.type);
+    });
+  });
+
+  it('harus menghasilkan analisis sensitivitas margin selisih skor antar peringkat', () => {
+    const criteria: Criterion[] = [
+      { id: 'c1', name: 'K1', type: 'BENEFIT', weight: 70, normalizedWeight: 0.7 },
+      { id: 'c2', name: 'K2', type: 'BENEFIT', weight: 15, normalizedWeight: 0.15 },
+      { id: 'c3', name: 'K3', type: 'BENEFIT', weight: 15, normalizedWeight: 0.15 },
+    ];
+
+    const alternatives: Alternative[] = [
+      { id: 'alt1', name: 'Server Titan', values: { c1: 100, c2: 20, c3: 20 } },
+      { id: 'alt2', name: 'Server Balance', values: { c1: 75, c2: 85, c3: 85 } },
+      { id: 'alt3', name: 'Server Entry', values: { c1: 40, c2: 30, c3: 30 } },
+    ];
+
+    const sawRes = calculateSAW(criteria, alternatives);
+    const wpRes = calculateWP(criteria, alternatives);
+    const topsisRes = calculateTOPSIS(criteria, alternatives);
+
+    const comparison = compareRankings(
+      sawRes.finalRanking,
+      wpRes.finalRanking,
+      topsisRes.finalRanking,
+      criteria,
+      alternatives,
+      ['saw', 'topsis']
+    );
+
+    expect(comparison.sensitivity).toBeDefined();
+    expect(comparison.sensitivity!.statement).toBeTruthy();
+    expect(Array.isArray(comparison.sensitivity!.gaps)).toBe(true);
+    expect(comparison.sensitivity!.gaps.length).toBeGreaterThan(0);
+    // Verifikasi gap memiliki properti numerik valid
+    comparison.sensitivity!.gaps.forEach((gap) => {
+      expect(typeof gap.gap).toBe('number');
+      expect(gap.gap).toBeGreaterThanOrEqual(0);
+      expect(typeof gap.isTight).toBe('boolean');
+    });
+  });
 });

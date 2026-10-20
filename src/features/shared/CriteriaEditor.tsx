@@ -8,6 +8,98 @@ import GlossaryTerm from '@/features/glossary/GlossaryTerm';
 import { Plus, Trash2, Wand2 } from 'lucide-react';
 import { useNumberFormatter } from '@/utils/numberFormat';
 
+export const COMMON_CRITERIA_UNITS = [
+  { label: 'Tanpa Satuan / Bebas', value: '' },
+  { label: 'Skala 0-100', value: 'Skala 0-100' },
+  { label: 'Skala 1-100', value: '1-100' },
+  { label: 'Skala 1-10', value: 'Skala 1-10' },
+  { label: 'Skala 1-5', value: 'Skala 1-5' },
+  { label: 'Skala 4.0 (IPK)', value: 'Skala 4.0' },
+  { label: 'Juta Rp', value: 'Juta Rp' },
+  { label: 'Ribu Rp', value: 'Ribu Rp' },
+  { label: 'Rupiah (Rp)', value: 'Rp' },
+  { label: 'Persen (%)', value: '%' },
+  { label: 'Hari', value: 'Hari' },
+  { label: 'Bulan', value: 'Bulan' },
+  { label: 'Tahun', value: 'Tahun' },
+  { label: 'Jam', value: 'Jam' },
+  { label: 'GB (Gigabyte)', value: 'GB' },
+  { label: 'Unit / Buah', value: 'Unit' },
+  { label: 'Orang', value: 'Orang' },
+  { label: 'Orang/Hari', value: 'Orang/Hari' },
+] as const;
+
+interface CriterionUnitSelectorProps {
+  value: string;
+  onChange: (val: string) => void;
+}
+
+const CriterionUnitSelector: React.FC<CriterionUnitSelectorProps> = ({ value, onChange }) => {
+  const isKnown = COMMON_CRITERIA_UNITS.some((u) => u.value === value);
+  const [isCustomMode, setIsCustomMode] = React.useState<boolean>(!isKnown && Boolean(value));
+
+  // Sync state jika value diubah dari luar (misal load template)
+  React.useEffect(() => {
+    if (!isKnown && Boolean(value)) {
+      setIsCustomMode(true);
+    }
+  }, [value, isKnown]);
+
+  if (isCustomMode) {
+    return (
+      <div className="flex items-center gap-1 w-32 sm:w-40 min-w-32 shrink-0">
+        <input
+          type="text"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder="Satuan manual..."
+          title="Ketik satuan manual kriteria (misal: m², Kg, Liter)"
+          autoFocus
+          className="w-full px-2 py-1.5 text-xs font-medium text-slate-800 bg-white border border-indigo-300 rounded-control shadow-2xs focus:outline-none focus:ring-1 focus:ring-accent-primary"
+        />
+        <button
+          type="button"
+          onClick={() => {
+            setIsCustomMode(false);
+            onChange('');
+          }}
+          title="Kembali ke daftar satuan umum"
+          aria-label="Kembali ke daftar satuan umum"
+          className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition-colors shrink-0 cursor-pointer"
+        >
+          <span className="text-[11px] font-bold font-mono">☰</span>
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <select
+      value={value}
+      onChange={(e) => {
+        const selected = e.target.value;
+        if (selected === '__custom__') {
+          setIsCustomMode(true);
+        } else {
+          onChange(selected);
+        }
+      }}
+      title="Pilih satuan atau format nilai kriteria"
+      className="w-32 sm:w-40 min-w-32 px-2.5 py-1.5 text-xs font-medium text-slate-700 bg-slate-50/70 border border-slate-200 rounded-control focus:bg-white focus:outline-none focus:ring-1 focus:ring-accent-primary truncate cursor-pointer shrink-0"
+    >
+      {COMMON_CRITERIA_UNITS.map((u) => (
+        <option key={u.value} value={u.value}>
+          {u.label}
+        </option>
+      ))}
+      <option disabled value="__divider__">
+        ──────────
+      </option>
+      <option value="__custom__">Lainnya (Ketik Manual)...</option>
+    </select>
+  );
+};
+
 export const CriteriaEditor: React.FC = () => {
   const { formatNumber } = useNumberFormatter();
   const { addCriterion, removeCriterion, updateCriterion, autoDistributeWeights } = useProjectStore(
@@ -80,13 +172,9 @@ export const CriteriaEditor: React.FC = () => {
                   className="flex-1 min-w-32.5 px-2.5 py-1.5 text-xs font-medium text-slate-800 bg-slate-50/70 border border-slate-200 rounded-control focus:bg-white focus:outline-none focus:ring-1 focus:ring-accent-primary"
                 />
 
-                <input
-                  type="text"
+                <CriterionUnitSelector
                   value={crit.unit || ''}
-                  onChange={(e) => updateCriterion(crit.id, { unit: e.target.value })}
-                  placeholder="Satuan (misal: Juta Rp, Thn)"
-                  title="Satuan atau format nilai kriteria (opsional)"
-                  className="w-32 sm:w-40 px-2.5 py-1.5 text-xs font-medium text-slate-700 bg-slate-50/70 border border-slate-200 rounded-control focus:bg-white focus:outline-none focus:ring-1 focus:ring-accent-primary"
+                  onChange={(val) => updateCriterion(crit.id, { unit: val })}
                 />
 
                 <div

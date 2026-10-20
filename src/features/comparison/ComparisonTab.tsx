@@ -7,7 +7,14 @@ import Button from '@/components/ui/Button';
 import { Scale, Sparkles, Layers } from 'lucide-react';
 
 export const ComparisonTab: React.FC = () => {
-  const { hasData, comparison, loadShiftDemoCase } = useComparisonViewModel();
+  const {
+    hasData,
+    comparison,
+    selectedMethods,
+    setSelectedMethods,
+    toggleMethod,
+    loadShiftDemoCase,
+  } = useComparisonViewModel();
 
   return (
     <div className="space-y-6">
@@ -24,7 +31,7 @@ export const ComparisonTab: React.FC = () => {
                   Multi-Method Comparison Mode
                 </span>
                 <span className="text-[10px] bg-indigo-100 text-indigo-700 font-mono px-2 py-0.5 rounded-full font-bold">
-                  SAW &bull; WP &bull; TOPSIS
+                  {selectedMethods.map((m) => m.toUpperCase()).join(' • ')}
                 </span>
               </div>
               <p className="text-xs text-slate-500 mt-0.5">
@@ -62,7 +69,7 @@ export const ComparisonTab: React.FC = () => {
         </Card>
       ) : (
         <div className="space-y-6">
-          {/* Penjelasan Pergeseran Peringkat (Data-Driven Explanation) */}
+          {/* Penjelasan Pergeseran Peringkat (Data-Driven Explanation & Score Gap Sensitivity) */}
           <RankingShiftExplanation comparison={comparison} />
 
           {/* Tabel Matriks Komparasi Side-by-Side */}
@@ -70,11 +77,16 @@ export const ComparisonTab: React.FC = () => {
             <CardHeader className="py-3 px-4 border-b border-slate-100">
               <CardTitle className="text-sm">Matriks Perbandingan Peringkat & Skor Antar Metode</CardTitle>
               <CardDescription>
-                Peringkat #1 ditandai dengan lencana hijau, dilengkapi nilai skor asli tiap algoritma dan konsensus akhir
+                Peringkat #1 ditandai dengan lencana hijau, dilengkapi nilai skor asli tiap algoritma, keterangan pergeseran, dan konsensus akhir
               </CardDescription>
             </CardHeader>
             <CardContent className="pt-4">
-              <MultiMethodComparisonTable rows={comparison.rows} />
+              <MultiMethodComparisonTable
+                rows={comparison.rows}
+                activeMethods={selectedMethods}
+                onToggleMethod={toggleMethod}
+                onSelectMethodPreset={setSelectedMethods}
+              />
             </CardContent>
           </Card>
         </div>
