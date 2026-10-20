@@ -86,6 +86,10 @@ Pada tahap MVP ini, arsitektur UI menyajikan seluruh metode secara langsung dala
 > Fokus: stabilitas, keamanan kuota, pengalaman komunitas interaktif, dan kenyamanan berbasis masukan pengguna nyata.
 
 - [x] **Perbaikan & Optimasi Akurasi Sistem** — perbaikan deteksi akurat sistem operasi/browser (iOS, Android, Firefox, Edge, Safari), formatting waktu relatif responsif, dan normalisasi desimal.
+- [x] **Peningkatan Navigasi & Stabilitas UI** — perapian tata letak navbar yang lebih ringkas dan rapi, serta perbaikan Rules of Hooks pada `ProjectBackupModal`.
+- [x] **Multi-Method Comparison Responsif & Collapsible** — container analisis sensitivitas collapsible 1-box terpadu, perbaikan scroll-X tabel di layar ponsel (kolom sticky proporsional, teks tidak terpotong `wrap-break-word`, badge rekomendasi rapi), serta optimasi rendering instan via memoization & progressive disclosure.
+- [x] **Standardisasi Tailwind CSS v4 & Performa** — penyelarasan utility class Tailwind v4 bebas warning linter dan penambahan CSS containment `contain-[paint]` untuk operasi scroll 60 FPS.
+- [x] **Developer Tooling: AST Comment Cleaner** — script otomasi pembersih & auditor komentar berbasis TypeScript AST Lexer (`npm run comments:check` & `npm run comments:clean`) untuk menjaga basis kode tetap bersih dan profesional.
 - [x] **Community Board & Reviews** — linimasa ulasan pengguna real-time dengan rating bintang interaktif dan pembagian peran pengguna.
 - [x] **In-App Bug Reporter Terintegrasi** — pengiriman kendala teknis dan tangkapan layar otomatis ke email pengembang via Web3Forms API.
 - [x] **Pertahanan Keamanan & Anti-Spam (Free-Tier Quota Guard)** — bot honeypot trap tersembunyi, client-side cooldown (60 detik), batas harian pengiriman, validasi ketat berkas raster (anti-SVG Stored XSS), dan sanitasi input.
@@ -248,6 +252,12 @@ npm run build
 
 # Preview hasil build produksi secara lokal
 npm run preview
+
+# Audit komentar pada seluruh berkas kode
+npm run comments:check
+
+# Bersihkan seluruh komentar secara otomatis (AST-based)
+npm run comments:clean
 ```
 
 ---
