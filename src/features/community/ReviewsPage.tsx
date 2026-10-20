@@ -36,11 +36,9 @@ import {
 export const ReviewsPage: React.FC = () => {
   const [formMode, setFormMode] = useState<'review' | 'bug'>('review');
 
-  // Reviews State & Realtime Subscription
   const [reviews, setReviews] = useState<ReviewItem[]>([]);
   const [isLoadingReviews, setIsLoadingReviews] = useState(true);
 
-  // Form Review State
   const [reviewerName, setReviewerName] = useState('');
   const [reviewerRole, setReviewerRole] = useState('Pengambil Keputusan');
   const [ratingScore, setRatingScore] = useState(5);
@@ -48,13 +46,12 @@ export const ReviewsPage: React.FC = () => {
   const [isSubmittingReview, setIsSubmittingReview] = useState(false);
   const [reviewErrors, setReviewErrors] = useState<{ name?: string; comment?: string }>({});
 
-  // Form Bug Report State
   const [bugName, setBugName] = useState('');
   const [bugEmail, setBugEmail] = useState('');
   const [bugCategory, setBugCategory] = useState<'BUG' | 'KELUHAN' | 'FEEDBACK' | 'FEATURE_REQUEST'>('BUG');
   const [bugTitle, setBugTitle] = useState('');
   const [bugDescription, setBugDescription] = useState('');
-  const [botHoneypot, setBotHoneypot] = useState(''); // Anti-bot honeypot trap
+  const [botHoneypot, setBotHoneypot] = useState('');
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [bugErrors, setBugErrors] = useState<{
@@ -81,7 +78,6 @@ export const ReviewsPage: React.FC = () => {
     };
   }, []);
 
-  // Upload handler for bug report screenshots
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -110,7 +106,6 @@ export const ReviewsPage: React.FC = () => {
   const handleSubmitReview = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Rate Limit: 30 detik cooldown, maksimal 5 ulasan/hari
     const rateCheck = checkRateLimit('community_review', { cooldownSeconds: 30, maxPerDay: 5 });
     if (!rateCheck.allowed) {
       toast.error(rateCheck.reason || 'Batas pengiriman ulasan tercapai.');
@@ -156,7 +151,6 @@ export const ReviewsPage: React.FC = () => {
     }
   };
 
-  // Validate Bug Report fields
   const validateBugReport = (): boolean => {
     const errors: { name?: string; email?: string; title?: string; description?: string } = {};
 
@@ -189,13 +183,10 @@ export const ReviewsPage: React.FC = () => {
     return Object.keys(errors).length === 0;
   };
 
-  // Send Bug Report Email Otomatis dengan proteksi kuota & anti-bot
   const handleSendBugReportEmail = async (e: React.FormEvent) => {
     e.preventDefault();
     setBugSubmitStatus(null);
 
-    // 1. Silent Honeypot Trap: Jika bot mengisi field tersembunyi, langsung tanggapi sukses
-    // tanpa pernah memanggil Web3Forms API agar kuota 250/bulan tetap aman
     if (botHoneypot && botHoneypot.trim() !== '') {
       toast.success('Laporan berhasil dikirim langsung ke email pengembang!');
       setBugSubmitStatus({
@@ -218,7 +209,6 @@ export const ReviewsPage: React.FC = () => {
       return;
     }
 
-    // 2. Rate Limit & Cooldown Check: 60 detik cooldown, maksimal 3 laporan per hari
     const rateCheck = checkRateLimit('bug_report_email', { cooldownSeconds: 60, maxPerDay: 3 });
     if (!rateCheck.allowed) {
       toast.error(rateCheck.reason || 'Batas pengiriman laporan tercapai.');
@@ -251,7 +241,6 @@ export const ReviewsPage: React.FC = () => {
           type: 'success',
           message: 'Terima kasih! Laporan kendala Anda telah kami terima dan akan segera ditindaklanjuti oleh pengembang.',
         });
-        // Reset form
         setBugName('');
         setBugEmail('');
         setBugCategory('BUG');
@@ -299,7 +288,6 @@ export const ReviewsPage: React.FC = () => {
     }
   };
 
-  // Average Rating
   const hasReviews = reviews.length > 0;
   const avgRating = hasReviews
     ? (reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length).toFixed(1)
@@ -307,7 +295,6 @@ export const ReviewsPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Page Title & Intro */}
       <div className="space-y-1 text-left">
         <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
           Ulasan Komunitas & Pusat Masukan
@@ -317,11 +304,8 @@ export const ReviewsPage: React.FC = () => {
         </p>
       </div>
 
-      {/* Main Grid: Form (Left 5 Cols) & Reviews Stream (Right 7 Cols) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        {/* Left Form Container */}
         <div className="lg:col-span-5 space-y-4">
-          {/* Neutral Clean Form Mode Selector */}
           <div className="p-1 bg-slate-100 rounded-lg flex items-center gap-1 text-xs border border-slate-200">
             <button
               type="button"

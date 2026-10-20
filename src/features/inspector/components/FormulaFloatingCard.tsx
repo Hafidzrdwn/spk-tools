@@ -22,7 +22,6 @@ export const FormulaFloatingCard: React.FC<FormulaFloatingCardProps> = ({
 
   const [coords, setCoords] = useState<{ top: number; left: number; placeAbove: boolean } | null>(null);
 
-  // Efek highlight sel sumber: temukan elemen data-cell-id yang cocok dan beri pulse ring
   useEffect(() => {
     if (!activeStep?.sourceCellIds?.length) return;
     const highlightedElements: HTMLElement[] = [];
@@ -44,7 +43,6 @@ export const FormulaFloatingCard: React.FC<FormulaFloatingCardProps> = ({
     };
   }, [activeStep]);
 
-  // Hitung posisi koordinat mengambang via getBoundingClientRect()
   useEffect(() => {
     if (!hoveredCellId || !activeStep) {
       setCoords(null);
@@ -88,7 +86,6 @@ export const FormulaFloatingCard: React.FC<FormulaFloatingCardProps> = ({
       className="z-50 w-95 pointer-events-none transition-all duration-150 animate-in fade-in zoom-in-95"
     >
       <div className="p-4 rounded-xl bg-white/95 backdrop-blur-md border border-indigo-200/90 shadow-2xl text-slate-800 space-y-2.5 ring-1 ring-slate-900/5">
-        {/* Header Kartu Rumus */}
         <div className="flex items-center justify-between border-b border-slate-100 pb-2">
           <div className="flex items-center gap-1.5 text-xs font-bold text-slate-900">
             <Calculator className="w-3.5 h-3.5 text-accent-primary" />
@@ -99,7 +96,6 @@ export const FormulaFloatingCard: React.FC<FormulaFloatingCardProps> = ({
           </Badge>
         </div>
 
-        {/* Tampilan Formula Label dengan KaTeX */}
         <div className="p-2.5 rounded-lg bg-indigo-50/80 border border-indigo-100/90 text-indigo-950 font-medium leading-relaxed shadow-2xs">
           <MathFormula
             math={formatTraceToLatex(activeStep.formulaLabel)}
@@ -109,7 +105,6 @@ export const FormulaFloatingCard: React.FC<FormulaFloatingCardProps> = ({
           />
         </div>
 
-        {/* Info Hasil & Sel Sumber */}
         <div className="flex items-center justify-between text-[11px] pt-0.5 text-slate-500 font-mono">
           <div className="flex items-center gap-1">
             <span>Hasil =</span>

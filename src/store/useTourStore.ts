@@ -22,7 +22,6 @@ export interface TourStore {
   visitedTabs: string[];
   markTabVisited: (tab: string) => void;
 
-  // Backward compatibility aliases
   markTourCompleted: (tourId: string) => void;
   resetTourProgress: () => void;
 }
@@ -39,13 +38,10 @@ export const useTourStore = create<TourStore>()(
       setHasSeenWelcome: (seen) => set({ hasSeenWelcome: seen }),
 
       startTour: (tourId) => {
-        // Pre-load modul TourRunner secara dinamis on-demand saat tour dimulai
         import('@/features/tour/TourRunner').catch((err) => {
           console.error('Gagal memuat modul TourRunner:', err);
         });
 
-        // Amankan snapshot data asli proyek user jika sudah ada kriteria/alternatif
-        // agar tidak tertimpa permanen saat tour memuat data simulasi/template
         const currentProject = useProjectStore.getState();
         const hasUserData = currentProject.criteria.length > 0 || currentProject.alternatives.length > 0;
         let stashed: DecisiProjectState | null = null;

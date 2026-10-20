@@ -19,10 +19,8 @@ export const AppShell: React.FC<AppShellProps> = ({
 }) => {
   return (
     <DotGridBackground className="flex flex-col min-h-screen">
-      {/* Top Header */}
       <Header {...headerProps} />
 
-      {/* Main Body */}
       <div className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 py-6">
         {sidebar ? (
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -34,7 +32,6 @@ export const AppShell: React.FC<AppShellProps> = ({
         )}
       </div>
 
-      {/* Global Footer */}
       <Footer />
     </DotGridBackground>
   );

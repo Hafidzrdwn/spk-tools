@@ -92,7 +92,6 @@ export const TopsisRadarChart: React.FC<TopsisRadarChartProps> = ({
               stroke="#cbd5e1"
             />
 
-            {/* Garis Solusi Ideal Positif A+ (Emerald) */}
             <Radar
               name="A+ (Solusi Ideal Positif)"
               dataKey="idealPositive"
@@ -105,7 +104,6 @@ export const TopsisRadarChart: React.FC<TopsisRadarChartProps> = ({
               onMouseEnter={() => markTopsisHover()}
             />
 
-            {/* Garis Solusi Ideal Negatif A- (Rose) */}
             <Radar
               name="A- (Solusi Ideal Negatif)"
               dataKey="idealNegative"
@@ -118,7 +116,6 @@ export const TopsisRadarChart: React.FC<TopsisRadarChartProps> = ({
               onMouseEnter={() => markTopsisHover()}
             />
 
-            {/* Garis Setiap Alternatif */}
             {alternativeKeys.map((alt) => (
               <Radar
                 key={alt.name}

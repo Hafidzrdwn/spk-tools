@@ -8,16 +8,13 @@ export interface ReportEmailPayload {
   title: string;
   description: string;
   attachmentName?: string;
-  attachmentDataUrl?: string; // base64 data url for preview
-  botHoneypot?: string; // Silent bot-catcher field to safeguard free API quota
+  attachmentDataUrl?: string;
+  botHoneypot?: string;
 }
 
 const DEFAULT_TARGET_EMAIL =
   import.meta.env.VITE_ADMIN_REPORT_EMAIL || 'test@example.com';
 
-/**
- * Format teks email laporan yang rapi dan terstruktur
- */
 export function formatReportEmailBody(payload: ReportEmailPayload): string {
   const env = getClientEnvironmentInfo();
   const timestamp = new Date().toLocaleString('id-ID', { dateStyle: 'full', timeStyle: 'long' });

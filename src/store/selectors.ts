@@ -1,9 +1,7 @@
+import { useMemo } from 'react';
 import { useProjectStore } from './useProjectStore';
 import type { Criterion } from '@/types/domain';
 
-/**
- * Pure selector functions (dapat digunakan di luar komponen React / unit test)
- */
 export function selectTotalWeight(criteria: Criterion[]): number {
   return criteria.reduce((sum, c) => sum + (c.weight || 0), 0);
 }
@@ -34,9 +32,6 @@ export function selectNormalizedCriteria(criteria: Criterion[]): Criterion[] {
   });
 }
 
-/**
- * React Hook Selectors (reaktif terhadap perubahan criteria di useProjectStore)
- */
 export const useTotalWeight = (): number => {
   return useProjectStore((state) => selectTotalWeight(state.criteria));
 };
@@ -46,5 +41,6 @@ export const useIsWeightValid = (): boolean => {
 };
 
 export const useNormalizedCriteria = (): Criterion[] => {
-  return useProjectStore((state) => selectNormalizedCriteria(state.criteria));
+  const criteria = useProjectStore((state) => state.criteria);
+  return useMemo(() => selectNormalizedCriteria(criteria), [criteria]);
 };

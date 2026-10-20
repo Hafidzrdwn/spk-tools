@@ -102,7 +102,6 @@ export const Dialog: React.FC<DialogProps> = ({
           className
         )}
       >
-        {/* Header */}
         {(title || showCloseButton) && (
           <div className="px-6 pt-5 pb-3 flex items-start justify-between gap-4 shrink-0 border-b border-slate-100/60">
             <div className="space-y-1 flex-1">
@@ -122,10 +121,8 @@ export const Dialog: React.FC<DialogProps> = ({
           </div>
         )}
 
-        {/* Content Body */}
         {children && <div className="px-6 py-4 text-sm text-slate-600 overflow-y-auto flex-1 min-h-0">{children}</div>}
 
-        {/* Footer */}
         {footer && (
           <div className="px-6 py-4 bg-slate-50/70 border-t border-slate-100 flex items-center justify-end gap-2.5 shrink-0">
             {footer}

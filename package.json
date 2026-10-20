@@ -8,7 +8,9 @@
     "build": "tsc -b && vite build",
     "build:analyze": "cross-env ANALYZE=true vite build",
     "preview": "vite preview",
-    "test": "vitest run"
+    "test": "vitest run",
+    "comments:check": "node scripts/manage-comments.mjs --check",
+    "comments:clean": "node scripts/manage-comments.mjs --clean"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
@@ -25,6 +27,7 @@
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.52.0",
     "react-router-dom": "^7.18.4",
+    "react-select": "^5.10.2",
     "recharts": "^2.12.0",
     "sonner": "^2.0.8",
     "tailwind-merge": "^2.4.0",

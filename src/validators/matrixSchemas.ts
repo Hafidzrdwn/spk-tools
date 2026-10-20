@@ -6,9 +6,6 @@ export interface ZeroGuardViolation {
   criterionId: string;
 }
 
-/**
- * Zod schema untuk validasi nilai numerik non-zero positif pada kriteria Cost WP
- */
 export const positiveCostValueSchema = z
   .number({
     required_error: 'Nilai matriks wajib diisi',
@@ -16,10 +13,6 @@ export const positiveCostValueSchema = z
   })
   .gt(0, { message: 'Nilai kriteria Cost pada metode WP harus lebih besar dari 0' });
 
-/**
- * wpZeroGuard memvalidasi alternatif dan kriteria untuk metode WP.
- * Mengembalikan daftar { alternativeId, criterionId } untuk sel bernilai 0 (atau <= 0) pada kriteria Cost.
- */
 export function wpZeroGuard(
   alternatives: Alternative[],
   criteria: Criterion[]
@@ -47,9 +40,6 @@ export function wpZeroGuard(
   return violations;
 }
 
-/**
- * Zod schema untuk validasi item kriteria tersimpan
- */
 export const criterionSchema = z.object({
   id: z.string(),
   name: z.string(),
@@ -59,21 +49,15 @@ export const criterionSchema = z.object({
   normalizedWeight: z.number().optional().default(0),
 });
 
-/**
- * Zod schema untuk validasi item alternatif tersimpan
- */
 export const alternativeSchema = z.object({
   id: z.string(),
   name: z.string(),
   values: z.record(z.string(), z.number()),
 });
 
-/**
- * Zod schema untuk validasi state proyek yang dipersist di localStorage (Spec Addendum 2 §20.1)
- */
 export const projectStatePersistedSchema = z.object({
   title: z.string(),
-  activeMethod: z.enum(['SAW', 'WP', 'TOPSIS', 'AHP', 'AUTO']),
+  activeMethod: z.enum(['SAW', 'WP', 'TOPSIS', 'AHP', 'AUTO', 'COMPARE']),
   criteria: z.array(criterionSchema),
   alternatives: z.array(alternativeSchema),
 });

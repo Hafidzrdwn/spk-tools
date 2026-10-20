@@ -1,7 +1,7 @@
 export interface DetectedComparison {
   criterionA: string;
   criterionB: string;
-  scale: number; // 1 to 9
+  scale: number;
   dominant: 'A' | 'B';
   intensityLabel: string;
   rawSentence: string;
@@ -33,7 +33,6 @@ const INTENSITY_MAP: Record<string, { scale: number; label: string }> = {
 };
 
 function cleanName(str: string): string {
-  // ReDoS Audit (§20.2): Pembersihan petik di awal/akhir beroperasi secara linear O(1)/O(N), non-backtracking
   return str.trim().replace(/^["']|["']$/g, '');
 }
 
@@ -47,7 +46,6 @@ export function detectComparisonsFromText(text: string): ComparisonDetectionResu
     };
   }
 
-  // ReDoS Audit (§20.2): Pemisahan kalimat dengan character class split biasa, linear O(N) tanpa backtracking
   const sentences = trimmed
     .split(/[\n;.]/)
     .map((s) => s.trim())
@@ -56,24 +54,13 @@ export function detectComparisonsFromText(text: string): ComparisonDetectionResu
   const comparisons: DetectedComparison[] = [];
   const unrecognizedSentences: string[] = [];
 
-  // ReDoS Audit (§20.2):
-  // Pola 1: Linear non-backtracking; pemisah token pasti (\s+, \d+, kali/x, lebih penting, dari/dibanding)
-  // Tidak ada nested quantifier (misal (a+)+ atau (.*)+) sehingga eksekusi selalu O(N).
   const timesRegex = /^(.+?)\s+(\d+)\s*(?:kali|x)\s+lebih\s+penting\s+(?:dari|dibanding(?:kan)?|daripada)\s+(.+)$/i;
 
-  // ReDoS Audit (§20.2):
-  // Pola 2: Diformulasikan dengan non-overlapping whitespace agar tidak ada catastrophic backtracking.
-  // Modifier intensitas opsional memakai (?:(kata)\s+)? tanpa tumpang-tindih \s+\s*.
-  // Aman dari ReDoS: linear, O(N), tanpa nested quantifier.
   const intensityRegex = /^(.+?)\s+(?:(sedikit|cukup|jauh|sangat|mutlak|paling)\s+)?lebih\s+penting\s+(?:dari|dibanding(?:kan)?|daripada)\s+(.+)$/i;
 
-  // ReDoS Audit (§20.2):
-  // Pola 3: Pemisah klausa setara dibuat eksplisit tanpa tumpang tindih whitespace.
-  // Aman dari ReDoS: linear, O(N), deterministik.
   const equalRegex = /^(.+?)\s+(?:sama\s+penting(?:\s+(?:dengan|dari|dibanding(?:kan)?))?|setara(?:\s+dengan)?)\s+(.+)$/i;
 
   sentences.forEach((sentence) => {
-    // Coba Pola 1 (N kali)
     const matchTimes = sentence.match(timesRegex);
     if (matchTimes) {
       const a = cleanName(matchTimes[1]);

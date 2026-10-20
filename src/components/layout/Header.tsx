@@ -7,6 +7,7 @@ import Logo from './Logo';
 import EditableProjectTitle from '@/features/project/EditableProjectTitle';
 import GlossaryDrawer from '@/features/glossary/GlossaryDrawer';
 import TourLauncherMenu from '@/features/tour/TourLauncherMenu';
+import ProjectBackupModal from '@/features/project/ProjectBackupModal';
 import { BookOpen } from 'lucide-react';
 import { useUiStore } from '@/store/useUiStore';
 import { prefetchRoute } from '@/services/routePrefetch';
@@ -31,6 +32,8 @@ export const Header: React.FC<HeaderProps> = ({
   const glossaryTargetTerm = useUiStore((s) => s.glossaryTargetTerm);
   const openGlossary = useUiStore((s) => s.openGlossary);
   const closeGlossary = useUiStore((s) => s.closeGlossary);
+  const isBackupModalOpen = useUiStore((s) => s.isBackupModalOpen);
+  const closeBackupModal = useUiStore((s) => s.closeBackupModal);
 
   return (
     <header
@@ -41,7 +44,6 @@ export const Header: React.FC<HeaderProps> = ({
       )}
     >
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-2.5 md:gap-4">
-        {/* Logo & Identitas */}
         <div className="flex items-center justify-between md:justify-start gap-2 sm:gap-3 shrink-0">
           <Link
             to="/"
@@ -50,8 +52,7 @@ export const Header: React.FC<HeaderProps> = ({
             className="m-0 p-0 text-inherit font-inherit inline-flex items-center cursor-pointer min-h-9"
             title="Kembali ke Beranda (Landing Page)"
           >
-            <Logo size="sm" showWordmark className="sm:hidden" />
-            <Logo size="md" showWordmark className="hidden sm:flex" />
+            <Logo size="responsive" showWordmark />
           </Link>
           <div className="flex items-center gap-1.5 sm:gap-2 border-l border-slate-200/80 pl-2 sm:pl-3 min-w-0">
             <Badge variant="primary" size="sm" className="font-bold text-[10px] py-0 px-1.5 hidden md:inline-flex shrink-0">
@@ -64,10 +65,8 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
 
-        {/* Status Method & Aksi */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-1.5 sm:gap-2">
-          {/* Support Actions: Bantuan & Glosarium */}
-          <div className="grid grid-cols-2 sm:flex sm:items-center gap-1.5 sm:gap-2">
+        <div className="flex flex-wrap sm:flex-nowrap items-center justify-between sm:justify-end gap-1.5 sm:gap-2 shrink-0">
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             <TourLauncherMenu />
 
             <Button
@@ -77,15 +76,14 @@ export const Header: React.FC<HeaderProps> = ({
               data-tour-id="glossary-btn"
               title="Buka Glosarium Istilah SPK (Definisi & Rumus)"
               aria-label="Buka Glosarium Istilah SPK"
-              className="h-9 px-3 py-1.5 text-xs font-semibold rounded-lg border border-slate-200/90 bg-white hover:bg-slate-50 text-slate-700 hover:text-accent-primary shadow-2xs cursor-pointer flex items-center justify-center gap-1.5"
+              className="h-9 px-2.5 sm:px-3 py-1.5 text-xs font-semibold rounded-lg border border-slate-200/90 bg-white hover:bg-slate-50 text-slate-700 hover:text-accent-primary shadow-2xs cursor-pointer flex items-center justify-center gap-1.5 shrink-0"
             >
               <BookOpen className="w-3.5 h-3.5 text-accent-primary shrink-0" />
               <span>Glosarium</span>
             </Button>
           </div>
 
-          {/* Project Operations */}
-          {actions && <div className="flex items-center gap-1.5 sm:gap-2">{actions}</div>}
+          {actions && <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">{actions}</div>}
         </div>
       </div>
 
@@ -93,6 +91,11 @@ export const Header: React.FC<HeaderProps> = ({
         isOpen={isGlossaryOpen}
         onClose={closeGlossary}
         targetTerm={glossaryTargetTerm}
+      />
+
+      <ProjectBackupModal
+        isOpen={isBackupModalOpen}
+        onClose={closeBackupModal}
       />
     </header>
   );

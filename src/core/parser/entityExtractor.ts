@@ -24,13 +24,11 @@ export type EntityExtractionResult = EntityExtractionSuccess | EntityExtractionE
 
 export function stripUnitsAndParseNumber(rawStr: string): number | null {
   if (!rawStr) return null;
-  // ReDoS Audit (§20.2): Alternasi statis, linear O(N) tanpa nested quantifier
   let s = rawStr.trim();
   s = s.replace(/^(?:rp\.?|idr|\$|usd|eur|€|£)\s*/i, '');
   s = s.replace(/\s*(?:tahun|thn|juta|jt|ribu|rb|bulan|bln|hari|hr|jam|kg|%|km|meter|m|ms|detik|sec|s|menit|min)\b/gi, '');
   s = s.replace(/%/g, '');
 
-  // Pemisah ribuan vs desimal:
   if (/^\d{1,3}(?:\.\d{3})+(?:,\d+)?$/.test(s)) {
     s = s.replace(/\./g, '').replace(',', '.');
   } else if (/^\d{1,3}(?:,\d{3})+(?:\.\d+)?$/.test(s)) {
@@ -66,15 +64,12 @@ export function isCostCriterion(name: string): boolean {
 }
 
 export function findMatchingCriterion(key: string, criteria: Criterion[]): Criterion | null {
-  // ReDoS Audit (§20.2): Karakter kelas tunggal [^a-z0-9], linear O(N)
   const cleanKey = key.toLowerCase().replace(/[^a-z0-9]/g, '');
   if (!cleanKey) return null;
 
-  // 1. Exact match
   const exact = criteria.find((c) => c.name.toLowerCase().replace(/[^a-z0-9]/g, '') === cleanKey);
   if (exact) return exact;
 
-  // 2. Substring match
   const sub = criteria.find((c) => {
     const cClean = c.name.toLowerCase().replace(/[^a-z0-9]/g, '');
     return cleanKey.includes(cClean) || cClean.includes(cleanKey);
@@ -103,13 +98,10 @@ function shouldSkipLine(line: string): boolean {
   const trimmed = line.trim();
   if (!trimmed) return true;
 
-  // Comments
   if (/^(?:#|\/\/|\/\*|;)/.test(trimmed)) return true;
 
-  // Markdown table horizontal rules like |---|---|
   if (/^\|?\s*[-:]+[-| :]*\|?\s*$/.test(trimmed)) return true;
 
-  // Instruction headers like "Contoh format input teks studi kasus:" or "Atau masukkan perbandingan:"
   if (
     /^(?:contoh|instruksi|format|petunjuk|panduan|atau\s+masukkan)\b/i.test(trimmed) &&
     trimmed.endsWith(':')
@@ -117,7 +109,6 @@ function shouldSkipLine(line: string): boolean {
     return true;
   }
 
-  // Saaty relative comparisons (handled separately by detectComparisonsFromText)
   if (/lebih\s+(?:penting|diutamakan|utama|baik)|dibanding(?:kan)?\s+dengan|kali\s+lebih/i.test(trimmed)) {
     return true;
   }
@@ -149,7 +140,6 @@ function parseTableRows(
   const parsedGrid = candidateLines.map(splitRow).filter((r) => r.length >= 2);
   if (parsedGrid.length < 1) return null;
 
-  // Cek apakah baris pertama adalah header tabel
   let headerCells: string[] = [];
   let dataRows = parsedGrid;
   const firstRow = parsedGrid[0];

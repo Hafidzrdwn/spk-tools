@@ -24,7 +24,6 @@ export const AhpConsistencyGauge: React.FC<AhpConsistencyGaugeProps> = ({
 
   return (
     <div className="space-y-4">
-      {/* Gauge and Metric Summary Card */}
       <div
         data-tour-id="ahp-consistency-gauge"
         className={`p-6 rounded-card border-2 transition-all ${

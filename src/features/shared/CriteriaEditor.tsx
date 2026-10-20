@@ -8,6 +8,156 @@ import GlossaryTerm from '@/features/glossary/GlossaryTerm';
 import { Plus, Trash2, Wand2 } from 'lucide-react';
 import { useNumberFormatter } from '@/utils/numberFormat';
 
+import CreatableSelect from 'react-select/creatable';
+
+export interface UnitOption {
+  label: string;
+  value: string;
+}
+
+export const COMMON_CRITERIA_UNITS: UnitOption[] = [
+  { label: 'Skala 0-100', value: 'Skala 0-100' },
+  { label: 'Skala 1-100', value: '1-100' },
+  { label: 'Skala 1-10', value: 'Skala 1-10' },
+  { label: 'Skala 1-5', value: 'Skala 1-5' },
+  { label: 'Skala 4.0 (IPK)', value: 'Skala 4.0' },
+  { label: 'Juta Rp', value: 'Juta Rp' },
+  { label: 'Ribu Rp', value: 'Ribu Rp' },
+  { label: 'Rupiah (Rp)', value: 'Rp' },
+  { label: 'Persen (%)', value: '%' },
+  { label: 'Hari', value: 'Hari' },
+  { label: 'Bulan', value: 'Bulan' },
+  { label: 'Tahun', value: 'Tahun' },
+  { label: 'Jam', value: 'Jam' },
+  { label: 'GB (Gigabyte)', value: 'GB' },
+  { label: 'Unit / Buah', value: 'Unit' },
+  { label: 'Orang', value: 'Orang' },
+  { label: 'Orang/Hari', value: 'Orang/Hari' },
+];
+
+interface CriterionUnitSelectorProps {
+  value: string;
+  onChange: (val: string) => void;
+}
+
+const CriterionUnitSelector: React.FC<CriterionUnitSelectorProps> = ({ value, onChange }) => {
+  const currentOption: UnitOption | null = value
+    ? COMMON_CRITERIA_UNITS.find((u) => u.value.toLowerCase() === value.toLowerCase()) || {
+        label: value,
+        value: value,
+      }
+    : null;
+
+  return (
+    <div className="w-32 sm:w-40 min-w-32 shrink-0">
+      <CreatableSelect<UnitOption>
+        value={currentOption}
+        onChange={(opt) => onChange(opt ? opt.value : '')}
+        options={COMMON_CRITERIA_UNITS}
+        isClearable
+        isSearchable
+        placeholder="Pilih / cari satuan..."
+        formatCreateLabel={(inputValue) => `Gunakan kustom: "${inputValue}"`}
+        noOptionsMessage={({ inputValue }) =>
+          inputValue ? `Tekan Enter untuk gunakan "${inputValue}"` : 'Tidak ada opsi satuan'
+        }
+        menuPortalTarget={typeof document !== 'undefined' ? document.body : null}
+        menuPosition="fixed"
+        styles={{
+          control: (base, state) => ({
+            ...base,
+            minHeight: '30px',
+            height: '30px',
+            fontSize: '11px',
+            backgroundColor: state.isFocused ? '#ffffff' : 'rgba(248, 250, 252, 0.7)',
+            borderColor: state.isFocused ? '#6366f1' : '#e2e8f0',
+            borderRadius: '6px',
+            boxShadow: state.isFocused ? '0 0 0 1px #6366f1' : 'none',
+            '&:hover': {
+              borderColor: '#cbd5e1',
+            },
+          }),
+          valueContainer: (base) => ({
+            ...base,
+            padding: '0 6px',
+            height: '28px',
+          }),
+          input: (base) => ({
+            ...base,
+            margin: 0,
+            padding: 0,
+            fontSize: '11px',
+            color: '#1e293b',
+          }),
+          singleValue: (base) => ({
+            ...base,
+            fontSize: '11px',
+            color: '#334155',
+            fontWeight: 500,
+          }),
+          placeholder: (base) => ({
+            ...base,
+            fontSize: '11px',
+            color: '#94a3b8',
+          }),
+          indicatorsContainer: (base) => ({
+            ...base,
+            height: '28px',
+          }),
+          dropdownIndicator: (base) => ({
+            ...base,
+            padding: '2px 4px',
+            color: '#94a3b8',
+            '&:hover': {
+              color: '#64748b',
+            },
+            svg: {
+              width: '14px',
+              height: '14px',
+            },
+          }),
+          clearIndicator: (base) => ({
+            ...base,
+            padding: '2px 4px',
+            color: '#94a3b8',
+            '&:hover': {
+              color: '#ef4444',
+            },
+            svg: {
+              width: '13px',
+              height: '13px',
+            },
+          }),
+          menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+          menu: (base) => ({
+            ...base,
+            zIndex: 9999,
+            fontSize: '11px',
+            borderRadius: '8px',
+            boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)',
+            border: '1px solid #e2e8f0',
+          }),
+          option: (base, state) => ({
+            ...base,
+            fontSize: '11px',
+            padding: '5px 10px',
+            backgroundColor: state.isSelected
+              ? '#4f46e5'
+              : state.isFocused
+              ? '#eef2ff'
+              : 'transparent',
+            color: state.isSelected ? '#ffffff' : '#1e293b',
+            cursor: 'pointer',
+            '&:active': {
+              backgroundColor: '#e0e7ff',
+            },
+          }),
+        }}
+      />
+    </div>
+  );
+};
+
 export const CriteriaEditor: React.FC = () => {
   const { formatNumber } = useNumberFormatter();
   const { addCriterion, removeCriterion, updateCriterion, autoDistributeWeights } = useProjectStore(
@@ -80,13 +230,9 @@ export const CriteriaEditor: React.FC = () => {
                   className="flex-1 min-w-32.5 px-2.5 py-1.5 text-xs font-medium text-slate-800 bg-slate-50/70 border border-slate-200 rounded-control focus:bg-white focus:outline-none focus:ring-1 focus:ring-accent-primary"
                 />
 
-                <input
-                  type="text"
+                <CriterionUnitSelector
                   value={crit.unit || ''}
-                  onChange={(e) => updateCriterion(crit.id, { unit: e.target.value })}
-                  placeholder="Satuan (misal: Juta Rp, Thn)"
-                  title="Satuan atau format nilai kriteria (opsional)"
-                  className="w-32 sm:w-40 px-2.5 py-1.5 text-xs font-medium text-slate-700 bg-slate-50/70 border border-slate-200 rounded-control focus:bg-white focus:outline-none focus:ring-1 focus:ring-accent-primary"
+                  onChange={(val) => updateCriterion(crit.id, { unit: val })}
                 />
 
                 <div

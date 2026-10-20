@@ -3,7 +3,6 @@ import React from 'react';
 export const AnalyticsSkeleton: React.FC = () => {
   return (
     <div className="min-h-dvh w-full bg-surface bg-dot-grid text-slate-800 pb-16 antialiased animate-pulse">
-      {/* Top Bar Header - Mirrors CommunityLayout.tsx */}
       <header className="sticky top-0 z-30 bg-white/90 backdrop-blur-xs border-b border-slate-200 px-3 sm:px-6 py-2 sm:py-2.5 shadow-2xs">
         <div className="max-w-6xl mx-auto flex items-center justify-between gap-1.5 sm:gap-4">
           <div className="flex items-center gap-1 sm:gap-2.5">
@@ -20,9 +19,7 @@ export const AnalyticsSkeleton: React.FC = () => {
         </div>
       </header>
 
-      {/* Main Container */}
       <main className="max-w-6xl mx-auto px-4 sm:px-6 pt-6 space-y-6 w-full">
-        {/* Page Title & Intro */}
         <div className="space-y-1">
           <div className="flex items-center gap-2">
             <div className="w-5 h-5 rounded bg-indigo-200 shrink-0" />
@@ -31,7 +28,6 @@ export const AnalyticsSkeleton: React.FC = () => {
           <div className="w-full max-w-md h-4 rounded bg-slate-200" />
         </div>
 
-        {/* 4 KPI Metric Cards - Responsive 1 col mobile, 2 cols tablet, 4 cols desktop */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
           {[1, 2, 3, 4].map((i) => (
             <div key={i} className="p-4 rounded-xl bg-white border border-slate-200/90 shadow-2xs space-y-2">
@@ -42,9 +38,7 @@ export const AnalyticsSkeleton: React.FC = () => {
           ))}
         </div>
 
-        {/* Grid: 7-Day Trend Chart & Device Breakdown */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* Trend Chart (Left 7 Cols) */}
           <div className="lg:col-span-7 p-4 sm:p-5 rounded-xl bg-white border border-slate-200/90 shadow-2xs space-y-4">
             <div className="flex items-center justify-between">
               <div className="space-y-1">

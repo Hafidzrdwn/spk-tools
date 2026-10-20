@@ -3,23 +3,12 @@ import katex from 'katex';
 import { cn } from '@/utils/cn';
 
 export interface MathFormulaProps {
-  /** LaTeX formula string, e.g. "r_{ij} = \\frac{x_{ij}}{\\max(x_j)}" */
   math: string;
-  /** Whether to render as inline math or block/display math */
   inline?: boolean;
-  /** Extra CSS classes */
   className?: string;
-  /** Accessible text for screen readers */
   ariaLabel?: string;
 }
 
-/**
- * Reusable Mathematical Notation Component powered by KaTeX.
- * - Supports inline math (vertically aligned with surrounding text)
- * - Supports block / display math with responsive anti-overflow horizontal scrollbar
- * - Safe XSS rendering with throwOnError: false
- * - Semantic accessibility role="math" and aria-label
- */
 export const MathFormula: React.FC<MathFormulaProps> = ({
   math,
   inline = false,
@@ -33,7 +22,7 @@ export const MathFormula: React.FC<MathFormulaProps> = ({
         displayMode: !inline,
         throwOnError: false,
         strict: false,
-        output: 'html', // Pure HTML rendering avoids browser MathML validation errors (<msub/>) while role="math" + aria-label preserve full accessibility
+        output: 'html',
       });
     } catch {
       return math;
@@ -68,21 +57,15 @@ export const MathFormula: React.FC<MathFormulaProps> = ({
 
 export default MathFormula;
 
-/**
- * Converts dynamic formula labels from calculation engines (e.g. "x11/max(X) = 80/90 = 0.8889")
- * into clean, beautifully formatted LaTeX expressions for KaTeX rendering.
- */
 export function formatTraceToLatex(rawLabel: string): string {
   if (!rawLabel || !rawLabel.trim()) return '';
 
   let cleaned = rawLabel.trim();
 
-  // If already full LaTeX, return as-is
   if (cleaned.startsWith('\\') || (cleaned.includes('\\frac') && cleaned.includes('{'))) {
     return cleaned;
   }
 
-  // Handle prefix like "Cost ⟹ " or "Benefit ⟹ " or "BENEFIT ⟹ "
   let prefix = '';
   if (cleaned.includes('⟹')) {
     const parts = cleaned.split('⟹');

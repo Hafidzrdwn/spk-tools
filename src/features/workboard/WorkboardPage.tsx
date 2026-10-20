@@ -40,7 +40,7 @@ import { storyTourDefinition } from '@/core/tour/storyTourSteps';
 import { useTourStore } from '@/store/useTourStore';
 
 const TourRunner = lazy(() => import('@/features/tour/TourRunner'));
-import { FolderOpen, ChevronDown, ChevronUp } from 'lucide-react';
+import { FolderOpen, ChevronDown, ChevronUp, HardDrive } from 'lucide-react';
 import type { MethodId } from '@/types/domain';
 
 export const WorkboardPage: React.FC = () => {
@@ -73,6 +73,7 @@ export const WorkboardPage: React.FC = () => {
   const setActiveEditorSection = useUiStore((s) => s.setActiveEditorSection);
   const isSharedMatrixCollapsed = useUiStore((s) => s.isSharedMatrixCollapsed);
   const toggleSharedMatrix = useUiStore((s) => s.toggleSharedMatrix);
+  const openBackupModal = useUiStore((s) => s.openBackupModal);
   const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
 
   const hasSeenWelcome = useTourStore((s) => s.hasSeenWelcome);
@@ -107,18 +108,30 @@ export const WorkboardPage: React.FC = () => {
         activeMethod: activeTab,
         onTitleChange: setTitle,
         actions: (
-          <div className="flex items-center gap-1.5 sm:gap-2 w-full sm:w-auto">
+          <div className="flex items-center gap-1.5 sm:gap-2 flex-nowrap shrink-0">
             <Button
               variant="secondary"
               size="sm"
               onClick={() => setIsTemplateModalOpen(true)}
               data-tour-id="load-template-btn"
               title="Buka pilihan template studi kasus SPK"
-              className="flex-1 sm:flex-initial h-9 px-3 py-1.5 text-xs font-semibold rounded-lg border border-slate-200/90 bg-white hover:bg-slate-50 text-slate-700 hover:text-accent-primary shadow-2xs cursor-pointer flex items-center justify-center gap-1.5"
+              className="h-9 px-2.5 sm:px-3 py-1.5 text-xs font-semibold rounded-lg border border-slate-200/90 bg-white hover:bg-slate-50 text-slate-700 hover:text-accent-primary shadow-2xs cursor-pointer flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
             >
               <FolderOpen className="w-3.5 h-3.5 text-accent-primary shrink-0" />
-              <span className="sm:hidden">Muat Kasus</span>
-              <span className="hidden sm:inline">Muat Contoh Kasus</span>
+              <span className="sm:hidden">Kasus</span>
+              <span className="hidden sm:inline">Muat Kasus</span>
+            </Button>
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={openBackupModal}
+              data-tour-id="backup-project-btn"
+              title="Cadangkan atau pulihkan seluruh data proyek SPK (JSON)"
+              className="h-9 px-2.5 sm:px-3 py-1.5 text-xs font-semibold rounded-lg border border-slate-200/90 bg-white hover:bg-slate-50 text-slate-700 hover:text-accent-primary shadow-2xs cursor-pointer flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
+            >
+              <HardDrive className="w-3.5 h-3.5 text-accent-primary shrink-0" />
+              <span className="sm:hidden">Backup</span>
+              <span className="hidden sm:inline">Backup & Pulihkan</span>
             </Button>
             <ResetProjectButton />
             <ExportButton variant="primary" />
@@ -127,10 +140,8 @@ export const WorkboardPage: React.FC = () => {
       }}
     >
       <div className="space-y-4 max-w-6xl mx-auto">
-        {/* Top Context & Quick Navigation Bar (Relocated from Header) */}
         <WorkboardTopBar />
 
-        {/* Navigation Tabs Bar & Fully Visible Method Description */}
         <div className="space-y-2.5 p-3 rounded-card bg-white/80 backdrop-blur-md border border-slate-200/80 shadow-2xs">
           <div data-tour-id="nav-tabs" className="overflow-x-auto pb-0.5 scrollbar-none touch-pan-x">
             <Tabs<MethodId> items={tabItems} activeTab={activeTab} onChange={setActiveTab} />
@@ -154,7 +165,6 @@ export const WorkboardPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Shared Matrix & Model Input Section (Collapsible) */}
         <Card data-tour-id="shared-matrix-card" className="transition-all duration-200 shadow-2xs">
           <CardHeader
             onClick={toggleSharedMatrix}

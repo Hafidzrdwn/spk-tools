@@ -4,10 +4,10 @@ import { RANDOM_INDEX_TABLE } from '@/core/constants/randomIndexTable';
 export interface ConsistencyResult {
   weightedSumVector: number[];
   lambdaMax: number;
-  ci: number; // Consistency Index
-  cr: number; // Consistency Ratio
-  ri: number; // Random Index
-  isConsistent: boolean; // CR <= 0.10
+  ci: number;
+  cr: number;
+  ri: number;
+  isConsistent: boolean;
 }
 
 export interface ConsistencyFixSuggestion {
@@ -24,9 +24,6 @@ export interface ConsistencyFixSuggestion {
   message: string;
 }
 
-/**
- * Format angka untuk pesan dan label
- */
 function formatNum(val: number): string {
   if (Number.isInteger(val)) {
     return val.toString();
@@ -34,22 +31,15 @@ function formatNum(val: number): string {
   return Number(val.toFixed(4)).toString();
 }
 
-/**
- * 17 nilai diskret dalam Skala Fundamental Saaty (pecahan 1/9 s.d. 9)
- */
 export const SAATY_SCALE_VALUES = [
   1 / 9, 1 / 8, 1 / 7, 1 / 6, 1 / 5, 1 / 4, 1 / 3, 1 / 2,
   1,
   2, 3, 4, 5, 6, 7, 8, 9,
 ];
 
-/**
- * Format nilai Saaty ke representasi pecahan yang mudah dipahami pengguna (e.g. 0.5 -> "1/2")
- */
 export function formatSaatyValue(val: number): string {
   if (Math.abs(val - 1) < 1e-4) return '1';
   if (val >= 1) return Math.round(val).toString();
-  // Cek resiprokal 1/2 hingga 1/9
   for (let denom = 2; denom <= 9; denom++) {
     if (Math.abs(val - 1 / denom) < 0.02) {
       return `1/${denom}`;

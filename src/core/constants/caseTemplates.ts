@@ -4,7 +4,7 @@ export interface CaseTemplate {
   id: string;
   name: string;
   description: string;
-  dimension: string; // e.g. '3x3', '4x4', '5x4'
+  dimension: string;
   badge: string;
   state: DecisiProjectState;
 }

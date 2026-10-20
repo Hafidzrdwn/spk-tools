@@ -49,14 +49,12 @@ export const Drawer: React.FC<DrawerProps> = ({
 
   return createPortal(
     <div className="fixed inset-0 z-50 flex justify-end">
-      {/* Backdrop */}
       <div
         className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs animate-in fade-in duration-200"
         onClick={onClose}
         aria-hidden="true"
       />
 
-      {/* Drawer Panel */}
       <div
         role="dialog"
         aria-modal="true"
@@ -67,7 +65,6 @@ export const Drawer: React.FC<DrawerProps> = ({
           className
         )}
       >
-        {/* Header */}
         <div className="px-5 py-4 border-b border-slate-100 flex items-start justify-between gap-3 bg-white/80 backdrop-blur-xs shrink-0">
           <div className="space-y-0.5 flex-1 min-w-0">
             {title && (typeof title === 'string' ? <h2 className="text-base font-bold text-slate-900 truncate">{title}</h2> : title)}
@@ -83,10 +80,8 @@ export const Drawer: React.FC<DrawerProps> = ({
           </button>
         </div>
 
-        {/* Content Body */}
         <div className="flex-1 overflow-y-auto">{children}</div>
 
-        {/* Optional Footer */}
         {footer && (
           <div className="px-5 py-3.5 border-t border-slate-100 bg-slate-50/80 shrink-0">
             {footer}

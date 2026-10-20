@@ -82,7 +82,6 @@ describe('Story-to-Matrix Parser (Pure Logic)', () => {
         Kandidat: AWS, Biaya Bulanan: 15, Uptime SLA: 99.99, Fitur AI: 95
         Kandidat: Google Cloud, Biaya Bulanan: 13, Uptime SLA: 99.95, Fitur AI: 98
       `;
-      // Passing empty criteria
       const result = extractAlternativesFromText(input, []);
 
       expect(result.success).toBe(true);
@@ -93,7 +92,6 @@ describe('Story-to-Matrix Parser (Pure Logic)', () => {
         expect(names).toContain('Biaya Bulanan');
         expect(names).toContain('Uptime SLA');
         expect(names).toContain('Fitur AI');
-        // Auto-detect COST vs BENEFIT
         const costCrit = result.criteria.find((c) => c.name === 'Biaya Bulanan');
         expect(costCrit?.type).toBe('COST');
         const slaCrit = result.criteria.find((c) => c.name === 'Uptime SLA');
@@ -191,10 +189,10 @@ describe('Story-to-Matrix Parser (Pure Logic)', () => {
       expect(result.success).toBe(true);
       if (result.success) {
         expect(result.comparisons).toHaveLength(4);
-        expect(result.comparisons[0].scale).toBe(7); // jauh -> 7
-        expect(result.comparisons[1].scale).toBe(3); // sedikit -> 3
-        expect(result.comparisons[2].scale).toBe(9); // mutlak -> 9
-        expect(result.comparisons[3].scale).toBe(1); // sama penting -> 1
+        expect(result.comparisons[0].scale).toBe(7);
+        expect(result.comparisons[1].scale).toBe(3);
+        expect(result.comparisons[2].scale).toBe(9);
+        expect(result.comparisons[3].scale).toBe(1);
       }
     });
 
@@ -229,13 +227,11 @@ describe('Story-to-Matrix Parser (Pure Logic)', () => {
 
   describe('Security & ReDoS Resilience (§20.2)', () => {
     it('Harus memproses input adversarial berulang tanpa keterlambatan (kebal ReDoS)', () => {
-      // Input berulang yang berpotensi memicu catastrophic backtracking jika ada nested quantifier
       const adversarialText = 'Kandidat ' + 'sangat '.repeat(200) + 'lebih penting dibanding ' + 'X '.repeat(200);
       const start = performance.now();
       const result = detectComparisonsFromText(adversarialText);
       const duration = performance.now() - start;
 
-      // Harus selesai dalam waktu beberapa milidetik (jauh di bawah 50ms)
       expect(duration).toBeLessThan(50);
       expect(typeof result.success).toBe('boolean');
     });

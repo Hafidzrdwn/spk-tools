@@ -20,7 +20,6 @@ const styles = StyleSheet.create({
     color: '#334155',
     backgroundColor: '#FFFFFF',
   },
-  // Section 1: Cover Header
   headerContainer: {
     marginBottom: 20,
     paddingBottom: 14,
@@ -79,7 +78,6 @@ const styles = StyleSheet.create({
     color: '#64748B',
   },
 
-  // Section Headers
   sectionContainer: {
     marginBottom: 16,
   },
@@ -93,7 +91,6 @@ const styles = StyleSheet.create({
     borderBottomColor: '#E2E8F0',
   },
 
-  // Table Utilities
   table: {
     borderWidth: 0.8,
     borderColor: '#CBD5E1',
@@ -132,7 +129,6 @@ const styles = StyleSheet.create({
     padding: 4.5,
   },
 
-  // Badges
   benefitBadge: {
     backgroundColor: '#ECFDF5',
     borderWidth: 0.5,
@@ -174,7 +170,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 
-  // Section 4: Formula Steps
   stepCard: {
     backgroundColor: '#F8FAFC',
     borderWidth: 0.8,
@@ -218,7 +213,6 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
 
-  // Section 6: Kesimpulan Otomatis
   conclusionCard: {
     backgroundColor: '#F8FAFC',
     borderLeftWidth: 3.5,
@@ -237,7 +231,6 @@ const styles = StyleSheet.create({
     textAlign: 'justify',
   },
 
-  // Section 7: Footer Tiap Halaman
   footer: {
     position: 'absolute',
     bottom: 20,
@@ -292,7 +285,6 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({ payload, numbe
   const numberFormat = propNumberFormat || useUiStore.getState().numberFormat || 'comma';
   const narrativeConclusion = generateReportConclusion(payload, numberFormat);
 
-  // Ambil 1 representasi contoh sel per tahap (formulaSteps)
   const representativeSteps: TraceStep[] = [];
   const seenStages = new Set<string>();
   for (const step of payload.result.formulaSteps || []) {
@@ -302,7 +294,6 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({ payload, numbe
     }
   }
 
-  // Hitung pembagian lebar kolom untuk tabel matriks awal
   const critCount = Math.max(1, payload.criteria.length);
   const altColWidthPercent = 30;
   const critColWidthPercent = (100 - altColWidthPercent) / critCount;

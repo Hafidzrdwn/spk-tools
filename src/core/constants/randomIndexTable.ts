@@ -1,7 +1,3 @@
-/**
- * Tabel Nilai Random Index (RI) Saaty untuk n = 1 .. 10
- * Sumber: Thomas L. Saaty & DecisiGraph Spec Bagian 3.4
- */
 export const RANDOM_INDEX_TABLE: Record<number, number> = {
   1: 0,
   2: 0,

@@ -174,17 +174,14 @@ describe('Export PDF Report Module', () => {
   it('useUiStore mengelola state isSharedMatrixCollapsed dan menyimpannya di localStorage', async () => {
     const { useUiStore } = await import('@/store/useUiStore');
 
-    // Default false (terbuka)
     useUiStore.getState().setSharedMatrixCollapsed(false);
     expect(useUiStore.getState().isSharedMatrixCollapsed).toBe(false);
     expect(localStorage.getItem('decisigraph_matrix_collapsed')).toBe('false');
 
-    // Toggle ke true (ciut)
     useUiStore.getState().toggleSharedMatrix();
     expect(useUiStore.getState().isSharedMatrixCollapsed).toBe(true);
     expect(localStorage.getItem('decisigraph_matrix_collapsed')).toBe('true');
 
-    // Toggle kembali ke false
     useUiStore.getState().toggleSharedMatrix();
     expect(useUiStore.getState().isSharedMatrixCollapsed).toBe(false);
     expect(localStorage.getItem('decisigraph_matrix_collapsed')).toBe('false');

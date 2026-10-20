@@ -15,9 +15,6 @@ export interface AhpResult extends MethodResult {
   suggestion: ConsistencyFixSuggestion | null;
 }
 
-/**
- * Format angka untuk formula label agar terbaca manusia
- */
 function formatNumber(val: number): string {
   if (Number.isInteger(val)) {
     return val.toString();
@@ -25,13 +22,6 @@ function formatNumber(val: number): string {
   return Number(val.toFixed(4)).toString();
 }
 
-/**
- * Implementasi AHP (Analytic Hierarchy Process)
- * Langkah:
- * 1. Normalisasi kolom matriks pairwise: normA_ij = A_ij / Σ_k(A_kj)
- * 2. Priority vector: w_i = ( Σ_j normA_ij ) / n
- * 3. Consistency check: Weighted sum vector, λmax, CI, CR via checkConsistency()
- */
 export function calculateAHP(
   matrix: number[][],
   criteria?: Criterion[]
@@ -60,7 +50,6 @@ export function calculateAHP(
     };
   }
 
-  // Langkah 1: Hitung jumlah tiap kolom matriks perbandingan berpasangan
   const colSums: number[] = [];
   for (let j = 0; j < n; j++) {
     let sumCol = new Decimal(0);
@@ -71,7 +60,6 @@ export function calculateAHP(
     colSums.push(sumCol.toNumber());
   }
 
-  // Normalisasi kolom: normA_ij = A_ij / colSums[j]
   const normalizedMatrix: number[][] = [];
   const formulaSteps: TraceStep[] = [];
 

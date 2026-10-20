@@ -7,11 +7,17 @@ import Button from '@/components/ui/Button';
 import { Scale, Sparkles, Layers } from 'lucide-react';
 
 export const ComparisonTab: React.FC = () => {
-  const { hasData, comparison, loadShiftDemoCase } = useComparisonViewModel();
+  const {
+    hasData,
+    comparison,
+    selectedMethods,
+    setSelectedMethods,
+    toggleMethod,
+    loadShiftDemoCase,
+  } = useComparisonViewModel();
 
   return (
     <div className="space-y-6">
-      {/* Top Banner & Demo Case Trigger */}
       <Card className="bg-linear-to-r from-indigo-500/10 via-purple-500/5 to-transparent border-indigo-200/80">
         <CardContent className="p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
@@ -24,7 +30,7 @@ export const ComparisonTab: React.FC = () => {
                   Multi-Method Comparison Mode
                 </span>
                 <span className="text-[10px] bg-indigo-100 text-indigo-700 font-mono px-2 py-0.5 rounded-full font-bold">
-                  SAW &bull; WP &bull; TOPSIS
+                  {selectedMethods.map((m) => m.toUpperCase()).join(' • ')}
                 </span>
               </div>
               <p className="text-xs text-slate-500 mt-0.5">
@@ -62,19 +68,22 @@ export const ComparisonTab: React.FC = () => {
         </Card>
       ) : (
         <div className="space-y-6">
-          {/* Penjelasan Pergeseran Peringkat (Data-Driven Explanation) */}
           <RankingShiftExplanation comparison={comparison} />
 
-          {/* Tabel Matriks Komparasi Side-by-Side */}
           <Card>
             <CardHeader className="py-3 px-4 border-b border-slate-100">
               <CardTitle className="text-sm">Matriks Perbandingan Peringkat & Skor Antar Metode</CardTitle>
               <CardDescription>
-                Peringkat #1 ditandai dengan lencana hijau, dilengkapi nilai skor asli tiap algoritma dan konsensus akhir
+                Peringkat #1 ditandai dengan lencana hijau, dilengkapi nilai skor asli tiap algoritma, keterangan pergeseran, dan konsensus akhir
               </CardDescription>
             </CardHeader>
             <CardContent className="pt-4">
-              <MultiMethodComparisonTable rows={comparison.rows} />
+              <MultiMethodComparisonTable
+                rows={comparison.rows}
+                activeMethods={selectedMethods}
+                onToggleMethod={toggleMethod}
+                onSelectMethodPreset={setSelectedMethods}
+              />
             </CardContent>
           </Card>
         </div>

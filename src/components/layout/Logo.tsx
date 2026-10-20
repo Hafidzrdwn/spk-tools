@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useId, useMemo } from 'react';
 import { cn } from '@/utils/cn';
 
 export interface LogoProps {
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg' | 'responsive';
   showWordmark?: boolean;
   className?: string;
 }
@@ -23,6 +23,11 @@ const sizeConfig = {
     text: 'text-xl',
     gap: 'gap-3',
   },
+  responsive: {
+    mark: 'w-6 h-6 sm:w-8 sm:h-8',
+    text: 'text-sm sm:text-base',
+    gap: 'gap-2 sm:gap-2.5',
+  },
 };
 
 export const Logo: React.FC<LogoProps> = ({
@@ -31,6 +36,10 @@ export const Logo: React.FC<LogoProps> = ({
   className,
 }) => {
   const cfg = sizeConfig[size];
+  const rawId = useId();
+  const safeId = useMemo(() => rawId.replace(/[^a-zA-Z0-9-_]/g, ''), [rawId]);
+  const bgGradientId = `decisi-logo-bg-${safeId}`;
+  const nodeGradientId = `decisi-logo-node-${safeId}`;
 
   return (
     <div
@@ -53,7 +62,6 @@ export const Logo: React.FC<LogoProps> = ({
           className="w-full h-full"
           aria-hidden="true"
         >
-          {/* Graph Edges / Decision Tree Branches */}
           <path
             d="M16 8.5L8.5 23.5M16 8.5L23.5 23.5M8.5 23.5H23.5"
             stroke="rgba(255, 255, 255, 0.65)"
@@ -61,11 +69,9 @@ export const Logo: React.FC<LogoProps> = ({
             strokeLinecap="round"
             strokeLinejoin="round"
           />
-          {/* 3 Graph Nodes (Decision Hub & Alternatives) */}
           <circle cx="16" cy="8.5" r="3.5" fill="#FFFFFF" />
           <circle cx="8.5" cy="23.5" r="3" fill="#FFFFFF" />
           <circle cx="23.5" cy="23.5" r="3" fill="#FFFFFF" />
-          {/* Inner Node Accents */}
           <circle cx="16" cy="8.5" r="1.5" fill="#4F46E5" />
           <circle cx="8.5" cy="23.5" r="1.2" fill="#4F46E5" />
           <circle cx="23.5" cy="23.5" r="1.2" fill="#4F46E5" />

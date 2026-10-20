@@ -1,11 +1,7 @@
-/**
- * Utility keamanan input, sanitasi string, deteksi berkas gambar aman,
- * serta pencegahan spam, bot honeypot, dan perlindungan kuota rate-limit.
- */
 
 export interface RateLimitConfig {
-  cooldownSeconds: number; // Jeda minimal antar pengiriman (cooldown)
-  maxPerDay: number;       // Batas maksimal pengiriman per hari
+  cooldownSeconds: number;
+  maxPerDay: number;
 }
 
 export interface RateLimitCheckResult {
@@ -15,36 +11,22 @@ export interface RateLimitCheckResult {
   remainingDailyQuota?: number;
 }
 
-/**
- * Sanitasi string teks dari karakter berbahaya / tag HTML untuk mencegah XSS & payload injection.
- * Membatasi panjang karakter teks sesuai `maxLength`.
- */
 export function sanitizeText(text: string, maxLength = 1000): string {
   if (!text) return '';
   return text
-    .replace(/[<>]/g, '') // Hapus tag pembuka & penutup HTML
+    .replace(/[<>]/g, '')
     .trim()
     .slice(0, maxLength);
 }
 
-/**
- * Validasi alamat email dengan regex ketat dan batas panjang 100 karakter.
- */
 export function isValidEmail(email: string): boolean {
   if (!email || email.length > 100) return false;
   const trimmed = email.trim();
-  // Cegah titik ganda yang sering digunakan untuk bypass/malformed emails
   if (trimmed.includes('..')) return false;
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9]+([.-][a-zA-Z0-9]+)*\.[a-zA-Z]{2,}$/;
   return emailRegex.test(trimmed);
 }
 
-/**
- * Verifikasi keamanan berkas gambar upload:
- * - Hanya mengizinkan format raster (JPG, PNG, WebP)
- * - Menolak berkas vektor SVG untuk mencegah Stored XSS
- * - Memeriksa ukuran berkas (maksimal maxSizeBytes, default 5MB)
- */
 export function validateImageUpload(
   file: File,
   maxSizeBytes = 5 * 1024 * 1024
@@ -52,7 +34,6 @@ export function validateImageUpload(
   const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
   const ALLOWED_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.webp'];
 
-  // Cek SVG eksplisit
   if (file.type === 'image/svg+xml' || file.name.toLowerCase().endsWith('.svg')) {
     return {
       valid: false,
@@ -60,7 +41,6 @@ export function validateImageUpload(
     };
   }
 
-  // Cek MIME type
   if (!ALLOWED_MIME_TYPES.includes(file.type.toLowerCase())) {
     return {
       valid: false,
@@ -68,7 +48,6 @@ export function validateImageUpload(
     };
   }
 
-  // Cek ekstensi nama file
   const fileNameLower = file.name.toLowerCase();
   const hasValidExt = ALLOWED_EXTENSIONS.some((ext) => fileNameLower.endsWith(ext));
   if (!hasValidExt) {
@@ -78,7 +57,6 @@ export function validateImageUpload(
     };
   }
 
-  // Cek ukuran
   if (file.size > maxSizeBytes) {
     const maxMb = (maxSizeBytes / (1024 * 1024)).toFixed(0);
     return {

@@ -20,7 +20,6 @@ export const TemplateSelectorModal: React.FC<TemplateSelectorModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs">
       <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xl max-w-2xl w-full max-h-[85vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-150">
-        {/* Header */}
         <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-indigo-50 text-accent-primary flex items-center justify-center">
@@ -41,7 +40,6 @@ export const TemplateSelectorModal: React.FC<TemplateSelectorModalProps> = ({
           </button>
         </div>
 
-        {/* Template List */}
         <div className="p-6 overflow-y-auto space-y-3.5">
           {CASE_TEMPLATES.map((tpl) => (
             <div
@@ -87,7 +85,6 @@ export const TemplateSelectorModal: React.FC<TemplateSelectorModalProps> = ({
           ))}
         </div>
 
-        {/* Footer */}
         <div className="px-6 py-3.5 border-t border-slate-100 bg-slate-50/70 flex items-center justify-between text-xs text-slate-500">
           <span>Data dapat disesuaikan kembali setelah dimuat.</span>
           <Button variant="ghost" size="sm" onClick={onClose}>

@@ -1,11 +1,11 @@
 import type { MethodId } from '@/types/domain';
 
 export interface GlossaryEntry {
-  term: string;          // "SAW", "Bobot (W)", dst - dipakai sorting alfabet
-  definition: string;    // penjelasan awam, 1-3 kalimat
-  relatedTabs?: MethodId[]; // tab mana yang relevan, untuk filter kontekstual
-  symbol?: string;       // simbol matematika terkait, misal "wⱼ", "Σ", "√"
-  latex?: string;        // LaTeX string untuk KaTeX rendering presisi tinggi
+  term: string;
+  definition: string;
+  relatedTabs?: MethodId[];
+  symbol?: string;
+  latex?: string;
 }
 
 export const GLOSSARY_TERMS: GlossaryEntry[] = [

@@ -20,7 +20,6 @@ export const GlossaryTerm: React.FC<GlossaryTermProps> = ({
 }) => {
   const openGlossary = useUiStore((s) => s.openGlossary);
 
-  // Cari entri glosarium yang cocok dengan prop term
   const matchedEntry = useMemo<GlossaryEntry | null>(() => {
     const normalized = term.trim().toLowerCase();
     return (

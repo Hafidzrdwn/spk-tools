@@ -117,7 +117,6 @@ export const GENERAL_TOUR_STEPS: TourStep[] = [
       'Mari kita kelola tolok ukur evaluasi keputusan. Silakan klik tombol tab "Kriteria" di atas tabel matriks ini.',
     placement: 'bottom',
     resetOnBack: () => {
-      // Saat mundur ke step ini, reset section ke 'matrix' agar user wajib klik tab Kriteria lagi
       useUiStore.getState().setActiveEditorSection('matrix');
     },
     requiredAction: {
@@ -159,7 +158,6 @@ export const GENERAL_TOUR_STEPS: TourStep[] = [
       'Kini giliran mengelola daftar kandidat pilihan keputusan. Silakan klik tombol tab "Alternatif".',
     placement: 'bottom',
     resetOnBack: () => {
-      // Saat mundur ke step ini, kembalikan ke 'criteria' agar user wajib klik tab Alternatif lagi
       useUiStore.getState().setActiveEditorSection('criteria');
     },
     requiredAction: {
@@ -193,7 +191,6 @@ export const GENERAL_TOUR_STEPS: TourStep[] = [
       'Bagus! Sekarang silakan klik kembali tab "Tabel Matriks" untuk melihat grid pengisian nilai matriks.',
     placement: 'bottom',
     resetOnBack: () => {
-      // Saat mundur ke step ini, kembalikan ke 'alternatives' agar user wajib klik tab Tabel Matriks lagi
       useUiStore.getState().setActiveEditorSection('alternatives');
     },
     requiredAction: {

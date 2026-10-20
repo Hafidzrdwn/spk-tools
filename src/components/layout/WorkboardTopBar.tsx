@@ -17,7 +17,6 @@ export const WorkboardTopBar: React.FC = () => {
         </div>
       </div>
 
-      {/* Quick Nav Links inside Workboard Content */}
       <div className="flex items-center justify-start sm:justify-end gap-1 sm:gap-1.5 text-xs overflow-x-auto scrollbar-none touch-pan-x w-full sm:w-auto">
         <Link
           to="/"

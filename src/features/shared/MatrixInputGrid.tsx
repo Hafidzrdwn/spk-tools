@@ -16,7 +16,6 @@ interface MatrixCellInputProps {
 const MatrixCellInput: React.FC<MatrixCellInputProps> = React.memo(({ value, onCommit, className }) => {
   const [localVal, setLocalVal] = useState<number>(value);
 
-  // Sinkronisasi jika nilai luar berubah (misal ganti template atau reset)
   useEffect(() => {
     setLocalVal(value);
   }, [value]);

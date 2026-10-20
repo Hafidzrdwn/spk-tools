@@ -14,12 +14,10 @@ export interface NumericInputProps
 
 export const NumericInput = forwardRef<HTMLInputElement, NumericInputProps>(
   ({ className, label, error, value, onChange, min, max, disabled, onBlur, ...props }, ref) => {
-    // Local text state allows empty string when user deletes without reverting to '0'
     const [localText, setLocalText] = useState<string>(() => (value !== undefined && value !== null ? String(value) : ''));
     const isFocusedRef = useRef(false);
 
     useEffect(() => {
-      // Sync from outside when not actively typing or if numeric values diverge
       if (!isFocusedRef.current) {
         setLocalText(value !== undefined && value !== null ? String(value) : '');
       } else {
@@ -36,14 +34,12 @@ export const NumericInput = forwardRef<HTMLInputElement, NumericInputProps>(
       setLocalText(raw);
 
       if (raw.trim() === '') {
-        // User deleted everything; notify parent with 0 or min without forcing input text to '0'
         if (onChange) {
           onChange(min !== undefined ? min : 0);
         }
         return;
       }
 
-      // Convert comma to period for Indonesian / continental decimal support, strip %
       const normalized = raw.replace(',', '.').replace('%', '').trim();
       const parsed = parseFloat(normalized);
       if (Number.isFinite(parsed) && onChange) {

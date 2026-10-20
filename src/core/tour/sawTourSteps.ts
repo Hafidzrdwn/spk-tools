@@ -12,7 +12,6 @@ export const resetSawTourTracking = () => {
   sawCellHoveredDuringStep = false;
 };
 
-// Hanya tandai hovered jika step hover sedang aktif
 useUiStore.subscribe((state) => {
   if (isHoverStepActive && state.hoveredCellId !== null) {
     sawCellHoveredDuringStep = true;
@@ -29,8 +28,6 @@ export const isSawHoverSatisfied = () => {
 const ensureTemplateData = () => {
   const { criteria, alternatives, loadProjectState } = useProjectStore.getState();
   const stashed = useTourStore.getState().stashedProjectState;
-  // Muat template demonstrasi jika ada data stashed (data asli pengguna sudah diamankan)
-  // atau jika data saat ini masih kosong
   if (stashed || criteria.length === 0 || alternatives.length === 0) {
     loadProjectState(CASE_TEMPLATES[0].state);
   }
