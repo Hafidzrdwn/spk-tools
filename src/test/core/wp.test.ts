@@ -124,14 +124,13 @@ describe('calculateWP & wpZeroGuard', () => {
 
       const alternatives: Alternative[] = [
         { id: 'a1', name: 'Mesin Alpha', values: { c1: 50, c2: 10 } },
-        { id: 'a2', name: 'Mesin Beta', values: { c1: 70, c2: 0 } }, // Pelanggaran: 0 pada Cost
+        { id: 'a2', name: 'Mesin Beta', values: { c1: 70, c2: 0 } },
       ];
 
       const safeResult = calculateWP(criteria, alternatives, { safeZeroHandling: true });
       expect(safeResult.finalRanking.length).toBe(2);
       expect(safeResult.hasZeroCostAdjustment).toBe(true);
       expect(safeResult.adjustedViolations?.length).toBe(1);
-      // Mesin Beta (0 biaya) harus mendapatkan skor positif valid dan tidak NaN / Infinity
       expect(Number.isFinite(safeResult.finalRanking[0].score)).toBe(true);
       expect(Number.isFinite(safeResult.finalRanking[1].score)).toBe(true);
       expect(safeResult.finalRanking[0].score + safeResult.finalRanking[1].score).toBeCloseTo(1, 4);
@@ -149,7 +148,6 @@ describe('calculateWP & wpZeroGuard', () => {
       const result = calculateSafeWP(criteria, alternatives);
       expect(result.finalRanking.length).toBe(2);
       expect(result.hasZeroCostAdjustment).toBe(true);
-      // Bella dengan 0 komplain harus lebih unggul dari Anton (1 komplain) pada kriteria Cost
       expect(result.finalRanking[0].alternativeId).toBe('a_bella');
       expect(result.finalRanking[1].alternativeId).toBe('a_anton');
     });

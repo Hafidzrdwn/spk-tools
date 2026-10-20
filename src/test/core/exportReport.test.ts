@@ -198,13 +198,11 @@ describe('Export PDF Report Module', () => {
     expect(employeeTemplate).toBeDefined();
 
     const { criteria, alternatives, title } = employeeTemplate!.state;
-    // Verifikasi ada nilai 0 pada kriteria Cost di template ini
     const costCrit = criteria.find((c) => c.type === 'COST');
     expect(costCrit).toBeDefined();
     const hasZero = alternatives.some((a) => a.values[costCrit!.id] === 0);
     expect(hasZero).toBe(true);
 
-    // Hitung seluruh metode
     const sawRes = calculateSAW(criteria, alternatives);
     const wpRes = calculateSafeWP(criteria, alternatives);
     const topsisRes = calculateTOPSIS(criteria, alternatives);
@@ -245,5 +243,4 @@ describe('Export PDF Report Module', () => {
     expect(element).toBeDefined();
   });
 });
-
 

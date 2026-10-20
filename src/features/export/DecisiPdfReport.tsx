@@ -253,7 +253,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 
-  // Epsilon-Guard Note
   adjustmentNoteBox: {
     backgroundColor: '#EFF6FF',
     borderLeftWidth: 3,
