@@ -2,7 +2,7 @@ import React from 'react';
 import type { ComparisonResult } from '@/core/math/compareRankings';
 import Card, { CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
-import { CheckCircle2, Sparkles, Scale, Info } from 'lucide-react';
+import { CheckCircle2, Sparkles, Scale, Info, ChevronDown, ChevronUp } from 'lucide-react';
 import { useNumberFormatter } from '@/utils/numberFormat';
 
 export interface RankingShiftExplanationProps {
@@ -23,6 +23,8 @@ export const RankingShiftExplanation: React.FC<RankingShiftExplanationProps> = (
   const hasSaw = activeMethods.includes('saw');
   const hasWp = activeMethods.includes('wp');
   const hasTopsis = activeMethods.includes('topsis');
+
+  const [isSensitivityCollapsed, setIsSensitivityCollapsed] = React.useState(false);
 
   return (
     <div className="space-y-4">
@@ -198,18 +200,41 @@ export const RankingShiftExplanation: React.FC<RankingShiftExplanationProps> = (
 
       {/* Kartu Analisis Sensitivitas & Margin Selisih Skor (Smart Gap Insight) */}
       {sensitivity && (
-        <Card className="bg-linear-to-r from-indigo-50/50 via-slate-50 to-white border-indigo-200/70 shadow-2xs">
-          <CardContent className="p-4 space-y-3">
-            <div className="flex items-center justify-between gap-2 flex-wrap">
-              <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded-md bg-indigo-100 text-indigo-700 flex items-center justify-center shrink-0">
-                  <Info className="w-3.5 h-3.5" />
-                </div>
-                <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wide">
-                  Analisis Sensitivitas & Margin Selisih Skor
-                </h4>
+        <Card className="bg-linear-to-r from-indigo-50/50 via-slate-50 to-white border-indigo-200/70 shadow-2xs overflow-hidden transition-all">
+          <div
+            role="button"
+            tabIndex={0}
+            onClick={() => setIsSensitivityCollapsed((prev) => !prev)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                setIsSensitivityCollapsed((prev) => !prev);
+              }
+            }}
+            className={`p-3.5 sm:p-4 flex items-center justify-between gap-3 cursor-pointer select-none transition-colors hover:bg-indigo-50/60 ${
+              !isSensitivityCollapsed ? 'border-b border-indigo-100/80' : ''
+            }`}
+            aria-expanded={!isSensitivityCollapsed}
+          >
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className="w-6 h-6 rounded-md bg-indigo-100 text-indigo-700 flex items-center justify-center shrink-0">
+                <Info className="w-3.5 h-3.5" />
               </div>
+              <div className="min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wide">
+                    Analisis Sensitivitas & Margin Selisih Skor
+                  </h4>
+                  {isSensitivityCollapsed && (
+                    <span className="text-[10px] font-mono text-indigo-600 bg-indigo-50/80 px-1.5 py-0.5 rounded border border-indigo-200/50">
+                      (Diciutkan)
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
 
+            <div className="flex items-center gap-2 shrink-0">
               {sensitivity.hasTightMargins ? (
                 <Badge variant="cost" size="sm" className="font-semibold text-[10px]">
                   Margin Tipis (Sensitivitas Tinggi)
@@ -219,81 +244,92 @@ export const RankingShiftExplanation: React.FC<RankingShiftExplanationProps> = (
                   Margin Tegas (Diferensiasi Jelas)
                 </Badge>
               )}
-            </div>
-
-            <p className="text-xs text-slate-700 leading-relaxed font-sans bg-white/80 p-3 rounded-lg border border-slate-200/80">
-              {sensitivity.statement}
-            </p>
-
-            {/* Rincian Selisih Skor Antar Peringkat Berurutan */}
-            {sensitivity.gaps.length > 0 && (
-              <div className="space-y-1.5 pt-1">
-                <span className="text-[11px] font-semibold text-slate-500 block">
-                  Daftar Selisih Skor Antar Peringkat Berurutan per Metode:
-                </span>
-                <div className="overflow-x-auto rounded-lg border border-slate-200/80 bg-white">
-                  <table className="w-full text-left text-[11px] border-collapse">
-                    <thead>
-                      <tr className="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200">
-                        <th className="py-1.5 px-3">Metode</th>
-                        <th className="py-1.5 px-3">Pasangan Peringkat</th>
-                        <th className="py-1.5 px-3">Alternatif Dibandingkan</th>
-                        <th className="py-1.5 px-3 text-right">Selisih Skor (&Delta;)</th>
-                        <th className="py-1.5 px-3 text-center">Status Margin</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100 font-mono">
-                      {sensitivity.gaps.map((g, idx) => (
-                        <tr
-                          key={`${g.method}-${g.higherRank}-${idx}`}
-                          className={g.isTight ? 'bg-amber-50/40 hover:bg-amber-50/70' : 'hover:bg-slate-50/60'}
-                        >
-                          <td className="py-1.5 px-3 font-bold font-sans">
-                            <span
-                              className={
-                                g.method === 'saw'
-                                  ? 'text-indigo-700'
-                                  : g.method === 'wp'
-                                  ? 'text-violet-700'
-                                  : 'text-sky-700'
-                              }
-                            >
-                              {g.methodName}
-                            </span>
-                          </td>
-                          <td className="py-1.5 px-3 font-sans text-slate-600">
-                            #{g.higherRank} vs #{g.lowerRank}
-                          </td>
-                          <td
-                            className="py-1.5 px-3 font-sans font-medium text-slate-800 truncate max-w-48"
-                            title={`${g.higherAltName} vs ${g.lowerAltName}`}
-                          >
-                            <span className="text-slate-900">{g.higherAltName}</span>
-                            <span className="text-slate-400 mx-1">&bull;</span>
-                            <span className="text-slate-600">{g.lowerAltName}</span>
-                          </td>
-                          <td className="py-1.5 px-3 text-right font-bold text-slate-900">
-                            {formatNumber(g.gap, 4)}
-                          </td>
-                          <td className="py-1.5 px-3 text-center font-sans">
-                            {g.isTight ? (
-                              <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-100 text-amber-800 border border-amber-200">
-                                Sangat Tipis
-                              </span>
-                            ) : (
-                              <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-500">
-                                Cukup Tegas
-                              </span>
-                            )}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+              <div className="w-6 h-6 rounded flex items-center justify-center text-slate-500 hover:text-slate-800 transition-transform">
+                {isSensitivityCollapsed ? (
+                  <ChevronDown className="w-4 h-4 text-indigo-600" />
+                ) : (
+                  <ChevronUp className="w-4 h-4 text-indigo-600" />
+                )}
               </div>
-            )}
-          </CardContent>
+            </div>
+          </div>
+
+          {!isSensitivityCollapsed && (
+            <CardContent className="p-4 space-y-3 pt-3">
+              <p className="text-xs text-slate-700 leading-relaxed font-sans bg-white/80 p-3 rounded-lg border border-slate-200/80">
+                {sensitivity.statement}
+              </p>
+
+              {/* Rincian Selisih Skor Antar Peringkat Berurutan */}
+              {sensitivity.gaps.length > 0 && (
+                <div className="space-y-1.5 pt-1">
+                  <span className="text-[11px] font-semibold text-slate-500 block">
+                    Daftar Selisih Skor Antar Peringkat Berurutan per Metode:
+                  </span>
+                  <div className="overflow-x-auto rounded-lg border border-slate-200/80 bg-white">
+                    <table className="w-full text-left text-[11px] border-collapse">
+                      <thead>
+                        <tr className="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200">
+                          <th className="py-1.5 px-3">Metode</th>
+                          <th className="py-1.5 px-3">Pasangan Peringkat</th>
+                          <th className="py-1.5 px-3">Alternatif Dibandingkan</th>
+                          <th className="py-1.5 px-3 text-right">Selisih Skor (&Delta;)</th>
+                          <th className="py-1.5 px-3 text-center">Status Margin</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100 font-mono">
+                        {sensitivity.gaps.map((g, idx) => (
+                          <tr
+                            key={`${g.method}-${g.higherRank}-${idx}`}
+                            className={g.isTight ? 'bg-amber-50/40 hover:bg-amber-50/70' : 'hover:bg-slate-50/60'}
+                          >
+                            <td className="py-1.5 px-3 font-bold font-sans">
+                              <span
+                                className={
+                                  g.method === 'saw'
+                                    ? 'text-indigo-700'
+                                    : g.method === 'wp'
+                                    ? 'text-violet-700'
+                                    : 'text-sky-700'
+                                }
+                              >
+                                {g.methodName}
+                              </span>
+                            </td>
+                            <td className="py-1.5 px-3 font-sans text-slate-600">
+                              #{g.higherRank} vs #{g.lowerRank}
+                            </td>
+                            <td
+                              className="py-1.5 px-3 font-sans font-medium text-slate-800 truncate max-w-48"
+                              title={`${g.higherAltName} vs ${g.lowerAltName}`}
+                            >
+                              <span className="text-slate-900">{g.higherAltName}</span>
+                              <span className="text-slate-400 mx-1">&bull;</span>
+                              <span className="text-slate-600">{g.lowerAltName}</span>
+                            </td>
+                            <td className="py-1.5 px-3 text-right font-bold text-slate-900">
+                              {formatNumber(g.gap, 4)}
+                            </td>
+                            <td className="py-1.5 px-3 text-center font-sans">
+                              {g.isTight ? (
+                                <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-100 text-amber-800 border border-amber-200">
+                                  Sangat Tipis
+                                </span>
+                              ) : (
+                                <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-500">
+                                  Cukup Tegas
+                                </span>
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          )}
         </Card>
       )}
     </div>

@@ -157,46 +157,46 @@ export const MultiMethodComparisonTable: React.FC<MultiMethodComparisonTableProp
         <table className="w-full text-left border-collapse text-xs">
           <thead>
             <tr className="bg-slate-50/90 border-b border-slate-200 text-slate-600 font-semibold">
-              <th className="py-3 px-3 sm:px-4 w-32 sm:w-44 min-w-32 sm:min-w-44 sticky left-0 bg-slate-50/95 z-10 border-r border-slate-200/70">
+              <th className="py-3 px-3 sm:px-4 w-36 sm:w-60 min-w-[140px] sm:min-w-60 max-w-[175px] sm:max-w-72 sticky left-0 bg-slate-50/95 z-10 border-r border-slate-200/70">
                 Alternatif
               </th>
 
               {hasSaw && (
-                <th className="py-3 px-3 text-center border-r border-slate-200/50">
+                <th className="py-3 px-3 text-center border-r border-slate-200/50 min-w-[95px] sm:min-w-[110px] whitespace-nowrap">
                   <span className="font-bold text-indigo-700">SAW</span>
                   <span className="text-[10px] text-slate-400 block font-normal">Aditif Linear (V)</span>
                 </th>
               )}
 
               {hasWp && (
-                <th className="py-3 px-3 text-center border-r border-slate-200/50">
+                <th className="py-3 px-3 text-center border-r border-slate-200/50 min-w-[95px] sm:min-w-[110px] whitespace-nowrap">
                   <span className="font-bold text-violet-700">WP</span>
                   <span className="text-[10px] text-slate-400 block font-normal">Perkalian Pangkat (V)</span>
                 </th>
               )}
 
               {hasTopsis && (
-                <th className="py-3 px-3 text-center border-r border-slate-200/50">
+                <th className="py-3 px-3 text-center border-r border-slate-200/50 min-w-[95px] sm:min-w-[110px] whitespace-nowrap">
                   <span className="font-bold text-sky-700">TOPSIS</span>
                   <span className="text-[10px] text-slate-400 block font-normal">Jarak Ideal (C_i)</span>
                 </th>
               )}
 
-              <th className="py-3 px-3 text-center border-r border-slate-200/50">
+              <th className="py-3 px-3 text-center border-r border-slate-200/50 min-w-[105px] sm:min-w-[125px] whitespace-nowrap">
                 <span className="font-bold text-slate-700">Pergeseran Posisi</span>
                 <span className="text-[10px] text-slate-400 block font-normal">
                   {activeMethods.length === 2 ? 'Delta Antar Metode' : 'Rentang Posisi'}
                 </span>
               </th>
 
-              <th className="py-3 px-3 text-center border-r border-slate-200/50">
+              <th className="py-3 px-3 text-center border-r border-slate-200/50 min-w-[90px] sm:min-w-[110px] whitespace-nowrap">
                 <span className="font-bold text-slate-700">Rerata Posisi</span>
                 <span className="text-[10px] text-slate-400 block font-normal">
                   {activeMethods.map((m) => m.toUpperCase()).join(' & ')}
                 </span>
               </th>
 
-              <th className="py-3 px-3 text-center">
+              <th className="py-3 px-3 text-center min-w-[100px] sm:min-w-[120px] whitespace-nowrap">
                 <span className="font-bold text-slate-700">Konsensus</span>
               </th>
             </tr>
@@ -212,23 +212,28 @@ export const MultiMethodComparisonTable: React.FC<MultiMethodComparisonTableProp
                   }`}
                 >
                   {/* Nama Alternatif */}
-                  <td className="py-2.5 px-3 sm:px-4 font-semibold text-slate-800 sticky left-0 bg-white/95 z-10 border-r border-slate-200/70 shadow-xs">
-                    <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
-                      <span className="text-slate-400 font-mono text-[11px] w-5">#{idx + 1}</span>
-                      <span className="truncate font-semibold" title={row.alternativeName}>
-                        {row.alternativeName}
-                      </span>
-                      {row.isConsensusRank1 && (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-benefit/10 text-benefit border border-benefit/20 text-[10px] font-medium whitespace-nowrap shrink-0">
-                          Rekomendasi Utama
+                  <td className="py-2.5 px-3 sm:px-4 font-semibold text-slate-800 sticky left-0 bg-white/95 z-10 border-r border-slate-200/70 shadow-xs w-36 sm:w-60 min-w-[140px] sm:min-w-60 max-w-[175px] sm:max-w-72 align-middle">
+                    <div className="flex flex-col gap-1 min-w-0">
+                      <div className="flex items-start gap-1.5 min-w-0">
+                        <span className="text-slate-400 font-mono text-[10px] sm:text-[11px] shrink-0 mt-0.5">#{idx + 1}</span>
+                        <span className="font-semibold text-xs text-slate-800 break-words leading-snug" title={row.alternativeName}>
+                          {row.alternativeName}
                         </span>
+                      </div>
+                      {row.isConsensusRank1 && (
+                        <div className="flex items-center pl-4 sm:pl-5">
+                          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-benefit/10 text-benefit border border-benefit/20 text-[10px] font-medium whitespace-nowrap shrink-0">
+                            <Trophy className="w-3 h-3 text-amber-500 shrink-0" />
+                            <span>Rekomendasi Utama</span>
+                          </span>
+                        </div>
                       )}
                     </div>
                   </td>
 
                   {/* SAW Column */}
                   {hasSaw && (
-                    <td className="py-2 px-3 border-r border-slate-100 text-center">
+                    <td className="py-2 px-3 border-r border-slate-100 text-center whitespace-nowrap">
                       <div className="flex items-center justify-center gap-1.5 font-mono">
                         <Badge variant={getRankBadgeVariant(row.saw.rank)} size="sm" className="whitespace-nowrap">
                           #{row.saw.rank}
@@ -240,7 +245,7 @@ export const MultiMethodComparisonTable: React.FC<MultiMethodComparisonTableProp
 
                   {/* WP Column */}
                   {hasWp && (
-                    <td className="py-2 px-3 border-r border-slate-100 text-center">
+                    <td className="py-2 px-3 border-r border-slate-100 text-center whitespace-nowrap">
                       <div className="flex items-center justify-center gap-1.5 font-mono">
                         <Badge variant={getRankBadgeVariant(row.wp.rank)} size="sm" className="whitespace-nowrap">
                           #{row.wp.rank}
@@ -252,7 +257,7 @@ export const MultiMethodComparisonTable: React.FC<MultiMethodComparisonTableProp
 
                   {/* TOPSIS Column */}
                   {hasTopsis && (
-                    <td className="py-2 px-3 border-r border-slate-100 text-center">
+                    <td className="py-2 px-3 border-r border-slate-100 text-center whitespace-nowrap">
                       <div className="flex items-center justify-center gap-1.5 font-mono">
                         <Badge variant={getRankBadgeVariant(row.topsis.rank)} size="sm" className="whitespace-nowrap">
                           #{row.topsis.rank}
@@ -263,36 +268,36 @@ export const MultiMethodComparisonTable: React.FC<MultiMethodComparisonTableProp
                   )}
 
                   {/* Pergeseran Posisi (Shift Badge) */}
-                  <td className="py-2 px-3 border-r border-slate-100 text-center" title={shift?.details}>
+                  <td className="py-2 px-3 border-r border-slate-100 text-center whitespace-nowrap" title={shift?.details}>
                     {shift?.type === 'stable' ? (
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-[11px] font-medium">
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-[11px] font-medium whitespace-nowrap">
                         <Minus className="w-3 h-3 text-slate-400" />
                         <span>Tetap</span>
                       </span>
                     ) : shift?.type === 'up' ? (
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[11px] font-bold">
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[11px] font-bold whitespace-nowrap">
                         <ArrowUp className="w-3 h-3 text-emerald-600" />
                         <span>{shift.label}</span>
                       </span>
                     ) : shift?.type === 'down' ? (
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 text-[11px] font-bold">
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 text-[11px] font-bold whitespace-nowrap">
                         <ArrowDown className="w-3 h-3 text-rose-600" />
                         <span>{shift.label}</span>
                       </span>
                     ) : (
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 text-[11px] font-medium">
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 text-[11px] font-medium whitespace-nowrap">
                         <span>{shift?.label}</span>
                       </span>
                     )}
                   </td>
 
                   {/* Average Rank (Dinamis sesuai metode aktif) */}
-                  <td className="py-2 px-3 border-r border-slate-100 text-center font-mono font-bold text-slate-800">
+                  <td className="py-2 px-3 border-r border-slate-100 text-center font-mono font-bold text-slate-800 whitespace-nowrap">
                     {formatNumber(row.averageRank, 2)}
                   </td>
 
                   {/* Consensus Status */}
-                  <td className="py-2 px-3 text-center">
+                  <td className="py-2 px-3 text-center whitespace-nowrap">
                     {row.isConsensusRank1 ? (
                       <div className="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-800 bg-amber-100/80 border border-amber-300 px-2 py-0.5 rounded-full whitespace-nowrap shadow-2xs">
                         <Trophy className="w-3 h-3 text-amber-600 shrink-0" />
