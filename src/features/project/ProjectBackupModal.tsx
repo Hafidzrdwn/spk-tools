@@ -80,8 +80,6 @@ export const ProjectBackupModal: React.FC<ProjectBackupModalProps> = ({
     numberFormat,
   };
 
-  if (!isOpen) return null;
-
   const handleCopy = async () => {
     const success = await copyProjectBackupToClipboard(currentProjectState, currentPreferences);
     if (success) {
