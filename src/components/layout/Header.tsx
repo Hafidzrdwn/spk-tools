@@ -50,8 +50,7 @@ export const Header: React.FC<HeaderProps> = ({
             className="m-0 p-0 text-inherit font-inherit inline-flex items-center cursor-pointer min-h-9"
             title="Kembali ke Beranda (Landing Page)"
           >
-            <Logo size="sm" showWordmark className="sm:hidden" />
-            <Logo size="md" showWordmark className="hidden sm:flex" />
+            <Logo size="responsive" showWordmark />
           </Link>
           <div className="flex items-center gap-1.5 sm:gap-2 border-l border-slate-200/80 pl-2 sm:pl-3 min-w-0">
             <Badge variant="primary" size="sm" className="font-bold text-[10px] py-0 px-1.5 hidden md:inline-flex shrink-0">

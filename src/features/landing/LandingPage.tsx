@@ -228,8 +228,7 @@ export const LandingPage: React.FC = () => {
               className="inline-flex items-center min-h-11 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded"
               title="DecisiGraph SPK"
             >
-              <Logo size="sm" showWordmark={true} className="sm:hidden" />
-              <Logo size="md" showWordmark={true} className="hidden sm:flex" />
+              <Logo size="responsive" showWordmark={true} />
             </Link>
             <span className="text-slate-300 hidden xs:inline">|</span>
             <Badge variant="primary" size="sm" className="font-bold text-[10px] py-0 px-1.5 hidden xs:inline-flex">
