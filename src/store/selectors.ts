@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useProjectStore } from './useProjectStore';
 import type { Criterion } from '@/types/domain';
 
@@ -46,5 +47,6 @@ export const useIsWeightValid = (): boolean => {
 };
 
 export const useNormalizedCriteria = (): Criterion[] => {
-  return useProjectStore((state) => selectNormalizedCriteria(state.criteria));
+  const criteria = useProjectStore((state) => state.criteria);
+  return useMemo(() => selectNormalizedCriteria(criteria), [criteria]);
 };

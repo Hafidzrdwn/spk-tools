@@ -17,7 +17,7 @@ function getRankBadgeVariant(rank: number): 'benefit' | 'cost' | 'primary' | 'ne
   return 'neutral';
 }
 
-export const MultiMethodComparisonTable: React.FC<MultiMethodComparisonTableProps> = ({
+export const MultiMethodComparisonTable: React.FC<MultiMethodComparisonTableProps> = React.memo(({
   rows,
   activeMethods = ['saw', 'wp', 'topsis'],
   onToggleMethod,
@@ -153,7 +153,7 @@ export const MultiMethodComparisonTable: React.FC<MultiMethodComparisonTableProp
       )}
 
       {/* Tabel Utama Matriks Komparasi */}
-      <div className="w-full overflow-x-auto rounded-card border border-slate-200/80 bg-white/90 shadow-2xs touch-pan-x">
+      <div className="w-full overflow-x-auto rounded-card border border-slate-200/80 bg-white/90 shadow-2xs touch-pan-x [contain:paint]">
         <table className="w-full text-left border-collapse text-xs">
           <thead>
             <tr className="bg-slate-50/90 border-b border-slate-200 text-slate-600 font-semibold">
@@ -322,6 +322,8 @@ export const MultiMethodComparisonTable: React.FC<MultiMethodComparisonTableProp
       </div>
     </div>
   );
-};
+});
+
+MultiMethodComparisonTable.displayName = 'MultiMethodComparisonTable';
 
 export default MultiMethodComparisonTable;

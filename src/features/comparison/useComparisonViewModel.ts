@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { useProjectStore } from '@/store/useProjectStore';
 import { useNormalizedCriteria } from '@/store/selectors';
 import { calculateSAW } from '@/core/math/saw';
@@ -33,7 +33,7 @@ export function useComparisonViewModel(): ComparisonViewModel {
     'topsis',
   ]);
 
-  const toggleMethod = (method: CompareMethod) => {
+  const toggleMethod = useCallback((method: CompareMethod) => {
     setSelectedMethods((prev) => {
       if (prev.includes(method)) {
         // Minimal harus ada 2 metode untuk dibandingkan
@@ -42,12 +42,23 @@ export function useComparisonViewModel(): ComparisonViewModel {
       }
       return [...prev, method];
     });
-  };
+  }, []);
 
   const hasData = criteria.length > 0 && alternatives.length > 0;
 
+  // Memoize hasil perhitungan masing-masing metode sehingga saat toggle filter metode,
+  // tidak perlu menghitung ulang normalisasi SAW, perkalian pangkat WP, atau matriks jarak TOPSIS.
+  const methodRankings = useMemo(() => {
+    if (!hasData) return null;
+    return {
+      saw: calculateSAW(criteria, alternatives).finalRanking,
+      wp: calculateWP(criteria, alternatives).finalRanking,
+      topsis: calculateTOPSIS(criteria, alternatives).finalRanking,
+    };
+  }, [criteria, alternatives, hasData]);
+
   const comparison = useMemo<ComparisonResult>(() => {
-    if (!hasData) {
+    if (!hasData || !methodRankings) {
       return {
         activeMethods: selectedMethods,
         rows: [],
@@ -63,21 +74,17 @@ export function useComparisonViewModel(): ComparisonViewModel {
       };
     }
 
-    const sawRes = calculateSAW(criteria, alternatives);
-    const wpRes = calculateWP(criteria, alternatives);
-    const topsisRes = calculateTOPSIS(criteria, alternatives);
-
     return compareRankings(
-      sawRes.finalRanking,
-      wpRes.finalRanking,
-      topsisRes.finalRanking,
+      methodRankings.saw,
+      methodRankings.wp,
+      methodRankings.topsis,
       criteria,
       alternatives,
       selectedMethods
     );
-  }, [criteria, alternatives, hasData, selectedMethods]);
+  }, [methodRankings, criteria, alternatives, hasData, selectedMethods]);
 
-  const loadShiftDemoCase = () => {
+  const loadShiftDemoCase = useCallback(() => {
     loadProjectState({
       title: 'Studi Kasus Pergeseran Peringkat (SAW vs TOPSIS)',
       activeMethod: 'SAW',
@@ -104,7 +111,7 @@ export function useComparisonViewModel(): ComparisonViewModel {
         },
       ],
     });
-  };
+  }, [loadProjectState]);
 
   return {
     criteria,

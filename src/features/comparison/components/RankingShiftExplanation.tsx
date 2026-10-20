@@ -9,7 +9,7 @@ export interface RankingShiftExplanationProps {
   comparison: ComparisonResult;
 }
 
-export const RankingShiftExplanation: React.FC<RankingShiftExplanationProps> = ({ comparison }) => {
+export const RankingShiftExplanation: React.FC<RankingShiftExplanationProps> = React.memo(({ comparison }) => {
   const { formatNumber } = useNumberFormatter();
   const {
     activeMethods = ['saw', 'wp', 'topsis'],
@@ -24,7 +24,13 @@ export const RankingShiftExplanation: React.FC<RankingShiftExplanationProps> = (
   const hasWp = activeMethods.includes('wp');
   const hasTopsis = activeMethods.includes('topsis');
 
-  const [isSensitivityCollapsed, setIsSensitivityCollapsed] = React.useState(false);
+  // Default collapsed agar render pertama kali tab perbandingan instan dan ringan
+  const [isSensitivityCollapsed, setIsSensitivityCollapsed] = React.useState(true);
+  const [showAllGaps, setShowAllGaps] = React.useState(false);
+
+  const INITIAL_GAP_LIMIT = 6;
+  const allGaps = sensitivity?.gaps ?? [];
+  const displayedGaps = showAllGaps ? allGaps : allGaps.slice(0, INITIAL_GAP_LIMIT);
 
   return (
     <div className="space-y-4">
@@ -278,7 +284,7 @@ export const RankingShiftExplanation: React.FC<RankingShiftExplanationProps> = (
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-100 font-mono">
-                        {sensitivity.gaps.map((g, idx) => (
+                        {displayedGaps.map((g, idx) => (
                           <tr
                             key={`${g.method}-${g.higherRank}-${idx}`}
                             className={g.isTight ? 'bg-amber-50/40 hover:bg-amber-50/70' : 'hover:bg-slate-50/60'}
@@ -326,6 +332,28 @@ export const RankingShiftExplanation: React.FC<RankingShiftExplanationProps> = (
                       </tbody>
                     </table>
                   </div>
+
+                  {allGaps.length > INITIAL_GAP_LIMIT && (
+                    <div className="flex justify-center pt-1.5">
+                      <button
+                        type="button"
+                        onClick={() => setShowAllGaps((prev) => !prev)}
+                        className="text-[11px] font-semibold text-indigo-600 hover:text-indigo-800 bg-indigo-50/80 hover:bg-indigo-100/80 px-3 py-1 rounded-control border border-indigo-200/70 transition-colors cursor-pointer flex items-center gap-1.5 shadow-2xs"
+                      >
+                        {showAllGaps ? (
+                          <>
+                            <ChevronUp className="w-3.5 h-3.5" />
+                            <span>Tampilkan Lebih Sedikit ({INITIAL_GAP_LIMIT} Teratas)</span>
+                          </>
+                        ) : (
+                          <>
+                            <ChevronDown className="w-3.5 h-3.5" />
+                            <span>Tampilkan Semua ({allGaps.length} Selisih Peringkat)</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
             </CardContent>
@@ -334,6 +362,8 @@ export const RankingShiftExplanation: React.FC<RankingShiftExplanationProps> = (
       )}
     </div>
   );
-};
+});
+
+RankingShiftExplanation.displayName = 'RankingShiftExplanation';
 
 export default RankingShiftExplanation;
