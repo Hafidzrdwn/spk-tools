@@ -20,7 +20,6 @@ export const CommunityLayout: React.FC<CommunityLayoutProps> = ({
 
   return (
     <div className="min-h-dvh w-full bg-surface bg-dot-grid text-slate-800 pb-16 antialiased">
-      {/* Top Bar Header */}
       <header className="sticky top-0 z-30 bg-white/90 backdrop-blur-xs border-b border-slate-200 px-3 sm:px-6 py-2 sm:py-2.5 shadow-2xs">
         <div className="max-w-6xl mx-auto flex items-center justify-between gap-1.5 sm:gap-4">
           <div className="flex items-center gap-1 sm:gap-2.5">
@@ -60,7 +59,6 @@ export const CommunityLayout: React.FC<CommunityLayoutProps> = ({
             </Link>
           </div>
 
-          {/* Clean Sub-Navigation Tabs */}
           <nav aria-label="Navigasi Komunitas" className="flex items-center gap-1 p-0.5 sm:p-1 bg-slate-100 rounded-lg border border-slate-200 text-xs shrink-0">
             <Link
               to="/review"

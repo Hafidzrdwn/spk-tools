@@ -18,7 +18,6 @@ export const ComparisonTab: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Top Banner & Demo Case Trigger */}
       <Card className="bg-linear-to-r from-indigo-500/10 via-purple-500/5 to-transparent border-indigo-200/80">
         <CardContent className="p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
@@ -69,10 +68,8 @@ export const ComparisonTab: React.FC = () => {
         </Card>
       ) : (
         <div className="space-y-6">
-          {/* Penjelasan Pergeseran Peringkat (Data-Driven Explanation & Score Gap Sensitivity) */}
           <RankingShiftExplanation comparison={comparison} />
 
-          {/* Tabel Matriks Komparasi Side-by-Side */}
           <Card>
             <CardHeader className="py-3 px-4 border-b border-slate-100">
               <CardTitle className="text-sm">Matriks Perbandingan Peringkat & Skor Antar Metode</CardTitle>

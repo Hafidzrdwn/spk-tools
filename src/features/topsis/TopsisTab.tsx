@@ -57,7 +57,6 @@ export const TopsisTab: React.FC = () => {
         </Card>
       )}
 
-      {/* Stepper Navigation */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-2 bg-slate-100/80 rounded-card border border-slate-200/70">
         <div className="flex items-center gap-1.5 w-full sm:w-auto overflow-x-auto scrollbar-none touch-pan-x pb-0.5 sm:pb-0">
           {steps.map((s) => (

@@ -43,7 +43,6 @@ export const ProjectBackupModal: React.FC<ProjectBackupModalProps> = ({
   const [isCopied, setIsCopied] = useState(false);
   const [showJsonPreview, setShowJsonPreview] = useState(false);
 
-  // Global store states
   const storeIsBackupOpen = useUiStore((s) => s.isBackupModalOpen);
   const closeBackupModal = useUiStore((s) => s.closeBackupModal);
   const numberFormat = useUiStore((s) => s.numberFormat);
@@ -52,7 +51,6 @@ export const ProjectBackupModal: React.FC<ProjectBackupModalProps> = ({
   const isOpen = propIsOpen !== undefined ? propIsOpen : storeIsBackupOpen;
   const handleClose = propOnClose || closeBackupModal;
 
-  // Import states
   const [importText, setImportText] = useState('');
   const [isDragging, setIsDragging] = useState(false);
   const [validationResult, setValidationResult] = useState<
@@ -180,7 +178,6 @@ export const ProjectBackupModal: React.FC<ProjectBackupModalProps> = ({
         onClick={(e) => e.stopPropagation()}
         className="bg-white rounded-2xl border border-slate-200/90 shadow-2xl max-w-lg w-full max-h-[90vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-150"
       >
-        {/* Modal Header */}
         <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-indigo-50 text-accent-primary flex items-center justify-center shrink-0">
@@ -203,7 +200,6 @@ export const ProjectBackupModal: React.FC<ProjectBackupModalProps> = ({
           </button>
         </div>
 
-        {/* Tab Switcher */}
         <div className="flex border-b border-slate-200 bg-slate-50/70 p-1 gap-1 shrink-0">
           <button
             type="button"

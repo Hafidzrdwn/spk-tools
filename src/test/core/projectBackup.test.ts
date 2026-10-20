@@ -121,7 +121,7 @@ describe('projectBackupService', () => {
           id: 'c1',
           name: 'K1',
           type: 'BENEFIT',
-          weight: 'BUKAN_ANGKA', // salah tipe
+          weight: 'BUKAN_ANGKA',
         },
       ],
       alternatives: [],

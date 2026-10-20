@@ -14,9 +14,9 @@ export interface ReviewItem {
   name: string;
   email?: string;
   role?: string;
-  rating: number; // 1 to 5
+  rating: number;
   comment: string;
-  createdAt: string; // ISO string or timestamp
+  createdAt: string;
 }
 
 export interface BugReportItem {
@@ -56,7 +56,6 @@ export const EMPTY_ANALYTICS: AnalyticsData = {
   recentVisits: [],
 };
 
-// Cek apakah env Firebase tersedia
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
@@ -86,10 +85,6 @@ if (isFirebaseConfigured) {
   }
 }
 
-// =========================================================================
-// PUBLIC API: REVIEWS
-// =========================================================================
-
 export function subscribeToReviews(callback: (reviews: ReviewItem[]) => void): () => void {
   if (db) {
     const reviewsRef = ref(db, 'reviews');
@@ -105,7 +100,6 @@ export function subscribeToReviews(callback: (reviews: ReviewItem[]) => void): (
           id: k,
           ...val[k],
         }));
-        // Urutkan dari yang terbaru
         list.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
         callback(list);
       },
@@ -117,7 +111,6 @@ export function subscribeToReviews(callback: (reviews: ReviewItem[]) => void): (
     return () => unsubscribe();
   }
 
-  // Jika belum terkoneksi Firebase, tampilkan empty state jujur
   callback([]);
   return () => {};
 }

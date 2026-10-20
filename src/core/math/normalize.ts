@@ -1,27 +1,16 @@
 import type { Criterion, Alternative, CriterionType } from '@/types/domain';
 import type { TraceStep } from './types';
 
-/**
- * Normalisasi nilai kriteria tipe BENEFIT:
- * r_ij = x_ij / max(x_j)
- */
 export function normalizeBenefit(value: number, max: number): number {
   if (max === 0) return 0;
   return value / max;
 }
 
-/**
- * Normalisasi nilai kriteria tipe COST:
- * r_ij = min(x_j) / x_ij
- */
 export function normalizeCost(value: number, min: number): number {
   if (value === 0) return 0;
   return min / value;
 }
 
-/**
- * Normalisasi nilai tunggal berdasarkan tipe kriteria
- */
 export function normalizeValue(
   value: number,
   type: CriterionType,
@@ -32,9 +21,6 @@ export function normalizeValue(
     : normalizeCost(value, extremum.min);
 }
 
-/**
- * Menghitung nilai min dan max untuk setiap kriteria dari kumpulan alternatif
- */
 export function getExtremumPerCriterion(
   criteria: Criterion[],
   alternatives: Alternative[]
@@ -60,15 +46,11 @@ export function getExtremumPerCriterion(
 }
 
 export interface NormalizationResult {
-  matrix: number[][]; // [baris alternatif][kolom kriteria]
-  records: Record<string, Record<string, number>>; // [altId][criterionId] = normalizedValue
+  matrix: number[][];
+  records: Record<string, Record<string, number>>;
   traceSteps: TraceStep[];
 }
 
-/**
- * Menormalisasi seluruh matriks keputusan untuk metode SAW / basis normalisasi SPK
- * serta menghasilkan TraceStep[] untuk visual inspector.
- */
 export function normalizeMatrix(
   criteria: Criterion[],
   alternatives: Alternative[],

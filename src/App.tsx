@@ -66,7 +66,6 @@ export default function App() {
             </Suspense>
           }
         />
-        {/* Legacy & Fallback redirects */}
         <Route path="/workboard" element={<Navigate to="/board" replace />} />
         <Route path="/community" element={<Navigate to="/review" replace />} />
         <Route path="*" element={<Navigate to="/" replace />} />

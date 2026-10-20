@@ -20,7 +20,6 @@ export function useUrlTabSync() {
   const setActiveTab = useUiStore((s) => s.setActiveTab);
   const isInitialized = useRef(false);
 
-  // 1. Baca ?tab= dari URL saat pertama kali mount di /board
   useEffect(() => {
     const tabParam = searchParams.get('tab');
     if (tabParam) {
@@ -35,7 +34,6 @@ export function useUrlTabSync() {
     isInitialized.current = true;
   }, []);
 
-  // 2. Sinkronkan ke URL saat activeTab berubah
   useEffect(() => {
     if (!isInitialized.current) return;
     const currentTab = searchParams.get('tab')?.toLowerCase();

@@ -63,7 +63,6 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
   const criteria = useNormalizedCriteria();
   const alternatives = useProjectStore((s) => s.alternatives);
 
-  // Close dropdown on click outside
   useEffect(() => {
     if (!isOpen) return;
     const handleClickOutside = (e: MouseEvent | TouchEvent) => {
@@ -79,7 +78,6 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
     };
   }, [isOpen]);
 
-  // Resolve method calculation if not directly passed
   const resolveMethodResult = (targetMethod: MethodId): {
     res: MethodResult;
     comp?: ReturnType<typeof compareRankings>;
@@ -118,11 +116,9 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
       return { res, comp };
     }
 
-    // Default: SAW (used for SAW, AHP fallback, and AUTO)
     return { res: calculateSAW(criteria, alternatives) };
   };
 
-  // Export specific method
   const handleExportMethod = async () => {
     setErrorMessage(null);
     setIsOpen(false);

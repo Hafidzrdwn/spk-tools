@@ -3,15 +3,14 @@ import { cn } from '@/utils/cn';
 import { useNumberFormatter } from '@/utils/numberFormat';
 
 export interface GaugeMeterProps {
-  value: number; // 0 to 1
-  threshold?: number; // e.g. 0.10 for AHP CR
+  value: number;
+  threshold?: number;
   label?: string;
-  size?: number; // default 140
+  size?: number;
   strokeWidth?: number;
   className?: string;
 }
 
-// Helper kalkulasi koordinat busur SVG
 function polarToCartesian(centerX: number, centerY: number, radius: number, angleInDegrees: number) {
   const angleInRadians = ((angleInDegrees - 180) * Math.PI) / 180.0;
   return {
@@ -39,7 +38,6 @@ export const GaugeMeter: React.FC<GaugeMeterProps> = ({
   const clampedValue = Math.min(1, Math.max(0, value));
   const isOptimal = clampedValue <= threshold;
 
-  // Sudut busur setengah lingkaran (0° sampai 180°)
   const startAngle = 0;
   const maxAngle = 180;
   const currentAngle = startAngle + clampedValue * (maxAngle - startAngle);
@@ -57,7 +55,6 @@ export const GaugeMeter: React.FC<GaugeMeterProps> = ({
     <div className={cn('flex flex-col items-center justify-center p-3 text-center select-none', className)}>
       <div className="relative" style={{ width: size, height: size / 2 + 16 }}>
         <svg width={size} height={size / 2 + strokeWidth} className="overflow-visible">
-          {/* Background Arc */}
           <path
             d={bgPath}
             fill="none"
@@ -65,7 +62,6 @@ export const GaugeMeter: React.FC<GaugeMeterProps> = ({
             strokeWidth={strokeWidth}
             strokeLinecap="round"
           />
-          {/* Active Fill Arc */}
           {clampedValue > 0 && (
             <path
               d={fillPath}
@@ -77,7 +73,6 @@ export const GaugeMeter: React.FC<GaugeMeterProps> = ({
           )}
         </svg>
 
-        {/* Nilai di tengah */}
         <div className="absolute inset-x-0 bottom-0 flex flex-col items-center">
           <span className="font-mono text-xl font-bold tracking-tight text-slate-800">
             {formatNumber(value, 4)}

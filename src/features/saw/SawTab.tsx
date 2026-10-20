@@ -35,7 +35,6 @@ export const SawTab: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Top Banner & Best Alternative Card */}
       {bestAlternative && (
         <Card data-tour-id="saw-best-card" className="bg-linear-to-r from-amber-500/10 via-indigo-500/5 to-transparent border-amber-200/80">
           <CardContent className="p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -59,7 +58,6 @@ export const SawTab: React.FC = () => {
         </Card>
       )}
 
-      {/* Live Mathematical Stepper Navigation */}
       <div data-tour-id="saw-stepper" className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-2 bg-slate-100/80 rounded-card border border-slate-200/70">
         <div className="flex items-center gap-1.5 w-full sm:w-auto overflow-x-auto scrollbar-none touch-pan-x pb-0.5 sm:pb-0">
           {steps.map((s) => (

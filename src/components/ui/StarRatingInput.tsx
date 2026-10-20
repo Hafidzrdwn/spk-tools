@@ -4,7 +4,7 @@ import { Star, Sparkles } from 'lucide-react';
 import { cn } from '@/utils/cn';
 
 export interface StarRatingInputProps {
-  value: number; // 1 to 5
+  value: number;
   onChange: (rating: number) => void;
   size?: 'sm' | 'md' | 'lg';
   showLabel?: boolean;

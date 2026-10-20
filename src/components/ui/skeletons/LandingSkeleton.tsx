@@ -3,7 +3,6 @@ import React from 'react';
 export const LandingSkeleton: React.FC = () => {
   return (
     <div className="min-h-dvh w-full flex flex-col justify-between bg-surface bg-dot-grid text-slate-800 antialiased animate-pulse">
-      {/* Navbar Skeleton - Matches LandingPage.tsx header */}
       <header className="sticky top-0 z-40 w-full px-3 sm:px-6 py-2 sm:py-2.5 border-b border-slate-200/90 bg-white/95 backdrop-blur-xs">
         <div className="max-w-6xl mx-auto flex items-center justify-between gap-2 sm:gap-4">
           <div className="flex items-center gap-1.5 sm:gap-2.5">
@@ -21,11 +20,8 @@ export const LandingSkeleton: React.FC = () => {
         </div>
       </header>
 
-      {/* Main Skeleton */}
       <main className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 py-6 sm:py-12 space-y-12 sm:space-y-14 overflow-hidden">
-        {/* Section 1: Hero & Simulation Skeleton */}
         <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-          {/* Left Column Skeleton (6 cols) */}
           <div className="lg:col-span-6 space-y-5 text-left">
             <div className="w-52 sm:w-60 h-6 rounded-md bg-slate-100 border border-slate-200" />
             <div className="space-y-2.5">
@@ -45,7 +41,6 @@ export const LandingSkeleton: React.FC = () => {
             </div>
           </div>
 
-          {/* Right Column Skeleton (6 cols - Decision Preview Card) */}
           <div className="lg:col-span-6 w-full">
             <div className="bg-white rounded-xl border border-slate-200 p-4 space-y-4 shadow-2xs">
               <div className="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-slate-100">
@@ -62,7 +57,6 @@ export const LandingSkeleton: React.FC = () => {
           </div>
         </section>
 
-        {/* Section 2: Method Studio Master-Detail Skeleton */}
         <section className="space-y-6">
           <div className="space-y-2">
             <div className="w-40 sm:w-48 h-4 rounded bg-indigo-100" />
@@ -70,7 +64,6 @@ export const LandingSkeleton: React.FC = () => {
             <div className="w-full max-w-sm h-4 rounded bg-slate-200" />
           </div>
 
-          {/* 4 Horizontal Tabs Skeleton */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 p-1.5 bg-slate-100 rounded-xl border border-slate-200">
             {[1, 2, 3, 4].map((i) => (
               <div key={i} className="p-3 rounded-lg bg-white space-y-2 min-h-16">
@@ -83,7 +76,6 @@ export const LandingSkeleton: React.FC = () => {
             ))}
           </div>
 
-          {/* Master Detail Split Panel Skeleton */}
           <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden grid grid-cols-1 lg:grid-cols-12 divide-y lg:divide-y-0 lg:divide-x divide-slate-200">
             <div className="lg:col-span-6 p-4 sm:p-7 space-y-5">
               <div className="space-y-2">
@@ -111,7 +103,6 @@ export const LandingSkeleton: React.FC = () => {
           </div>
         </section>
 
-        {/* Section 3: Feature Architecture Matrix Skeleton (2x2 Asymmetric) */}
         <section className="space-y-4">
           <div className="space-y-1.5">
             <div className="w-56 sm:w-64 h-6 rounded bg-slate-300" />
@@ -150,7 +141,6 @@ export const LandingSkeleton: React.FC = () => {
         </section>
       </main>
 
-      {/* Footer Skeleton */}
       <footer className="w-full px-4 sm:px-6 py-4 sm:py-3.5 border-t border-slate-200 bg-white/90">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
           <div className="w-40 sm:w-48 h-4 rounded bg-slate-200" />

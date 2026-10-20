@@ -3,9 +3,6 @@ import type { Criterion, Alternative } from '@/types/domain';
 import type { MethodResult, TraceStep, RankingRow } from './types';
 import { wpZeroGuard, type ZeroGuardViolation } from '@/validators/matrixSchemas';
 
-/**
- * Custom error terstruktur saat zero-guard mendeteksi nilai 0 pada kriteria Cost
- */
 export class WpZeroGuardError extends Error {
   public readonly violations: ZeroGuardViolation[];
 
@@ -17,9 +14,6 @@ export class WpZeroGuardError extends Error {
   }
 }
 
-/**
- * Format angka untuk formula label agar terbaca manusia tanpa noise desimal berlebih
- */
 function formatNumber(val: number): string {
   if (Number.isInteger(val)) {
     return val.toString();
@@ -27,17 +21,6 @@ function formatNumber(val: number): string {
   return Number(val.toFixed(4)).toString();
 }
 
-/**
- * Implementasi WP (Weighted Product)
- * Rumus:
- * 1. Pangkat pembobotan:
- *    w_j* = +w_j jika Benefit
- *    w_j* = -w_j jika Cost
- * 2. Vektor S:
- *    S_i = Π_j ( x_ij ^ w_j* )
- * 3. Normalisasi Vektor V:
- *    V_i = S_i / Σ_i(S_i)
- */
 export function calculateWP(
   criteria: Criterion[],
   alternatives: Alternative[]
@@ -53,7 +36,6 @@ export function calculateWP(
     };
   }
 
-  // Langkah 0: Validasi Zero-Guard untuk kriteria Cost
   const violations = wpZeroGuard(alternatives, criteria);
   if (violations.length > 0) {
     const errorDetails = violations.map((v) => {

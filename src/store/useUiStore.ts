@@ -15,9 +15,7 @@ export interface UiStore {
   glossaryTargetTerm: string | null;
   isWelcomeOpen: boolean;
   isBackupModalOpen: boolean;
-  /** Format angka desimal: 'comma' (Indonesia: 3,14) atau 'dot' (Internasional: 3.14) */
   numberFormat: NumberSeparator;
-  /** Section aktif di panel Shared Input (Matrix / Kriteria / Alternatif) */
   activeEditorSection: EditorSection;
   sawActiveStep: 1 | 2 | 3;
   wpActiveStep: 1 | 2 | 3;
@@ -90,7 +88,6 @@ const getInitialView = (): AppView => {
     if (path && path !== '/') {
       return pathToView(path);
     }
-    // Backward compatibility for legacy ?view= query parameter
     const params = new URLSearchParams(window.location.search);
     const viewParam = params.get('view')?.toLowerCase();
     if (viewParam === 'board' || viewParam === 'workboard') return 'board';
@@ -125,7 +122,6 @@ export const useUiStore = create<UiStore>((set) => ({
   setCurrentView: (view) => {
     try {
       const url = new URL(window.location.href);
-      // Clean up legacy ?view= parameter if present
       url.searchParams.delete('view');
 
       let targetPath = '/';
@@ -139,7 +135,6 @@ export const useUiStore = create<UiStore>((set) => ({
         window.history.pushState(null, '', url.pathname + url.search + url.hash);
       }
     } catch {
-      // safe fallback
     }
     set({ currentView: view });
   },
@@ -160,7 +155,6 @@ export const useUiStore = create<UiStore>((set) => ({
     try {
       localStorage.setItem(NUMBER_FORMAT_STORAGE_KEY, format);
     } catch {
-      // safe fallback
     }
     set({ numberFormat: format });
   },
@@ -170,7 +164,6 @@ export const useUiStore = create<UiStore>((set) => ({
       try {
         localStorage.setItem(NUMBER_FORMAT_STORAGE_KEY, next);
       } catch {
-        // safe fallback
       }
       return { numberFormat: next };
     });
@@ -189,7 +182,6 @@ export const useUiStore = create<UiStore>((set) => ({
       try {
         localStorage.setItem(MATRIX_COLLAPSED_STORAGE_KEY, String(next));
       } catch {
-        // safe fallback
       }
       return { isSharedMatrixCollapsed: next };
     }),
@@ -197,7 +189,6 @@ export const useUiStore = create<UiStore>((set) => ({
     try {
       localStorage.setItem(MATRIX_COLLAPSED_STORAGE_KEY, String(collapsed));
     } catch {
-      // safe fallback
     }
     set({ isSharedMatrixCollapsed: collapsed });
   },

@@ -23,12 +23,10 @@ export const GlossaryDrawer: React.FC<GlossaryDrawerProps> = ({
   const [highlightedTerm, setHighlightedTerm] = useState<string | null>(null);
   const itemRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
-  // 1. Urutkan istilah secara alfabetis di runtime menggunakan localeCompare
   const sortedTerms = useMemo(() => {
     return [...GLOSSARY_TERMS].sort((a, b) => a.term.localeCompare(b.term, 'id'));
   }, []);
 
-  // Effect untuk scroll ke target term saat drawer dibuka dengan targetTerm
   useEffect(() => {
     if (!isOpen || !targetTerm) return;
 
@@ -52,7 +50,6 @@ export const GlossaryDrawer: React.FC<GlossaryDrawerProps> = ({
     };
   }, [isOpen, targetTerm]);
 
-  // 2. Filter istilah berdasarkan query pencarian (term, definition, atau symbol)
   const filteredTerms = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
     if (!q) return sortedTerms;
@@ -64,7 +61,6 @@ export const GlossaryDrawer: React.FC<GlossaryDrawerProps> = ({
     );
   }, [sortedTerms, searchQuery]);
 
-  // 3. Kelompokkan per huruf awal untuk sticky header abjad
   const groupedTerms = useMemo(() => {
     return filteredTerms.reduce<Record<string, GlossaryEntry[]>>((acc, item) => {
       const firstChar = item.term.charAt(0).toUpperCase();
@@ -89,7 +85,6 @@ export const GlossaryDrawer: React.FC<GlossaryDrawerProps> = ({
       }
       description="Kamus definisi dan simbol teknis metode pengambilan keputusan"
     >
-      {/* Search Input */}
       <div className="p-4 border-b border-slate-100 bg-slate-50/50 sticky top-0 z-20 backdrop-blur-xs">
         <div className="relative">
           <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -113,7 +108,6 @@ export const GlossaryDrawer: React.FC<GlossaryDrawerProps> = ({
         </div>
       </div>
 
-      {/* Term List */}
       <div className="divide-y divide-slate-100">
         {groupKeys.length === 0 ? (
           <div className="p-8 text-center text-slate-400 space-y-1">

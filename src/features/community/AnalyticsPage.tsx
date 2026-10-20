@@ -39,7 +39,6 @@ export const AnalyticsPage: React.FC = () => {
   if (!analytics) {
     return (
       <div className="space-y-6 animate-pulse" role="status" aria-label="Memuat statistik web...">
-        {/* Page Title & Intro */}
         <div className="space-y-1">
           <div className="flex items-center gap-2">
             <div className="w-5 h-5 rounded bg-indigo-200 shrink-0" />
@@ -48,7 +47,6 @@ export const AnalyticsPage: React.FC = () => {
           <div className="w-full max-w-md h-4 rounded bg-slate-200" />
         </div>
 
-        {/* 4 KPI Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
           {[1, 2, 3, 4].map((i) => (
             <div key={i} className="p-4 rounded-xl bg-white border border-slate-200/90 shadow-2xs space-y-2">
@@ -59,7 +57,6 @@ export const AnalyticsPage: React.FC = () => {
           ))}
         </div>
 
-        {/* Grid: 7-Day Trend Chart & Device Breakdown */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           <div className="lg:col-span-7 p-4 sm:p-5 rounded-xl bg-white border border-slate-200/90 shadow-2xs space-y-4">
             <div className="flex items-center justify-between">

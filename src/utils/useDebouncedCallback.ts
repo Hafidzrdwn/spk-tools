@@ -1,12 +1,5 @@
 import { useRef, useEffect, useCallback, useMemo } from 'react';
 
-/**
- * Hook generik untuk mendebounce pemanggilan callback function.
- * Memastikan callback selalu memegang state terbaru tanpa re-creating timer secara berlebihan.
- *
- * @param callback Fungsi yang ingin dieksekusi secara ter-debounce
- * @param delay Jeda waktu tunggu dalam milidetik (default: 250ms)
- */
 export function useDebouncedCallback<T extends (...args: any[]) => any>(
   callback: T,
   delay = 250

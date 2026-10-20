@@ -47,7 +47,6 @@ export const MultiMethodComparisonTable: React.FC<MultiMethodComparisonTableProp
 
   return (
     <div className="space-y-3.5">
-      {/* Filter / Toggle Bar Pemilihan Metode */}
       {onToggleMethod && (
         <div className="p-3 rounded-xl bg-slate-50/90 border border-slate-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
           <div className="flex items-center gap-2 flex-wrap">
@@ -56,7 +55,6 @@ export const MultiMethodComparisonTable: React.FC<MultiMethodComparisonTableProp
               <span>Metode yang Dibandingkan:</span>
             </span>
 
-            {/* Tombol Checklist / Pills Metode */}
             <div className="flex items-center gap-1.5 flex-wrap">
               <button
                 type="button"

@@ -7,18 +7,15 @@ import { toast } from 'sonner';
 import type { DecisiProjectState, Criterion, Alternative, MethodId } from '@/types/domain';
 
 export interface ProjectStore extends DecisiProjectState {
-  // Actions Kriteria
   addCriterion: (initialData?: Partial<Criterion>) => void;
   removeCriterion: (id: string) => void;
   updateCriterion: (id: string, patch: Partial<Criterion>) => void;
   autoDistributeWeights: () => void;
 
-  // Actions Alternatif
   addAlternative: (initialData?: Partial<Alternative>) => void;
   removeAlternative: (id: string) => void;
   updateCellValue: (alternativeId: string, criterionId: string, value: number) => void;
 
-  // Actions Proyek & Navigasi
   setTitle: (title: string) => void;
   setActiveMethod: (method: MethodId) => void;
   loadProjectState: (state: DecisiProjectState) => void;

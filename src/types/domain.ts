@@ -3,16 +3,16 @@ export type CriterionType = 'BENEFIT' | 'COST';
 export interface Criterion {
   id: string;
   name: string;
-  unit?: string;             // satuan / format nilai, misal 'Juta Rp', 'Tahun', 'Skala 1-5'
+  unit?: string;
   type: CriterionType;
-  weight: number;            // bobot mentah, misal 3, 5, 1 (belum dinormalisasi)
-  normalizedWeight: number;  // weight / totalWeight, HARUS selalu jumlah = 1.0 (toleransi 1e-9)
+  weight: number;
+  normalizedWeight: number;
 }
 
 export interface Alternative {
   id: string;
   name: string;
-  values: Record<string, number>; // key = criterion.id
+  values: Record<string, number>;
 }
 
 export type MethodId = 'SAW' | 'WP' | 'TOPSIS' | 'AHP' | 'AUTO' | 'COMPARE';

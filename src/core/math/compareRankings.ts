@@ -10,7 +10,7 @@ export interface MethodRankDetail {
 
 export interface RankShiftDetail {
   type: 'stable' | 'up' | 'down' | 'divergent';
-  label: string; // e.g. "Tetap", "Naik 1", "Turun 2", "Rentang #2 - #4"
+  label: string;
   delta?: number;
   minRank: number;
   maxRank: number;
@@ -84,7 +84,6 @@ export function compareRankings(
   const wpWinner = wpRanking.find((r) => r.rank === 1);
   const topsisWinner = topsisRanking.find((r) => r.rank === 1);
 
-  // Filter pemenang berdasarkan metode aktif saja
   const activeWinnerMap: Record<CompareMethod, RankingRow | undefined> = {
     saw: sawWinner,
     wp: wpWinner,
@@ -96,13 +95,11 @@ export function compareRankings(
   );
   const hasRank1Shift = activeWinnerIds.size > 1;
 
-  // Bangun tabel gabungan side-by-side
   const rows: ComparisonRow[] = alternatives.map((alt) => {
     const saw = sawRanking.find((r) => r.alternativeId === alt.id) ?? { score: 0, rank: 99 };
     const wp = wpRanking.find((r) => r.alternativeId === alt.id) ?? { score: 0, rank: 99 };
     const topsis = topsisRanking.find((r) => r.alternativeId === alt.id) ?? { score: 0, rank: 99 };
 
-    // Hitung rerata peringkat dinamis hanya untuk metode yang aktif
     const activeRanks = validActiveMethods.map((m) => {
       if (m === 'saw') return saw.rank;
       if (m === 'wp') return wp.rank;
@@ -119,7 +116,6 @@ export function compareRankings(
       return topsis.rank === 1;
     });
 
-    // Hitung pergeseran posisi (shift detail)
     const minRank = Math.min(...activeRanks);
     const maxRank = Math.max(...activeRanks);
     let shift: RankShiftDetail;
@@ -129,7 +125,7 @@ export function compareRankings(
       const m2 = validActiveMethods[1];
       const r1 = m1 === 'saw' ? saw.rank : m1 === 'wp' ? wp.rank : topsis.rank;
       const r2 = m2 === 'saw' ? saw.rank : m2 === 'wp' ? wp.rank : topsis.rank;
-      const diff = r1 - r2; // Jika r2 < r1 (misal #2 vs #1), berarti naik 1 posisi di m2
+      const diff = r1 - r2;
 
       if (diff === 0) {
         shift = {

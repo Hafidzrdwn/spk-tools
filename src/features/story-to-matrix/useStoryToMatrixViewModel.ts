@@ -28,7 +28,6 @@ export function useStoryToMatrixViewModel() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isCommitted, setIsCommitted] = useState(false);
 
-  // Form ke Cerita: Generate narasi teks dari state proyek yang aktif atau pratinjau yang ada
   const generateNarrativeFromState = useCallback(() => {
     const currentAlternatives = previewAlternatives.length > 0 ? previewAlternatives : alternatives;
     const currentCriteria = tempCriteria.length > 0 ? tempCriteria : criteria;

@@ -8,13 +8,12 @@ import { useUiStore } from '@/store/useUiStore';
 import { useShallow } from 'zustand/react/shallow';
 import type { TourDefinition } from '@/core/tour/types';
 
-// ─── Spotlight geometry ───────────────────────────────────────────────────────
 interface SpotRect { top: number; left: number; width: number; height: number; }
 
 const PAD = 12;
 const POLL_INTERVAL_MS = 80;
-const POLL_MAX_ATTEMPTS = 25; // ~2s max
-const SCROLL_SETTLE_MS = 400; // tunggu smooth scroll selesai sebelum ukur posisi
+const POLL_MAX_ATTEMPTS = 25;
+const SCROLL_SETTLE_MS = 400;
 
 function queryEl(selector: string): Element | null {
   if (!selector || selector === 'body') return null;
@@ -28,7 +27,6 @@ function getSpotRect(selector: string): SpotRect | null {
   return { top: r.top - PAD, left: r.left - PAD, width: r.width + PAD * 2, height: r.height + PAD * 2 };
 }
 
-// ─── 4-Strip Spotlight Overlay ───────────────────────────────────────────────
 const BG = 'rgba(15,23,42,0.60)';
 
 const SpotlightOverlay: React.FC<{ spot: SpotRect | null; onSkip: () => void }> = ({ spot, onSkip }) => {
@@ -46,7 +44,6 @@ const SpotlightOverlay: React.FC<{ spot: SpotRect | null; onSkip: () => void }> 
       <div style={{ ...base, top: top + height, left: 0, right: 0, bottom: 0 }} onClick={onSkip} />
       <div style={{ ...base, top, left: 0, width: left, height }} onClick={onSkip} />
       <div style={{ ...base, top, left: left + width, right: 0, height }} onClick={onSkip} />
-      {/* Border pulse - pointer-events:none agar tidak blokir klik target */}
       <div
         style={{
           position: 'fixed', zIndex: 9991,
@@ -62,7 +59,6 @@ const SpotlightOverlay: React.FC<{ spot: SpotRect | null; onSkip: () => void }> 
   );
 };
 
-// ─── Tooltip placement with Collision Detection & Safe Gap ─────────────────────
 function calcTooltipPos(
   spot: SpotRect | null,
   preferredPlacement: 'top' | 'bottom' | 'left' | 'right' | 'center' = 'bottom',
@@ -86,7 +82,6 @@ function calcTooltipPos(
   const gap = 16;
   const clampedW = Math.min(tooltipW, W - gap * 2);
 
-  // Helper untuk mengecek apakah posisi tooltip menimpa target spotlight
   const overlapsSpot = (t: number, l: number, w: number, h: number) => {
     return !(
       l + w <= spot.left ||
@@ -96,7 +91,6 @@ function calcTooltipPos(
     );
   };
 
-  // Urutan fallback penempatan berdasarkan preferensi step
   const placementsToTry: Array<'top' | 'bottom' | 'left' | 'right'> = [
     preferredPlacement,
     ...(preferredPlacement === 'right'
@@ -139,7 +133,6 @@ function calcTooltipPos(
     }
   }
 
-  // Fallback jika semua sisi sempit: pilih sisi vertikal yang paling luas tanpa menimpa
   const spaceBelow = H - (spot.top + spot.height);
   const spaceAbove = spot.top;
   if (spaceBelow >= spaceAbove) {
@@ -153,7 +146,6 @@ function calcTooltipPos(
   }
 }
 
-// ─── Main TourRunner ──────────────────────────────────────────────────────────
 export interface TourRunnerProps {
   tours?: Record<string, TourDefinition>;
 }
@@ -178,7 +170,6 @@ export const TourRunner: React.FC<TourRunnerProps> = ({ tours = {} }) => {
       activeMethod: s.activeMethod,
     }))
   );
-  // Subscribe hanya ke state UI relevan agar tidak re-render saat hovering sel (hoveredCellId)
   useUiStore(
     useShallow((s) => ({
       activeTab: s.activeTab,
@@ -204,7 +195,6 @@ export const TourRunner: React.FC<TourRunnerProps> = ({ tours = {} }) => {
     return requiredAction ? requiredAction.isSatisfied(projectState) : true;
   });
 
-  // Fast-reactivity check (60ms) for requiredAction satisfaction across stores & mouse events
   useEffect(() => {
     if (!requiredAction) {
       setActionSatisfied(true);
@@ -221,7 +211,6 @@ export const TourRunner: React.FC<TourRunnerProps> = ({ tours = {} }) => {
     return () => clearInterval(interval);
   }, [requiredAction, activeStepIndex, activeTourId]);
 
-  // Membersihkan modal/drawer/inspector terbuka agar tidak menutupi tampilan step berikutnya/sebelumnya
   const cleanupOverlays = useCallback((targetSelector?: string) => {
     const isTargetInsideGlossary = targetSelector
       ? targetSelector.includes('glossary-drawer') || targetSelector.includes('glossary-content')
@@ -240,20 +229,17 @@ export const TourRunner: React.FC<TourRunnerProps> = ({ tours = {} }) => {
     setTooltipPos(calcTooltipPos(s, currentStep.placement));
   }, [currentStep]);
 
-  // Cleanup saat unmount
   useEffect(() => {
     return () => {
       cleanupOverlays();
     };
   }, [cleanupOverlays]);
 
-  // Saat step berubah: auto-cleanup overlay luar → preNavigate → poll DOM → scroll → ukur
   useEffect(() => {
     if (!activeTourId || !currentStep) return;
 
     setStepReady(false);
 
-    // Auto-cleanup overlay jika target step ini berada di luar overlay
     const isTargetInsideGlossary =
       currentStep.targetSelector?.includes('glossary-drawer') ||
       currentStep.targetSelector?.includes('glossary-content');
@@ -261,10 +247,8 @@ export const TourRunner: React.FC<TourRunnerProps> = ({ tours = {} }) => {
       useUiStore.getState().closeGlossary();
     }
 
-    // 1. Jalankan preNavigate (jika ada hook inisialisasi)
     currentStep.preNavigate?.();
 
-    // Bersihkan interval/timer sebelumnya
     if (pollRef.current) clearInterval(pollRef.current);
     if (scrollTimerRef.current) clearTimeout(scrollTimerRef.current);
 
@@ -277,7 +261,6 @@ export const TourRunner: React.FC<TourRunnerProps> = ({ tours = {} }) => {
       return;
     }
 
-    // 2. Poll sampai elemen muncul di DOM
     let attempts = 0;
     pollRef.current = setInterval(() => {
       attempts++;
@@ -286,10 +269,8 @@ export const TourRunner: React.FC<TourRunnerProps> = ({ tours = {} }) => {
       if (el) {
         clearInterval(pollRef.current!);
 
-        // 3. Smooth scroll ke elemen target
         el.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
 
-        // 4. Tunggu scroll selesai, baru ukur posisi spotlight & tooltip
         scrollTimerRef.current = setTimeout(() => {
           const s = getSpotRect(currentStep.targetSelector);
           setSpot(s);
@@ -312,7 +293,6 @@ export const TourRunner: React.FC<TourRunnerProps> = ({ tours = {} }) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTourId, activeStepIndex]);
 
-  // Re-measure on scroll/resize (setelah step ready)
   useEffect(() => {
     if (!activeTourId || !stepReady) return;
     const handler = () => {
@@ -364,7 +344,6 @@ export const TourRunner: React.FC<TourRunnerProps> = ({ tours = {} }) => {
 
   return createPortal(
     <>
-      {/* Keyframes injected sekali - aman didefinisikan di sini */}
       <style>{`
         @keyframes tour-spot-pulse {
           0%, 100% { box-shadow: 0 0 0 4px rgba(99,102,241,0.12); }
@@ -372,7 +351,6 @@ export const TourRunner: React.FC<TourRunnerProps> = ({ tours = {} }) => {
         }
       `}</style>
 
-      {/* Loading indicator saat polling / scroll settling */}
       <AnimatePresence>
         {!stepReady && (
           <motion.div

@@ -31,7 +31,6 @@ export const Footer: React.FC<FooterProps> = ({ className }) => {
           </p>
         </div>
 
-        {/* Global Decimal Format Preference Status Bar Widget */}
         <div className="flex items-center gap-2">
           <span className="text-[11px] text-slate-400 font-medium hidden sm:inline">Format Desimal:</span>
           <DecimalFormatToggle />

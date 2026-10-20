@@ -24,7 +24,6 @@ export const RankingShiftExplanation: React.FC<RankingShiftExplanationProps> = R
   const hasWp = activeMethods.includes('wp');
   const hasTopsis = activeMethods.includes('topsis');
 
-  // Default collapsed agar render pertama kali tab perbandingan instan dan ringan
   const [isSensitivityCollapsed, setIsSensitivityCollapsed] = React.useState(true);
   const [showAllGaps, setShowAllGaps] = React.useState(false);
 
@@ -34,7 +33,6 @@ export const RankingShiftExplanation: React.FC<RankingShiftExplanationProps> = R
 
   return (
     <div className="space-y-4">
-      {/* Kartu Status Konsensus / Pergeseran Peringkat #1 */}
       {!hasRank1Shift ? (
         <Card className="bg-benefit/5 border-benefit/20 shadow-2xs">
           <CardContent className="p-4 flex items-start gap-3">
@@ -76,7 +74,6 @@ export const RankingShiftExplanation: React.FC<RankingShiftExplanationProps> = R
           </CardHeader>
 
           <CardContent className="p-4 space-y-4">
-            {/* Kartu Pemenang Peringkat 1 untuk Metode Aktif */}
             <div
               className={`grid gap-2.5 ${
                 activeMethods.length === 2 ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1 sm:grid-cols-3'

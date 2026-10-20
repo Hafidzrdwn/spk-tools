@@ -2,9 +2,6 @@ import Decimal from 'decimal.js';
 import type { Criterion, Alternative } from '@/types/domain';
 import type { MethodResult, TraceStep, RankingRow } from './types';
 
-/**
- * Format angka untuk formula label agar bersih dan informatif
- */
 function formatNumber(val: number): string {
   if (Number.isInteger(val)) {
     return val.toString();
@@ -12,22 +9,6 @@ function formatNumber(val: number): string {
   return Number(val.toFixed(4)).toString();
 }
 
-/**
- * Implementasi TOPSIS (Technique for Order Preference by Similarity to Ideal Solution)
- * Rumus:
- * 1. Normalisasi vektor:
- *    r_ij = x_ij / √( Σ_i(x_ij²) )
- * 2. Matriks terbobot:
- *    y_ij = w_j * r_ij
- * 3. Solusi ideal:
- *    Benefit ⟹ A+_j = max_i(y_ij), A-_j = min_i(y_ij)
- *    Cost    ⟹ A+_j = min_i(y_ij), A-_j = max_i(y_ij)
- * 4. Jarak Euclidean:
- *    D+_i = √( Σ_j (y_ij - A+_j)² )
- *    D-_i = √( Σ_j (y_ij - A-_j)² )
- * 5. Nilai preferensi:
- *    C_i = D-_i / (D+_i + D-_i)
- */
 export function calculateTOPSIS(
   criteria: Criterion[],
   alternatives: Alternative[]
@@ -45,7 +26,6 @@ export function calculateTOPSIS(
     };
   }
 
-  // Hitung bobot ternormalisasi w_j
   const rawWeightSum = criteria.reduce((sum, c) => sum + (c.weight || 0), 0);
   const normalizedWeights: Record<string, number> = {};
 
@@ -59,7 +39,6 @@ export function calculateTOPSIS(
     }
   });
 
-  // Langkah 1: Hitung pembagi normalisasi vektor per kriteria: √( Σ_i(x_ij²) )
   const columnNorms: Record<string, { sumSquares: number; norm: number }> = {};
   criteria.forEach((crit) => {
     const sumSquares = alternatives.reduce((sum, alt) => {
@@ -74,7 +53,6 @@ export function calculateTOPSIS(
   const weightedMatrix: number[][] = [];
   const formulaSteps: TraceStep[] = [];
 
-  // Hitung matriks normalisasi r_ij dan matriks terbobot y_ij
   alternatives.forEach((alt, altIndex) => {
     const rowIdx = altIndex + 1;
     const normRow: number[] = [];
@@ -86,7 +64,6 @@ export function calculateTOPSIS(
       const { sumSquares, norm } = columnNorms[crit.id];
       const w = normalizedWeights[crit.id];
 
-      // r_ij = x_ij / √( Σ_i(x_ij²) )
       const r = norm > 0 ? x / norm : 0;
       normRow.push(r);
 

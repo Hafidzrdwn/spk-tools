@@ -20,10 +20,6 @@ export interface BuildReportPayloadOptions {
   comparisonResult?: ReturnType<typeof compareRankings>;
 }
 
-/**
- * Format tanggal ISO ke format bahasa Indonesia yang mudah dibaca.
- * Contoh: "26 September 2026, 01:25 WIB"
- */
 export function formatIndonesianDate(isoString: string): string {
   try {
     const date = new Date(isoString);

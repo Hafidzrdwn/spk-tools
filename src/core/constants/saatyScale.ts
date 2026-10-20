@@ -4,9 +4,6 @@ export interface SaatyScaleLevel {
   description: string;
 }
 
-/**
- * Skala Fundamental Saaty (1-9) untuk Perbandingan Berpasangan (Pairwise Comparison)
- */
 export const SAATY_SCALE: SaatyScaleLevel[] = [
   {
     value: 1,

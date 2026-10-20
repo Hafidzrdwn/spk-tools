@@ -44,7 +44,6 @@ export const Header: React.FC<HeaderProps> = ({
       )}
     >
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-2.5 md:gap-4">
-        {/* Logo & Identitas */}
         <div className="flex items-center justify-between md:justify-start gap-2 sm:gap-3 shrink-0">
           <Link
             to="/"
@@ -66,9 +65,7 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
 
-        {/* Status Method & Aksi */}
         <div className="flex flex-wrap sm:flex-nowrap items-center justify-between sm:justify-end gap-1.5 sm:gap-2 shrink-0">
-          {/* Support Actions: Bantuan & Glosarium */}
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             <TourLauncherMenu />
 
@@ -86,7 +83,6 @@ export const Header: React.FC<HeaderProps> = ({
             </Button>
           </div>
 
-          {/* Project Operations */}
           {actions && <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">{actions}</div>}
         </div>
       </div>

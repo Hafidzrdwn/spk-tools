@@ -49,7 +49,7 @@ describe('Security & Anti-Spam Utilities', () => {
       expect(isValidEmail('@domain.com')).toBe(false);
       expect(isValidEmail('user@domain')).toBe(false);
       expect(isValidEmail('user@domain..com')).toBe(false);
-      expect(isValidEmail('a'.repeat(95) + '@domain.com')).toBe(false); // > 100 chars
+      expect(isValidEmail('a'.repeat(95) + '@domain.com')).toBe(false);
     });
   });
 
@@ -108,11 +108,10 @@ describe('Security & Anti-Spam Utilities', () => {
 
     it('menolak pengiriman jika kuota harian telah habis', () => {
       const today = new Date().toISOString().slice(0, 10);
-      // Simulasikan 3 kali pengiriman hari ini dengan jeda waktu lampau
       localStorage.setItem(
         'rate_limit_capped_action',
         JSON.stringify({
-          lastTime: Date.now() - 100000, // cooldown lewat
+          lastTime: Date.now() - 100000,
           countToday: 3,
           date: today,
         })
@@ -141,7 +140,6 @@ describe('Security & Anti-Spam Utilities', () => {
       const result = await sendReportEmailDirect(payloadWithBot, 'mock_access_key');
       expect(result.success).toBe(true);
       expect(result.message).toContain('berhasil dikirim');
-      // Kuota API aman karena fetch sama sekali tidak dipanggil!
       expect(fetchSpy).not.toHaveBeenCalled();
 
       fetchSpy.mockRestore();

@@ -2,11 +2,6 @@ import Decimal from 'decimal.js';
 import type { Criterion, Alternative } from '@/types/domain';
 import type { MethodResult, TraceStep, RankingRow } from './types';
 
-/**
- * Format angka untuk formula label:
- * - Integer ditampilkan apa adanya (misal: 20, 50)
- * - Desimal dibulatkan hingga 4 angka desimal tanpa trailing zero yang berlebihan (misal: 0.4 bukan 0.4000)
- */
 function formatNumber(val: number): string {
   if (Number.isInteger(val)) {
     return val.toString();
@@ -14,15 +9,6 @@ function formatNumber(val: number): string {
   return Number(val.toFixed(4)).toString();
 }
 
-/**
- * Implementasi SAW (Simple Additive Weighting)
- * Rumus:
- * 1. Normalisasi:
- *    Benefit: r_ij = x_ij / max_i(x_ij)
- *    Cost   : r_ij = min_i(x_ij) / x_ij
- * 2. Perangkingan:
- *    V_i = Σ_j ( w_j * r_ij )  dengan w_j = normalizedWeight
- */
 export function calculateSAW(
   criteria: Criterion[],
   alternatives: Alternative[]
@@ -38,7 +24,6 @@ export function calculateSAW(
     };
   }
 
-  // Hitung total raw weight untuk fallback jika normalizedWeight belum diisi atau tidak valid
   const rawWeightSum = criteria.reduce((sum, c) => sum + (c.weight || 0), 0);
   const normalizedWeights: Record<string, number> = {};
 
@@ -52,7 +37,6 @@ export function calculateSAW(
     }
   });
 
-  // Cari nilai min dan max per kriteria
   const extremums: Record<string, { min: number; max: number }> = {};
   criteria.forEach((crit) => {
     const colValues = alternatives.map((alt) => alt.values[crit.id] ?? 0);
@@ -67,7 +51,6 @@ export function calculateSAW(
   const formulaSteps: TraceStep[] = [];
   const alternativeScores: { alternativeId: string; alternativeName: string; score: number }[] = [];
 
-  // Hitung normalisasi dan pembobotan tiap alternatif
   alternatives.forEach((alt, altIndex) => {
     const normRow: number[] = [];
     const weightedRow: number[] = [];
@@ -84,7 +67,6 @@ export function calculateSAW(
       const { min: minX, max: maxX } = extremums[crit.id];
       const w = normalizedWeights[crit.id];
 
-      // Langkah 1: Normalisasi
       let r = 0;
       let normFormulaLabel = '';
       const normInputs: Record<string, number> = {};

@@ -36,7 +36,6 @@ export const StoryToMatrixTab: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Top Banner Story-to-Matrix */}
       <Card className="bg-linear-to-r from-indigo-500/10 via-purple-500/5 to-transparent border-indigo-200/80">
         <CardContent className="p-3.5 sm:p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
           <div className="flex items-start gap-3 min-w-0">
@@ -72,7 +71,6 @@ export const StoryToMatrixTab: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Mode Switcher (Cerita ↔ Form) */}
       <div data-tour-id="story-mode-switcher">
         <ModeSwitcher
           mode={mode}
@@ -81,7 +79,6 @@ export const StoryToMatrixTab: React.FC = () => {
         />
       </div>
 
-      {/* Content View: Mode Cerita (Textarea) vs Mode Form (Table Preview) */}
       {mode === 'story' ? (
         <div data-tour-id="story-textarea-card">
           <StoryTextArea
@@ -105,7 +102,6 @@ export const StoryToMatrixTab: React.FC = () => {
         </div>
       )}
 
-      {/* Modal Prompt Deteksi Perbandingan Relatif AHP */}
       <AhpPromptModal
         isOpen={isAhpPromptOpen}
         onClose={() => setIsAhpPromptOpen(false)}
@@ -113,7 +109,6 @@ export const StoryToMatrixTab: React.FC = () => {
         detectedComparisons={detectedComparisons}
       />
 
-      {/* Modal Pemilih Template Kasus */}
       <TemplatePickerModal
         isOpen={isTemplatePickerOpen}
         onClose={() => setIsTemplatePickerOpen(false)}

@@ -58,7 +58,6 @@ export function useWpViewModel(): WpViewModel {
   const updateCellValue = useProjectStore((state) => state.updateCellValue);
   const hasData = criteria.length > 0 && alternatives.length > 0;
 
-  // 1. Deteksi pelanggaran Zero-Guard
   const violations = useMemo<ZeroGuardViolationDetail[]>(() => {
     if (!hasData) return [];
     return wpZeroGuard(alternatives, criteria).map((v) => {
@@ -76,7 +75,6 @@ export function useWpViewModel(): WpViewModel {
 
   const hasZeroGuardViolation = violations.length > 0;
 
-  // 2. Transformasi Eksponen Pangkat
   const exponents = useMemo<WpExponentDetail[]>(() => {
     return criteria.map((crit) => ({
       criterionId: crit.id,
@@ -88,7 +86,6 @@ export function useWpViewModel(): WpViewModel {
     }));
   }, [criteria]);
 
-  // 3. Kalkulasi WP (hanya saat bebas dari zero-guard violation)
   const calculationResult = useMemo(() => {
     const isReady = criteria.length > 0 && alternatives.length > 0;
     const zeroGuardViolations = isReady ? wpZeroGuard(alternatives, criteria) : [];

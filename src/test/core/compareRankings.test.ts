@@ -7,8 +7,6 @@ import type { Criterion, Alternative } from '@/types/domain';
 
 describe('compareRankings & Rank Shift Analysis', () => {
   it('harus mendeteksi pergeseran peringkat #1 antara SAW dan TOPSIS pada dataset sensitif', () => {
-    // Dataset di mana A1 (Spesialis Kriteria 1) vs A2 (Seimbang di semua kriteria)
-    // C1 berbobot cukup tinggi (Benefit), C2 (Benefit), C3 (Benefit)
     const criteria: Criterion[] = [
       { id: 'c1', name: 'Kapasitas', type: 'BENEFIT', weight: 70, normalizedWeight: 0.7 },
       { id: 'c2', name: 'Efisiensi', type: 'BENEFIT', weight: 15, normalizedWeight: 0.15 },
@@ -40,7 +38,6 @@ describe('compareRankings & Rank Shift Analysis', () => {
     const sawRank1 = sawRes.finalRanking[0];
     const topsisRank1 = topsisRes.finalRanking[0];
 
-    // Jalankan pembanding
     const comparison = compareRankings(
       sawRes.finalRanking,
       wpRes.finalRanking,
@@ -49,17 +46,14 @@ describe('compareRankings & Rank Shift Analysis', () => {
       alternatives
     );
 
-    // Verifikasi pergeseran peringkat #1
     expect(comparison.hasRank1Shift).toBe(true);
     expect(comparison.rank1Winners.saw?.alternativeId).not.toBe(
       comparison.rank1Winners.topsis?.alternativeId
     );
 
-    // Pemenang SAW dan TOPSIS terbukti berbeda
     expect(sawRank1.alternativeName).toBe('Server Balance (Harmonis)');
     expect(topsisRank1.alternativeName).toBe('Server Titan (Spesialis Kapasitas)');
 
-    // Penjelasan harus kontekstual dan menyebut nama kriteria aktual serta kedua alternatif
     expect(comparison.explanation).toContain('Server Titan (Spesialis Kapasitas)');
     expect(comparison.explanation).toContain('Server Balance (Harmonis)');
     expect(comparison.explanation).toContain('Kapasitas');
@@ -109,7 +103,6 @@ describe('compareRankings & Rank Shift Analysis', () => {
     const wpRes = calculateWP(criteria, alternatives);
     const topsisRes = calculateTOPSIS(criteria, alternatives);
 
-    // Bandingkan hanya SAW dan WP
     const comparison = compareRankings(
       sawRes.finalRanking,
       wpRes.finalRanking,
@@ -120,7 +113,6 @@ describe('compareRankings & Rank Shift Analysis', () => {
     );
 
     expect(comparison.activeMethods).toEqual(['saw', 'wp']);
-    // Rerata peringkat hanya dibagi 2 (SAW + WP), bukan 3
     comparison.rows.forEach((row) => {
       const manualAvg = Number(((row.saw.rank + row.wp.rank) / 2).toFixed(2));
       expect(row.averageRank).toBe(manualAvg);
@@ -159,7 +151,6 @@ describe('compareRankings & Rank Shift Analysis', () => {
     expect(comparison.sensitivity!.statement).toBeTruthy();
     expect(Array.isArray(comparison.sensitivity!.gaps)).toBe(true);
     expect(comparison.sensitivity!.gaps.length).toBeGreaterThan(0);
-    // Verifikasi gap memiliki properti numerik valid
     comparison.sensitivity!.gaps.forEach((gap) => {
       expect(typeof gap.gap).toBe('number');
       expect(gap.gap).toBeGreaterThanOrEqual(0);

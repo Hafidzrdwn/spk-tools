@@ -1,9 +1,4 @@
-/**
- * Centralized Route & Chunk Prefetching Service
- * Provides instant zero-latency transitions across SPA pages.
- */
 
-// Route chunk importers
 export const prefetchRoute = {
   landing: () => {
     import('@/features/landing/LandingPage');
@@ -27,9 +22,6 @@ export const prefetchRoute = {
   },
 };
 
-/**
- * Schedule background prefetching during browser idle time
- */
 export function scheduleIdlePrefetch(
   route: keyof typeof prefetchRoute,
   tab?: string,
@@ -51,9 +43,6 @@ export function scheduleIdlePrefetch(
   }
 }
 
-/**
- * Schedule prefetch for all remaining secondary routes while user is idle
- */
 export function scheduleAllRemainingPrefetch(exclude: keyof typeof prefetchRoute) {
   const routes = (Object.keys(prefetchRoute) as Array<keyof typeof prefetchRoute>).filter(
     (r) => r !== exclude

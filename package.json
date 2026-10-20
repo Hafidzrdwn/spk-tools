@@ -8,7 +8,9 @@
     "build": "tsc -b && vite build",
     "build:analyze": "cross-env ANALYZE=true vite build",
     "preview": "vite preview",
-    "test": "vitest run"
+    "test": "vitest run",
+    "comments:check": "node scripts/manage-comments.mjs --check",
+    "comments:clean": "node scripts/manage-comments.mjs --clean"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",

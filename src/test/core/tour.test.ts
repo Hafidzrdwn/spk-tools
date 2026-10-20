@@ -58,7 +58,6 @@ describe('Tour Infrastructure & useTourStore', () => {
     const requiredStep = dummyTourFallback.steps.find((s) => s.id === 'general-add-criterion');
     expect(requiredStep).toBeDefined();
 
-    // Set baseline ke 2 agar state 2-kriteria belum memenuhi syarat
     setCriteriaBaseline(2);
 
     const mockStateBelow: DecisiProjectState = {
@@ -87,37 +86,30 @@ describe('Tour Infrastructure & useTourStore', () => {
   it('generalTourDefinition memiliki alur eksplisit dari judul, glosarium, kriteria, hingga alternatif', () => {
     expect(generalTourDefinition.steps.length).toBe(16);
     
-    // Step 1: title
     const titleStep = generalTourDefinition.steps.find((s) => s.id === 'general-title');
     expect(titleStep).toBeDefined();
     expect(titleStep?.requiredAction).toBeDefined();
 
-    // Step 2: glossary
     const glossaryStep = generalTourDefinition.steps.find((s) => s.id === 'general-glossary');
     expect(glossaryStep).toBeDefined();
     expect(glossaryStep?.requiredAction).toBeDefined();
 
-    // Step shared matrix toggle
     const toggleStep = generalTourDefinition.steps.find((s) => s.id === 'general-shared-matrix-toggle');
     expect(toggleStep).toBeDefined();
     expect(toggleStep?.targetSelector).toBe('[data-tour-id="shared-matrix-toggle-btn"]');
 
-    // Step open criteria
     const openCritStep = generalTourDefinition.steps.find((s) => s.id === 'general-open-criteria');
     expect(openCritStep).toBeDefined();
     expect(openCritStep?.requiredAction).toBeDefined();
 
-    // Step add criterion
     const addCritStep = generalTourDefinition.steps.find((s) => s.id === 'general-add-criterion');
     expect(addCritStep).toBeDefined();
     expect(addCritStep?.requiredAction).toBeDefined();
 
-    // Step open alternatives
     const openAltStep = generalTourDefinition.steps.find((s) => s.id === 'general-open-alternatives');
     expect(openAltStep).toBeDefined();
     expect(openAltStep?.requiredAction).toBeDefined();
 
-    // Step export PDF
     const exportPdfStep = generalTourDefinition.steps.find((s) => s.id === 'general-export-pdf');
     expect(exportPdfStep).toBeDefined();
     expect(exportPdfStep?.targetSelector).toBe('[data-tour-id="export-pdf-btn"]');
@@ -127,39 +119,31 @@ describe('Tour Infrastructure & useTourStore', () => {
     const { sawTourDefinition, resetSawTourTracking, isSawHoverSatisfied } = await import('@/core/tour/sawTourSteps');
     const { useUiStore } = await import('@/store/useUiStore');
 
-    // 1. Jumlah step 8
     expect(sawTourDefinition.steps.length).toBe(8);
 
-    // 2. Step 1: klik tab SAW
     const tabStep = sawTourDefinition.steps.find((s) => s.id === 'saw-click-tab');
     expect(tabStep).toBeDefined();
     expect(tabStep?.requiredAction).toBeDefined();
 
-    // 3. Step 3: klik stepper 2
     const step2Btn = sawTourDefinition.steps.find((s) => s.id === 'saw-click-step-2');
     expect(step2Btn).toBeDefined();
     expect(step2Btn?.requiredAction).toBeDefined();
 
-    // 4. Step 5: required step hover sel normalisasi
     const hoverStep = sawTourDefinition.steps.find((s) => s.id === 'saw-hover-inspector');
     expect(hoverStep).toBeDefined();
     expect(hoverStep?.requiredAction).toBeDefined();
-    expect(hoverStep?.placement).toBe('right'); // Tidak menutupi sel
+    expect(hoverStep?.placement).toBe('right');
 
-    // Reset tracking
     resetSawTourTracking();
     useUiStore.getState().setHoveredCell(null);
     expect(isSawHoverSatisfied()).toBe(false);
 
-    // Jalankan preNavigate step hover agar tracking aktif
     hoverStep?.preNavigate?.();
     expect(isSawHoverSatisfied()).toBe(false);
 
-    // Simulasi user hover ke sel normalisasi
     useUiStore.getState().setHoveredCell('saw-alt1-crit1-NORMALIZED');
     expect(isSawHoverSatisfied()).toBe(true);
 
-    // Tetap true meski mouse leave
     useUiStore.getState().setHoveredCell(null);
     expect(isSawHoverSatisfied()).toBe(true);
   });
@@ -167,20 +151,16 @@ describe('Tour Infrastructure & useTourStore', () => {
   it('wpTourDefinition memenuhi kriteria 6 step eksplisit, klik tab WP, dan required zero-guard trigger & fix', async () => {
     const { wpTourDefinition, resetWpTourTracking, isWpZeroGuardSatisfied } = await import('@/core/tour/wpTourSteps');
 
-    // 1. Jumlah step 6
     expect(wpTourDefinition.steps.length).toBe(6);
 
-    // 2. Step 1: klik tab WP
     const tabStep = wpTourDefinition.steps.find((s) => s.id === 'wp-click-tab');
     expect(tabStep).toBeDefined();
     expect(tabStep?.requiredAction).toBeDefined();
 
-    // 3. Step 2: required step zero-guard
     const zeroGuardStep = wpTourDefinition.steps.find((s) => s.id === 'wp-zero-guard-step');
     expect(zeroGuardStep).toBeDefined();
     expect(zeroGuardStep?.requiredAction).toBeDefined();
 
-    // Reset tracking
     resetWpTourTracking();
 
     const normalState: DecisiProjectState = {
@@ -195,16 +175,12 @@ describe('Tour Infrastructure & useTourStore', () => {
       ],
     };
 
-    // Saat step belum aktif -> false
     expect(isWpZeroGuardSatisfied(normalState)).toBe(false);
 
-    // Aktifkan step via preNavigate
     zeroGuardStep?.preNavigate?.();
 
-    // Awal: belum ada 0, belum pernah trigger -> false
     expect(isWpZeroGuardSatisfied(normalState)).toBe(false);
 
-    // User mengisi 0 di sel Cost -> trigger alert, tapi belum diperbaiki -> false
     const violatedState: DecisiProjectState = {
       ...normalState,
       alternatives: [
@@ -213,7 +189,6 @@ describe('Tour Infrastructure & useTourStore', () => {
     };
     expect(isWpZeroGuardSatisfied(violatedState)).toBe(false);
 
-    // User memperbaiki nilai 0 kembali menjadi angka positif -> alert hilang -> satisfied!
     const resolvedState: DecisiProjectState = {
       ...normalState,
       alternatives: [
@@ -236,7 +211,6 @@ describe('Tour Infrastructure & useTourStore', () => {
     const { sawTourDefinition } = await import('@/core/tour/sawTourSteps');
     const { wpTourDefinition } = await import('@/core/tour/wpTourSteps');
 
-    // 1. General glossary step onLeave & resetOnBack menutup glosarium
     const glossaryStep = generalTourDefinition.steps.find((s) => s.id === 'general-glossary');
     useUiStore.getState().openGlossary();
     expect(useUiStore.getState().isGlossaryOpen).toBe(true);
@@ -249,21 +223,18 @@ describe('Tour Infrastructure & useTourStore', () => {
     glossaryStep?.resetOnBack?.();
     expect(useUiStore.getState().isGlossaryOpen).toBe(false);
 
-    // 2. Criteria step resetOnBack mengembalikan section ke matrix
     const critStep = generalTourDefinition.steps.find((s) => s.id === 'general-open-criteria');
     useUiStore.getState().setActiveEditorSection('criteria');
     expect(useUiStore.getState().activeEditorSection).toBe('criteria');
     critStep?.resetOnBack?.();
     expect(useUiStore.getState().activeEditorSection).toBe('matrix');
 
-    // 3. SAW step 2 resetOnBack mengembalikan stepper ke 1
     const sawStep2 = sawTourDefinition.steps.find((s) => s.id === 'saw-click-step-2');
     useUiStore.getState().setSawActiveStep(2);
     expect(useUiStore.getState().sawActiveStep).toBe(2);
     sawStep2?.resetOnBack?.();
     expect(useUiStore.getState().sawActiveStep).toBe(1);
 
-    // 4. WP step 2 resetOnBack mengembalikan stepper ke 1
     const wpStep2 = wpTourDefinition.steps.find((s) => s.id === 'wp-click-step-2');
     useUiStore.getState().setWpActiveStep(2);
     expect(useUiStore.getState().wpActiveStep).toBe(2);
@@ -274,7 +245,6 @@ describe('Tour Infrastructure & useTourStore', () => {
   it('startTour mengamankan data riil user (stash) dan memulihkannya saat tour selesai atau diskip', async () => {
     const { useProjectStore } = await import('@/store/useProjectStore');
     
-    // Siapkan data riil user
     const realUserState: DecisiProjectState = {
       title: 'Proyek Riil Vendor 2026',
       activeMethod: 'SAW',
@@ -287,17 +257,14 @@ describe('Tour Infrastructure & useTourStore', () => {
     };
     useProjectStore.getState().loadProjectState(realUserState);
 
-    // User menjalankan tour mendalam
     useTourStore.getState().startTour('saw');
     expect(useTourStore.getState().stashedProjectState).not.toBeNull();
     expect(useTourStore.getState().stashedProjectState?.title).toBe('Proyek Riil Vendor 2026');
 
-    // Selama tour berjalan, muat template demo
     const { CASE_TEMPLATES } = await import('@/core/constants/caseTemplates');
     useProjectStore.getState().loadProjectState(CASE_TEMPLATES[0].state);
     expect(useProjectStore.getState().title).not.toBe('Proyek Riil Vendor 2026');
 
-    // Saat tour di-skip / ditutup -> data riil user otomatis pulih kembali!
     useTourStore.getState().skipTour();
     expect(useTourStore.getState().stashedProjectState).toBeNull();
     expect(useProjectStore.getState().title).toBe('Proyek Riil Vendor 2026');
@@ -311,10 +278,8 @@ describe('Tour Infrastructure & useTourStore', () => {
     );
     const { useUiStore } = await import('@/store/useUiStore');
 
-    // 1. Jumlah step 7
     expect(topsisTourDefinition.steps.length).toBe(7);
 
-    // 2. Step 1: klik tab TOPSIS
     const tabStep = topsisTourDefinition.steps.find((s) => s.id === 'topsis-click-tab');
     expect(tabStep).toBeDefined();
     expect(tabStep?.requiredAction).toBeDefined();
@@ -324,7 +289,6 @@ describe('Tour Infrastructure & useTourStore', () => {
     useUiStore.getState().setActiveTab('TOPSIS');
     expect(tabStep!.requiredAction!.isSatisfied()).toBe(true);
 
-    // 3. Step 3: klik stepper 2
     const step2 = topsisTourDefinition.steps.find((s) => s.id === 'topsis-click-step-2');
     expect(step2).toBeDefined();
     expect(step2?.requiredAction).toBeDefined();
@@ -333,7 +297,6 @@ describe('Tour Infrastructure & useTourStore', () => {
     useUiStore.getState().setTopsisActiveStep(2);
     expect(step2!.requiredAction!.isSatisfied()).toBe(true);
 
-    // 4. Step 5: klik stepper 3
     const step3 = topsisTourDefinition.steps.find((s) => s.id === 'topsis-click-step-3');
     expect(step3).toBeDefined();
     expect(step3?.requiredAction).toBeDefined();
@@ -342,7 +305,6 @@ describe('Tour Infrastructure & useTourStore', () => {
     useUiStore.getState().setTopsisActiveStep(3);
     expect(step3!.requiredAction!.isSatisfied()).toBe(true);
 
-    // 5. Step 6: required hover radar chart
     const radarStep = topsisTourDefinition.steps.find((s) => s.id === 'topsis-radar-chart');
     expect(radarStep).toBeDefined();
     expect(radarStep?.requiredAction).toBeDefined();
@@ -350,15 +312,12 @@ describe('Tour Infrastructure & useTourStore', () => {
     resetTopsisTourTracking();
     expect(isTopsisHoverSatisfied()).toBe(false);
 
-    // Aktifkan tracking via preNavigate
     radarStep?.preNavigate?.();
     expect(isTopsisHoverSatisfied()).toBe(false);
 
-    // Hover ke radar point/line A+ / A-
     markTopsisHover();
     expect(isTopsisHoverSatisfied()).toBe(true);
 
-    // resetOnBack mengembalikan stepper
     step2?.resetOnBack?.();
     expect(useUiStore.getState().topsisActiveStep).toBe(1);
   });
@@ -367,10 +326,8 @@ describe('Tour Infrastructure & useTourStore', () => {
     const { ahpTourDefinition, resetAhpTourTracking, isAhpCrSatisfied } = await import('@/core/tour/ahpTourSteps');
     const { useUiStore } = await import('@/store/useUiStore');
 
-    // 1. Jumlah step 7
     expect(ahpTourDefinition.steps.length).toBe(7);
 
-    // 2. Step 1: klik tab AHP
     const tabStep = ahpTourDefinition.steps.find((s) => s.id === 'ahp-click-tab');
     expect(tabStep).toBeDefined();
     expect(tabStep?.requiredAction).toBeDefined();
@@ -380,7 +337,6 @@ describe('Tour Infrastructure & useTourStore', () => {
     useUiStore.getState().setActiveTab('AHP');
     expect(tabStep!.requiredAction!.isSatisfied()).toBe(true);
 
-    // 3. Step 3: required slider action (CR change)
     const sliderStep = ahpTourDefinition.steps.find((s) => s.id === 'ahp-slider-action');
     expect(sliderStep).toBeDefined();
     expect(sliderStep?.requiredAction).toBeDefined();
@@ -390,11 +346,9 @@ describe('Tour Infrastructure & useTourStore', () => {
     sliderStep?.preNavigate?.();
     expect(isAhpCrSatisfied()).toBe(false);
 
-    // Geser slider sampai CR berubah
     useUiStore.getState().setAhpCurrentCr(0.12);
     expect(isAhpCrSatisfied()).toBe(true);
 
-    // 4. Step 4: klik stepper 3 (uji konsistensi)
     const step3 = ahpTourDefinition.steps.find((s) => s.id === 'ahp-click-step-3');
     expect(step3).toBeDefined();
     expect(step3?.requiredAction).toBeDefined();
@@ -403,7 +357,6 @@ describe('Tour Infrastructure & useTourStore', () => {
     useUiStore.getState().setAhpActiveStep(3);
     expect(step3!.requiredAction!.isSatisfied()).toBe(true);
 
-    // 5. Steps audit & apply target selector
     const gaugeStep = ahpTourDefinition.steps.find((s) => s.id === 'ahp-consistency-gauge');
     expect(gaugeStep?.targetSelector).toBe('[data-tour-id="ahp-consistency-gauge"]');
 
@@ -419,10 +372,8 @@ describe('Tour Infrastructure & useTourStore', () => {
       await import('@/core/tour/storyTourSteps');
     const { useUiStore } = await import('@/store/useUiStore');
 
-    // 1. Jumlah step 6
     expect(storyTourDefinition.steps.length).toBe(6);
 
-    // 2. Step 1: klik tab AUTO
     const tabStep = storyTourDefinition.steps.find((s) => s.id === 'story-click-tab');
     expect(tabStep).toBeDefined();
     expect(tabStep?.requiredAction).toBeDefined();
@@ -432,7 +383,6 @@ describe('Tour Infrastructure & useTourStore', () => {
     useUiStore.getState().setActiveTab('AUTO');
     expect(tabStep!.requiredAction!.isSatisfied()).toBe(true);
 
-    // 3. Step 3: required template click
     const templateStep = storyTourDefinition.steps.find((s) => s.id === 'story-try-example-btn');
     expect(templateStep).toBeDefined();
     expect(templateStep?.requiredAction).toBeDefined();
@@ -444,12 +394,10 @@ describe('Tour Infrastructure & useTourStore', () => {
     expect(isStoryTemplateSatisfied()).toBe(true);
     expect(useUiStore.getState().storyMode).toBe('form');
 
-    // resetOnBack mengembalikan ke mode story dan status belum diekstrak
     templateStep?.resetOnBack?.();
     expect(isStoryTemplateSatisfied()).toBe(false);
     expect(useUiStore.getState().storyMode).toBe('story');
 
-    // 4. Verifikasi target selectors step lainnya
     const previewStep = storyTourDefinition.steps.find((s) => s.id === 'story-preview-section');
     expect(previewStep?.targetSelector).toBe('[data-tour-id="story-preview-section"]');
 

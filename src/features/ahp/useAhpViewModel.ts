@@ -11,9 +11,9 @@ export interface PairwiseComparisonPair {
   j: number;
   criterionA: Criterion;
   criterionB: Criterion;
-  value: number; // > 1 means A is more important, < 1 means B is more important, 1 is equal
+  value: number;
   dominant: 'A' | 'B';
-  scaleValue: number; // 1 to 9
+  scaleValue: number;
 }
 
 export interface AhpViewModel {
@@ -37,12 +37,10 @@ export function useAhpViewModel(): AhpViewModel {
   const n = criteria.length;
   const hasData = n >= 2;
 
-  // Inisialisasi matriks pairwise n x n dengan nilai 1
   const [matrix, setMatrix] = useState<number[][]>(() => {
     return Array.from({ length: n }, () => Array(n).fill(1));
   });
 
-  // Sinkronisasi ukuran matriks jika kriteria berubah
   useEffect(() => {
     setMatrix((prev) => {
       if (prev.length === n) return prev;
@@ -53,7 +51,6 @@ export function useAhpViewModel(): AhpViewModel {
     });
   }, [n]);
 
-  // Fungsi mutasi nilai perbandingan berpasangan (A vs B)
   const setPairwiseValue = useCallback((i: number, j: number, value: number) => {
     if (i === j || value <= 0) return;
     setMatrix((prev) => {
@@ -64,7 +61,6 @@ export function useAhpViewModel(): AhpViewModel {
     });
   }, []);
 
-  // Hitung hasil AHP secara reaktif (Live Recompute)
   const ahpResult: AhpResult = useMemo(() => {
     const nCrit = criteria.length;
     if (nCrit < 2 || matrix.length !== nCrit) {
@@ -81,12 +77,10 @@ export function useAhpViewModel(): AhpViewModel {
     return calculateAHP(matrix, criteria);
   }, [matrix, criteria]);
 
-  // Sinkronisasi rasio konsistensi (CR) ke useUiStore untuk pelacakan live tour
   useEffect(() => {
     useUiStore.getState().setAhpCurrentCr(ahpResult.consistency.cr);
   }, [ahpResult.consistency.cr]);
 
-  // Ekstrak daftar pasangan unik (i < j) untuk slider
   const pairs = useMemo<PairwiseComparisonPair[]>(() => {
     if (!hasData || matrix.length !== n) return [];
     const list: PairwiseComparisonPair[] = [];
@@ -109,7 +103,6 @@ export function useAhpViewModel(): AhpViewModel {
     return list;
   }, [matrix, criteria, hasData, n]);
 
-  // Terapkan saran koreksi jika ada
   const applySuggestion = useCallback(() => {
     if (ahpResult.suggestion) {
       const { i, j, suggestedValue } = ahpResult.suggestion;
@@ -117,12 +110,10 @@ export function useAhpViewModel(): AhpViewModel {
     }
   }, [ahpResult.suggestion, setPairwiseValue]);
 
-  // Reset matriks ke nilai setara (1.0)
   const resetMatrix = useCallback(() => {
     setMatrix(Array.from({ length: n }, () => Array(n).fill(1)));
   }, [n]);
 
-  // Terapkan bobot prioritas AHP ke proyek utama
   const applyWeightsToProject = useCallback(() => {
     if (!hasData || ahpResult.priorityVector.length !== n) return;
     criteria.forEach((crit, idx) => {

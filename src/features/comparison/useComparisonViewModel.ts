@@ -36,7 +36,6 @@ export function useComparisonViewModel(): ComparisonViewModel {
   const toggleMethod = useCallback((method: CompareMethod) => {
     setSelectedMethods((prev) => {
       if (prev.includes(method)) {
-        // Minimal harus ada 2 metode untuk dibandingkan
         if (prev.length <= 2) return prev;
         return prev.filter((m) => m !== method);
       }
@@ -46,8 +45,6 @@ export function useComparisonViewModel(): ComparisonViewModel {
 
   const hasData = criteria.length > 0 && alternatives.length > 0;
 
-  // Memoize hasil perhitungan masing-masing metode sehingga saat toggle filter metode,
-  // tidak perlu menghitung ulang normalisasi SAW, perkalian pangkat WP, atau matriks jarak TOPSIS.
   const methodRankings = useMemo(() => {
     if (!hasData) return null;
     return {

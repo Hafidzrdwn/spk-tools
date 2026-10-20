@@ -140,10 +140,8 @@ export const WorkboardPage: React.FC = () => {
       }}
     >
       <div className="space-y-4 max-w-6xl mx-auto">
-        {/* Top Context & Quick Navigation Bar (Relocated from Header) */}
         <WorkboardTopBar />
 
-        {/* Navigation Tabs Bar & Fully Visible Method Description */}
         <div className="space-y-2.5 p-3 rounded-card bg-white/80 backdrop-blur-md border border-slate-200/80 shadow-2xs">
           <div data-tour-id="nav-tabs" className="overflow-x-auto pb-0.5 scrollbar-none touch-pan-x">
             <Tabs<MethodId> items={tabItems} activeTab={activeTab} onChange={setActiveTab} />
@@ -167,7 +165,6 @@ export const WorkboardPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Shared Matrix & Model Input Section (Collapsible) */}
         <Card data-tour-id="shared-matrix-card" className="transition-all duration-200 shadow-2xs">
           <CardHeader
             onClick={toggleSharedMatrix}
