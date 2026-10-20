@@ -1,4 +1,4 @@
-import React, { useId, useMemo } from 'react';
+import React from 'react';
 import { cn } from '@/utils/cn';
 
 export interface LogoProps {
@@ -36,10 +36,6 @@ export const Logo: React.FC<LogoProps> = ({
   className,
 }) => {
   const cfg = sizeConfig[size];
-  const rawId = useId();
-  const safeId = useMemo(() => rawId.replace(/[^a-zA-Z0-9-_]/g, ''), [rawId]);
-  const bgGradientId = `decisi-logo-bg-${safeId}`;
-  const nodeGradientId = `decisi-logo-node-${safeId}`;
 
   return (
     <div
