@@ -8,7 +8,7 @@ import EditableProjectTitle from '@/features/project/EditableProjectTitle';
 import GlossaryDrawer from '@/features/glossary/GlossaryDrawer';
 import TourLauncherMenu from '@/features/tour/TourLauncherMenu';
 import ProjectBackupModal from '@/features/project/ProjectBackupModal';
-import { BookOpen, HardDrive } from 'lucide-react';
+import { BookOpen } from 'lucide-react';
 import { useUiStore } from '@/store/useUiStore';
 import { prefetchRoute } from '@/services/routePrefetch';
 import type { MethodId } from '@/types/domain';
@@ -33,7 +33,6 @@ export const Header: React.FC<HeaderProps> = ({
   const openGlossary = useUiStore((s) => s.openGlossary);
   const closeGlossary = useUiStore((s) => s.closeGlossary);
   const isBackupModalOpen = useUiStore((s) => s.isBackupModalOpen);
-  const openBackupModal = useUiStore((s) => s.openBackupModal);
   const closeBackupModal = useUiStore((s) => s.closeBackupModal);
 
   return (
@@ -68,9 +67,9 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         {/* Status Method & Aksi */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-1.5 sm:gap-2">
-          {/* Support Actions: Bantuan & Glosarium & Cadangan Global */}
-          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+        <div className="flex flex-wrap sm:flex-nowrap items-center justify-between sm:justify-end gap-1.5 sm:gap-2 shrink-0">
+          {/* Support Actions: Bantuan & Glosarium */}
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             <TourLauncherMenu />
 
             <Button
@@ -80,28 +79,15 @@ export const Header: React.FC<HeaderProps> = ({
               data-tour-id="glossary-btn"
               title="Buka Glosarium Istilah SPK (Definisi & Rumus)"
               aria-label="Buka Glosarium Istilah SPK"
-              className="h-9 px-2.5 sm:px-3 py-1.5 text-xs font-semibold rounded-lg border border-slate-200/90 bg-white hover:bg-slate-50 text-slate-700 hover:text-accent-primary shadow-2xs cursor-pointer flex items-center justify-center gap-1.5"
+              className="h-9 px-2.5 sm:px-3 py-1.5 text-xs font-semibold rounded-lg border border-slate-200/90 bg-white hover:bg-slate-50 text-slate-700 hover:text-accent-primary shadow-2xs cursor-pointer flex items-center justify-center gap-1.5 shrink-0"
             >
               <BookOpen className="w-3.5 h-3.5 text-accent-primary shrink-0" />
               <span>Glosarium</span>
             </Button>
-
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => openBackupModal()}
-              data-tour-id="global-backup-btn"
-              title="Cadangkan atau pulihkan seluruh data proyek SPK (JSON)"
-              aria-label="Cadangkan atau pulihkan data proyek"
-              className="h-9 px-2.5 sm:px-3 py-1.5 text-xs font-semibold rounded-lg border border-slate-200/90 bg-white hover:bg-slate-50 text-slate-700 hover:text-accent-primary shadow-2xs cursor-pointer flex items-center justify-center gap-1.5"
-            >
-              <HardDrive className="w-3.5 h-3.5 text-accent-primary shrink-0" />
-              <span>Cadangan</span>
-            </Button>
           </div>
 
           {/* Project Operations */}
-          {actions && <div className="flex items-center gap-1.5 sm:gap-2">{actions}</div>}
+          {actions && <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">{actions}</div>}
         </div>
       </div>
 

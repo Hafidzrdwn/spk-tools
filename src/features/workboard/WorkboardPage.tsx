@@ -108,14 +108,14 @@ export const WorkboardPage: React.FC = () => {
         activeMethod: activeTab,
         onTitleChange: setTitle,
         actions: (
-          <div className="flex items-center gap-1.5 sm:gap-2 w-full sm:w-auto">
+          <div className="flex items-center gap-1.5 sm:gap-2 flex-nowrap shrink-0">
             <Button
               variant="secondary"
               size="sm"
               onClick={() => setIsTemplateModalOpen(true)}
               data-tour-id="load-template-btn"
               title="Buka pilihan template studi kasus SPK"
-              className="flex-1 sm:flex-initial h-9 px-2.5 sm:px-3 py-1.5 text-xs font-semibold rounded-lg border border-slate-200/90 bg-white hover:bg-slate-50 text-slate-700 hover:text-accent-primary shadow-2xs cursor-pointer flex items-center justify-center gap-1.5"
+              className="h-9 px-2.5 sm:px-3 py-1.5 text-xs font-semibold rounded-lg border border-slate-200/90 bg-white hover:bg-slate-50 text-slate-700 hover:text-accent-primary shadow-2xs cursor-pointer flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
             >
               <FolderOpen className="w-3.5 h-3.5 text-accent-primary shrink-0" />
               <span className="sm:hidden">Kasus</span>
@@ -126,8 +126,8 @@ export const WorkboardPage: React.FC = () => {
               size="sm"
               onClick={openBackupModal}
               data-tour-id="backup-project-btn"
-              title="Cadangkan atau pulihkan data proyek (JSON)"
-              className="flex-1 sm:flex-initial h-9 px-2.5 sm:px-3 py-1.5 text-xs font-semibold rounded-lg border border-slate-200/90 bg-white hover:bg-slate-50 text-slate-700 hover:text-accent-primary shadow-2xs cursor-pointer flex items-center justify-center gap-1.5"
+              title="Cadangkan atau pulihkan seluruh data proyek SPK (JSON)"
+              className="h-9 px-2.5 sm:px-3 py-1.5 text-xs font-semibold rounded-lg border border-slate-200/90 bg-white hover:bg-slate-50 text-slate-700 hover:text-accent-primary shadow-2xs cursor-pointer flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
             >
               <HardDrive className="w-3.5 h-3.5 text-accent-primary shrink-0" />
               <span className="sm:hidden">Backup</span>
