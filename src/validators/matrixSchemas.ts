@@ -73,7 +73,7 @@ export const alternativeSchema = z.object({
  */
 export const projectStatePersistedSchema = z.object({
   title: z.string(),
-  activeMethod: z.enum(['SAW', 'WP', 'TOPSIS', 'AHP', 'AUTO']),
+  activeMethod: z.enum(['SAW', 'WP', 'TOPSIS', 'AHP', 'AUTO', 'COMPARE']),
   criteria: z.array(criterionSchema),
   alternatives: z.array(alternativeSchema),
 });

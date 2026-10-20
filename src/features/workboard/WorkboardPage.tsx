@@ -27,6 +27,7 @@ const StoryToMatrixTab = lazy(() => import('@/features/story-to-matrix/StoryToMa
 import TemplateSelectorModal from '@/components/layout/TemplateSelectorModal';
 import ResetProjectButton from '@/features/project/ResetProjectButton';
 import ExportButton from '@/features/export/ExportButton';
+import ProjectBackupModal from '@/features/project/ProjectBackupModal';
 import DecimalFormatToggle from '@/components/layout/DecimalFormatToggle';
 import useUrlTabSync from '@/features/shared/useUrlTabSync';
 import GlossaryTerm from '@/features/glossary/GlossaryTerm';
@@ -40,7 +41,7 @@ import { storyTourDefinition } from '@/core/tour/storyTourSteps';
 import { useTourStore } from '@/store/useTourStore';
 
 const TourRunner = lazy(() => import('@/features/tour/TourRunner'));
-import { FolderOpen, ChevronDown, ChevronUp } from 'lucide-react';
+import { FolderOpen, ChevronDown, ChevronUp, HardDrive } from 'lucide-react';
 import type { MethodId } from '@/types/domain';
 
 export const WorkboardPage: React.FC = () => {
@@ -74,6 +75,7 @@ export const WorkboardPage: React.FC = () => {
   const isSharedMatrixCollapsed = useUiStore((s) => s.isSharedMatrixCollapsed);
   const toggleSharedMatrix = useUiStore((s) => s.toggleSharedMatrix);
   const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
+  const [isBackupModalOpen, setIsBackupModalOpen] = useState(false);
 
   const hasSeenWelcome = useTourStore((s) => s.hasSeenWelcome);
   const activeTourId = useTourStore((s) => s.activeTourId);
@@ -114,11 +116,23 @@ export const WorkboardPage: React.FC = () => {
               onClick={() => setIsTemplateModalOpen(true)}
               data-tour-id="load-template-btn"
               title="Buka pilihan template studi kasus SPK"
-              className="flex-1 sm:flex-initial h-9 px-3 py-1.5 text-xs font-semibold rounded-lg border border-slate-200/90 bg-white hover:bg-slate-50 text-slate-700 hover:text-accent-primary shadow-2xs cursor-pointer flex items-center justify-center gap-1.5"
+              className="flex-1 sm:flex-initial h-9 px-2.5 sm:px-3 py-1.5 text-xs font-semibold rounded-lg border border-slate-200/90 bg-white hover:bg-slate-50 text-slate-700 hover:text-accent-primary shadow-2xs cursor-pointer flex items-center justify-center gap-1.5"
             >
               <FolderOpen className="w-3.5 h-3.5 text-accent-primary shrink-0" />
-              <span className="sm:hidden">Muat Kasus</span>
-              <span className="hidden sm:inline">Muat Contoh Kasus</span>
+              <span className="sm:hidden">Kasus</span>
+              <span className="hidden sm:inline">Muat Kasus</span>
+            </Button>
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => setIsBackupModalOpen(true)}
+              data-tour-id="backup-project-btn"
+              title="Cadangkan atau pulihkan data proyek (JSON)"
+              className="flex-1 sm:flex-initial h-9 px-2.5 sm:px-3 py-1.5 text-xs font-semibold rounded-lg border border-slate-200/90 bg-white hover:bg-slate-50 text-slate-700 hover:text-accent-primary shadow-2xs cursor-pointer flex items-center justify-center gap-1.5"
+            >
+              <HardDrive className="w-3.5 h-3.5 text-accent-primary shrink-0" />
+              <span className="sm:hidden">Backup</span>
+              <span className="hidden sm:inline">Backup & Pulihkan</span>
             </Button>
             <ResetProjectButton />
             <ExportButton variant="primary" />
@@ -286,6 +300,12 @@ export const WorkboardPage: React.FC = () => {
         isOpen={isTemplateModalOpen}
         onClose={() => setIsTemplateModalOpen(false)}
         onSelect={(tpl) => loadProjectState(tpl.state)}
+      />
+
+      {/* Modal Backup & Restore Proyek */}
+      <ProjectBackupModal
+        isOpen={isBackupModalOpen}
+        onClose={() => setIsBackupModalOpen(false)}
       />
 
       {/* Modal Sambutan & Panduan Awal */}
