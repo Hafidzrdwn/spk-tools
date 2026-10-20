@@ -8,8 +8,14 @@ import GlossaryTerm from '@/features/glossary/GlossaryTerm';
 import { Plus, Trash2, Wand2 } from 'lucide-react';
 import { useNumberFormatter } from '@/utils/numberFormat';
 
-export const COMMON_CRITERIA_UNITS = [
-  { label: 'Tanpa Satuan / Bebas', value: '' },
+import CreatableSelect from 'react-select/creatable';
+
+export interface UnitOption {
+  label: string;
+  value: string;
+}
+
+export const COMMON_CRITERIA_UNITS: UnitOption[] = [
   { label: 'Skala 0-100', value: 'Skala 0-100' },
   { label: 'Skala 1-100', value: '1-100' },
   { label: 'Skala 1-10', value: 'Skala 1-10' },
@@ -27,7 +33,7 @@ export const COMMON_CRITERIA_UNITS = [
   { label: 'Unit / Buah', value: 'Unit' },
   { label: 'Orang', value: 'Orang' },
   { label: 'Orang/Hari', value: 'Orang/Hari' },
-] as const;
+];
 
 interface CriterionUnitSelectorProps {
   value: string;
@@ -35,68 +41,120 @@ interface CriterionUnitSelectorProps {
 }
 
 const CriterionUnitSelector: React.FC<CriterionUnitSelectorProps> = ({ value, onChange }) => {
-  const isKnown = COMMON_CRITERIA_UNITS.some((u) => u.value === value);
-  const [isCustomMode, setIsCustomMode] = React.useState<boolean>(!isKnown && Boolean(value));
-
-  // Sync state jika value diubah dari luar (misal load template)
-  React.useEffect(() => {
-    if (!isKnown && Boolean(value)) {
-      setIsCustomMode(true);
-    }
-  }, [value, isKnown]);
-
-  if (isCustomMode) {
-    return (
-      <div className="flex items-center gap-1 w-32 sm:w-40 min-w-32 shrink-0">
-        <input
-          type="text"
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder="Satuan manual..."
-          title="Ketik satuan manual kriteria (misal: m², Kg, Liter)"
-          autoFocus
-          className="w-full px-2 py-1.5 text-xs font-medium text-slate-800 bg-white border border-indigo-300 rounded-control shadow-2xs focus:outline-none focus:ring-1 focus:ring-accent-primary"
-        />
-        <button
-          type="button"
-          onClick={() => {
-            setIsCustomMode(false);
-            onChange('');
-          }}
-          title="Kembali ke daftar satuan umum"
-          aria-label="Kembali ke daftar satuan umum"
-          className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition-colors shrink-0 cursor-pointer"
-        >
-          <span className="text-[11px] font-bold font-mono">☰</span>
-        </button>
-      </div>
-    );
-  }
+  const currentOption: UnitOption | null = value
+    ? COMMON_CRITERIA_UNITS.find((u) => u.value.toLowerCase() === value.toLowerCase()) || {
+        label: value,
+        value: value,
+      }
+    : null;
 
   return (
-    <select
-      value={value}
-      onChange={(e) => {
-        const selected = e.target.value;
-        if (selected === '__custom__') {
-          setIsCustomMode(true);
-        } else {
-          onChange(selected);
+    <div className="w-32 sm:w-40 min-w-32 shrink-0">
+      <CreatableSelect<UnitOption>
+        value={currentOption}
+        onChange={(opt) => onChange(opt ? opt.value : '')}
+        options={COMMON_CRITERIA_UNITS}
+        isClearable
+        isSearchable
+        placeholder="Pilih / cari satuan..."
+        formatCreateLabel={(inputValue) => `Gunakan kustom: "${inputValue}"`}
+        noOptionsMessage={({ inputValue }) =>
+          inputValue ? `Tekan Enter untuk gunakan "${inputValue}"` : 'Tidak ada opsi satuan'
         }
-      }}
-      title="Pilih satuan atau format nilai kriteria"
-      className="w-32 sm:w-40 min-w-32 px-2.5 py-1.5 text-xs font-medium text-slate-700 bg-slate-50/70 border border-slate-200 rounded-control focus:bg-white focus:outline-none focus:ring-1 focus:ring-accent-primary truncate cursor-pointer shrink-0"
-    >
-      {COMMON_CRITERIA_UNITS.map((u) => (
-        <option key={u.value} value={u.value}>
-          {u.label}
-        </option>
-      ))}
-      <option disabled value="__divider__">
-        ──────────
-      </option>
-      <option value="__custom__">Lainnya (Ketik Manual)...</option>
-    </select>
+        menuPortalTarget={typeof document !== 'undefined' ? document.body : null}
+        menuPosition="fixed"
+        styles={{
+          control: (base, state) => ({
+            ...base,
+            minHeight: '30px',
+            height: '30px',
+            fontSize: '11px',
+            backgroundColor: state.isFocused ? '#ffffff' : 'rgba(248, 250, 252, 0.7)',
+            borderColor: state.isFocused ? '#6366f1' : '#e2e8f0',
+            borderRadius: '6px',
+            boxShadow: state.isFocused ? '0 0 0 1px #6366f1' : 'none',
+            '&:hover': {
+              borderColor: '#cbd5e1',
+            },
+          }),
+          valueContainer: (base) => ({
+            ...base,
+            padding: '0 6px',
+            height: '28px',
+          }),
+          input: (base) => ({
+            ...base,
+            margin: 0,
+            padding: 0,
+            fontSize: '11px',
+            color: '#1e293b',
+          }),
+          singleValue: (base) => ({
+            ...base,
+            fontSize: '11px',
+            color: '#334155',
+            fontWeight: 500,
+          }),
+          placeholder: (base) => ({
+            ...base,
+            fontSize: '11px',
+            color: '#94a3b8',
+          }),
+          indicatorsContainer: (base) => ({
+            ...base,
+            height: '28px',
+          }),
+          dropdownIndicator: (base) => ({
+            ...base,
+            padding: '2px 4px',
+            color: '#94a3b8',
+            '&:hover': {
+              color: '#64748b',
+            },
+            svg: {
+              width: '14px',
+              height: '14px',
+            },
+          }),
+          clearIndicator: (base) => ({
+            ...base,
+            padding: '2px 4px',
+            color: '#94a3b8',
+            '&:hover': {
+              color: '#ef4444',
+            },
+            svg: {
+              width: '13px',
+              height: '13px',
+            },
+          }),
+          menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+          menu: (base) => ({
+            ...base,
+            zIndex: 9999,
+            fontSize: '11px',
+            borderRadius: '8px',
+            boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)',
+            border: '1px solid #e2e8f0',
+          }),
+          option: (base, state) => ({
+            ...base,
+            fontSize: '11px',
+            padding: '5px 10px',
+            backgroundColor: state.isSelected
+              ? '#4f46e5'
+              : state.isFocused
+              ? '#eef2ff'
+              : 'transparent',
+            color: state.isSelected ? '#ffffff' : '#1e293b',
+            cursor: 'pointer',
+            '&:active': {
+              backgroundColor: '#e0e7ff',
+            },
+          }),
+        }}
+      />
+    </div>
   );
 };
 
