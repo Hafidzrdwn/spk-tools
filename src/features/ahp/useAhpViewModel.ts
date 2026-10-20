@@ -38,8 +38,26 @@ export function useAhpViewModel(): AhpViewModel {
   const hasData = n >= 2;
 
   const [matrix, setMatrix] = useState<number[][]>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('decisigraph_ahp_matrix');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length === n && parsed.every((r: unknown) => Array.isArray(r) && r.length === n)) {
+            return parsed;
+          }
+        }
+      } catch {
+      }
+    }
     return Array.from({ length: n }, () => Array(n).fill(1));
   });
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && matrix.length > 0) {
+      localStorage.setItem('decisigraph_ahp_matrix', JSON.stringify(matrix));
+    }
+  }, [matrix]);
 
   useEffect(() => {
     setMatrix((prev) => {

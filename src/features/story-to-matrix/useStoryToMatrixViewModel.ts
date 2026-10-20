@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useProjectStore } from '@/store/useProjectStore';
 import { useUiStore } from '@/store/useUiStore';
 import {
@@ -18,7 +18,21 @@ export function useStoryToMatrixViewModel() {
   const mode = useUiStore((s) => s.storyMode);
   const setMode = useUiStore((s) => s.setStoryMode);
 
-  const [rawText, setRawText] = useState<string>('');
+  const [rawText, setRawText] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        return localStorage.getItem('decisigraph_story_raw_text') || '';
+      } catch {
+      }
+    }
+    return '';
+  });
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('decisigraph_story_raw_text', rawText);
+    }
+  }, [rawText]);
   const [previewAlternatives, setPreviewAlternatives] = useState<Alternative[]>([]);
   const [tempCriteria, setTempCriteria] = useState<Criterion[]>([]);
   const [unmatchedCriteria, setUnmatchedCriteria] = useState<string[]>([]);

@@ -1,15 +1,22 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Download, Loader2, AlertCircle, ChevronDown, FileText, Layers } from 'lucide-react';
-import { generateReport } from './generateReport';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
+import {
+  Download,
+  Loader2,
+  ChevronDown,
+  Layers,
+  Sparkles,
+  Sliders,
+} from 'lucide-react';
+import { buildComprehensiveReport } from './generateReport';
 import { useProjectStore } from '@/store/useProjectStore';
 import { useUiStore } from '@/store/useUiStore';
 import { useNormalizedCriteria } from '@/store/selectors';
-import { calculateSAW } from '@/core/math/saw';
-import { calculateWP, calculateSafeWP, WpZeroGuardError } from '@/core/math/wp';
-import { calculateTOPSIS } from '@/core/math/topsis';
-import { compareRankings } from '@/core/math/compareRankings';
 import type { MethodId } from '@/types/domain';
 import type { MethodResult } from '@/core/math/types';
+import type { compareRankings } from '@/core/math/compareRankings';
+import type { ExportScope, ExportReportConfig } from './types';
+import { ExportOptionsModal } from './ExportOptionsModal';
+import { ExportProgressModal } from './ExportProgressModal';
 
 export interface ExportButtonProps {
   method?: MethodId;
@@ -44,16 +51,19 @@ function triggerDownload(blob: Blob, fileName: string) {
 
 export const ExportButton: React.FC<ExportButtonProps> = ({
   method,
-  result,
-  comparisonResult,
   className = '',
   size = 'sm',
   variant = 'secondary',
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [exportingLabel, setExportingLabel] = useState<string | null>(null);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isOptionsModalOpen, setIsOptionsModalOpen] = useState(false);
+
+  const [isProgressOpen, setIsProgressOpen] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [stageLabel, setStageLabel] = useState('');
+  const [isCompleted, setIsCompleted] = useState(false);
+  const [progressError, setProgressError] = useState<string | null>(null);
+
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const activeTab = useUiStore((s) => s.activeTab);
@@ -78,196 +88,117 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
     };
   }, [isOpen]);
 
-  const resolveMethodResult = (targetMethod: MethodId): {
-    res: MethodResult;
-    comp?: ReturnType<typeof compareRankings>;
-  } => {
-    if (result && (!method || method === targetMethod)) {
-      return { res: result, comp: comparisonResult };
-    }
-
-    if (targetMethod === 'WP') {
-      if (result && (!method || method === targetMethod) && result.finalRanking && result.finalRanking.length > 0) {
-        return { res: result, comp: comparisonResult };
-      }
-      try {
-        return { res: calculateWP(criteria, alternatives) };
-      } catch (err) {
-        if (err instanceof WpZeroGuardError) {
-          return { res: calculateSafeWP(criteria, alternatives) };
-        }
-        throw err;
-      }
-    }
-    if (targetMethod === 'TOPSIS') {
-      return { res: calculateTOPSIS(criteria, alternatives) };
-    }
-    if (targetMethod === 'COMPARE') {
-      const sawRes = calculateSAW(criteria, alternatives);
-      let wpRes: MethodResult;
-      try {
-        wpRes = calculateWP(criteria, alternatives);
-      } catch (err) {
-        if (err instanceof WpZeroGuardError) {
-          wpRes = calculateSafeWP(criteria, alternatives);
-        } else {
-          throw err;
-        }
-      }
-      const topsisRes = calculateTOPSIS(criteria, alternatives);
-      const comp = compareRankings(
-        sawRes.finalRanking,
-        wpRes.finalRanking,
-        topsisRes.finalRanking,
-        criteria,
-        alternatives
-      );
-      const res: MethodResult = {
-        intermediateMatrices: {},
-        formulaSteps: [],
-        finalRanking: comp.rows.map((row, idx) => ({
-          alternativeId: row.alternativeId,
-          alternativeName: row.alternativeName,
-          score: Number((1 / Math.max(0.1, row.averageRank)).toFixed(4)),
-          rank: idx + 1,
-        })),
-        hasZeroCostAdjustment: wpRes.hasZeroCostAdjustment,
-        adjustedViolations: wpRes.adjustedViolations,
-      };
-      return { res, comp };
-    }
-
-    return { res: calculateSAW(criteria, alternatives) };
-  };
-
-  const handleExportMethod = async () => {
-    setErrorMessage(null);
-    setIsOpen(false);
-
-    if (!criteria || criteria.length === 0 || !alternatives || alternatives.length === 0) {
-      setErrorMessage('Kriteria atau alternatif masih kosong. Harap isi data terlebih dahulu.');
-      return;
-    }
-
-    try {
-      setIsGenerating(true);
-      setExportingLabel(effectiveMethod);
-
-      const { res, comp } = resolveMethodResult(effectiveMethod);
-
-      if (!res || !res.finalRanking || res.finalRanking.length === 0) {
-        setErrorMessage(`Hasil perhitungan metode ${effectiveMethod} belum tersedia untuk diekspor.`);
+  const executeExport = useCallback(
+    async (config: ExportReportConfig, scope: ExportScope) => {
+      if (!criteria || criteria.length === 0 || !alternatives || alternatives.length === 0) {
+        alert('Kriteria atau alternatif masih kosong. Harap isi data terlebih dahulu.');
         return;
       }
 
-      const payload = generateReport(
-        {
-          title,
+      setIsOptionsModalOpen(false);
+      setIsOpen(false);
+      setIsProgressOpen(true);
+      setProgress(5);
+      setIsCompleted(false);
+      setProgressError(null);
+      setStageLabel('Menyiapkan dan mengekstrak data matriks proyek...');
+
+      let timerId: ReturnType<typeof setInterval> | null = null;
+
+      try {
+        await new Promise((r) => setTimeout(r, 100));
+        setProgress(20);
+        setStageLabel('Menghitung kalkulasi matematis (SAW, WP, TOPSIS, AHP)...');
+
+        const payload = buildComprehensiveReport({
+          projectTitle: title,
+          scope,
+          primaryMethod: effectiveMethod,
+          config,
           criteria,
           alternatives,
-        },
-        effectiveMethod,
-        res,
-        comp || comparisonResult
-      );
+        });
 
-      const [{ pdf }, { DecisiPdfReport }] = await Promise.all([
-        import('@react-pdf/renderer'),
-        import('./DecisiPdfReport'),
-      ]);
-      const blob = await pdf(<DecisiPdfReport payload={payload} />).toBlob();
-      const safeTitle = sanitizeFilename(title) || 'proyek-spk';
-      const fileName = `DecisiGraph-${safeTitle}-${effectiveMethod}.pdf`;
+        await new Promise((r) => setTimeout(r, 150));
+        setProgress(45);
+        setStageLabel('Menyusun struktur dokumen & tata letak bab matematis...');
 
-      triggerDownload(blob, fileName);
-    } catch (err: unknown) {
-      console.error(`Gagal membuat dokumen PDF ${effectiveMethod}:`, err);
-      const msg = err instanceof Error ? err.message : 'Terjadi kendala teknis saat merender laporan PDF.';
-      setErrorMessage(msg);
-    } finally {
-      setIsGenerating(false);
-      setExportingLabel(null);
-    }
+        timerId = setInterval(() => {
+          setProgress((prev) => {
+            if (prev < 90) {
+              const increment = Math.max(1, Math.round((90 - prev) / 6));
+              return prev + increment;
+            }
+            return prev;
+          });
+        }, 120);
+
+        const [{ pdf }, { DecisiPdfReport }] = await Promise.all([
+          import('@react-pdf/renderer'),
+          import('./DecisiPdfReport'),
+        ]);
+
+        setProgress(70);
+        setStageLabel('Merender halaman, formula matematika & tabel vektor...');
+
+        const blob = await pdf(<DecisiPdfReport payload={payload} />).toBlob();
+
+        if (timerId) clearInterval(timerId);
+
+        setProgress(96);
+        setStageLabel('Mengirimkan berkas unduhan ke perangkat...');
+
+        const safeTitle = sanitizeFilename(title) || 'proyek-spk';
+        const methodTag =
+          scope === 'ALL'
+            ? 'Laporan-Lengkap'
+            : config.selectedMethods.length === 1
+            ? config.selectedMethods[0]
+            : config.selectedMethods.join('-');
+        const fileName = `DecisiGraph-${safeTitle}-${methodTag}.pdf`;
+
+        triggerDownload(blob, fileName);
+
+        setProgress(100);
+        setIsCompleted(true);
+        setStageLabel('Selesai! Berkas PDF berhasil diunduh.');
+
+        setTimeout(() => {
+          setIsProgressOpen(false);
+        }, 1200);
+      } catch (err: unknown) {
+        if (timerId) clearInterval(timerId);
+        console.error('Gagal membuat dokumen PDF:', err);
+        const msg =
+          err instanceof Error
+            ? err.message
+            : 'Terjadi kendala teknis saat merender dokumen PDF.';
+        setProgressError(msg);
+      }
+    },
+    [criteria, alternatives, title, effectiveMethod]
+  );
+
+  const handleQuickExportCurrent = () => {
+    const config: ExportReportConfig = {
+      selectedMethods: [effectiveMethod],
+      includeComparison: false,
+      includeAhp: effectiveMethod === 'AHP',
+      includeStory: effectiveMethod === 'AUTO',
+      includeExecutiveSummary: true,
+    };
+    executeExport(config, 'CURRENT');
   };
 
-  // Export full project report (Criteria, Matrix, SAW, WP, TOPSIS, Consensus)
-  const handleExportFullProject = async () => {
-    setErrorMessage(null);
-    setIsOpen(false);
-
-    if (!criteria || criteria.length === 0 || !alternatives || alternatives.length === 0) {
-      setErrorMessage('Kriteria atau alternatif masih kosong. Harap isi data terlebih dahulu.');
-      return;
-    }
-
-    try {
-      setIsGenerating(true);
-      setExportingLabel('Lengkap');
-
-      // Compute all individual methods
-      const sawRes = calculateSAW(criteria, alternatives);
-      let wpRes: MethodResult;
-      try {
-        wpRes = calculateWP(criteria, alternatives);
-      } catch (err) {
-        if (err instanceof WpZeroGuardError) {
-          wpRes = calculateSafeWP(criteria, alternatives);
-        } else {
-          throw err;
-        }
-      }
-      const topsisRes = calculateTOPSIS(criteria, alternatives);
-
-      // Compute multi-method consensus
-      const compRes = compareRankings(
-        sawRes.finalRanking,
-        wpRes.finalRanking,
-        topsisRes.finalRanking,
-        criteria,
-        alternatives
-      );
-
-      const fullMethodResult: MethodResult = {
-        intermediateMatrices: {},
-        formulaSteps: [],
-        finalRanking: compRes.rows.map((row, idx) => ({
-          alternativeId: row.alternativeId,
-          alternativeName: row.alternativeName,
-          score: Number((1 / Math.max(0.1, row.averageRank)).toFixed(4)),
-          rank: idx + 1,
-        })),
-        hasZeroCostAdjustment: wpRes.hasZeroCostAdjustment,
-        adjustedViolations: wpRes.adjustedViolations,
-      };
-
-      const payload = generateReport(
-        {
-          title: title || 'Laporan Pengambilan Keputusan SPK',
-          criteria,
-          alternatives,
-        },
-        'COMPARE',
-        fullMethodResult,
-        compRes
-      );
-
-      const [{ pdf }, { DecisiPdfReport }] = await Promise.all([
-        import('@react-pdf/renderer'),
-        import('./DecisiPdfReport'),
-      ]);
-      const blob = await pdf(<DecisiPdfReport payload={payload} />).toBlob();
-      const safeTitle = sanitizeFilename(title) || 'proyek-spk';
-      const fileName = `DecisiGraph-${safeTitle}-Laporan-Lengkap.pdf`;
-
-      triggerDownload(blob, fileName);
-    } catch (err: unknown) {
-      console.error('Gagal membuat laporan komplit PDF:', err);
-      const msg = err instanceof Error ? err.message : 'Terjadi kendala saat merender laporan lengkap proyek.';
-      setErrorMessage(msg);
-    } finally {
-      setIsGenerating(false);
-      setExportingLabel(null);
-    }
+  const handleQuickExportFull = () => {
+    const config: ExportReportConfig = {
+      selectedMethods: ['SAW', 'WP', 'TOPSIS'],
+      includeComparison: true,
+      includeAhp: true,
+      includeStory: true,
+      includeExecutiveSummary: true,
+    };
+    executeExport(config, 'ALL');
   };
 
   const sizeClasses =
@@ -280,124 +211,119 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
       ? 'bg-transparent hover:bg-slate-100 text-slate-700 border-transparent'
       : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200/90 shadow-2xs';
 
-  const methodLabel =
-    effectiveMethod === 'COMPARE'
-      ? 'Perbandingan'
-      : effectiveMethod === 'AUTO'
-      ? 'Story SPK'
-      : effectiveMethod;
-
   return (
-    <div ref={dropdownRef} className="relative inline-flex flex-col items-end flex-1 sm:flex-initial">
-      <button
-        type="button"
-        data-tour-id="export-pdf-btn"
-        onClick={() => setIsOpen((prev) => !prev)}
-        disabled={isGenerating}
-        title="Pilih opsi ekspor laporan ke dokumen PDF"
-        className={`w-full sm:w-auto inline-flex items-center justify-center gap-1.5 font-semibold rounded-lg border transition-all cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed ${sizeClasses} ${variantClasses} ${className}`}
-      >
-        {isGenerating ? (
-          <>
-            <Loader2
-              className={`w-3.5 h-3.5 animate-spin ${
-                variant === 'primary' ? 'text-white' : 'text-accent-primary'
-              }`}
-            />
-            <span className="truncate">Membuat PDF ({exportingLabel})...</span>
-          </>
-        ) : (
-          <>
-            <Download
-              className={`w-3.5 h-3.5 shrink-0 ${
-                variant === 'primary' ? 'text-white' : 'text-accent-primary'
-              }`}
-            />
-            <span className="whitespace-nowrap">Export PDF</span>
-            <ChevronDown
-              className={`w-3.5 h-3.5 shrink-0 transition-transform duration-200 ${
-                isOpen ? 'rotate-180' : ''
-              } ${
-                variant === 'primary' ? 'text-white/80' : 'text-slate-400'
-              }`}
-            />
-          </>
-        )}
-      </button>
-
-      {/* Dropdown Menu Pilihan Ekspor */}
-      {isOpen && (
-        <div
-          role="menu"
-          className="absolute top-full right-0 mt-1.5 w-72 max-w-[calc(100vw-1.5rem)] bg-white rounded-xl border border-slate-200/90 shadow-xl z-50 overflow-hidden animate-in fade-in zoom-in-95"
+    <>
+      <div ref={dropdownRef} className="relative inline-flex flex-col items-end flex-1 sm:flex-initial">
+        <button
+          type="button"
+          data-tour-id="export-pdf-btn"
+          onClick={() => setIsOpen((prev) => !prev)}
+          disabled={isProgressOpen}
+          title="Buka menu ekspor laporan PDF"
+          className={`w-full sm:w-auto inline-flex items-center justify-center gap-1.5 font-semibold rounded-lg border transition-all cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed ${sizeClasses} ${variantClasses} ${className}`}
         >
-          <div className="px-3.5 py-2.5 bg-slate-50/90 border-b border-slate-100">
-            <p className="text-xs font-bold text-slate-800">Pilihan Dokumen PDF</p>
-            <p className="text-[10px] text-slate-500">Unduh laporan resmi berbasis vektor</p>
-          </div>
+          {isProgressOpen ? (
+            <>
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+              <span>Memproses...</span>
+            </>
+          ) : (
+            <>
+              <Download className="w-3.5 h-3.5 shrink-0" />
+              <span>Ekspor PDF</span>
+              <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+            </>
+          )}
+        </button>
 
-          <div className="p-1.5 space-y-1">
-            {/* Opsi 1: Ekspor Metode Ini */}
+        {isOpen && (
+          <div className="absolute right-0 top-full mt-1.5 w-72 bg-white rounded-xl shadow-xl border border-slate-200/90 p-1.5 z-40 animate-in fade-in zoom-in-95 duration-150">
+            <div className="px-2.5 py-1.5 border-b border-slate-100 mb-1">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                Pilihan Ekspor Dokumen
+              </span>
+            </div>
+
             <button
               type="button"
-              onClick={handleExportMethod}
-              className="w-full text-left p-2.5 rounded-lg hover:bg-indigo-50/60 transition-colors flex items-start gap-2.5 group cursor-pointer"
+              onClick={handleQuickExportFull}
+              className="w-full text-left p-2.5 rounded-lg hover:bg-indigo-50/70 transition-colors flex items-start gap-2.5 group cursor-pointer"
             >
-              <div className="w-7 h-7 rounded-lg bg-indigo-50 border border-indigo-100 flex items-center justify-center text-accent-primary shrink-0 mt-0.5 group-hover:bg-indigo-100/70">
-                <FileText className="w-4 h-4" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <span className="text-xs font-bold text-slate-800 group-hover:text-accent-primary block">
-                  Ekspor Metode Ini ({methodLabel})
-                </span>
-                <p className="text-[10px] text-slate-500 leading-snug mt-0.5">
-                  Laporan fokus pada matriks & hasil perhitungan metode {methodLabel}
-                </p>
-              </div>
-            </button>
-
-            {/* Opsi 2: Ekspor Laporan Lengkap Proyek */}
-            <button
-              type="button"
-              onClick={handleExportFullProject}
-              className="w-full text-left p-2.5 rounded-lg hover:bg-amber-50/50 transition-colors flex items-start gap-2.5 group cursor-pointer border-t border-slate-100/80"
-            >
-              <div className="w-7 h-7 rounded-lg bg-amber-50 border border-amber-200/80 flex items-center justify-center text-amber-600 shrink-0 mt-0.5 group-hover:bg-amber-100/70">
+              <div className="w-7 h-7 rounded-md bg-indigo-100 text-indigo-700 flex items-center justify-center shrink-0 mt-0.5 group-hover:bg-indigo-200 transition-colors">
                 <Layers className="w-4 h-4" />
               </div>
-              <div className="flex-1 min-w-0">
-                <span className="text-xs font-bold text-slate-800 group-hover:text-amber-700 block">
-                  Ekspor Laporan Lengkap Proyek
+              <div>
+                <span className="text-xs font-bold text-slate-900 group-hover:text-indigo-900 block">
+                  Laporan Lengkap Komparatif
                 </span>
-                <p className="text-[10px] text-slate-500 leading-snug mt-0.5">
-                  Kompilasi komprehensif: Kriteria, Alternatif, SAW, WP, TOPSIS & Konsensus
-                </p>
+                <span className="text-[11px] text-slate-500 block leading-tight">
+                  Seluruh metode (SAW, WP, TOPSIS, AHP, Story) + komparasi konsensus.
+                </span>
+              </div>
+            </button>
+
+            <button
+              type="button"
+              onClick={handleQuickExportCurrent}
+              className="w-full text-left p-2.5 rounded-lg hover:bg-slate-50 transition-colors flex items-start gap-2.5 group cursor-pointer"
+            >
+              <div className="w-7 h-7 rounded-md bg-slate-100 text-slate-700 flex items-center justify-center shrink-0 mt-0.5 group-hover:bg-slate-200 transition-colors">
+                <Sparkles className="w-4 h-4 text-accent-primary" />
+              </div>
+              <div>
+                <span className="text-xs font-bold text-slate-900 block">
+                  Metode Aktif ({effectiveMethod})
+                </span>
+                <span className="text-[11px] text-slate-500 block leading-tight">
+                  Tabel data &amp; langkah matematis detail metode {effectiveMethod}.
+                </span>
+              </div>
+            </button>
+
+            <div className="my-1 border-t border-slate-100" />
+
+            <button
+              type="button"
+              onClick={() => {
+                setIsOpen(false);
+                setIsOptionsModalOpen(true);
+              }}
+              className="w-full text-left p-2.5 rounded-lg hover:bg-slate-50 transition-colors flex items-start gap-2.5 group cursor-pointer"
+            >
+              <div className="w-7 h-7 rounded-md bg-purple-50 text-purple-700 flex items-center justify-center shrink-0 mt-0.5 group-hover:bg-purple-100 transition-colors">
+                <Sliders className="w-4 h-4" />
+              </div>
+              <div>
+                <span className="text-xs font-bold text-slate-900 block">
+                  Kustomisasi Pilihan Bab &amp; Metode...
+                </span>
+                <span className="text-[11px] text-slate-500 block leading-tight">
+                  Pilih sendiri metode (1 metode, 2 metode + compare, dll).
+                </span>
               </div>
             </button>
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
-      {/* Error notification */}
-      {errorMessage && (
-        <div
-          role="alert"
-          className="absolute top-full right-0 mt-1.5 w-64 p-2.5 bg-rose-50 border border-rose-200 rounded-lg text-[11px] text-rose-700 shadow-lg z-50 flex items-start gap-1.5 animate-in fade-in zoom-in-95"
-        >
-          <AlertCircle className="w-3.5 h-3.5 text-rose-600 shrink-0 mt-0.5" />
-          <div className="flex-1">
-            <span>{errorMessage}</span>
-            <button
-              type="button"
-              onClick={() => setErrorMessage(null)}
-              className="block mt-1 text-[10px] text-rose-900 underline font-semibold cursor-pointer"
-            >
-              Tutup
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
+      {/* Configuration Modal */}
+      <ExportOptionsModal
+        isOpen={isOptionsModalOpen}
+        onClose={() => setIsOptionsModalOpen(false)}
+        activeMethod={effectiveMethod}
+        onConfirmExport={executeExport}
+      />
+
+      {/* Synchronized Real Progress Modal */}
+      <ExportProgressModal
+        isOpen={isProgressOpen}
+        progress={progress}
+        stageLabel={stageLabel}
+        isCompleted={isCompleted}
+        error={progressError}
+        onClose={() => setIsProgressOpen(false)}
+      />
+    </>
   );
 };
 
