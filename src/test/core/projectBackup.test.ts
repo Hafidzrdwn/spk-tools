@@ -43,30 +43,33 @@ const sampleProject: DecisiProjectState = {
 };
 
 describe('projectBackupService', () => {
-  it('berhasil melakukan serialisasi backup dengan amplop metadata v1.1', () => {
-    const backup = createProjectBackup(sampleProject);
+  it('berhasil melakukan serialisasi backup dengan amplop metadata v1.1 dan preferensi global', () => {
+    const backup = createProjectBackup(sampleProject, { numberFormat: 'comma' });
     expect(backup.format).toBe('decisigraph-project-backup');
     expect(backup.version).toBe('1.1');
     expect(backup.project.title).toBe('Evaluasi Pemilihan Vendor Cloud');
     expect(backup.project.criteria.length).toBe(2);
     expect(backup.project.alternatives.length).toBe(2);
+    expect(backup.preferences?.numberFormat).toBe('comma');
 
-    const json = serializeProjectBackup(sampleProject);
+    const json = serializeProjectBackup(sampleProject, { numberFormat: 'comma' });
     expect(json).toContain('"decisigraph-project-backup"');
     expect(json).toContain('"Cloud AWS"');
+    expect(json).toContain('"numberFormat": "comma"');
   });
 
-  it('berhasil memvalidasi dan memulihkan payload backup envelope standar', () => {
-    const json = serializeProjectBackup(sampleProject);
+  it('berhasil memvalidasi dan memulihkan payload backup envelope standar beserta preferensi', () => {
+    const json = serializeProjectBackup(sampleProject, { numberFormat: 'dot' });
     const result = parseAndValidateProjectBackup(json);
 
     expect(result.success).toBe(true);
     if (result.success) {
-      expect(result.data.title).toBe('Evaluasi Pemilihan Vendor Cloud');
-      expect(result.data.activeMethod).toBe('COMPARE');
-      expect(result.data.criteria.length).toBe(2);
-      expect(result.data.alternatives.length).toBe(2);
-      expect(result.data.alternatives[0].values['crit_1']).toBe(15);
+      expect(result.data.project.title).toBe('Evaluasi Pemilihan Vendor Cloud');
+      expect(result.data.project.activeMethod).toBe('COMPARE');
+      expect(result.data.project.criteria.length).toBe(2);
+      expect(result.data.project.alternatives.length).toBe(2);
+      expect(result.data.project.alternatives[0].values['crit_1']).toBe(15);
+      expect(result.data.preferences?.numberFormat).toBe('dot');
     }
   });
 
@@ -76,8 +79,8 @@ describe('projectBackupService', () => {
 
     expect(result.success).toBe(true);
     if (result.success) {
-      expect(result.data.title).toBe('Evaluasi Pemilihan Vendor Cloud');
-      expect(result.data.criteria[0].name).toBe('Biaya Bulanan');
+      expect(result.data.project.title).toBe('Evaluasi Pemilihan Vendor Cloud');
+      expect(result.data.project.criteria[0].name).toBe('Biaya Bulanan');
     }
   });
 
@@ -90,7 +93,7 @@ describe('projectBackupService', () => {
 
     expect(result.success).toBe(true);
     if (result.success) {
-      expect(result.data.title).toBe('Evaluasi Pemilihan Vendor Cloud');
+      expect(result.data.project.title).toBe('Evaluasi Pemilihan Vendor Cloud');
     }
   });
 

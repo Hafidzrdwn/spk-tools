@@ -14,6 +14,7 @@ export interface UiStore {
   isGlossaryOpen: boolean;
   glossaryTargetTerm: string | null;
   isWelcomeOpen: boolean;
+  isBackupModalOpen: boolean;
   /** Format angka desimal: 'comma' (Indonesia: 3,14) atau 'dot' (Internasional: 3.14) */
   numberFormat: NumberSeparator;
   /** Section aktif di panel Shared Input (Matrix / Kriteria / Alternatif) */
@@ -35,6 +36,8 @@ export interface UiStore {
   closeGlossary: () => void;
   openWelcome: () => void;
   closeWelcome: () => void;
+  openBackupModal: () => void;
+  closeBackupModal: () => void;
   setNumberFormat: (format: NumberSeparator) => void;
   toggleNumberFormat: () => void;
   setActiveEditorSection: (section: EditorSection) => void;
@@ -107,6 +110,7 @@ export const useUiStore = create<UiStore>((set) => ({
   isGlossaryOpen: false,
   glossaryTargetTerm: null,
   isWelcomeOpen: false,
+  isBackupModalOpen: false,
   numberFormat: getInitialNumberFormat(),
   activeEditorSection: 'matrix',
   sawActiveStep: 1,
@@ -150,6 +154,8 @@ export const useUiStore = create<UiStore>((set) => ({
   closeGlossary: () => set({ isGlossaryOpen: false, glossaryTargetTerm: null }),
   openWelcome: () => set({ isWelcomeOpen: true }),
   closeWelcome: () => set({ isWelcomeOpen: false }),
+  openBackupModal: () => set({ isBackupModalOpen: true }),
+  closeBackupModal: () => set({ isBackupModalOpen: false }),
   setNumberFormat: (format) => {
     try {
       localStorage.setItem(NUMBER_FORMAT_STORAGE_KEY, format);

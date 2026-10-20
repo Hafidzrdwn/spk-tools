@@ -1,5 +1,6 @@
 import React, { useState, useId } from 'react';
 import { useProjectStore } from '@/store/useProjectStore';
+import { useUiStore } from '@/store/useUiStore';
 import { useShallow } from 'zustand/react/shallow';
 import { toast } from 'sonner';
 import {
@@ -13,6 +14,8 @@ import {
   AlertTriangle,
   CheckCircle2,
   FileUp,
+  Layers,
+  Settings2,
 } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
@@ -21,28 +24,38 @@ import {
   copyProjectBackupToClipboard,
   parseAndValidateProjectBackup,
   serializeProjectBackup,
+  type ParsedBackupResult,
 } from './projectBackupService';
 import type { DecisiProjectState } from '@/types/domain';
 
 export interface ProjectBackupModalProps {
-  isOpen: boolean;
-  onClose: () => void;
+  isOpen?: boolean;
+  onClose?: () => void;
 }
 
 export const ProjectBackupModal: React.FC<ProjectBackupModalProps> = ({
-  isOpen,
-  onClose,
+  isOpen: propIsOpen,
+  onClose: propOnClose,
 }) => {
   const fileInputId = useId();
   const [activeTab, setActiveTab] = useState<'export' | 'import'>('export');
   const [isCopied, setIsCopied] = useState(false);
   const [showJsonPreview, setShowJsonPreview] = useState(false);
 
+  // Global store states
+  const storeIsBackupOpen = useUiStore((s) => s.isBackupModalOpen);
+  const closeBackupModal = useUiStore((s) => s.closeBackupModal);
+  const numberFormat = useUiStore((s) => s.numberFormat);
+  const setNumberFormat = useUiStore((s) => s.setNumberFormat);
+
+  const isOpen = propIsOpen !== undefined ? propIsOpen : storeIsBackupOpen;
+  const handleClose = propOnClose || closeBackupModal;
+
   // Import states
   const [importText, setImportText] = useState('');
   const [isDragging, setIsDragging] = useState(false);
   const [validationResult, setValidationResult] = useState<
-    { success: true; data: DecisiProjectState } | { success: false; error: string } | null
+    { success: true; data: ParsedBackupResult } | { success: false; error: string } | null
   >(null);
 
   const { title, activeMethod, criteria, alternatives, loadProjectState } = useProjectStore(
@@ -62,13 +75,17 @@ export const ProjectBackupModal: React.FC<ProjectBackupModalProps> = ({
     alternatives,
   };
 
+  const currentPreferences = {
+    numberFormat,
+  };
+
   if (!isOpen) return null;
 
   const handleCopy = async () => {
-    const success = await copyProjectBackupToClipboard(currentProjectState);
+    const success = await copyProjectBackupToClipboard(currentProjectState, currentPreferences);
     if (success) {
       setIsCopied(true);
-      toast.success('JSON proyek berhasil disalin ke clipboard!');
+      toast.success('JSON basis data proyek berhasil disalin ke clipboard!');
       setTimeout(() => setIsCopied(false), 2000);
     } else {
       toast.error('Gagal menyalin JSON ke clipboard.');
@@ -76,8 +93,8 @@ export const ProjectBackupModal: React.FC<ProjectBackupModalProps> = ({
   };
 
   const handleDownload = () => {
-    downloadProjectBackup(currentProjectState);
-    toast.success('File backup .json berhasil diunduh!');
+    downloadProjectBackup(currentProjectState, currentPreferences);
+    toast.success('File cadangan (.json) berhasil diunduh!');
   };
 
   const handleTextChange = (text: string) => {
@@ -128,9 +145,16 @@ export const ProjectBackupModal: React.FC<ProjectBackupModalProps> = ({
   const handleApplyRestore = () => {
     if (!validationResult || !validationResult.success) return;
 
-    loadProjectState(validationResult.data);
-    toast.success(`Data proyek "${validationResult.data.title}" berhasil dipulihkan!`);
-    onClose();
+    const { project: restoredProject, preferences: restoredPreferences } = validationResult.data;
+
+    loadProjectState(restoredProject);
+
+    if (restoredPreferences?.numberFormat) {
+      setNumberFormat(restoredPreferences.numberFormat);
+    }
+
+    toast.success(`Basis data proyek "${restoredProject.title}" berhasil dipulihkan secara menyeluruh!`);
+    handleClose();
   };
 
   return (
@@ -143,15 +167,15 @@ export const ProjectBackupModal: React.FC<ProjectBackupModalProps> = ({
               <HardDrive className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-slate-900">Cadangan & Pemulihan Proyek</h3>
+              <h3 className="text-sm font-bold text-slate-900">Cadangan & Pemulihan Proyek (Global)</h3>
               <p className="text-[11px] text-slate-500">
-                Ekspor/impor data matriks, kriteria, dan alternatif via format JSON
+                Ekspor/impor seluruh basis data kriteria, alternatif, dan matriks nilai SPK
               </p>
             </div>
           </div>
           <button
             type="button"
-            onClick={onClose}
+            onClick={handleClose}
             aria-label="Tutup modal cadangan data"
             className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer"
           >
@@ -191,14 +215,15 @@ export const ProjectBackupModal: React.FC<ProjectBackupModalProps> = ({
         <div className="p-5 overflow-y-auto space-y-4">
           {activeTab === 'export' ? (
             <div className="space-y-4">
-              {/* Current Project Snapshot Card */}
+              {/* Universal Project Snapshot Card */}
               <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/60 space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-                    Ringkasan Proyek Saat Ini
+                  <span className="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+                    <Layers className="w-3.5 h-3.5 text-indigo-600" />
+                    <span>Basis Data Proyek SPK</span>
                   </span>
-                  <Badge variant="primary" size="sm">
-                    {activeMethod}
+                  <Badge variant="primary" size="sm" className="font-semibold text-[10px]">
+                    Universal (Semua Metode)
                   </Badge>
                 </div>
 
@@ -206,12 +231,19 @@ export const ProjectBackupModal: React.FC<ProjectBackupModalProps> = ({
                   <p className="text-sm font-semibold text-slate-900 truncate">
                     {title || 'Proyek SPK Baru'}
                   </p>
-                  <div className="flex flex-wrap items-center gap-2 text-xs text-slate-600">
+                  <p className="text-[11px] text-slate-500 leading-relaxed">
+                    Mencakup seluruh kriteria, bobot, satuan, alternatif, dan nilai matriks keputusan bersama yang dipakai serentak oleh <strong>SAW, WP, TOPSIS, AHP</strong>, dan <strong>Komparasi</strong>.
+                  </p>
+                  <div className="flex flex-wrap items-center gap-2 pt-1 text-xs text-slate-600">
                     <span className="inline-flex items-center gap-1 bg-white px-2 py-0.5 rounded-md border border-slate-200/80">
                       <strong>{criteria.length}</strong> Kriteria
                     </span>
                     <span className="inline-flex items-center gap-1 bg-white px-2 py-0.5 rounded-md border border-slate-200/80">
                       <strong>{alternatives.length}</strong> Alternatif
+                    </span>
+                    <span className="inline-flex items-center gap-1 bg-white px-2 py-0.5 rounded-md border border-slate-200/80 text-[11px]">
+                      <Settings2 className="w-3 h-3 text-slate-400" />
+                      Format Desimal: {numberFormat === 'comma' ? 'Koma (3,14)' : 'Titik (3.14)'}
                     </span>
                   </div>
                 </div>
@@ -240,7 +272,7 @@ export const ProjectBackupModal: React.FC<ProjectBackupModalProps> = ({
                   ) : (
                     <>
                       <Copy className="w-4 h-4 text-indigo-600" />
-                      <span>Salin JSON Proyek</span>
+                      <span>Salin JSON Global</span>
                     </>
                   )}
                 </Button>
@@ -264,12 +296,12 @@ export const ProjectBackupModal: React.FC<ProjectBackupModalProps> = ({
                   className="text-[11px] font-medium text-slate-500 hover:text-indigo-600 flex items-center gap-1 transition-colors cursor-pointer"
                 >
                   <FileJson className="w-3.5 h-3.5" />
-                  <span>{showJsonPreview ? 'Sembunyikan' : 'Lihat Pratinjau'} Payload JSON</span>
+                  <span>{showJsonPreview ? 'Sembunyikan' : 'Lihat Pratinjau'} Payload JSON Global</span>
                 </button>
 
                 {showJsonPreview && (
                   <div className="mt-2 p-3 bg-slate-900 rounded-lg text-slate-200 font-mono text-[10px] leading-relaxed max-h-44 overflow-y-auto select-all">
-                    <pre>{serializeProjectBackup(currentProjectState)}</pre>
+                    <pre>{serializeProjectBackup(currentProjectState, currentPreferences)}</pre>
                   </div>
                 )}
               </div>
@@ -311,7 +343,7 @@ export const ProjectBackupModal: React.FC<ProjectBackupModalProps> = ({
                     pilih file
                   </label>
                 </p>
-                <p className="text-[10px] text-slate-400 mt-0.5">Mendukung file .json hasil ekspor DecisiGraph</p>
+                <p className="text-[10px] text-slate-400 mt-0.5">Mendukung file .json hasil ekspor DecisiGraph dari dev maupun prod</p>
               </div>
 
               {/* Paste JSON Textarea */}
@@ -334,7 +366,7 @@ export const ProjectBackupModal: React.FC<ProjectBackupModalProps> = ({
                   id="import-textarea"
                   value={importText}
                   onChange={(e) => handleTextChange(e.target.value)}
-                  placeholder="Tempel teks JSON cadangan dari production / development di sini..."
+                  placeholder="Tempel teks JSON cadangan dari production atau environment dev di sini..."
                   rows={4}
                   className="w-full p-2.5 text-[11px] font-mono text-slate-800 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-accent-primary"
                 />
@@ -347,20 +379,22 @@ export const ProjectBackupModal: React.FC<ProjectBackupModalProps> = ({
                     <div className="p-3.5 bg-emerald-50/90 border border-emerald-200 rounded-xl space-y-2">
                       <div className="flex items-center gap-2 text-emerald-800 font-bold text-xs">
                         <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                        <span>Format Cadangan Valid & Siap Dipulihkan</span>
+                        <span>Format Cadangan Universal Valid</span>
                       </div>
                       <div className="text-xs text-emerald-900 space-y-1 pl-6">
                         <p>
-                          <strong>Judul:</strong> {validationResult.data.title}
+                          <strong>Judul:</strong> {validationResult.data.project.title}
                         </p>
                         <p className="text-[11px] text-emerald-700">
-                          {validationResult.data.criteria.length} Kriteria •{' '}
-                          {validationResult.data.alternatives.length} Alternatif (Metode:{' '}
-                          {validationResult.data.activeMethod})
+                          {validationResult.data.project.criteria.length} Kriteria •{' '}
+                          {validationResult.data.project.alternatives.length} Alternatif
+                          {validationResult.data.preferences?.numberFormat && (
+                            <> • Format Desimal: {validationResult.data.preferences.numberFormat === 'comma' ? 'Koma (ID)' : 'Titik (US)'}</>
+                          )}
                         </p>
                       </div>
                       <p className="text-[10px] text-emerald-600 pl-6 italic">
-                        * Catatan: Data yang sedang ada pada workboard saat ini akan digantikan oleh cadangan ini.
+                        * Catatan: Seluruh data workboard dan perhitungan semua metode akan disinkronkan ke cadangan ini.
                       </p>
                     </div>
                   ) : (
@@ -387,7 +421,7 @@ export const ProjectBackupModal: React.FC<ProjectBackupModalProps> = ({
                   className="w-full h-10 text-xs font-semibold cursor-pointer justify-center disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Check className="w-4 h-4" />
-                  <span>Terapkan & Pulihkan Data ke Workboard</span>
+                  <span>Terapkan & Pulihkan Data ke Seluruh Sistem</span>
                 </Button>
               </div>
             </div>

@@ -27,7 +27,6 @@ const StoryToMatrixTab = lazy(() => import('@/features/story-to-matrix/StoryToMa
 import TemplateSelectorModal from '@/components/layout/TemplateSelectorModal';
 import ResetProjectButton from '@/features/project/ResetProjectButton';
 import ExportButton from '@/features/export/ExportButton';
-import ProjectBackupModal from '@/features/project/ProjectBackupModal';
 import DecimalFormatToggle from '@/components/layout/DecimalFormatToggle';
 import useUrlTabSync from '@/features/shared/useUrlTabSync';
 import GlossaryTerm from '@/features/glossary/GlossaryTerm';
@@ -74,8 +73,8 @@ export const WorkboardPage: React.FC = () => {
   const setActiveEditorSection = useUiStore((s) => s.setActiveEditorSection);
   const isSharedMatrixCollapsed = useUiStore((s) => s.isSharedMatrixCollapsed);
   const toggleSharedMatrix = useUiStore((s) => s.toggleSharedMatrix);
+  const openBackupModal = useUiStore((s) => s.openBackupModal);
   const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
-  const [isBackupModalOpen, setIsBackupModalOpen] = useState(false);
 
   const hasSeenWelcome = useTourStore((s) => s.hasSeenWelcome);
   const activeTourId = useTourStore((s) => s.activeTourId);
@@ -125,7 +124,7 @@ export const WorkboardPage: React.FC = () => {
             <Button
               variant="secondary"
               size="sm"
-              onClick={() => setIsBackupModalOpen(true)}
+              onClick={openBackupModal}
               data-tour-id="backup-project-btn"
               title="Cadangkan atau pulihkan data proyek (JSON)"
               className="flex-1 sm:flex-initial h-9 px-2.5 sm:px-3 py-1.5 text-xs font-semibold rounded-lg border border-slate-200/90 bg-white hover:bg-slate-50 text-slate-700 hover:text-accent-primary shadow-2xs cursor-pointer flex items-center justify-center gap-1.5"
@@ -300,12 +299,6 @@ export const WorkboardPage: React.FC = () => {
         isOpen={isTemplateModalOpen}
         onClose={() => setIsTemplateModalOpen(false)}
         onSelect={(tpl) => loadProjectState(tpl.state)}
-      />
-
-      {/* Modal Backup & Restore Proyek */}
-      <ProjectBackupModal
-        isOpen={isBackupModalOpen}
-        onClose={() => setIsBackupModalOpen(false)}
       />
 
       {/* Modal Sambutan & Panduan Awal */}
