@@ -5,7 +5,7 @@ import { useNormalizedCriteria } from '@/store/selectors';
 import Button from '@/components/ui/Button';
 import NumericInput from '@/components/ui/NumericInput';
 import GlossaryTerm from '@/features/glossary/GlossaryTerm';
-import { Plus, Trash2, Wand2 } from 'lucide-react';
+import { Plus, Trash2 } from 'lucide-react';
 import { useNumberFormatter } from '@/utils/numberFormat';
 
 import CreatableSelect from 'react-select/creatable';
@@ -184,7 +184,6 @@ export const CriteriaEditor: React.FC = () => {
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <Button variant="secondary" size="sm" onClick={autoDistributeWeights} className="min-h-9 sm:min-h-10 text-xs cursor-pointer">
-            <Wand2 className="w-3.5 h-3.5 text-accent-primary" />
             <span className="hidden xs:inline">Ratakan Bobot</span>
             <span className="xs:hidden">Ratakan</span>
           </Button>

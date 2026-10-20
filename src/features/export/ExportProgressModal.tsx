@@ -61,7 +61,7 @@ export const ExportProgressModal: React.FC<ExportProgressModalProps> = ({
             ? 'Dokumen PDF Berhasil Dibuat!'
             : 'Menyusun Laporan PDF Komprehensif'}
         </h3>
-        <p className="text-xs text-slate-500 mb-5 min-h-[32px] px-2 leading-relaxed">
+        <p className="text-xs text-slate-500 mb-5 min-h-8 px-2 leading-relaxed">
           {error ? error : stageLabel}
         </p>
 

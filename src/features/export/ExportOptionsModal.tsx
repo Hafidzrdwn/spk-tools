@@ -2,15 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { Dialog } from '@/components/ui/Dialog';
 import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
-import {
-  FileText,
-  Layers,
-  Sliders,
-  CheckCircle2,
-  Sparkles,
-  GitCompare,
-  BookOpen,
-} from 'lucide-react';
+import { CheckCircle2 } from 'lucide-react';
 import type { MethodId } from '@/types/domain';
 import type { ExportScope, ExportReportConfig } from './types';
 
@@ -132,18 +124,13 @@ export const ExportOptionsModal: React.FC<ExportOptionsModalProps> = ({
         if (!open) onClose();
       }}
       title={
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-indigo-50 border border-indigo-200 flex items-center justify-center text-indigo-600">
-            <FileText className="w-4 h-4" />
-          </div>
-          <div>
-            <h3 className="text-base font-bold text-slate-900 leading-none">
-              Konfigurasi Ekspor Laporan PDF
-            </h3>
-            <p className="text-xs text-slate-500 mt-1 font-normal">
-              Pilih cakupan metode dan bab laporan yang ingin dimuat secara terperinci.
-            </p>
-          </div>
+        <div>
+          <h3 className="text-base font-bold text-slate-900 leading-none">
+            Konfigurasi Ekspor Laporan PDF
+          </h3>
+          <p className="text-xs text-slate-500 mt-1 font-normal">
+            Pilih cakupan metode dan bab laporan yang ingin dimuat secara terperinci.
+          </p>
         </div>
       }
       className="max-w-2xl max-h-[90vh] overflow-y-auto"
@@ -157,9 +144,8 @@ export const ExportOptionsModal: React.FC<ExportOptionsModalProps> = ({
             size="sm"
             onClick={handleExportClick}
             disabled={!canExport}
-            className="text-xs font-semibold px-4 shadow-sm flex items-center gap-1.5"
+            className="text-xs font-semibold px-4 shadow-sm"
           >
-            <FileText className="w-4 h-4" />
             Mulai Ekspor Dokumen PDF
           </Button>
         </div>
@@ -182,10 +168,9 @@ export const ExportOptionsModal: React.FC<ExportOptionsModalProps> = ({
               }`}
             >
               <div className="flex items-center justify-between mb-1">
-                <div className="flex items-center gap-1.5 font-bold text-xs text-indigo-950">
-                  <Layers className="w-4 h-4 text-indigo-600" />
+                <span className="font-bold text-xs text-indigo-950">
                   Lengkap Komparatif
-                </div>
+                </span>
                 {scope === 'ALL' && <CheckCircle2 className="w-3.5 h-3.5 text-indigo-600" />}
               </div>
               <p className="text-[11px] text-slate-500 leading-tight">
@@ -203,10 +188,9 @@ export const ExportOptionsModal: React.FC<ExportOptionsModalProps> = ({
               }`}
             >
               <div className="flex items-center justify-between mb-1">
-                <div className="flex items-center gap-1.5 font-bold text-xs text-indigo-950">
-                  <Sparkles className="w-4 h-4 text-indigo-600" />
+                <span className="font-bold text-xs text-indigo-950">
                   Metode Aktif Saja
-                </div>
+                </span>
                 {scope === 'CURRENT' && <CheckCircle2 className="w-3.5 h-3.5 text-indigo-600" />}
               </div>
               <p className="text-[11px] text-slate-500 leading-tight">
@@ -224,10 +208,9 @@ export const ExportOptionsModal: React.FC<ExportOptionsModalProps> = ({
               }`}
             >
               <div className="flex items-center justify-between mb-1">
-                <div className="flex items-center gap-1.5 font-bold text-xs text-indigo-950">
-                  <Sliders className="w-4 h-4 text-indigo-600" />
+                <span className="font-bold text-xs text-indigo-950">
                   Kustom Mandiri
-                </div>
+                </span>
                 {scope === 'CUSTOM' && <CheckCircle2 className="w-3.5 h-3.5 text-indigo-600" />}
               </div>
               <p className="text-[11px] text-slate-500 leading-tight">
@@ -342,16 +325,13 @@ export const ExportOptionsModal: React.FC<ExportOptionsModalProps> = ({
                   : 'border-slate-200 bg-white text-slate-500'
               }`}
             >
-              <div className="flex items-center gap-2">
-                <GitCompare className="w-4 h-4 text-emerald-600" />
-                <div>
-                  <span className="font-bold block">Sertakan Bab Komparasi Multi-Metode</span>
-                  <span className="text-[10px] text-slate-500 block">
-                    {compareCandidates.length >= 2
-                      ? `Membandingkan secara side-by-side: ${compareCandidates.join(', ')}`
-                      : 'Memerlukan minimal 2 metode terpilih (SAW, WP, atau TOPSIS)'}
-                  </span>
-                </div>
+              <div>
+                <span className="font-bold block">Sertakan Bab Komparasi Multi-Metode</span>
+                <span className="text-[10px] text-slate-500 block">
+                  {compareCandidates.length >= 2
+                    ? `Membandingkan secara side-by-side: ${compareCandidates.join(', ')}`
+                    : 'Memerlukan minimal 2 metode terpilih (SAW, WP, atau TOPSIS)'}
+                </span>
               </div>
               <input
                 type="checkbox"
@@ -370,8 +350,7 @@ export const ExportOptionsModal: React.FC<ExportOptionsModalProps> = ({
         {/* Live Chapter Preview */}
         <div>
           <div className="flex items-center justify-between mb-2">
-            <label className="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
-              <BookOpen className="w-3.5 h-3.5 text-indigo-600" />
+            <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
               Daftar Bab Yang Akan Dicetak Dalam PDF ({generatedChaptersPreview.length} Bab)
             </label>
             <Badge variant="neutral" size="sm">

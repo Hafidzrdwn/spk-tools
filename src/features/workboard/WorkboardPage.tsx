@@ -4,7 +4,6 @@ import AppShell from '@/components/layout/AppShell';
 import Tabs from '@/components/ui/Tabs';
 import Card, { CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
-import Badge from '@/components/ui/Badge';
 import { useUiStore } from '@/store/useUiStore';
 import { useProjectStore } from '@/store/useProjectStore';
 import { useShallow } from 'zustand/react/shallow';
@@ -40,7 +39,7 @@ import { storyTourDefinition } from '@/core/tour/storyTourSteps';
 import { useTourStore } from '@/store/useTourStore';
 
 const TourRunner = lazy(() => import('@/features/tour/TourRunner'));
-import { FolderOpen, ChevronDown, ChevronUp, HardDrive } from 'lucide-react';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import type { MethodId } from '@/types/domain';
 
 export const WorkboardPage: React.FC = () => {
@@ -97,7 +96,6 @@ export const WorkboardPage: React.FC = () => {
     ) : (
       r.label
     ),
-    icon: r.icon,
     badge: r.badge,
   }));
 
@@ -115,9 +113,8 @@ export const WorkboardPage: React.FC = () => {
               onClick={() => setIsTemplateModalOpen(true)}
               data-tour-id="load-template-btn"
               title="Buka pilihan template studi kasus SPK"
-              className="h-9 px-2.5 sm:px-3 py-1.5 text-xs font-semibold rounded-lg border border-slate-200/90 bg-white hover:bg-slate-50 text-slate-700 hover:text-accent-primary shadow-2xs cursor-pointer flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
+              className="h-9 px-2.5 sm:px-3 py-1.5 text-xs font-semibold rounded-lg border border-slate-200/90 bg-white hover:bg-slate-50 text-slate-700 hover:text-accent-primary shadow-2xs cursor-pointer flex items-center justify-center whitespace-nowrap shrink-0"
             >
-              <FolderOpen className="w-3.5 h-3.5 text-accent-primary shrink-0" />
               <span className="sm:hidden">Kasus</span>
               <span className="hidden sm:inline">Muat Kasus</span>
             </Button>
@@ -127,9 +124,8 @@ export const WorkboardPage: React.FC = () => {
               onClick={openBackupModal}
               data-tour-id="backup-project-btn"
               title="Cadangkan atau pulihkan seluruh data proyek SPK (JSON)"
-              className="h-9 px-2.5 sm:px-3 py-1.5 text-xs font-semibold rounded-lg border border-slate-200/90 bg-white hover:bg-slate-50 text-slate-700 hover:text-accent-primary shadow-2xs cursor-pointer flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
+              className="h-9 px-2.5 sm:px-3 py-1.5 text-xs font-semibold rounded-lg border border-slate-200/90 bg-white hover:bg-slate-50 text-slate-700 hover:text-accent-primary shadow-2xs cursor-pointer flex items-center justify-center whitespace-nowrap shrink-0"
             >
-              <HardDrive className="w-3.5 h-3.5 text-accent-primary shrink-0" />
               <span className="sm:hidden">Backup</span>
               <span className="hidden sm:inline">Backup & Pulihkan</span>
             </Button>
@@ -143,14 +139,11 @@ export const WorkboardPage: React.FC = () => {
         <WorkboardTopBar />
 
         <div className="space-y-2.5 p-3 rounded-card bg-white/80 backdrop-blur-md border border-slate-200/80 shadow-2xs">
-          <div data-tour-id="nav-tabs" className="overflow-x-auto pb-0.5 scrollbar-none touch-pan-x">
+          <div data-tour-id="nav-tabs" className="w-full">
             <Tabs<MethodId> items={tabItems} activeTab={activeTab} onChange={setActiveTab} />
           </div>
-          <div className="flex flex-col sm:flex-row sm:items-center gap-2 px-3 py-2 bg-indigo-50/50 rounded-control border border-indigo-100/60 text-xs">
+          <div className="flex flex-wrap sm:items-center gap-2 px-3 py-2 bg-indigo-50/50 rounded-control border border-indigo-100/60 text-xs">
             <div className="flex items-center gap-1.5 shrink-0">
-              <Badge variant="primary" size="sm">
-                {currentRoute.badge}
-              </Badge>
               <span className="font-bold text-slate-800">
                 {['SAW', 'WP', 'TOPSIS', 'AHP'].includes(currentRoute.id) ? (
                   <GlossaryTerm term={currentRoute.id} position="bottom">{currentRoute.label}</GlossaryTerm>

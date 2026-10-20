@@ -6,7 +6,7 @@ import ExtractedPreviewTable from './components/ExtractedPreviewTable';
 import AhpPromptModal from './components/AhpPromptModal';
 import TemplatePickerModal from './components/TemplatePickerModal';
 import Card, { CardContent } from '@/components/ui/Card';
-import { Sparkles, Wand2 } from 'lucide-react';
+import { Wand2 } from 'lucide-react';
 
 export const StoryToMatrixTab: React.FC = () => {
   const {
@@ -64,7 +64,6 @@ export const StoryToMatrixTab: React.FC = () => {
               onClick={() => setIsTemplatePickerOpen(true)}
               className="w-full sm:w-auto px-3.5 py-1.5 rounded-lg bg-white border border-slate-200 text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:border-slate-300 shadow-2xs transition-all flex items-center justify-center gap-1.5 cursor-pointer"
             >
-              <Sparkles className="w-3.5 h-3.5 text-accent-primary shrink-0" />
               <span>Coba Contoh</span>
             </button>
           </div>
