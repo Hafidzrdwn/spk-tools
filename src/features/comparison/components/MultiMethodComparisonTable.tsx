@@ -153,50 +153,50 @@ export const MultiMethodComparisonTable: React.FC<MultiMethodComparisonTableProp
       )}
 
       {/* Tabel Utama Matriks Komparasi */}
-      <div className="w-full overflow-x-auto rounded-card border border-slate-200/80 bg-white/90 shadow-2xs touch-pan-x [contain:paint]">
+      <div className="w-full overflow-x-auto rounded-card border border-slate-200/80 bg-white/90 shadow-2xs touch-pan-x contain-[paint]">
         <table className="w-full text-left border-collapse text-xs">
           <thead>
             <tr className="bg-slate-50/90 border-b border-slate-200 text-slate-600 font-semibold">
-              <th className="py-3 px-3 sm:px-4 w-36 sm:w-60 min-w-[140px] sm:min-w-60 max-w-[175px] sm:max-w-72 sticky left-0 bg-slate-50/95 z-10 border-r border-slate-200/70">
+              <th className="py-3 px-3 sm:px-4 w-36 sm:w-60 min-w-35 sm:min-w-60 max-w-43.75 sm:max-w-72 sticky left-0 bg-slate-50/95 z-10 border-r border-slate-200/70">
                 Alternatif
               </th>
 
               {hasSaw && (
-                <th className="py-3 px-3 text-center border-r border-slate-200/50 min-w-[95px] sm:min-w-[110px] whitespace-nowrap">
+                <th className="py-3 px-3 text-center border-r border-slate-200/50 min-w-23.75 sm:min-w-27.5 whitespace-nowrap">
                   <span className="font-bold text-indigo-700">SAW</span>
                   <span className="text-[10px] text-slate-400 block font-normal">Aditif Linear (V)</span>
                 </th>
               )}
 
               {hasWp && (
-                <th className="py-3 px-3 text-center border-r border-slate-200/50 min-w-[95px] sm:min-w-[110px] whitespace-nowrap">
+                <th className="py-3 px-3 text-center border-r border-slate-200/50 min-w-23.75 sm:min-w-27.5 whitespace-nowrap">
                   <span className="font-bold text-violet-700">WP</span>
                   <span className="text-[10px] text-slate-400 block font-normal">Perkalian Pangkat (V)</span>
                 </th>
               )}
 
               {hasTopsis && (
-                <th className="py-3 px-3 text-center border-r border-slate-200/50 min-w-[95px] sm:min-w-[110px] whitespace-nowrap">
+                <th className="py-3 px-3 text-center border-r border-slate-200/50 min-w-23.75 sm:min-w-27.5 whitespace-nowrap">
                   <span className="font-bold text-sky-700">TOPSIS</span>
                   <span className="text-[10px] text-slate-400 block font-normal">Jarak Ideal (C_i)</span>
                 </th>
               )}
 
-              <th className="py-3 px-3 text-center border-r border-slate-200/50 min-w-[105px] sm:min-w-[125px] whitespace-nowrap">
+              <th className="py-3 px-3 text-center border-r border-slate-200/50 min-w-26.25 sm:min-w-31.25 whitespace-nowrap">
                 <span className="font-bold text-slate-700">Pergeseran Posisi</span>
                 <span className="text-[10px] text-slate-400 block font-normal">
                   {activeMethods.length === 2 ? 'Delta Antar Metode' : 'Rentang Posisi'}
                 </span>
               </th>
 
-              <th className="py-3 px-3 text-center border-r border-slate-200/50 min-w-[90px] sm:min-w-[110px] whitespace-nowrap">
+              <th className="py-3 px-3 text-center border-r border-slate-200/50 min-w-22.5 sm:min-w-27.5 whitespace-nowrap">
                 <span className="font-bold text-slate-700">Rerata Posisi</span>
                 <span className="text-[10px] text-slate-400 block font-normal">
                   {activeMethods.map((m) => m.toUpperCase()).join(' & ')}
                 </span>
               </th>
 
-              <th className="py-3 px-3 text-center min-w-[100px] sm:min-w-[120px] whitespace-nowrap">
+              <th className="py-3 px-3 text-center min-w-25 sm:min-w-30 whitespace-nowrap">
                 <span className="font-bold text-slate-700">Konsensus</span>
               </th>
             </tr>
@@ -212,11 +212,11 @@ export const MultiMethodComparisonTable: React.FC<MultiMethodComparisonTableProp
                   }`}
                 >
                   {/* Nama Alternatif */}
-                  <td className="py-2.5 px-3 sm:px-4 font-semibold text-slate-800 sticky left-0 bg-white/95 z-10 border-r border-slate-200/70 shadow-xs w-36 sm:w-60 min-w-[140px] sm:min-w-60 max-w-[175px] sm:max-w-72 align-middle">
+                  <td className="py-2.5 px-3 sm:px-4 font-semibold text-slate-800 sticky left-0 bg-white/95 z-10 border-r border-slate-200/70 shadow-xs w-36 sm:w-60 min-w-35 sm:min-w-60 max-w-43.75 sm:max-w-72 align-middle">
                     <div className="flex flex-col gap-1 min-w-0">
                       <div className="flex items-start gap-1.5 min-w-0">
                         <span className="text-slate-400 font-mono text-[10px] sm:text-[11px] shrink-0 mt-0.5">#{idx + 1}</span>
-                        <span className="font-semibold text-xs text-slate-800 break-words leading-snug" title={row.alternativeName}>
+                        <span className="font-semibold text-xs text-slate-800 wrap-break-word leading-snug" title={row.alternativeName}>
                           {row.alternativeName}
                         </span>
                       </div>
