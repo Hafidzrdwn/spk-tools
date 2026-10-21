@@ -41,22 +41,21 @@ export const WpTab: React.FC = () => {
       {hasZeroGuardViolation && <WpZeroGuardAlert violations={violations} />}
 
       {!hasZeroGuardViolation && bestAlternative && (
-        <Card data-tour-id="wp-best-card" className="bg-linear-to-r from-amber-500/10 via-indigo-500/5 to-transparent border-amber-200/80">
+        <Card data-tour-id="wp-best-card" className="bg-amber-100 border-amber-800/10">
           <CardContent className="p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-control bg-amber-100 border border-amber-300 flex items-center justify-center text-amber-700 shadow-xs">
+              <div className="w-10 h-10 rounded-control bg-amber-100 border border-amber-400 flex items-center justify-center text-amber-700 shadow-xs">
                 <Trophy className="w-5 h-5 text-amber-600" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-semibold text-amber-800 uppercase tracking-wide">Rekomendasi Terpilih (WP)</span>
-                  <Badge variant="benefit" size="sm">Peringkat 1</Badge>
                 </div>
                 <h3 className="text-base font-bold text-slate-900 tracking-tight">{bestAlternative.alternativeName}</h3>
               </div>
             </div>
-            <div className="text-right font-mono bg-white/90 px-3 py-1.5 rounded-control border border-amber-200/70 shadow-2xs">
-              <span className="text-[10px] text-slate-400 block">Nilai Preferensi (V)</span>
+            <div className="text-right font-mono bg-white/90 px-3 py-1.5 rounded-control shadow-2xs">
+              <span className="text-[10px] text-slate-600 block">Nilai Preferensi (V)</span>
               <span className="text-base font-extrabold text-amber-700">{formatNumber(bestAlternative.score, 4)}</span>
             </div>
           </CardContent>

@@ -4,7 +4,7 @@ import MultiMethodComparisonTable from './components/MultiMethodComparisonTable'
 import RankingShiftExplanation from './components/RankingShiftExplanation';
 import Card, { CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
-import { Scale, Sparkles, Layers } from 'lucide-react';
+import { Layers } from 'lucide-react';
 
 export const ComparisonTab: React.FC = () => {
   const {
@@ -21,9 +21,6 @@ export const ComparisonTab: React.FC = () => {
       <Card className="bg-linear-to-r from-indigo-500/10 via-purple-500/5 to-transparent border-indigo-200/80">
         <CardContent className="p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-control bg-indigo-100 border border-indigo-300 flex items-center justify-center text-indigo-700 shadow-xs">
-              <Scale className="w-5 h-5 text-accent-primary" />
-            </div>
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-xs font-semibold text-indigo-900 uppercase tracking-wide">
@@ -41,13 +38,12 @@ export const ComparisonTab: React.FC = () => {
 
           <div className="flex items-center gap-2 shrink-0">
             <Button
-              variant="secondary"
-              size="sm"
+              variant="primary"
+              size="md"
               onClick={loadShiftDemoCase}
               className="text-xs font-semibold shadow-2xs cursor-pointer"
               title="Muat dataset pengujian yang sengaja menghasilkan pemenang berbeda antara SAW dan TOPSIS"
             >
-              <Sparkles className="w-3.5 h-3.5 mr-1.5 text-accent-primary" />
               Muat Contoh Kasus Pergeseran
             </Button>
           </div>

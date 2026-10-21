@@ -84,7 +84,7 @@ export const ExtractedPreviewTable: React.FC<ExtractedPreviewTableProps> = ({
           <table className="w-full text-left border-collapse text-xs">
             <thead>
               <tr className="bg-slate-50/90 border-b border-slate-200 text-slate-600 font-semibold">
-                <th className="py-2.5 px-3 w-40 sticky left-0 bg-slate-50/95 z-10 border-r border-slate-200/70">
+                <th className="py-2.5 px-3 w-36 sm:w-56 min-w-32 sm:min-w-48 max-w-44 sm:max-w-60 sticky left-0 bg-slate-50/95 z-10 border-r border-slate-200/70">
                   Alternatif / Kandidat
                 </th>
                 {criteria.map((crit) => (
@@ -100,8 +100,10 @@ export const ExtractedPreviewTable: React.FC<ExtractedPreviewTableProps> = ({
             <tbody className="divide-y divide-slate-100">
               {alternatives.map((alt, idx) => (
                 <tr key={alt.id || idx} className="hover:bg-slate-50/60 transition-colors">
-                  <td className="py-2 px-3 font-semibold text-slate-800 sticky left-0 bg-white/95 z-10 border-r border-slate-200/70">
-                    <span className="truncate">{alt.name}</span>
+                  <td className="py-2 px-3 font-semibold text-slate-800 sticky left-0 bg-white/95 z-10 border-r border-slate-200/70 shadow-xs w-36 sm:w-56 min-w-32 sm:min-w-48 max-w-44 sm:max-w-60 align-middle">
+                    <span className="font-semibold text-xs text-slate-800 wrap-break-word leading-snug" title={alt.name}>
+                      {alt.name}
+                    </span>
                   </td>
                   {criteria.map((crit) => {
                     const val = alt.values[crit.id];

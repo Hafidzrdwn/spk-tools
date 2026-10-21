@@ -5,7 +5,6 @@ import { useUiStore } from '@/store/useUiStore';
 import { useShallow } from 'zustand/react/shallow';
 import { toast } from 'sonner';
 import {
-  HardDrive,
   Download,
   Upload,
   Copy,
@@ -179,16 +178,11 @@ export const ProjectBackupModal: React.FC<ProjectBackupModalProps> = ({
         className="bg-white rounded-2xl border border-slate-200/90 shadow-2xl max-w-lg w-full max-h-[90vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-150"
       >
         <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between shrink-0">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-indigo-50 text-accent-primary flex items-center justify-center shrink-0">
-              <HardDrive className="w-4 h-4" />
-            </div>
-            <div>
-              <h3 className="text-sm font-bold text-slate-900">Cadangan & Pemulihan Proyek (Global)</h3>
-              <p className="text-[11px] text-slate-500">
-                Ekspor/impor seluruh basis data kriteria, alternatif, dan matriks nilai SPK
-              </p>
-            </div>
+          <div>
+            <h3 className="text-sm font-bold text-slate-900">Cadangan & Pemulihan Proyek (Global)</h3>
+            <p className="text-[11px] text-slate-500">
+              Ekspor/impor seluruh basis data kriteria, alternatif, dan matriks nilai SPK
+            </p>
           </div>
           <button
             type="button"

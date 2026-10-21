@@ -2,7 +2,7 @@ import React from 'react';
 import type { ComparisonResult } from '@/core/math/compareRankings';
 import Card, { CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
-import { CheckCircle2, Sparkles, Scale, Info, ChevronDown, ChevronUp } from 'lucide-react';
+import { Info, ChevronDown, ChevronUp } from 'lucide-react';
 import { useNumberFormatter } from '@/utils/numberFormat';
 
 export interface RankingShiftExplanationProps {
@@ -36,19 +36,16 @@ export const RankingShiftExplanation: React.FC<RankingShiftExplanationProps> = R
       {!hasRank1Shift ? (
         <Card className="bg-benefit/5 border-benefit/20 shadow-2xs">
           <CardContent className="p-4 flex items-start gap-3">
-            <div className="w-8 h-8 rounded-control bg-benefit/15 border border-benefit/30 flex items-center justify-center text-benefit shrink-0">
-              <CheckCircle2 className="w-4 h-4" />
-            </div>
             <div className="space-y-1">
               <div className="flex items-center gap-2">
-                <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wide">
+                <h4 className="text-sm font-bold text-slate-800 uppercase tracking-wide">
                   Konsensus Peringkat #1 Tercapai
                 </h4>
                 <Badge variant="benefit" size="sm">
                   Stabil
                 </Badge>
               </div>
-              <p className="text-xs text-slate-600 leading-relaxed">{explanation}</p>
+              <p className="text-xs text-slate-700 leading-relaxed">{explanation}</p>
             </div>
           </CardContent>
         </Card>
@@ -56,9 +53,6 @@ export const RankingShiftExplanation: React.FC<RankingShiftExplanationProps> = R
         <Card className="bg-linear-to-br from-amber-50/70 via-indigo-50/30 to-white border-amber-200/90 shadow-2xs">
           <CardHeader className="py-3 px-4 border-b border-amber-100 flex flex-row items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-control bg-amber-100 border border-amber-300 flex items-center justify-center text-amber-700">
-                <Scale className="w-4 h-4" />
-              </div>
               <div>
                 <CardTitle className="text-xs font-bold text-amber-950 uppercase tracking-wide">
                   Analisis Pergeseran Peringkat #1 (Rank Shift)
@@ -88,12 +82,12 @@ export const RankingShiftExplanation: React.FC<RankingShiftExplanationProps> = R
                     </Badge>
                   </div>
                   <div
-                    className="font-bold text-slate-800 text-xs truncate"
+                    className="font-bold text-slate-800 text-xs"
                     title={rank1Winners.saw?.alternativeName}
                   >
                     {rank1Winners.saw?.alternativeName || '-'}
                   </div>
-                  <div className="text-[10px] font-mono text-slate-400 mt-0.5">
+                  <div className="text-xs font-mono text-slate-600 mt-1">
                     Skor: {formatNumber(rank1Winners.saw?.score, 4)}
                   </div>
                 </div>
@@ -108,12 +102,12 @@ export const RankingShiftExplanation: React.FC<RankingShiftExplanationProps> = R
                     </Badge>
                   </div>
                   <div
-                    className="font-bold text-slate-800 text-xs truncate"
+                    className="font-bold text-slate-800 text-xs"
                     title={rank1Winners.wp?.alternativeName}
                   >
                     {rank1Winners.wp?.alternativeName || '-'}
                   </div>
-                  <div className="text-[10px] font-mono text-slate-400 mt-0.5">
+                  <div className="text-xs font-mono text-slate-600 mt-1">
                     Skor: {formatNumber(rank1Winners.wp?.score, 4)}
                   </div>
                 </div>
@@ -128,12 +122,12 @@ export const RankingShiftExplanation: React.FC<RankingShiftExplanationProps> = R
                     </Badge>
                   </div>
                   <div
-                    className="font-bold text-slate-800 text-xs truncate"
+                    className="font-bold text-slate-800 text-xs"
                     title={rank1Winners.topsis?.alternativeName}
                   >
                     {rank1Winners.topsis?.alternativeName || '-'}
                   </div>
-                  <div className="text-[10px] font-mono text-slate-400 mt-0.5">
+                  <div className="text-xs font-mono text-slate-600 mt-1">
                     C_i: {formatNumber(rank1Winners.topsis?.score, 4)}
                   </div>
                 </div>
@@ -142,8 +136,7 @@ export const RankingShiftExplanation: React.FC<RankingShiftExplanationProps> = R
 
             {/* Narasi Alasan Matematis */}
             <div className="p-3 rounded-xl bg-amber-50/80 border border-amber-200/70 text-xs text-slate-800 leading-relaxed space-y-1.5">
-              <div className="flex items-center gap-1.5 font-bold text-amber-900 text-xs">
-                <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+              <div className="font-bold text-amber-900 text-xs">
                 <span>Mengapa Pemenang Bisa Berbeda? (Investigasi Data Aktual)</span>
               </div>
               <p className="text-slate-700">{explanation}</p>
@@ -230,7 +223,7 @@ export const RankingShiftExplanation: React.FC<RankingShiftExplanationProps> = R
                   </h4>
                   {isSensitivityCollapsed && (
                     <span className="text-[10px] font-mono text-indigo-600 bg-indigo-50/80 px-1.5 py-0.5 rounded border border-indigo-200/50">
-                      (Diciutkan)
+                      (Klik untuk melihat analisis)
                     </span>
                   )}
                 </div>

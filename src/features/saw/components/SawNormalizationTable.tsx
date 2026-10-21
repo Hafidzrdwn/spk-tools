@@ -29,10 +29,12 @@ const SawNormalizationRow: React.FC<SawNormalizationRowProps> = React.memo(({
 
   return (
     <tr className="hover:bg-indigo-50/20 transition-colors">
-      <td className="py-2.5 px-4 font-semibold text-slate-800 sticky left-0 bg-white/95 z-10 border-r border-slate-200/70 shadow-xs">
-        <div className="flex items-center gap-2">
-          <span className="text-slate-400 font-mono text-[11px] w-5">A{altIdx + 1}</span>
-          <span className="truncate" title={alt.name}>{alt.name}</span>
+      <td className="py-2.5 px-3 sm:px-4 font-semibold text-slate-800 sticky left-0 bg-white/95 z-10 border-r border-slate-200/70 shadow-xs w-36 sm:w-56 min-w-32 sm:min-w-48 max-w-44 sm:max-w-60 align-middle">
+        <div className="flex items-start gap-1.5 min-w-0">
+          <span className="text-slate-400 font-mono text-[11px] shrink-0 mt-0.5">A{altIdx + 1}</span>
+          <span className="font-semibold text-xs text-slate-800 wrap-break-word leading-snug" title={alt.name}>
+            {alt.name}
+          </span>
         </div>
       </td>
       {criteria.map((crit, critIdx) => {
@@ -75,7 +77,7 @@ export const SawNormalizationTable: React.FC<SawNormalizationTableProps> = ({
       <table className="w-full text-left border-collapse text-xs">
         <thead>
           <tr className="bg-slate-50/90 border-b border-slate-200 text-slate-600 font-semibold">
-            <th className="py-3 px-4 w-44 min-w-44 sticky left-0 bg-slate-50/95 z-10 border-r border-slate-200/70">
+            <th className="py-3 px-3 sm:px-4 w-36 sm:w-56 min-w-32 sm:min-w-48 max-w-44 sm:max-w-60 sticky left-0 bg-slate-50/95 z-10 border-r border-slate-200/70">
               Alternatif \ Matriks <MathFormula math="R" inline />
             </th>
             {criteria.map((crit, idx) => (

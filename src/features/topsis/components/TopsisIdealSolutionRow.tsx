@@ -3,7 +3,6 @@ import type { Criterion, Alternative } from '@/types/domain';
 import Badge from '@/components/ui/Badge';
 import { TraceableCell } from '@/features/inspector';
 import { MathFormula } from '@/components/ui/MathFormula';
-import { Sparkles, AlertOctagon } from 'lucide-react';
 import { useNumberFormatter } from '@/utils/numberFormat';
 
 export interface TopsisIdealSolutionRowProps {
@@ -36,7 +35,7 @@ export const TopsisIdealSolutionRow: React.FC<TopsisIdealSolutionRowProps> = ({
         <table className="w-full text-left border-collapse text-xs">
           <thead>
             <tr className="bg-slate-50/90 border-b border-slate-200 text-slate-600 font-semibold">
-              <th className="py-3 px-4 w-52 min-w-52 sticky left-0 bg-slate-50/95 z-10 border-r border-slate-200/70">
+              <th className="py-3 px-3 sm:px-4 w-40 sm:w-60 min-w-36 sm:min-w-52 max-w-48 sm:max-w-64 sticky left-0 bg-slate-50/95 z-10 border-r border-slate-200/70">
                 Matriks Terbobot (<MathFormula math="Y" inline />) & Solusi Ideal
               </th>
               {criteria.map((crit, idx) => (
@@ -60,10 +59,12 @@ export const TopsisIdealSolutionRow: React.FC<TopsisIdealSolutionRowProps> = ({
             {/* Baris Alternatif Y_ij */}
             {alternatives.map((alt, altIdx) => (
               <tr key={alt.id} className="hover:bg-slate-50/70 transition-colors">
-                <td className="py-2.5 px-4 font-semibold text-slate-700 sticky left-0 bg-white/95 z-10 border-r border-slate-200/70">
-                  <div className="flex items-center gap-2">
-                    <span className="text-slate-400 font-mono text-[11px] w-5">Y{altIdx + 1}</span>
-                    <span className="truncate">{alt.name}</span>
+                <td className="py-2.5 px-3 sm:px-4 font-semibold text-slate-700 sticky left-0 bg-white/95 z-10 border-r border-slate-200/70 shadow-xs w-40 sm:w-60 min-w-36 sm:min-w-52 max-w-48 sm:max-w-64 align-middle">
+                  <div className="flex items-start gap-1.5 min-w-0">
+                    <span className="text-slate-400 font-mono text-[11px] shrink-0 mt-0.5">Y{altIdx + 1}</span>
+                    <span className="font-semibold text-xs text-slate-800 wrap-break-word leading-snug" title={alt.name}>
+                      {alt.name}
+                    </span>
                   </div>
                 </td>
                 {criteria.map((crit, critIdx) => (
@@ -80,10 +81,9 @@ export const TopsisIdealSolutionRow: React.FC<TopsisIdealSolutionRowProps> = ({
 
             {/* Baris Solusi Ideal Positif A+ */}
             <tr className="bg-benefit/5 border-t-2 border-benefit/40 font-semibold hover:bg-benefit/10 transition-colors">
-              <td className="py-3 px-4 sticky left-0 bg-benefit/5 z-10 border-r border-benefit/30">
+              <td className="py-2.5 px-3 sm:px-4 sticky left-0 bg-benefit/5 z-10 border-r border-benefit/30 w-40 sm:w-60 min-w-36 sm:min-w-52 max-w-48 sm:max-w-64 align-middle">
                 <div className="flex items-center gap-2">
                   <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-benefit/20 text-benefit font-mono font-bold text-xs border border-benefit/30 shadow-2xs">
-                    <Sparkles className="w-3 h-3 text-benefit" />
                     <MathFormula math="A^+" inline className="text-benefit font-bold" />
                   </span>
                   <span className="text-xs font-bold text-benefit">Solusi Ideal Positif</span>
@@ -98,10 +98,9 @@ export const TopsisIdealSolutionRow: React.FC<TopsisIdealSolutionRowProps> = ({
 
             {/* Baris Solusi Ideal Negatif A- */}
             <tr className="bg-cost/5 border-t border-cost/30 font-semibold hover:bg-cost/10 transition-colors">
-              <td className="py-3 px-4 sticky left-0 bg-cost/5 z-10 border-r border-cost/30">
+              <td className="py-2.5 px-3 sm:px-4 sticky left-0 bg-cost/5 z-10 border-r border-cost/30 w-40 sm:w-60 min-w-36 sm:min-w-52 max-w-48 sm:max-w-64 align-middle">
                 <div className="flex items-center gap-2">
                   <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-cost/20 text-cost font-mono font-bold text-xs border border-cost/30 shadow-2xs">
-                    <AlertOctagon className="w-3 h-3 text-cost" />
                     <MathFormula math="A^-" inline className="text-cost font-bold" />
                   </span>
                   <span className="text-xs font-bold text-cost">Solusi Ideal Negatif</span>

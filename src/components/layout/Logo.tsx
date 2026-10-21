@@ -43,7 +43,6 @@ export const Logo: React.FC<LogoProps> = ({
       role="img"
       aria-label="DecisiGraph"
     >
-      {/* Decision Graph Mark with robust gradient container */}
       <div
         className={cn(
           cfg.mark,
@@ -74,7 +73,6 @@ export const Logo: React.FC<LogoProps> = ({
         </svg>
       </div>
 
-      {/* Wordmark Text */}
       {showWordmark && (
         <span className={cn('font-bold tracking-tight select-none', cfg.text)}>
           <span className="text-slate-900">Decisi</span>

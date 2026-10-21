@@ -7,14 +7,14 @@ import DecimalFormatToggle from '@/components/layout/DecimalFormatToggle';
 import MathFormula from '@/components/ui/MathFormula';
 import { useUiStore } from '@/store/useUiStore';
 import { prefetchRoute, scheduleAllRemainingPrefetch } from '@/services/routePrefetch';
+import { ArrowRight, Github } from 'lucide-react';
 import {
-  ArrowRight,
-  Github,
-  CheckCircle2,
-  FileText,
-  Sparkles,
-  Binary,
-} from 'lucide-react';
+  HeroDecisionIllustration,
+  TraceabilitySvgIcon,
+  RankShiftSvgIcon,
+  StoryMatrixSvgIcon,
+  FormalReportSvgIcon,
+} from '@/components/illustrations';
 
 export type CoreMethodId = 'SAW' | 'WP' | 'TOPSIS' | 'AHP';
 
@@ -199,6 +199,7 @@ export const LandingPage: React.FC = () => {
   const currentYear = new Date().getFullYear();
   const [activePreviewMethod, setActivePreviewMethod] = useState<CoreMethodId>('SAW');
   const [activeStudioMethod, setActiveStudioMethod] = useState<CoreMethodId>('SAW');
+  const [heroTab, setHeroTab] = useState<'visual' | 'matrix'>('visual');
 
   useEffect(() => {
     const cancel = scheduleAllRemainingPrefetch('landing');
@@ -332,15 +333,15 @@ export const LandingPage: React.FC = () => {
             {/* Micro Feature Proof */}
             <div className="pt-2 border-t border-slate-200/80 grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3 text-xs text-slate-600 font-medium">
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
                 <span>Formula KaTeX per Sel</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
                 <span>Uji Konsistensi CR &lt; 0.1</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
                 <span>Laporan Siap Cetak (A4)</span>
               </div>
             </div>
@@ -349,11 +350,31 @@ export const LandingPage: React.FC = () => {
           {/* Right Column: Live Interactive Decision Simulation (6 cols) */}
           <div className="lg:col-span-6 w-full">
             <div className="bg-white rounded-xl border border-slate-200 shadow-2xs overflow-hidden">
-              {/* Preview Header & Method Switcher */}
+              {/* Preview Header & View/Method Switcher */}
               <div className="bg-slate-50 border-b border-slate-200 px-3 sm:px-4 py-2.5 flex flex-wrap items-center justify-between gap-2">
-                <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
-                  <span className="text-xs font-semibold text-slate-700">Simulasi Matriks Keputusan</span>
+                <div className="flex items-center bg-slate-200/70 p-0.5 rounded-lg text-xs font-medium">
+                  <button
+                    type="button"
+                    onClick={() => setHeroTab('visual')}
+                    className={`min-h-7.5 px-3 py-1 rounded font-semibold transition-colors cursor-pointer ${
+                      heroTab === 'visual'
+                        ? 'bg-white text-indigo-700 shadow-2xs'
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    Arsitektur Spasial
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setHeroTab('matrix')}
+                    className={`min-h-7.5 px-3 py-1 rounded font-semibold transition-colors cursor-pointer ${
+                      heroTab === 'matrix'
+                        ? 'bg-white text-indigo-700 shadow-2xs'
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    Tabel Simulasi
+                  </button>
                 </div>
 
                 <div className="flex items-center bg-slate-200/70 p-0.5 rounded-lg text-xs font-mono">
@@ -362,7 +383,7 @@ export const LandingPage: React.FC = () => {
                       key={m}
                       type="button"
                       onClick={() => setActivePreviewMethod(m)}
-                      className={`min-h-9.5 sm:min-h-7.5 px-3 py-1.5 rounded font-bold transition-colors cursor-pointer flex items-center justify-center ${
+                      className={`min-h-7.5 px-2.5 py-1 rounded font-bold transition-colors cursor-pointer flex items-center justify-center ${
                         activePreviewMethod === m
                           ? 'bg-white text-indigo-700 shadow-2xs'
                           : 'text-slate-600 hover:text-slate-900'
@@ -374,90 +395,115 @@ export const LandingPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* Scenario Context */}
-              <div className="p-4 space-y-3.5">
-                <div className="flex items-center justify-between text-xs gap-2">
-                  <span className="font-semibold text-slate-800 truncate pr-2">{currentHeroSim.scenario}</span>
-                  <Badge variant="neutral" size="sm" className="font-mono text-[10px] shrink-0">
-                    {activePreviewMethod}
-                  </Badge>
+              {heroTab === 'visual' ? (
+                <div className="p-4 sm:p-5 flex flex-col justify-between">
+                  <HeroDecisionIllustration activeMethod={activePreviewMethod} />
+                  <div className="pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2 text-xs">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
+                      <span className="font-semibold text-slate-800">{currentHeroSim.scenario}</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setHeroTab('matrix')}
+                      className="text-indigo-600 hover:text-indigo-800 font-semibold inline-flex items-center gap-1 cursor-pointer"
+                    >
+                      <span>Lihat Matriks Angka</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                 </div>
+              ) : (
+                <div className="p-4 space-y-3.5">
+                  <div className="flex items-center justify-between text-xs gap-2">
+                    <span className="font-semibold text-slate-800 truncate pr-2">{currentHeroSim.scenario}</span>
+                    <Badge variant="neutral" size="sm" className="font-mono text-[10px] shrink-0">
+                      {activePreviewMethod}
+                    </Badge>
+                  </div>
 
-                {/* Mini Matrix Preview Table */}
-                <div className="border border-slate-200 rounded-lg overflow-x-auto w-full">
-                  <table className="w-full min-w-85 text-left text-xs border-collapse font-sans">
-                    <thead>
-                      <tr className="bg-slate-50/80 border-b border-slate-200 text-slate-600 text-[11px] font-semibold whitespace-nowrap">
-                        {currentHeroSim.headers.map((h, idx) => (
-                          <th key={idx} className={`py-2 px-3 ${idx > 0 ? 'text-center font-mono' : ''}`}>
-                            {h}
-                          </th>
-                        ))}
-                        <th className="py-2 px-3 text-right font-mono">Skor Akhir</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100 text-[11px] whitespace-nowrap">
-                      {currentHeroSim.rows.map((r) => (
-                        <tr
-                          key={r.name}
-                          className={`transition-colors ${
-                            r.rank === 1 ? 'bg-indigo-50/40 font-medium' : 'hover:bg-slate-50'
-                          }`}
-                        >
-                          <td className="py-2 px-3 text-slate-800 flex items-center gap-1.5">
-                            {r.rank === 1 ? (
-                              <span className="w-4 h-4 rounded-full bg-indigo-600 text-white text-[10px] font-bold flex items-center justify-center shrink-0">
-                                1
-                              </span>
-                            ) : (
-                              <span className="w-4 h-4 rounded-full bg-slate-100 text-slate-600 text-[10px] font-medium flex items-center justify-center shrink-0">
-                                {r.rank}
-                              </span>
-                            )}
-                            <span className="font-medium text-slate-900">{r.name}</span>
-                          </td>
-                          {r.values.map((v, vIdx) => (
-                            <td key={vIdx} className="py-2 px-3 text-center text-slate-600 font-mono">
-                              {typeof v === 'number' && v < 1 ? v.toFixed(3) : v}
-                            </td>
+                  {/* Mini Matrix Preview Table */}
+                  <div className="border border-slate-200 rounded-lg overflow-x-auto w-full">
+                    <table className="w-full min-w-85 text-left text-xs border-collapse font-sans">
+                      <thead>
+                        <tr className="bg-slate-50/80 border-b border-slate-200 text-slate-600 text-[11px] font-semibold whitespace-nowrap">
+                          {currentHeroSim.headers.map((h, idx) => (
+                            <th key={idx} className={`py-2 px-3 ${idx > 0 ? 'text-center font-mono' : ''}`}>
+                              {h}
+                            </th>
                           ))}
-                          <td className="py-2 px-3 text-right font-mono font-bold text-indigo-700">
-                            {r.score}
-                          </td>
+                          <th className="py-2 px-3 text-right font-mono">Skor Akhir</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-
-                {/* KaTeX Formula Box in Hero Simulation */}
-                <div className="p-3 rounded-lg bg-slate-50 border border-slate-200/90 space-y-1.5 overflow-hidden">
-                  <div className="flex flex-wrap items-center justify-between gap-1 text-[11px]">
-                    <span className="text-slate-500 font-medium truncate">{currentHeroSim.formulaSubtitle}</span>
-                    <span className="text-indigo-600 font-mono font-semibold text-[10px] shrink-0">
-                      Peringkat #1: {currentHeroSim.rows[0].name}
-                    </span>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100 text-[11px] whitespace-nowrap">
+                        {currentHeroSim.rows.map((r) => (
+                          <tr
+                            key={r.name}
+                            className={`transition-colors ${
+                              r.rank === 1 ? 'bg-indigo-50/40 font-medium' : 'hover:bg-slate-50'
+                            }`}
+                          >
+                            <td className="py-2 px-3 text-slate-800 flex items-center gap-1.5">
+                              {r.rank === 1 ? (
+                                <span className="w-4 h-4 rounded-full bg-indigo-600 text-white text-[10px] font-bold flex items-center justify-center shrink-0">
+                                  1
+                                </span>
+                              ) : (
+                                <span className="w-4 h-4 rounded-full bg-slate-100 text-slate-600 text-[10px] font-medium flex items-center justify-center shrink-0">
+                                  {r.rank}
+                                </span>
+                              )}
+                              <span className="font-medium text-slate-900">{r.name}</span>
+                            </td>
+                            {r.values.map((v, vIdx) => (
+                              <td key={vIdx} className="py-2 px-3 text-center text-slate-600 font-mono">
+                                {typeof v === 'number' && v < 1 ? v.toFixed(3) : v}
+                              </td>
+                            ))}
+                            <td className="py-2 px-3 text-right font-mono font-bold text-indigo-700">
+                              {r.score}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
-                  <div className="bg-white px-3 py-1.5 rounded border border-slate-200 overflow-x-auto text-xs text-slate-800 max-w-full">
-                    <MathFormula math={currentHeroSim.formulaLatex} className="my-0 py-0.5 text-xs text-slate-800" />
+
+                  {/* KaTeX Formula Box in Hero Simulation */}
+                  <div className="p-3 rounded-lg bg-slate-50 border border-slate-200/90 space-y-1.5 overflow-hidden">
+                    <div className="flex flex-wrap items-center justify-between gap-1 text-[11px]">
+                      <span className="text-slate-500 font-medium truncate">{currentHeroSim.formulaSubtitle}</span>
+                      <span className="text-indigo-600 font-mono font-semibold text-[10px] shrink-0">
+                        Peringkat #1: {currentHeroSim.rows[0].name}
+                      </span>
+                    </div>
+                    <div className="bg-white px-3 py-1.5 rounded border border-slate-200 overflow-x-auto text-xs text-slate-800 max-w-full">
+                      <MathFormula math={currentHeroSim.formulaLatex} className="my-0 py-0.5 text-xs text-slate-800" />
+                    </div>
+                  </div>
+
+                  {/* Direct Action Link */}
+                  <div className="pt-1 flex flex-wrap items-center justify-between gap-2 text-xs">
+                    <button
+                      type="button"
+                      onClick={() => setHeroTab('visual')}
+                      className="text-slate-500 hover:text-slate-700 text-[11px] cursor-pointer"
+                    >
+                      ← Arsitektur Spasial
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleOpenMethod(activePreviewMethod)}
+                      onMouseEnter={() => prefetchRoute.board(activePreviewMethod.toLowerCase())}
+                      onFocus={() => prefetchRoute.board(activePreviewMethod.toLowerCase())}
+                      className="min-h-11 inline-flex items-center gap-1 font-semibold text-indigo-600 hover:text-indigo-800 transition-colors cursor-pointer"
+                    >
+                      <span>Lanjutkan ke {activePreviewMethod}</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
                   </div>
                 </div>
-
-                {/* Direct Action Link */}
-                <div className="pt-1 flex flex-wrap items-center justify-between gap-2 text-xs">
-                  <span className="text-slate-500 text-[11px]">Buka studi kasus lengkap pada workboard</span>
-                  <button
-                    type="button"
-                    onClick={() => handleOpenMethod(activePreviewMethod)}
-                    onMouseEnter={() => prefetchRoute.board(activePreviewMethod.toLowerCase())}
-                    onFocus={() => prefetchRoute.board(activePreviewMethod.toLowerCase())}
-                    className="min-h-11 inline-flex items-center gap-1 font-semibold text-indigo-600 hover:text-indigo-800 transition-colors cursor-pointer"
-                  >
-                    <span>Lanjutkan ke {activePreviewMethod}</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              </div>
+              )}
             </div>
           </div>
         </section>
@@ -468,7 +514,7 @@ export const LandingPage: React.FC = () => {
         <section className="space-y-6">
           <div className="space-y-1 text-left">
             <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-600 uppercase tracking-wider font-mono">
-              <Binary className="w-3.5 h-3.5" />
+              <span className="w-1.5 h-1.5 rounded-full bg-indigo-600 shrink-0" />
               <span>Studio Komparasi Matematis</span>
             </div>
             <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
@@ -659,10 +705,13 @@ export const LandingPage: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
             {/* Capability 1: KaTeX Traceability per Cell (7 cols) */}
             <div className="md:col-span-7 p-6 rounded-2xl bg-white border border-slate-200 shadow-2xs space-y-3 flex flex-col justify-between">
-              <div className="space-y-1.5">
-                <span className="text-xs font-mono font-semibold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200/60 inline-block">
-                  Transparansi Formula per Sel
-                </span>
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-mono font-semibold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200/60 inline-block">
+                    Transparansi Formula per Sel
+                  </span>
+                  <TraceabilitySvgIcon size={36} />
+                </div>
                 <h3 className="text-base font-bold text-slate-900">
                   Inspeksi KaTeX Real-Time Tanpa Kotak Hitam
                 </h3>
@@ -685,10 +734,13 @@ export const LandingPage: React.FC = () => {
 
             {/* Capability 2: Cross-Method Rank Shift Analysis (5 cols) */}
             <div className="md:col-span-5 p-6 rounded-2xl bg-white border border-slate-200 shadow-2xs space-y-3 flex flex-col justify-between">
-              <div className="space-y-1.5">
-                <span className="text-xs font-mono font-semibold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200/60 inline-block">
-                  Analisis Komparasi
-                </span>
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-mono font-semibold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200/60 inline-block">
+                    Analisis Komparasi
+                  </span>
+                  <RankShiftSvgIcon size={36} />
+                </div>
                 <h3 className="text-base font-bold text-slate-900 wrap-break-word">
                   Deteksi Pergeseran Peringkat (Rank Shift)
                 </h3>
@@ -714,10 +766,13 @@ export const LandingPage: React.FC = () => {
 
             {/* Capability 3: Story-to-Matrix Converter (5 cols) */}
             <div className="md:col-span-5 p-6 rounded-2xl bg-white border border-slate-200 shadow-2xs space-y-3 flex flex-col justify-between">
-              <div className="space-y-1.5">
-                <span className="text-xs font-mono font-semibold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200/60 inline-block">
-                  Ekstraksi Cerita
-                </span>
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-mono font-semibold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200/60 inline-block">
+                    Ekstraksi Cerita
+                  </span>
+                  <StoryMatrixSvgIcon size={36} />
+                </div>
                 <h3 className="text-base font-bold text-slate-900">
                   Konversi Kasus Narasi ke Matriks
                 </h3>
@@ -727,17 +782,20 @@ export const LandingPage: React.FC = () => {
               </div>
 
               <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-[11px] text-slate-600 flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-indigo-600 shrink-0" />
+                <span className="w-1.5 h-1.5 rounded-full bg-indigo-600 shrink-0" />
                 <span>Otomatis memetakan nama kriteria, bobot persentase, dan tipe benefit/cost.</span>
               </div>
             </div>
 
             {/* Capability 4: Formal PDF Documentation (7 cols) */}
             <div className="md:col-span-7 p-6 rounded-2xl bg-white border border-slate-200 shadow-2xs space-y-3 flex flex-col justify-between">
-              <div className="space-y-1.5">
-                <span className="text-xs font-mono font-semibold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200/60 inline-block">
-                  Ekspor Dokumen Formal
-                </span>
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-mono font-semibold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200/60 inline-block">
+                    Ekspor Dokumen Formal
+                  </span>
+                  <FormalReportSvgIcon size={36} />
+                </div>
                 <h3 className="text-base font-bold text-slate-900">
                   Laporan Hasil Evaluasi PDF Siap Cetak (A4)
                 </h3>
@@ -748,7 +806,6 @@ export const LandingPage: React.FC = () => {
 
               <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex flex-wrap items-center justify-between gap-2 text-xs">
                 <div className="flex items-center gap-2 text-slate-700">
-                  <FileText className="w-4 h-4 text-indigo-600" />
                   <span className="font-medium">Format PDF Berorientasi A4 Standar ISO</span>
                 </div>
                 <Badge variant="neutral" size="sm" className="font-mono text-[10px]">

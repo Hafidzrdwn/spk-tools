@@ -5,7 +5,7 @@ import Badge from '@/components/ui/Badge';
 import { useTourStore } from '@/store/useTourStore';
 import { useProjectStore } from '@/store/useProjectStore';
 import { setCriteriaBaseline } from '@/core/tour/generalTourSteps';
-import { Sparkles, Calculator, Layers, Compass, Sliders, Scale } from 'lucide-react';
+import { Calculator, Layers, Compass, Sliders, Scale, Footprints } from 'lucide-react';
 
 export interface WelcomeModalProps {
   isOpen: boolean;
@@ -78,14 +78,9 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
       }}
       className="max-w-xl max-h-[85vh]"
       title={
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-accent-primary shrink-0 shadow-2xs">
-            <Sparkles className="w-4 h-4" />
-          </div>
-          <div>
-            <h2 className="text-base font-bold text-slate-900">Selamat datang di DecisiGraph</h2>
-            <p className="text-xs text-slate-500 font-normal">Sistem Pendukung Keputusan (SPK) Multi-Metode Modern</p>
-          </div>
+        <div>
+          <h2 className="text-base font-bold text-slate-900">Selamat datang di DecisiGraph</h2>
+          <p className="text-xs text-slate-500 font-normal">Sistem Pendukung Keputusan (SPK) Multi-Metode Modern</p>
         </div>
       }
       footer={
@@ -94,13 +89,13 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
             Lewati, langsung mulai
           </Button>
           <Button variant="primary" size="sm" onClick={handleStartTour} className="gap-1.5 shadow-sm">
-            <Sparkles className="w-3.5 h-3.5" />
+            <Footprints className="w-3.5 h-3.5" />
             <span>Mulai Tour</span>
           </Button>
         </div>
       }
     >
-      <div className="space-y-4 pt-1 pb-1">
+      <div className="space-y-4 pb-1">
         <p className="text-xs text-slate-600 leading-relaxed bg-slate-50/80 p-3 rounded-xl border border-slate-200/60">
           DecisiGraph membantu Anda menentukan keputusan terbaik secara objektif, ilmiah, dan transparan.
           Mulai dengan mendefinisikan alternatif dan kriteria pada <strong>Matriks Keputusan Bersama</strong>,

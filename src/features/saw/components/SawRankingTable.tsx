@@ -39,11 +39,13 @@ const SawRankingRow: React.FC<SawRankingRowProps> = React.memo(({ row, maxScore 
           )}
         </div>
       </td>
-      <td className="py-3 px-4">
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="font-semibold text-slate-900 truncate" title={row.alternativeName}>{row.alternativeName}</span>
+      <td className="py-3 px-4 min-w-0 max-w-xs sm:max-w-md md:max-w-lg align-middle">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 min-w-0">
+          <span className="font-semibold text-slate-900 wrap-break-word leading-snug" title={row.alternativeName}>
+            {row.alternativeName}
+          </span>
           {isTop && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-benefit/10 text-benefit border border-benefit/20 text-[11px] font-medium whitespace-nowrap shrink-0">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-benefit/10 text-benefit border border-benefit/20 text-[11px] font-medium whitespace-nowrap shrink-0 self-start sm:self-auto">
               Rekomendasi Utama
             </span>
           )}
@@ -84,7 +86,7 @@ export const SawRankingTable: React.FC<SawRankingTableProps> = ({ ranking }) => 
         <thead>
           <tr className="bg-slate-50/90 border-b border-slate-200 text-slate-600 font-semibold">
             <th className="py-3 px-4 w-24">Peringkat</th>
-            <th className="py-3 px-4">Alternatif / Rekomendasi</th>
+            <th className="py-3 px-4 min-w-44 max-w-xs sm:max-w-md md:max-w-lg">Alternatif / Rekomendasi</th>
             <th className="py-3 px-4 w-40 text-right">Skor Preferensi (<MathFormula math="V_i" inline />)</th>
             <th className="py-3 px-4 w-48 hidden sm:table-cell">Visualisasi Relatif</th>
           </tr>

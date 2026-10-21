@@ -46,7 +46,6 @@ export function Tabs<T extends string = string>({
                   : 'border-transparent text-slate-500 hover:text-slate-800 hover:border-slate-300'
               )}
             >
-              {tab.icon && <span className="shrink-0 flex items-center">{tab.icon}</span>}
               <span className="whitespace-nowrap">{tab.label}</span>
               {tab.badge !== undefined && (
                 <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-600 shrink-0 font-mono">
@@ -65,7 +64,7 @@ export function Tabs<T extends string = string>({
       role="tablist"
       aria-label="Navigasi Metode SPK"
       className={cn(
-        'inline-flex items-center p-1 bg-slate-100/90 rounded-control border border-slate-200/60 gap-1 overflow-x-auto max-w-full scrollbar-none touch-pan-x',
+        'flex items-center w-full p-1 bg-slate-100/90 rounded-control border border-slate-200/60 gap-1 overflow-x-auto scrollbar-none touch-pan-x',
         className
       )}
     >
@@ -80,7 +79,7 @@ export function Tabs<T extends string = string>({
             data-tour-id={`nav-tab-${tab.id}`}
             onClick={() => onChange(tab.id)}
             className={cn(
-              'min-h-10 sm:min-h-9 px-3 sm:px-3.5 flex items-center justify-center gap-1.5 sm:gap-2 text-xs font-semibold rounded-[0.55rem] transition-colors duration-150 select-none whitespace-nowrap shrink-0 cursor-pointer',
+              'shrink-0 lg:flex-1 lg:min-w-0 min-h-10 sm:min-h-9 px-3 sm:px-3.5 lg:px-2 xl:px-3 flex items-center justify-center gap-1.5 sm:gap-2 text-xs font-semibold rounded-[0.55rem] transition-colors duration-150 select-none whitespace-nowrap cursor-pointer',
               isActive
                 ? 'bg-white text-slate-900 shadow-2xs shadow-slate-200 font-bold'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'

@@ -1,7 +1,7 @@
 import React from 'react';
 import type { ParserCasePreset } from '@/core/parser';
 import Badge from '@/components/ui/Badge';
-import { Sparkles, ArrowRight, X } from 'lucide-react';
+import { ArrowRight, X } from 'lucide-react';
 
 export interface TemplatePickerModalProps {
   isOpen: boolean;
@@ -23,9 +23,6 @@ export const TemplatePickerModal: React.FC<TemplatePickerModalProps> = ({
       <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xl max-w-xl w-full max-h-[85vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-150">
         <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-indigo-50 text-accent-primary flex items-center justify-center">
-              <Sparkles className="w-4 h-4" />
-            </div>
             <div>
               <h3 className="text-sm font-bold text-slate-900">Pilih Contoh Studi Kasus</h3>
               <p className="text-xs text-slate-500">Klik salah satu template untuk langsung mengisi textarea narasi</p>
