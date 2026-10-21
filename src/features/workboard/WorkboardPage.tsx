@@ -41,7 +41,7 @@ import { useTourStore } from '@/store/useTourStore';
 
 const TourRunner = lazy(() => import('@/features/tour/TourRunner'));
 import DocumentLoaderModal from '@/features/document-loader/DocumentLoaderModal';
-import { ChevronDown, ChevronUp, Sparkles } from 'lucide-react';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import type { MethodId } from '@/types/domain';
 
 export const WorkboardPage: React.FC = () => {
@@ -76,7 +76,6 @@ export const WorkboardPage: React.FC = () => {
   const toggleSharedMatrix = useUiStore((s) => s.toggleSharedMatrix);
   const openBackupModal = useUiStore((s) => s.openBackupModal);
   const isDocLoaderOpen = useUiStore((s) => s.isDocLoaderOpen);
-  const openDocLoader = useUiStore((s) => s.openDocLoader);
   const closeDocLoader = useUiStore((s) => s.closeDocLoader);
   const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
 
@@ -131,18 +130,6 @@ export const WorkboardPage: React.FC = () => {
             >
               <span className="sm:hidden">Backup</span>
               <span className="hidden sm:inline">Backup & Pulihkan</span>
-            </Button>
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={openDocLoader}
-              data-tour-id="ai-doc-loader-btn"
-              title="Ekstrak data matriks SPK dari dokumen PDF atau Word via AI"
-              className="h-9 px-2.5 sm:px-3 py-1.5 text-xs font-semibold rounded-lg border border-indigo-200 bg-indigo-50/50 hover:bg-indigo-100 text-indigo-700 hover:text-indigo-900 shadow-2xs cursor-pointer flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-accent-primary" />
-              <span className="sm:hidden">Dokumen</span>
-              <span className="hidden sm:inline">Unggah Dokumen (AI)</span>
             </Button>
             <ResetProjectButton />
             <ExportButton variant="primary" />

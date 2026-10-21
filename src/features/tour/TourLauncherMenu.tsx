@@ -55,14 +55,14 @@ export const TourLauncherMenu: React.FC<TourLauncherMenuProps> = ({ className })
   };
 
   return (
-    <div className={cn('relative inline-block w-full sm:w-auto', className)} ref={menuRef}>
+    <div className={cn('relative inline-block shrink-0', className)} ref={menuRef}>
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
         data-tour-id="help-launcher"
         title="Buka Menu Bantuan & Panduan Tour SPK"
         aria-label="Buka menu bantuan dan panduan tour SPK"
-        className="w-full sm:w-auto h-9 px-3 py-1.5 rounded-lg border border-slate-200/90 bg-white hover:bg-slate-50 text-slate-700 hover:text-accent-primary text-xs font-semibold transition-all shadow-2xs cursor-pointer flex items-center justify-center gap-1.5"
+        className="h-9 px-2.5 sm:px-3 py-1.5 rounded-lg border border-slate-200/90 bg-white hover:bg-slate-50 text-slate-700 hover:text-accent-primary text-xs font-semibold transition-all shadow-2xs cursor-pointer flex items-center justify-center gap-1.5 shrink-0"
       >
         <HelpCircle className="w-3.5 h-3.5 text-accent-primary shrink-0" />
         <span>Bantuan</span>

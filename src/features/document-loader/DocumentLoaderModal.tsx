@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Sparkles, KeyRound, Check } from 'lucide-react';
+import { KeyRound, Check } from 'lucide-react';
 import Dialog from '@/components/ui/Dialog';
 import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
+import DocumentMatrixIllustration from '@/components/ui/illustrations/DocumentMatrixIllustration';
 import { toast } from 'sonner';
 import { useProjectStore } from '@/store/useProjectStore';
 import {
@@ -145,10 +146,8 @@ export const DocumentLoaderModal: React.FC<DocumentLoaderModalProps> = ({
         if (!open) onClose();
       }}
       title={
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-xl bg-linear-to-tr from-accent-primary to-accent-secondary flex items-center justify-center text-white shadow-xs">
-            <Sparkles className="w-4 h-4" />
-          </div>
+        <div className="flex items-center gap-2.5">
+          <DocumentMatrixIllustration size={36} />
           <div>
             <h3 className="text-base font-bold text-slate-900">
               AI Document Loader

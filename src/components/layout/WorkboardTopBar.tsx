@@ -1,19 +1,22 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { FileUp } from 'lucide-react';
 import { prefetchRoute } from '@/services/routePrefetch';
+import { useUiStore } from '@/store/useUiStore';
 
 export const WorkboardTopBar: React.FC = () => {
+  const openDocLoader = useUiStore((s) => s.openDocLoader);
+
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-2.5 px-3 sm:px-4 pb-2 pt-4 sm:py-3 bg-white/70 backdrop-blur-md rounded-xl border border-slate-200/80 shadow-2xs">
-      <div className="flex items-center gap-2">
+    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 px-3 sm:px-4 py-2.5 sm:py-3 bg-white/70 backdrop-blur-md rounded-xl border border-slate-200/80 shadow-2xs">
+      <div className="flex items-center gap-2 min-w-0">
         <span className="w-2 h-2 rounded-full bg-indigo-600 shrink-0" />
-        <div className="flex items-center gap-1.5 sm:gap-2 truncate">
-          <span className="text-xs font-bold text-slate-800 tracking-tight shrink-0">Workboard Kalkulasi Sistem Pendukung Keputusan</span>
-          <span className="text-slate-300 hidden xs:inline">|</span>
-        </div>
+        <span className="text-xs font-bold text-slate-800 tracking-tight truncate">
+          Workboard Kalkulasi Sistem Pendukung Keputusan
+        </span>
       </div>
 
-      <div className="flex items-center justify-start sm:justify-end gap-1 sm:gap-1.5 text-xs overflow-x-auto scrollbar-none touch-pan-x w-full sm:w-auto">
+      <div className="flex flex-wrap items-center justify-start sm:justify-end gap-1.5 text-xs w-full sm:w-auto">
         <Link
           to="/"
           onMouseEnter={prefetchRoute.landing}
@@ -41,6 +44,19 @@ export const WorkboardTopBar: React.FC = () => {
         >
           Statistik
         </Link>
+
+        <span className="text-slate-300 hidden sm:inline select-none">|</span>
+
+        <button
+          type="button"
+          id="topbar-btn-upload-doc"
+          onClick={openDocLoader}
+          title="Unggah Dokumen (PDF, Word, Teks) ke Matriks Keputusan via AI"
+          className="min-h-8 px-3 py-1 rounded-lg text-xs font-semibold text-accent-primary bg-indigo-50/80 hover:bg-indigo-100/90 border border-indigo-200/80 transition-all inline-flex items-center gap-1.5 cursor-pointer shrink-0 shadow-2xs"
+        >
+          <FileUp className="w-3.5 h-3.5 text-accent-primary shrink-0" />
+          <span>Unggah Dokumen</span>
+        </button>
       </div>
     </div>
   );

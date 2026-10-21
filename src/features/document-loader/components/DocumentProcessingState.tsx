@@ -1,6 +1,7 @@
 import React from 'react';
-import { Loader2, FileText, Sparkles, CheckCircle2, ShieldCheck } from 'lucide-react';
+import { Loader2, FileText, CheckCircle2, ShieldCheck } from 'lucide-react';
 import Badge from '@/components/ui/Badge';
+import DocumentMatrixIllustration from '@/components/ui/illustrations/DocumentMatrixIllustration';
 
 export interface DocumentProcessingStateProps {
   fileName: string;
@@ -35,8 +36,8 @@ export const DocumentProcessingState: React.FC<DocumentProcessingStateProps> = (
   return (
     <div className="py-8 px-4 flex flex-col items-center justify-center space-y-6 max-w-lg mx-auto text-center select-none">
       <div className="relative">
-        <div className="w-20 h-20 rounded-3xl bg-linear-to-tr from-accent-primary to-accent-secondary flex items-center justify-center text-white shadow-lg shadow-indigo-500/20 animate-pulse">
-          <Sparkles className="w-10 h-10 animate-spin-slow" />
+        <div className="w-20 h-20 rounded-3xl bg-indigo-50 border border-indigo-200/80 flex items-center justify-center shadow-md shadow-indigo-500/10">
+          <DocumentMatrixIllustration size={56} className="animate-pulse" />
         </div>
         <div className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-white shadow-md flex items-center justify-center">
           <Loader2 className="w-4 h-4 text-accent-primary animate-spin" />

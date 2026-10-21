@@ -65,8 +65,8 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
 
-        <div className="flex flex-nowrap items-center justify-start md:justify-end gap-1 sm:gap-1.5 w-full md:w-auto overflow-x-auto md:overflow-visible scrollbar-none touch-pan-x shrink-0 pb-0.5 md:pb-0">
-          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        <div className="flex flex-wrap items-center justify-start sm:justify-end gap-1.5 w-full md:w-auto shrink-0">
+          <div className="flex items-center gap-1.5 shrink-0 flex-wrap">
             <TourLauncherMenu />
 
             <Button
@@ -83,7 +83,7 @@ export const Header: React.FC<HeaderProps> = ({
             </Button>
           </div>
 
-          {actions && <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">{actions}</div>}
+          {actions && <div className="flex items-center gap-1.5 shrink-0 flex-wrap">{actions}</div>}
         </div>
       </div>
 

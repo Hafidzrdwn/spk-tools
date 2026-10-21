@@ -1,5 +1,5 @@
 import React from 'react';
-import { AlertTriangle, KeyRound, RefreshCw, FileSearch, Sparkles, HelpCircle } from 'lucide-react';
+import { AlertTriangle, KeyRound, RefreshCw, FileSearch, Layers, HelpCircle } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
 import type { DocumentLoaderError } from '@/services/ai';
@@ -92,7 +92,7 @@ export const DocumentErrorState: React.FC<DocumentErrorStateProps> = ({
           onClick={onUseDemo}
           className="w-full sm:w-auto h-9 px-3.5 text-xs font-semibold gap-1.5 border-indigo-200 text-indigo-700 bg-indigo-50/50 hover:bg-indigo-100/60"
         >
-          <Sparkles className="w-3.5 h-3.5" />
+          <Layers className="w-3.5 h-3.5" />
           Gunakan Demo
         </Button>
       </div>

@@ -1,7 +1,8 @@
 import React, { useRef, useState, useCallback } from 'react';
-import { UploadCloud, FileText, AlertCircle, FileSpreadsheet, Sparkles, CheckCircle2 } from 'lucide-react';
+import { FileText, AlertCircle, FileSpreadsheet, Layers, CheckCircle2 } from 'lucide-react';
 import Badge from '@/components/ui/Badge';
 import { cn } from '@/utils/cn';
+import DocumentDropzoneIllustration from '@/components/ui/illustrations/DocumentDropzoneIllustration';
 
 export interface DocumentDropzoneProps {
   onFileSelected: (file: File) => void;
@@ -99,9 +100,7 @@ export const DocumentDropzone: React.FC<DocumentDropzoneProps> = ({
           disabled={disabled || isProcessing}
         />
 
-        <div className="w-14 h-14 rounded-2xl bg-linear-to-tr from-accent-primary/20 to-accent-secondary/20 flex items-center justify-center text-accent-primary shadow-xs">
-          <UploadCloud className="w-7 h-7" />
-        </div>
+        <DocumentDropzoneIllustration size={68} className="mb-0.5" />
 
         <div className="space-y-1">
           <p className="text-sm sm:text-base font-bold text-slate-800">
@@ -140,7 +139,7 @@ export const DocumentDropzone: React.FC<DocumentDropzoneProps> = ({
       <div className="p-3.5 rounded-xl bg-slate-50/80 border border-slate-200/70 space-y-2">
         <div className="flex items-center justify-between gap-2 flex-wrap">
           <span className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
-            <Sparkles className="w-3.5 h-3.5 text-accent-primary" />
+            <Layers className="w-3.5 h-3.5 text-accent-primary" />
             Coba Cepat dengan Dokumen Studi Kasus Demo:
           </span>
           <span className="text-[11px] text-slate-500">Klik untuk memuat instan</span>
