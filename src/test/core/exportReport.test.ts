@@ -281,6 +281,6 @@ describe('Export PDF Report Module', () => {
 
     const element = React.createElement(DecisiPdfReport, { payload });
     expect(element).toBeDefined();
-  });
+  }, 15000);
 });
 

@@ -375,7 +375,7 @@ export const ExportOptionsModal: React.FC<ExportOptionsModalProps> = ({
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-indigo-50/70 via-purple-50/50 to-slate-50/80 rounded-xl p-3.5 border border-indigo-200/80 space-y-3">
+        <div className="bg-linear-to-br from-indigo-50/70 via-purple-50/50 to-slate-50/80 rounded-xl p-3.5 border border-indigo-200/80 space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="w-7 h-7 rounded-lg bg-indigo-600 text-white flex items-center justify-center shadow-xs">
@@ -398,7 +398,7 @@ export const ExportOptionsModal: React.FC<ExportOptionsModalProps> = ({
                 onChange={(e) => setIncludeAiNarrative(e.target.checked)}
                 className="sr-only peer"
               />
-              <div className="w-9 h-5 bg-slate-300 peer-focus:outline-hidden rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600"></div>
+              <div className="w-9 h-5 bg-slate-300 peer-focus:outline-hidden rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:inset-s-0.5 after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600"></div>
             </label>
           </div>
 

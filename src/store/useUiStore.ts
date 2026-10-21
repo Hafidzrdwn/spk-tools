@@ -15,6 +15,7 @@ export interface UiStore {
   glossaryTargetTerm: string | null;
   isWelcomeOpen: boolean;
   isBackupModalOpen: boolean;
+  isDocLoaderOpen: boolean;
   numberFormat: NumberSeparator;
   activeEditorSection: EditorSection;
   sawActiveStep: 1 | 2 | 3;
@@ -36,6 +37,8 @@ export interface UiStore {
   closeWelcome: () => void;
   openBackupModal: () => void;
   closeBackupModal: () => void;
+  openDocLoader: () => void;
+  closeDocLoader: () => void;
   setNumberFormat: (format: NumberSeparator) => void;
   toggleNumberFormat: () => void;
   setActiveEditorSection: (section: EditorSection) => void;
@@ -108,6 +111,7 @@ export const useUiStore = create<UiStore>((set) => ({
   glossaryTargetTerm: null,
   isWelcomeOpen: false,
   isBackupModalOpen: false,
+  isDocLoaderOpen: false,
   numberFormat: getInitialNumberFormat(),
   activeEditorSection: 'matrix',
   sawActiveStep: 1,
@@ -151,6 +155,8 @@ export const useUiStore = create<UiStore>((set) => ({
   closeWelcome: () => set({ isWelcomeOpen: false }),
   openBackupModal: () => set({ isBackupModalOpen: true }),
   closeBackupModal: () => set({ isBackupModalOpen: false }),
+  openDocLoader: () => set({ isDocLoaderOpen: true }),
+  closeDocLoader: () => set({ isDocLoaderOpen: false }),
   setNumberFormat: (format) => {
     try {
       localStorage.setItem(NUMBER_FORMAT_STORAGE_KEY, format);

@@ -6,8 +6,12 @@ import ExtractedPreviewTable from './components/ExtractedPreviewTable';
 import AhpPromptModal from './components/AhpPromptModal';
 import TemplatePickerModal from './components/TemplatePickerModal';
 import Card, { CardContent } from '@/components/ui/Card';
+import Button from '@/components/ui/Button';
+import { Sparkles } from 'lucide-react';
+import { useUiStore } from '@/store/useUiStore';
 
 export const StoryToMatrixTab: React.FC = () => {
+  const openDocLoader = useUiStore((s) => s.openDocLoader);
   const {
     mode, setMode, rawText, setRawText, previewAlternatives,
     criteria, unmatchedCriteria, detectedComparisons, isAhpPromptOpen,
@@ -47,6 +51,15 @@ export const StoryToMatrixTab: React.FC = () => {
               </p>
             </div>
           </div>
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={openDocLoader}
+            className="text-xs font-bold border-indigo-200 text-indigo-700 bg-white hover:bg-indigo-50/80 shrink-0 gap-1.5 shadow-2xs cursor-pointer"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-accent-primary" />
+            <span>Unggah Dokumen (PDF/Word)</span>
+          </Button>
         </CardContent>
       </Card>
 

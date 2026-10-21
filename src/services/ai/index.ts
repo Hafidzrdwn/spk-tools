@@ -3,3 +3,6 @@ export * from './aiCache';
 export * from './promptBuilder';
 export * from './fallbackNarrative';
 export * from './geminiClient';
+export * from './documentLoaderTypes';
+export * from './documentFileReader';
+export * from './documentExtractorService';
