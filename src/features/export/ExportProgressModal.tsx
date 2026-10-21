@@ -32,9 +32,6 @@ export const ExportProgressModal: React.FC<ExportProgressModalProps> = ({
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs transition-opacity animate-in fade-in duration-200"
     >
       <div className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl border border-slate-200/90 p-6 flex flex-col items-center text-center overflow-hidden">
-        <div className="absolute -top-12 -left-12 w-32 h-32 bg-indigo-500/10 rounded-full blur-2xl pointer-events-none" />
-        <div className="absolute -bottom-12 -right-12 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none" />
-
         <div className="relative mb-4">
           {error ? (
             <div className="w-14 h-14 rounded-2xl bg-rose-50 border border-rose-200 flex items-center justify-center text-rose-600 shadow-inner">
@@ -69,11 +66,15 @@ export const ExportProgressModal: React.FC<ExportProgressModalProps> = ({
           <div className="w-full space-y-2 mb-6">
             <div className="flex justify-between items-center text-xs font-semibold text-slate-600 px-0.5">
               <span>Proses Kompilasi</span>
-              <span className="font-mono text-indigo-600 font-bold">{clampedProgress}%</span>
+              <span className={`font-mono font-bold ${isCompleted ? 'text-emerald-600' : 'text-indigo-600'}`}>
+                {clampedProgress}%
+              </span>
             </div>
-            <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden p-0.5 border border-slate-200/80">
+            <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden p-0.5 border border-slate-200/80">
               <div
-                className="h-full rounded-full bg-linear-to-r from-indigo-500 via-purple-500 to-emerald-500 transition-all duration-300 ease-out shadow-xs"
+                className={`h-full rounded-full transition-all duration-300 ease-out shadow-xs ${
+                  isCompleted ? 'bg-emerald-600' : 'bg-indigo-600'
+                }`}
                 style={{ width: `${clampedProgress}%` }}
               />
             </div>
