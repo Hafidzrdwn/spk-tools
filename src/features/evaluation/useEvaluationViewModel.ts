@@ -28,6 +28,8 @@ import {
   type AnalysisMethod,
 } from '@/core/analysis';
 
+import type { DecisiProjectState } from '@/types/domain';
+
 export type EvaluationSubPanel = 'aspects' | 'sensitivity' | 'whatif' | 'managerial';
 
 export function useEvaluationViewModel() {
@@ -35,6 +37,9 @@ export function useEvaluationViewModel() {
   const alternatives = useProjectStore((state) => state.alternatives);
   const projectTitle = useProjectStore((state) => state.title);
   const loadProjectState = useProjectStore((state) => state.loadProjectState);
+
+  const [savedUserState, setSavedUserState] = useState<DecisiProjectState | null>(null);
+  const [isDemoActive, setIsDemoActive] = useState<boolean>(false);
 
   const [activePanel, setActivePanel] = useState<EvaluationSubPanel>('aspects');
   const [spearmanMethodB, setSpearmanMethodB] = useState<AnalysisMethod>('wp');
@@ -224,8 +229,17 @@ export function useEvaluationViewModel() {
   ]);
 
   const loadCvMajuJayaCase = useCallback(() => {
+    if (!isDemoActive && criteria.length > 0) {
+      setSavedUserState({
+        title: projectTitle,
+        activeMethod: 'EVALUATION',
+        criteria,
+        alternatives,
+      });
+    }
+    setIsDemoActive(true);
     loadProjectState({
-      title: 'Studi Kasus Pengadaan Komputer CV Maju Jaya',
+      title: 'Studi Kasus CV Maju Jaya',
       activeMethod: 'EVALUATION',
       criteria: [
         { id: 'c1', name: 'Harga', type: 'COST', weight: 30, normalizedWeight: 0.3, unit: 'Juta Rp' },
@@ -262,7 +276,15 @@ export function useEvaluationViewModel() {
         },
       ],
     });
-  }, [loadProjectState]);
+  }, [isDemoActive, criteria, projectTitle, alternatives, loadProjectState]);
+
+  const revertToUserData = useCallback(() => {
+    if (savedUserState) {
+      loadProjectState(savedUserState);
+      setSavedUserState(null);
+      setIsDemoActive(false);
+    }
+  }, [savedUserState, loadProjectState]);
 
   return {
     hasData,
@@ -297,5 +319,8 @@ export function useEvaluationViewModel() {
     managerialSynthesis,
     evaluationPayload,
     loadCvMajuJayaCase,
+    isDemoActive,
+    savedUserState,
+    revertToUserData,
   };
 }

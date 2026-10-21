@@ -4,7 +4,7 @@ import MultiMethodComparisonTable from './components/MultiMethodComparisonTable'
 import RankingShiftExplanation from './components/RankingShiftExplanation';
 import Card, { CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
-import { Layers } from 'lucide-react';
+import { Layers, RotateCcw } from 'lucide-react';
 
 export const ComparisonTab: React.FC = () => {
   const {
@@ -14,6 +14,9 @@ export const ComparisonTab: React.FC = () => {
     setSelectedMethods,
     toggleMethod,
     loadShiftDemoCase,
+    isDemoActive,
+    savedUserState,
+    revertToUserData,
   } = useComparisonViewModel();
 
   return (
@@ -37,14 +40,26 @@ export const ComparisonTab: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
+            {isDemoActive && savedUserState ? (
+              <Button
+                variant="secondary"
+                size="md"
+                onClick={revertToUserData}
+                className="text-xs font-semibold shadow-2xs cursor-pointer gap-1.5 border-indigo-200 text-indigo-700 hover:bg-indigo-50"
+                title="Kembalikan data kriteria dan alternatif Anda sebelumnya"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span>Kembalikan Data Saya</span>
+              </Button>
+            ) : null}
             <Button
-              variant="primary"
+              variant={isDemoActive ? 'secondary' : 'primary'}
               size="md"
               onClick={loadShiftDemoCase}
               className="text-xs font-semibold shadow-2xs cursor-pointer"
               title="Muat dataset pengujian yang sengaja menghasilkan pemenang berbeda antara SAW dan TOPSIS"
             >
-              Muat Contoh Kasus Pergeseran
+              <span>{isDemoActive ? 'Muat Ulang Kasus Pergeseran' : 'Muat Contoh Kasus Pergeseran'}</span>
             </Button>
           </div>
         </CardContent>

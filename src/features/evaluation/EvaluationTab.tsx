@@ -6,7 +6,7 @@ import AspectEvaluationPanel from './components/AspectEvaluationPanel';
 import SensitivityScenarioPanel from './components/SensitivityScenarioPanel';
 import WhatIfGoalSeekingPanel from './components/WhatIfGoalSeekingPanel';
 import ManagerialAiPanel from './components/ManagerialAiPanel';
-import { Compass, Scale, Sliders, Target, FileText } from 'lucide-react';
+import { Compass, Scale, Sliders, Target, FileText, RotateCcw } from 'lucide-react';
 
 export const EvaluationTab: React.FC = () => {
   const {
@@ -39,15 +39,17 @@ export const EvaluationTab: React.FC = () => {
     setGoalSeekingCritId,
     goalSeekingResult,
     managerialSynthesis,
-    evaluationPayload,
     loadCvMajuJayaCase,
+    isDemoActive,
+    savedUserState,
+    revertToUserData,
   } = useEvaluationViewModel();
 
   const subNavItems: { id: EvaluationSubPanel; label: string; icon: React.FC<{ className?: string }> }[] = [
     { id: 'aspects', label: '1. Evaluasi 3 Aspek', icon: Scale },
     { id: 'sensitivity', label: '2. Sensitivitas & Skenario', icon: Sliders },
     { id: 'whatif', label: '3. What-If & Goal Seeking', icon: Target },
-    { id: 'managerial', label: '4. Rekomendasi & AI Context', icon: FileText },
+    { id: 'managerial', label: '4. Rekomendasi Manajerial', icon: FileText },
   ];
 
   return (
@@ -71,14 +73,26 @@ export const EvaluationTab: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
+            {isDemoActive && savedUserState ? (
+              <Button
+                variant="secondary"
+                size="md"
+                onClick={revertToUserData}
+                className="text-xs font-semibold shadow-2xs cursor-pointer gap-1.5 border-indigo-200 text-indigo-700 hover:bg-indigo-50"
+                title="Kembalikan data kriteria dan alternatif Anda sebelumnya"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span>Kembalikan Data Saya</span>
+              </Button>
+            ) : null}
             <Button
-              variant="primary"
+              variant={isDemoActive ? 'secondary' : 'primary'}
               size="md"
               onClick={loadCvMajuJayaCase}
               className="text-xs font-semibold shadow-2xs cursor-pointer gap-1.5"
               title="Muat dataset modul studi kasus CV Maju Jaya (Spearman ρ = 1, Goal Seeking A5, dll.)"
             >
-              <span>Muat Kasus CV Maju Jaya</span>
+              <span>{isDemoActive ? 'Muat Ulang Kasus CV' : 'Muat Kasus CV Maju Jaya'}</span>
             </Button>
           </div>
         </CardContent>
@@ -120,7 +134,6 @@ export const EvaluationTab: React.FC = () => {
             })}
           </div>
 
-          {/* Sub Panel Content */}
           {activePanel === 'aspects' && (
             <AspectEvaluationPanel
               goalCongruence={goalCongruence}
@@ -163,7 +176,7 @@ export const EvaluationTab: React.FC = () => {
           )}
 
           {activePanel === 'managerial' && (
-            <ManagerialAiPanel synthesis={managerialSynthesis} payload={evaluationPayload} />
+            <ManagerialAiPanel synthesis={managerialSynthesis} />
           )}
         </div>
       )}
