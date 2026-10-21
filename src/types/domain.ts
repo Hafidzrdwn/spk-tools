@@ -15,7 +15,7 @@ export interface Alternative {
   values: Record<string, number>;
 }
 
-export type MethodId = 'SAW' | 'WP' | 'TOPSIS' | 'AHP' | 'AUTO' | 'COMPARE';
+export type MethodId = 'SAW' | 'WP' | 'TOPSIS' | 'AHP' | 'AUTO' | 'COMPARE' | 'EVALUATION';
 
 export interface DecisiProjectState {
   title: string;

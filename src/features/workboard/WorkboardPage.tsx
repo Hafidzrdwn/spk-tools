@@ -21,6 +21,7 @@ const WpTab = lazy(() => import('@/features/wp/WpTab'));
 const TopsisTab = lazy(() => import('@/features/topsis/TopsisTab'));
 const AhpTab = lazy(() => import('@/features/ahp/AhpTab'));
 const ComparisonTab = lazy(() => import('@/features/comparison/ComparisonTab'));
+const EvaluationTab = lazy(() => import('@/features/evaluation/EvaluationTab'));
 const StoryToMatrixTab = lazy(() => import('@/features/story-to-matrix/StoryToMatrixTab'));
 
 import TemplateSelectorModal from '@/components/layout/TemplateSelectorModal';
@@ -259,6 +260,8 @@ export const WorkboardPage: React.FC = () => {
                   <AhpTab />
                 ) : activeTab === 'COMPARE' ? (
                   <ComparisonTab />
+                ) : activeTab === 'EVALUATION' ? (
+                  <EvaluationTab />
                 ) : (
                   <StoryToMatrixTab />
                 )}
