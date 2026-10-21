@@ -24,7 +24,7 @@ export const TopsisDistanceCard: React.FC<TopsisDistanceCardProps> = ({ distance
         <table className="w-full text-left border-collapse text-xs">
           <thead>
             <tr className="bg-slate-50/90 border-b border-slate-200 text-slate-600 font-semibold">
-              <th className="py-3 px-4 w-44">Alternatif</th>
+              <th className="py-3 px-3 sm:px-4 w-36 sm:w-56 min-w-32 sm:min-w-48 max-w-44 sm:max-w-60 sticky left-0 bg-slate-50/95 z-10 border-r border-slate-200/70">Alternatif</th>
               <th className="py-3 px-4 text-right">
                 <MathFormula math="\sum (y_{ij} - A_j^+)^2" inline className="text-xs" />
               </th>
@@ -54,10 +54,12 @@ export const TopsisDistanceCard: React.FC<TopsisDistanceCardProps> = ({ distance
           <tbody className="divide-y divide-slate-100">
             {distances.map((row, idx) => (
               <tr key={row.alternativeId} className="hover:bg-slate-50/70 transition-colors">
-                <td className="py-2.5 px-4 font-semibold text-slate-800">
-                  <div className="flex items-center gap-2">
-                    <span className="text-slate-400 font-mono text-[11px] w-5">A{idx + 1}</span>
-                    <span className="truncate" title={row.alternativeName}>{row.alternativeName}</span>
+                <td className="py-2.5 px-3 sm:px-4 font-semibold text-slate-800 sticky left-0 bg-white/95 z-10 border-r border-slate-200/70 shadow-xs w-36 sm:w-56 min-w-32 sm:min-w-48 max-w-44 sm:max-w-60 align-middle">
+                  <div className="flex items-start gap-1.5 min-w-0">
+                    <span className="text-slate-400 font-mono text-[11px] shrink-0 mt-0.5">A{idx + 1}</span>
+                    <span className="font-semibold text-xs text-slate-800 wrap-break-word leading-snug" title={row.alternativeName}>
+                      {row.alternativeName}
+                    </span>
                   </div>
                 </td>
                 <td className="py-2.5 px-4 text-right font-mono text-slate-500">

@@ -44,11 +44,13 @@ const WpVectorRow: React.FC<WpVectorRowProps> = React.memo(({ rankItem, sRow, ma
         </div>
       </td>
 
-      <td className="py-3 px-4">
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="font-semibold text-slate-900 truncate" title={rankItem.alternativeName}>{rankItem.alternativeName}</span>
+      <td className="py-3 px-4 min-w-0 max-w-xs sm:max-w-md md:max-w-lg align-middle">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 min-w-0">
+          <span className="font-semibold text-slate-900 wrap-break-word leading-snug" title={rankItem.alternativeName}>
+            {rankItem.alternativeName}
+          </span>
           {isTop && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-benefit/10 text-benefit border border-benefit/20 text-[11px] font-medium whitespace-nowrap shrink-0">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-benefit/10 text-benefit border border-benefit/20 text-[11px] font-medium whitespace-nowrap shrink-0 self-start sm:self-auto">
               Rekomendasi Utama
             </span>
           )}
@@ -107,7 +109,7 @@ export const WpVectorTable: React.FC<WpVectorTableProps> = ({
           <thead>
             <tr className="bg-slate-50/90 border-b border-slate-200 text-slate-600 font-semibold">
               <th className="py-3 px-4 w-24">Peringkat</th>
-              <th className="py-3 px-4">Alternatif</th>
+              <th className="py-3 px-4 min-w-44 max-w-xs sm:max-w-md md:max-w-lg">Alternatif</th>
               <th className="py-3 px-4 w-36 text-right">
                 Vektor S (<MathFormula math="S_i" inline />)
               </th>
