@@ -87,8 +87,6 @@ export const WorkboardPage: React.FC = () => {
     }
   }, [hasSeenWelcome, openWelcome]);
 
-  const currentRoute = ROUTES.find((r) => r.id === activeTab) || ROUTES[0];
-
   const tabItems = ROUTES.map((r) => ({
     id: r.id,
     label: ['SAW', 'WP', 'TOPSIS', 'AHP'].includes(r.id) ? (
@@ -142,26 +140,12 @@ export const WorkboardPage: React.FC = () => {
           <div data-tour-id="nav-tabs" className="w-full">
             <Tabs<MethodId> items={tabItems} activeTab={activeTab} onChange={setActiveTab} />
           </div>
-          <div className="flex flex-wrap sm:items-center gap-2 px-3 py-2 bg-indigo-50/50 rounded-control border border-indigo-100/60 text-xs">
-            <div className="flex items-center gap-1.5 shrink-0">
-              <span className="font-bold text-slate-800">
-                {['SAW', 'WP', 'TOPSIS', 'AHP'].includes(currentRoute.id) ? (
-                  <GlossaryTerm term={currentRoute.id} position="bottom">{currentRoute.label}</GlossaryTerm>
-                ) : (
-                  currentRoute.label
-                )}:
-              </span>
-            </div>
-            <span className="text-slate-600 leading-relaxed">
-              {currentRoute.description}
-            </span>
-          </div>
         </div>
 
         <Card data-tour-id="shared-matrix-card" className="transition-all duration-200 shadow-2xs">
           <CardHeader
             onClick={toggleSharedMatrix}
-            className="border-b border-slate-100 flex flex-col sm:flex-row items-start sm:items-center justify-between py-2.5 px-3 sm:px-4 gap-2 cursor-pointer select-none hover:bg-slate-50/50 transition-colors"
+            className="border-b border-slate-100 flex flex-col sm:flex-row items-start sm:items-center justify-between px-3 sm:px-4 pb-2 pt-4 sm:pt-3 sm:pb-2 gap-2 cursor-pointer select-none hover:bg-slate-50/50 transition-colors"
           >
             <div className="flex items-center gap-2.5">
               <button
@@ -182,11 +166,11 @@ export const WorkboardPage: React.FC = () => {
                 )}
               </button>
               <div>
-                <div className="flex items-center gap-2 flex-wrap">
+                <div className="flex items-center gap-2 flex-wrap sm:mb-1 mb-2">
                   <CardTitle className="text-sm">Matriks Keputusan Bersama (Shared Input)</CardTitle>
                   {isSharedMatrixCollapsed && (
                     <span className="text-[10px] font-mono bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded-full font-semibold border border-indigo-200/60">
-                      {criteria.length} Kriteria • {alternatives.length} Alternatif (Diciutkan)
+                      {criteria.length} Kriteria • {alternatives.length} Alternatif
                     </span>
                   )}
                 </div>

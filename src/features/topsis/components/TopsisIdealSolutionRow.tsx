@@ -3,7 +3,6 @@ import type { Criterion, Alternative } from '@/types/domain';
 import Badge from '@/components/ui/Badge';
 import { TraceableCell } from '@/features/inspector';
 import { MathFormula } from '@/components/ui/MathFormula';
-import { Sparkles, AlertOctagon } from 'lucide-react';
 import { useNumberFormatter } from '@/utils/numberFormat';
 
 export interface TopsisIdealSolutionRowProps {
@@ -85,7 +84,6 @@ export const TopsisIdealSolutionRow: React.FC<TopsisIdealSolutionRowProps> = ({
               <td className="py-2.5 px-3 sm:px-4 sticky left-0 bg-benefit/5 z-10 border-r border-benefit/30 w-40 sm:w-60 min-w-36 sm:min-w-52 max-w-48 sm:max-w-64 align-middle">
                 <div className="flex items-center gap-2">
                   <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-benefit/20 text-benefit font-mono font-bold text-xs border border-benefit/30 shadow-2xs">
-                    <Sparkles className="w-3 h-3 text-benefit" />
                     <MathFormula math="A^+" inline className="text-benefit font-bold" />
                   </span>
                   <span className="text-xs font-bold text-benefit">Solusi Ideal Positif</span>
@@ -103,7 +101,6 @@ export const TopsisIdealSolutionRow: React.FC<TopsisIdealSolutionRowProps> = ({
               <td className="py-2.5 px-3 sm:px-4 sticky left-0 bg-cost/5 z-10 border-r border-cost/30 w-40 sm:w-60 min-w-36 sm:min-w-52 max-w-48 sm:max-w-64 align-middle">
                 <div className="flex items-center gap-2">
                   <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-cost/20 text-cost font-mono font-bold text-xs border border-cost/30 shadow-2xs">
-                    <AlertOctagon className="w-3 h-3 text-cost" />
                     <MathFormula math="A^-" inline className="text-cost font-bold" />
                   </span>
                   <span className="text-xs font-bold text-cost">Solusi Ideal Negatif</span>

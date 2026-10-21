@@ -4,13 +4,12 @@ import { prefetchRoute } from '@/services/routePrefetch';
 
 export const WorkboardTopBar: React.FC = () => {
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-2.5 px-3 sm:px-4 py-2 sm:py-2.5 bg-white/70 backdrop-blur-md rounded-xl border border-slate-200/80 shadow-2xs">
+    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-2.5 px-3 sm:px-4 pb-2 pt-4 sm:py-3 bg-white/70 backdrop-blur-md rounded-xl border border-slate-200/80 shadow-2xs">
       <div className="flex items-center gap-2">
         <span className="w-2 h-2 rounded-full bg-indigo-600 shrink-0" />
         <div className="flex items-center gap-1.5 sm:gap-2 truncate">
-          <span className="text-xs font-bold text-slate-800 tracking-tight shrink-0">Workboard SPK</span>
+          <span className="text-xs font-bold text-slate-800 tracking-tight shrink-0">Workboard Kalkulasi Sistem Pendukung Keputusan</span>
           <span className="text-slate-300 hidden xs:inline">|</span>
-          <span className="text-[11px] text-slate-500 hidden sm:inline truncate">Kalkulasi 4 Metode Terpadu (SAW, WP, TOPSIS, AHP)</span>
         </div>
       </div>
 

@@ -9,7 +9,7 @@ import Card, { CardHeader, CardTitle, CardDescription, CardContent } from '@/com
 import { MathFormula } from '@/components/ui/MathFormula';
 import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
-import { Sliders, Grid3X3, Activity, Sparkles, Check, RotateCcw } from 'lucide-react';
+import { Sliders, Grid3X3, Activity, Check, RotateCcw } from 'lucide-react';
 
 export const AhpTab: React.FC = () => {
   const { criteria, hasData, matrix, pairs, priorityVector, consistency, suggestion, setPairwiseValue, applySuggestion, resetMatrix, applyWeightsToProject } = useAhpViewModel();
@@ -35,9 +35,6 @@ export const AhpTab: React.FC = () => {
       <Card className="bg-linear-to-r from-indigo-500/10 via-purple-500/5 to-transparent border-indigo-200/80">
         <CardContent className="p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-control bg-indigo-100 border border-indigo-300 flex items-center justify-center text-indigo-700 shadow-xs">
-              <Sparkles className="w-5 h-5 text-accent-primary" />
-            </div>
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-xs font-semibold text-indigo-900 uppercase tracking-wide">Analytic Hierarchy Process (AHP)</span>

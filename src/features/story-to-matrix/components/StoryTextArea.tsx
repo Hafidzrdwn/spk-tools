@@ -1,7 +1,7 @@
 import React from 'react';
 import Button from '@/components/ui/Button';
 import Card, { CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
-import { Sparkles, Play, RotateCcw, AlertCircle, FileText } from 'lucide-react';
+import { Play, RotateCcw, AlertCircle, FileText } from 'lucide-react';
 
 export interface StoryTextAreaProps {
   value: string;
@@ -50,11 +50,10 @@ export const StoryTextArea: React.FC<StoryTextAreaProps> = ({
 
         <Button
           variant="secondary"
-          size="sm"
+          size="md"
           onClick={onOpenTemplates}
           className="w-full sm:w-auto text-xs font-semibold cursor-pointer shrink-0 shadow-2xs h-9 px-3 flex items-center justify-center"
         >
-          <Sparkles className="w-3.5 h-3.5 mr-1.5 text-accent-primary shrink-0" />
           <span>Coba Contoh Template</span>
         </Button>
       </CardHeader>

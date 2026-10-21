@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { HelpCircle, BookOpen, Compass, Sparkles, CheckCircle2, Circle } from 'lucide-react';
+import { HelpCircle, BookOpen, Compass, CheckCircle2, Circle, Signpost } from 'lucide-react';
 import { useTourStore } from '@/store/useTourStore';
 import { useUiStore } from '@/store/useUiStore';
 import { useProjectStore } from '@/store/useProjectStore';
@@ -84,7 +84,7 @@ export const TourLauncherMenu: React.FC<TourLauncherMenuProps> = ({ className })
             className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-left text-xs text-slate-700 hover:bg-slate-50 hover:text-accent-primary transition-colors cursor-pointer"
           >
             <div className="flex items-center gap-2">
-              <Sparkles className="w-3.5 h-3.5 text-accent-primary shrink-0" />
+              <Signpost className="w-3.5 h-3.5 text-accent-primary shrink-0" />
               <span className="font-medium">Buka Panduan Umum</span>
             </div>
           </button>
