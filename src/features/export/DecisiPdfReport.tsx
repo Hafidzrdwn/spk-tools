@@ -8,6 +8,17 @@ import {
 } from './generateReport';
 import { formatDisplayNumber } from '@/utils/numberFormat';
 import { useUiStore } from '@/store/useUiStore';
+import {
+  PdfSawNormFormula,
+  PdfSawScoreFormula,
+  PdfWpWeightPowerFormula,
+  PdfWpVectorSFormula,
+  PdfWpVectorVFormula,
+  PdfTopsisNormFormula,
+  PdfTopsisIdealFormula,
+  PdfTopsisDistancesFormula,
+  PdfAhpConsistencyFormula,
+} from './PdfMathComponents';
 
 const styles = StyleSheet.create({
   page: {
@@ -16,12 +27,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     fontFamily: 'Helvetica',
     fontSize: 8.5,
-    color: '#334155',
+    color: '#0F172A',
     backgroundColor: '#FFFFFF',
   },
   headerContainer: {
-    marginBottom: 16,
-    paddingBottom: 12,
+    marginBottom: 14,
+    paddingBottom: 10,
     borderBottomWidth: 1.5,
     borderBottomColor: '#4F46E5',
   },
@@ -46,8 +57,9 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   generatedDateText: {
-    fontSize: 7.5,
-    color: '#64748B',
+    fontSize: 8,
+    color: '#334155',
+    fontWeight: 'medium',
   },
   projectTitle: {
     fontSize: 16,
@@ -75,7 +87,7 @@ const styles = StyleSheet.create({
   },
   methodSubtitle: {
     fontSize: 8,
-    color: '#64748B',
+    color: '#334155',
   },
 
   chapterHeader: {
@@ -89,14 +101,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   chapterTitle: {
-    fontSize: 10.5,
+    fontSize: 11,
     fontWeight: 'bold',
     color: '#0F172A',
   },
   chapterTag: {
     fontSize: 7.5,
     fontWeight: 'bold',
-    color: '#4F46E5',
+    color: '#4338CA',
     backgroundColor: '#EEF2FF',
     paddingVertical: 1.5,
     paddingHorizontal: 5,
@@ -104,50 +116,21 @@ const styles = StyleSheet.create({
   },
 
   sectionSubTitle: {
-    fontSize: 9,
+    fontSize: 9.5,
     fontWeight: 'bold',
-    color: '#1E293B',
+    color: '#0F172A',
     marginTop: 8,
     marginBottom: 4,
   },
   sectionDescription: {
-    fontSize: 7.8,
-    color: '#64748B',
-    lineHeight: 1.35,
-    marginBottom: 6,
-  },
-
-  formulaCard: {
-    backgroundColor: '#F8FAFC',
-    borderLeftWidth: 3,
-    borderLeftColor: '#4F46E5',
-    borderTopWidth: 0.5,
-    borderRightWidth: 0.5,
-    borderBottomWidth: 0.5,
-    borderColor: '#E2E8F0',
-    borderRadius: 3,
-    padding: 5,
-    marginBottom: 6,
-  },
-  formulaTitle: {
-    fontSize: 7.5,
-    fontWeight: 'bold',
-    color: '#4338CA',
-    marginBottom: 2,
-  },
-  formulaEquation: {
-    fontFamily: 'Courier',
-    fontSize: 7.8,
-    color: '#0F172A',
-    backgroundColor: '#FFFFFF',
-    padding: 3.5,
-    borderRadius: 2,
-    borderWidth: 0.5,
-    borderColor: '#E2E8F0',
+    fontSize: 8.5,
+    color: '#1E293B',
+    lineHeight: 1.5,
+    marginBottom: 7,
   },
 
   table: {
-    borderWidth: 0.7,
+    borderWidth: 0.8,
     borderColor: '#CBD5E1',
     borderRadius: 3,
     overflow: 'hidden',
@@ -155,39 +138,39 @@ const styles = StyleSheet.create({
   },
   tableRow: {
     flexDirection: 'row',
-    borderBottomWidth: 0.6,
-    borderBottomColor: '#E2E8F0',
+    borderBottomWidth: 0.7,
+    borderBottomColor: '#CBD5E1',
     alignItems: 'center',
-    minHeight: 18,
+    minHeight: 20,
   },
   tableRowHeader: {
-    backgroundColor: '#F8FAFC',
-    borderBottomWidth: 0.9,
-    borderBottomColor: '#CBD5E1',
+    backgroundColor: '#F1F5F9',
+    borderBottomWidth: 1,
+    borderBottomColor: '#94A3B8',
   },
   tableRowAlternate: {
-    backgroundColor: '#FAFAFA',
+    backgroundColor: '#F8FAFC',
   },
   tableRowWinner: {
     backgroundColor: '#F0FDF4',
     borderLeftWidth: 2.5,
-    borderLeftColor: '#10B981',
+    borderLeftColor: '#059669',
   },
   tableCellHeader: {
-    fontSize: 7.5,
+    fontSize: 8,
     fontWeight: 'bold',
-    color: '#334155',
-    padding: 3.5,
+    color: '#0F172A',
+    padding: 4,
   },
   tableCell: {
-    fontSize: 7.5,
-    color: '#334155',
-    padding: 3.5,
+    fontSize: 8,
+    color: '#0F172A',
+    padding: 4,
   },
 
   benefitBadge: {
     backgroundColor: '#ECFDF5',
-    borderWidth: 0.5,
+    borderWidth: 0.6,
     borderColor: '#A7F3D0',
     borderRadius: 2.5,
     paddingVertical: 1,
@@ -196,12 +179,12 @@ const styles = StyleSheet.create({
   },
   benefitText: {
     color: '#047857',
-    fontSize: 6.5,
+    fontSize: 6.8,
     fontWeight: 'bold',
   },
   costBadge: {
     backgroundColor: '#FFF1F2',
-    borderWidth: 0.5,
+    borderWidth: 0.6,
     borderColor: '#FECDD3',
     borderRadius: 2.5,
     paddingVertical: 1,
@@ -210,11 +193,11 @@ const styles = StyleSheet.create({
   },
   costText: {
     color: '#BE123C',
-    fontSize: 6.5,
+    fontSize: 6.8,
     fontWeight: 'bold',
   },
   rank1Badge: {
-    backgroundColor: '#10B981',
+    backgroundColor: '#059669',
     borderRadius: 2.5,
     paddingVertical: 1.5,
     paddingHorizontal: 5,
@@ -222,46 +205,46 @@ const styles = StyleSheet.create({
   },
   rank1BadgeText: {
     color: '#FFFFFF',
-    fontSize: 6.8,
+    fontSize: 7,
     fontWeight: 'bold',
   },
 
   infoCard: {
     backgroundColor: '#F8FAFC',
-    borderWidth: 0.6,
-    borderColor: '#E2E8F0',
+    borderWidth: 0.8,
+    borderColor: '#CBD5E1',
     borderRadius: 3,
     padding: 8,
     marginBottom: 8,
   },
   infoCardTitle: {
-    fontSize: 8,
+    fontSize: 9,
     fontWeight: 'bold',
-    color: '#1E293B',
-    marginBottom: 4,
+    color: '#0F172A',
+    marginBottom: 3,
   },
   infoCardBody: {
-    fontSize: 7.6,
-    color: '#475569',
-    lineHeight: 1.4,
+    fontSize: 8.5,
+    color: '#1E293B',
+    lineHeight: 1.5,
   },
 
   conclusionCard: {
     backgroundColor: '#F8FAFC',
     borderLeftWidth: 3.5,
     borderLeftColor: '#4F46E5',
-    borderTopWidth: 0.6,
-    borderRightWidth: 0.6,
-    borderBottomWidth: 0.6,
-    borderColor: '#E2E8F0',
+    borderTopWidth: 0.8,
+    borderRightWidth: 0.8,
+    borderBottomWidth: 0.8,
+    borderColor: '#CBD5E1',
     borderRadius: 3,
-    padding: 9,
+    padding: 10,
     marginTop: 8,
   },
   conclusionParagraph: {
-    fontSize: 8,
-    color: '#1E293B',
-    lineHeight: 1.45,
+    fontSize: 9.5,
+    color: '#0F172A',
+    lineHeight: 1.6,
     textAlign: 'justify',
   },
 
@@ -273,17 +256,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    borderTopWidth: 0.6,
-    borderTopColor: '#E2E8F0',
+    borderTopWidth: 0.8,
+    borderTopColor: '#CBD5E1',
     paddingTop: 5,
   },
   footerCopyright: {
-    fontSize: 7,
-    color: '#64748B',
+    fontSize: 7.2,
+    color: '#475569',
   },
   footerPage: {
-    fontSize: 7,
-    color: '#64748B',
+    fontSize: 7.2,
+    color: '#0F172A',
     fontWeight: 'bold',
   },
 });
@@ -340,9 +323,6 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
       subject="Laporan Analisis Keputusan Multi-Metode"
     >
       <Page size="A4" style={styles.page}>
-        {/* ===================================================================
-            COVER / HEADER
-        ==================================================================== */}
         <View style={styles.headerContainer}>
           <View style={styles.headerTopRow}>
             <View style={styles.brandBadge}>
@@ -375,9 +355,6 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
           </View>
         </View>
 
-        {/* ===================================================================
-            BAB 1: RINGKASAN KRITERIA EVALUASI
-        ==================================================================== */}
         <View wrap={false}>
           <View style={styles.chapterHeader}>
             <Text style={styles.chapterTitle}>
@@ -401,14 +378,12 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
 
             {payload.criteria.map((crit, idx) => {
               const isEven = idx % 2 === 1;
-              const normalizedPct =
-                formatDisplayNumber(crit.normalizedWeight * 100, { decimals: 1, separator: numberFormat }) + '%';
               return (
                 <View
                   key={crit.id}
                   style={[styles.tableRow, isEven ? styles.tableRowAlternate : {}]}
                 >
-                  <Text style={[styles.tableCell, { width: '8%', textAlign: 'center', color: '#64748B' }]}>
+                  <Text style={[styles.tableCell, { width: '8%', textAlign: 'center', color: '#475569' }]}>
                     {idx + 1}
                   </Text>
                   <Text style={[styles.tableCell, { width: '38%', fontWeight: 'bold' }]}>
@@ -428,15 +403,10 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
                   <Text style={[styles.tableCell, { width: '14%', textAlign: 'right' }]}>
                     {formatDisplayNumber(crit.weight, { decimals: 2, separator: numberFormat })}
                   </Text>
-                  <Text
-                    style={[
-                      styles.tableCell,
-                      { width: '14%', textAlign: 'right', fontWeight: 'bold', color: '#4F46E5' },
-                    ]}
-                  >
-                    {normalizedPct}
+                  <Text style={[styles.tableCell, { width: '14%', textAlign: 'right', fontWeight: 'bold' }]}>
+                    {formatDisplayNumber(crit.normalizedWeight, { decimals: 4, separator: numberFormat })}
                   </Text>
-                  <Text style={[styles.tableCell, { width: '10%', textAlign: 'center', color: '#64748B' }]}>
+                  <Text style={[styles.tableCell, { width: '10%', textAlign: 'center', color: '#475569' }]}>
                     {crit.unit || '-'}
                   </Text>
                 </View>
@@ -445,9 +415,6 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
           </View>
         </View>
 
-        {/* ===================================================================
-            BAB 2: MATRIKS KEPUTUSAN AWAL (X)
-        ==================================================================== */}
         <View wrap={false}>
           <View style={styles.chapterHeader}>
             <Text style={styles.chapterTitle}>
@@ -456,24 +423,29 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
             <Text style={styles.chapterTag}>Data Mentah</Text>
           </View>
           <Text style={styles.sectionDescription}>
-            Tabel matriks keputusan awal memuat nilai numerik kuantitatif tiap alternatif terhadap masing-masing kriteria:
+            Matriks keputusan berukuran {payload.alternatives.length} alternatif × {payload.criteria.length} kriteria yang merefleksikan nilai performa mentah tiap opsi keputusan:
           </Text>
 
           <View style={styles.table}>
             <View style={[styles.tableRow, styles.tableRowHeader]}>
               <Text style={[styles.tableCellHeader, { width: `${altColWidthPercent}%` }]}>
-                Alternatif / Kandidat
+                Alternatif \ Kriteria
               </Text>
-              {payload.criteria.map((crit) => (
-                <Text
+              {payload.criteria.map((crit, idx) => (
+                <View
                   key={crit.id}
                   style={[
                     styles.tableCellHeader,
-                    { width: `${critColWidthPercent}%`, textAlign: 'center' },
+                    { width: `${critColWidthPercent}%`, alignItems: 'center', padding: 2 },
                   ]}
                 >
-                  {crit.name}
-                </Text>
+                  <Text style={{ fontSize: 8, fontWeight: 'bold', color: '#0F172A' }}>
+                    C{idx + 1}
+                  </Text>
+                  <Text style={{ fontSize: 6.5, color: '#475569', textAlign: 'center' }}>
+                    ({crit.name})
+                  </Text>
+                </View>
               ))}
             </View>
 
@@ -514,9 +486,6 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
           </View>
         </View>
 
-        {/* ===================================================================
-            BAB 3: STORY-TO-MATRIX (JIKA TERSEDIA / DIPILIH)
-        ==================================================================== */}
         {showStory && payload.storyData && (
           <View wrap={false}>
             <View style={styles.chapterHeader}>
@@ -556,7 +525,7 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
                     <Text style={[styles.tableCell, { width: '30%', fontWeight: 'bold' }]}>
                       {alt.name}
                     </Text>
-                    <Text style={[styles.tableCell, { width: '70%', color: '#475569' }]}>
+                    <Text style={[styles.tableCell, { width: '70%', color: '#1E293B' }]}>
                       {specs}
                     </Text>
                   </View>
@@ -575,17 +544,12 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
               <Text style={styles.chapterTag}>Kalkulasi Rinci</Text>
             </View>
             <Text style={styles.sectionDescription}>
-              Metode SAW (Simple Additive Weighting) menentukan preferensi melalui normalisasi linear skala nilai matriks terhadap nilai ekstrim kriteria, kemudian menjumlahkan perkalian bobot kriteria.
+              Metode SAW menentukan preferensi melalui normalisasi linear skala nilai matriks terhadap nilai ekstrim kriteria, kemudian menjumlahkan perkalian bobot kriteria.
             </Text>
 
             <View wrap={false}>
               <Text style={styles.sectionSubTitle}>Langkah 1: Penentuan Nilai Ekstrim Kriteria</Text>
-              <View style={styles.formulaCard}>
-                <Text style={styles.formulaTitle}>Formulasi Normalisasi SAW:</Text>
-                <Text style={styles.formulaEquation}>
-                  Benefit: r_ij = x_ij / max(X_j)   |   Cost: r_ij = min(X_j) / x_ij
-                </Text>
-              </View>
+              <PdfSawNormFormula />
 
               <View style={styles.table}>
                 <View style={[styles.tableRow, styles.tableRowHeader]}>
@@ -620,8 +584,8 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
                         {crit.type === 'BENEFIT' ? 'Max: ' : 'Min: '}
                         {formatDisplayNumber(targetExt, { decimals: 4, separator: numberFormat })}
                       </Text>
-                      <Text style={[styles.tableCell, { width: '23%', textAlign: 'center', fontFamily: 'Courier', fontSize: 7 }]}>
-                        {crit.type === 'BENEFIT' ? 'x_ij / Max' : 'Min / x_ij'}
+                      <Text style={[styles.tableCell, { width: '23%', textAlign: 'center', fontWeight: 'bold', color: '#0F172A', fontSize: 8 }]}>
+                        {crit.type === 'BENEFIT' ? 'r_ij = x_ij / Max' : 'r_ij = Min / x_ij'}
                       </Text>
                     </View>
                   );
@@ -636,16 +600,21 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
                   <Text style={[styles.tableCellHeader, { width: `${altColWidthPercent}%` }]}>
                     Alternatif
                   </Text>
-                  {payload.criteria.map((crit) => (
-                    <Text
+                  {payload.criteria.map((crit, idx) => (
+                    <View
                       key={crit.id}
                       style={[
                         styles.tableCellHeader,
-                        { width: `${critColWidthPercent}%`, textAlign: 'center' },
+                        { width: `${critColWidthPercent}%`, alignItems: 'center', padding: 2 },
                       ]}
                     >
-                      {`r_${crit.name.slice(0, 8)}`}
-                    </Text>
+                      <Text style={{ fontSize: 8, fontWeight: 'bold', color: '#0F172A' }}>
+                        r_{idx + 1}
+                      </Text>
+                      <Text style={{ fontSize: 6.5, color: '#475569', textAlign: 'center' }}>
+                        ({crit.name})
+                      </Text>
+                    </View>
                   ))}
                 </View>
                 {payload.alternatives.map((alt, altIndex) => {
@@ -665,7 +634,7 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
                             key={critIndex}
                             style={[
                               styles.tableCell,
-                              { width: `${critColWidthPercent}%`, textAlign: 'center', fontFamily: 'Courier', fontSize: 7.2 },
+                              { width: `${critColWidthPercent}%`, textAlign: 'center', fontSize: 8, color: '#0F172A' },
                             ]}
                           >
                             {val !== undefined ? formatDisplayNumber(val, { decimals: 4, separator: numberFormat }) : '-'}
@@ -678,15 +647,9 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
               </View>
             </View>
 
-            {/* SAW Step 3: Nilai Terbobot & Ranking Akhir */}
             <View wrap={false}>
               <Text style={styles.sectionSubTitle}>Langkah 3 & 4: Nilai Preferensi (Vi) dan Ranking Akhir SAW</Text>
-              <View style={styles.formulaCard}>
-                <Text style={styles.formulaTitle}>Formulasi Skor Preferensi SAW:</Text>
-                <Text style={styles.formulaEquation}>
-                  {'V_i = ∑_{j=1}^m (w_j · r_ij)'}
-                </Text>
-              </View>
+              <PdfSawScoreFormula />
 
               <View style={styles.table}>
                 <View style={[styles.tableRow, styles.tableRowHeader]}>
@@ -709,7 +672,7 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
                             width: '12%',
                             textAlign: 'center',
                             fontWeight: 'bold',
-                            color: isRank1 ? '#047857' : '#334155',
+                            color: isRank1 ? '#047857' : '#0F172A',
                           },
                         ]}
                       >
@@ -734,8 +697,8 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
                             width: '24%',
                             textAlign: 'right',
                             fontWeight: 'bold',
-                            color: isRank1 ? '#047857' : '#4F46E5',
-                            fontFamily: 'Courier',
+                            color: isRank1 ? '#047857' : '#0F172A',
+                            fontSize: 8.5,
                           },
                         ]}
                       >
@@ -747,7 +710,7 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
                             <Text style={styles.rank1BadgeText}>★ Juara #1 SAW</Text>
                           </View>
                         ) : (
-                          <Text style={{ fontSize: 7, color: '#64748B' }}>Alternatif #{row.rank}</Text>
+                          <Text style={{ fontSize: 7.5, color: '#475569' }}>Alternatif #{row.rank}</Text>
                         )}
                       </View>
                     </View>
@@ -758,9 +721,6 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
           </View>
         )}
 
-        {/* ===================================================================
-            BAB: METODE WP (WEIGHTED PRODUCT)
-        ==================================================================== */}
         {showWp && payload.wpData && (
           <View>
             <View style={styles.chapterHeader}>
@@ -770,18 +730,12 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
               <Text style={styles.chapterTag}>Kalkulasi Rinci</Text>
             </View>
             <Text style={styles.sectionDescription}>
-              Metode Weighted Product (WP) menggunakan perkalian perpangkatan bobot untuk menghubungkan nilai atribut. Tiap bobot kriteria dipangkatkan positif untuk atribut Benefit dan negatif untuk atribut Cost.
+              Metode WP menggunakan perkalian perpangkatan bobot untuk menghubungkan nilai atribut. Tiap bobot kriteria dipangkatkan positif untuk atribut Benefit dan negatif untuk atribut Cost.
             </Text>
 
-            {/* WP Step 1: Pangkat Bobot */}
             <View wrap={false}>
               <Text style={styles.sectionSubTitle}>Langkah 1: Penentuan Pangkat Bobot Kriteria (wj*)</Text>
-              <View style={styles.formulaCard}>
-                <Text style={styles.formulaTitle}>Formulasi Pangkat Bobot WP:</Text>
-                <Text style={styles.formulaEquation}>
-                  Benefit: w_j* = +w_j   |   Cost: w_j* = -w_j
-                </Text>
-              </View>
+              <PdfWpWeightPowerFormula />
 
               <View style={styles.table}>
                 <View style={[styles.tableRow, styles.tableRowHeader]}>
@@ -815,7 +769,7 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
                       <Text style={[styles.tableCell, { width: '22%', textAlign: 'right' }]}>
                         {formatDisplayNumber(w, { decimals: 4, separator: numberFormat })}
                       </Text>
-                      <Text style={[styles.tableCell, { width: '23%', textAlign: 'right', fontWeight: 'bold', fontFamily: 'Courier', color: wStar >= 0 ? '#047857' : '#BE123C' }]}>
+                      <Text style={[styles.tableCell, { width: '23%', textAlign: 'right', fontWeight: 'bold', color: wStar >= 0 ? '#047857' : '#BE123C' }]}>
                         {wStar >= 0 ? `+${formatDisplayNumber(wStar, { decimals: 4, separator: numberFormat })}` : formatDisplayNumber(wStar, { decimals: 4, separator: numberFormat })}
                       </Text>
                     </View>
@@ -824,15 +778,9 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
               </View>
             </View>
 
-            {/* WP Step 2: Vektor S & Total Sum S */}
             <View wrap={false}>
               <Text style={styles.sectionSubTitle}>Langkah 2: Perkalian Eksponensial & Vektor S</Text>
-              <View style={styles.formulaCard}>
-                <Text style={styles.formulaTitle}>Formulasi Vektor S:</Text>
-                <Text style={styles.formulaEquation}>
-                  {'S_i = ∏_{j=1}^m (x_ij ^ w_j*)'}
-                </Text>
-              </View>
+              <PdfWpVectorSFormula />
 
               <View style={styles.table}>
                 <View style={[styles.tableRow, styles.tableRowHeader]}>
@@ -845,13 +793,13 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
                     key={item.alternativeId}
                     style={[styles.tableRow, idx % 2 === 1 ? styles.tableRowAlternate : {}]}
                   >
-                    <Text style={[styles.tableCell, { width: '10%', textAlign: 'center', color: '#64748B' }]}>
+                    <Text style={[styles.tableCell, { width: '10%', textAlign: 'center', color: '#475569' }]}>
                       {idx + 1}
                     </Text>
                     <Text style={[styles.tableCell, { width: '50%', fontWeight: 'bold' }]}>
                       {item.alternativeName}
                     </Text>
-                    <Text style={[styles.tableCell, { width: '40%', textAlign: 'right', fontFamily: 'Courier', fontWeight: 'bold', color: '#4F46E5' }]}>
+                    <Text style={[styles.tableCell, { width: '40%', textAlign: 'right', fontWeight: 'bold', color: '#0F172A', fontSize: 8.5 }]}>
                       {formatDisplayNumber(item.score, { decimals: 4, separator: numberFormat })}
                     </Text>
                   </View>
@@ -860,22 +808,16 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
                   <Text style={[styles.tableCell, { width: '60%', fontWeight: 'bold', color: '#4338CA' }]}>
                     Total Jumlahan Vektor S (∑ Si)
                   </Text>
-                  <Text style={[styles.tableCell, { width: '40%', textAlign: 'right', fontWeight: 'bold', fontFamily: 'Courier', color: '#4338CA' }]}>
+                  <Text style={[styles.tableCell, { width: '40%', textAlign: 'right', fontWeight: 'bold', color: '#4338CA', fontSize: 8.5 }]}>
                     {formatDisplayNumber(payload.wpData.totalSumS, { decimals: 4, separator: numberFormat })}
                   </Text>
                 </View>
               </View>
             </View>
 
-            {/* WP Step 3: Vektor V & Ranking Akhir */}
             <View wrap={false}>
               <Text style={styles.sectionSubTitle}>Langkah 3: Vektor Preferensi Relatif (Vi) dan Ranking WP</Text>
-              <View style={styles.formulaCard}>
-                <Text style={styles.formulaTitle}>Formulasi Vektor Preferensi WP:</Text>
-                <Text style={styles.formulaEquation}>
-                  {'V_i = S_i / (∑_{k=1}^n S_k)'}
-                </Text>
-              </View>
+              <PdfWpVectorVFormula />
 
               <View style={styles.table}>
                 <View style={[styles.tableRow, styles.tableRowHeader]}>
@@ -898,7 +840,7 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
                             width: '12%',
                             textAlign: 'center',
                             fontWeight: 'bold',
-                            color: isRank1 ? '#047857' : '#334155',
+                            color: isRank1 ? '#047857' : '#0F172A',
                           },
                         ]}
                       >
@@ -923,8 +865,8 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
                             width: '24%',
                             textAlign: 'right',
                             fontWeight: 'bold',
-                            color: isRank1 ? '#047857' : '#4F46E5',
-                            fontFamily: 'Courier',
+                            color: isRank1 ? '#047857' : '#0F172A',
+                            fontSize: 8.5,
                           },
                         ]}
                       >
@@ -936,7 +878,7 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
                             <Text style={styles.rank1BadgeText}>★ Juara #1 WP</Text>
                           </View>
                         ) : (
-                          <Text style={{ fontSize: 7, color: '#64748B' }}>Alternatif #{row.rank}</Text>
+                          <Text style={{ fontSize: 7.5, color: '#475569' }}>Alternatif #{row.rank}</Text>
                         )}
                       </View>
                     </View>
@@ -948,7 +890,7 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
                 <View style={[styles.infoCard, { backgroundColor: '#EFF6FF', borderColor: '#BFDBFE' }]}>
                   <Text style={[styles.infoCardTitle, { color: '#1E40AF' }]}>Catatan Matematis (WP Zero-Guard Epsilon Adjustment):</Text>
                   <Text style={[styles.infoCardBody, { color: '#1E3A8A' }]}>
-                    Ditemukan sel matriks bernilai 0 pada kriteria bertipe Cost. Sesuai kaidah komputasi MCDM, nilai 0 disesuaikan menjadi epsilon (ε = 0,0001) guna mencegah pembagian nol tak hingga (0^-w = ∞) sehingga kalkulasi tetap valid.
+                    Ditemukan nilai 0 pada kriteria bertipe Cost. Algoritma WP menerapkan penyesuaian nilai epsilon terkontrol (ε = 0.001) guna mencegah pembagian nol tak terdefinisi ({'x^(-w) = 1/0'}), menjamin validitas pembobotan eksponensial.
                   </Text>
                 </View>
               )}
@@ -956,9 +898,6 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
           </View>
         )}
 
-        {/* ===================================================================
-            BAB: METODE TOPSIS
-        ==================================================================== */}
         {showTopsis && payload.topsisData && (
           <View>
             <View style={styles.chapterHeader}>
@@ -968,18 +907,12 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
               <Text style={styles.chapterTag}>Kalkulasi Rinci</Text>
             </View>
             <Text style={styles.sectionDescription}>
-              Metode TOPSIS (Technique for Order of Preference by Similarity to Ideal Solution) mendasarkan keputusan bahwa alternatif terbaik harus memiliki jarak terdekat dengan solusi ideal positif (A+) dan jarak terjauh dari solusi ideal negatif (A-).
+              Metode TOPSIS mendasarkan keputusan bahwa alternatif terbaik harus memiliki jarak terdekat dengan solusi ideal positif (A+) dan jarak terjauh dari solusi ideal negatif (A-).
             </Text>
 
-            {/* TOPSIS Step 1: Pembagi Euclidean */}
             <View wrap={false}>
               <Text style={styles.sectionSubTitle}>Langkah 1: Pembagi Normalisasi Euclidean</Text>
-              <View style={styles.formulaCard}>
-                <Text style={styles.formulaTitle}>Formulasi Pembagi Euclidean TOPSIS:</Text>
-                <Text style={styles.formulaEquation}>
-                  {'Pembagi = √( ∑_{i=1}^n x_ij² )   |   r_ij = x_ij / √( ∑ x_ij² )'}
-                </Text>
-              </View>
+              <PdfTopsisNormFormula />
 
               <View style={styles.table}>
                 <View style={[styles.tableRow, styles.tableRowHeader]}>
@@ -997,10 +930,10 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
                       <Text style={[styles.tableCell, { width: '40%', fontWeight: 'bold' }]}>
                         {crit.name}
                       </Text>
-                      <Text style={[styles.tableCell, { width: '30%', textAlign: 'right', fontFamily: 'Courier' }]}>
+                      <Text style={[styles.tableCell, { width: '30%', textAlign: 'right' }]}>
                         {formatDisplayNumber(normInfo.sumSquares, { decimals: 4, separator: numberFormat })}
                       </Text>
-                      <Text style={[styles.tableCell, { width: '30%', textAlign: 'right', fontWeight: 'bold', fontFamily: 'Courier', color: '#4F46E5' }]}>
+                      <Text style={[styles.tableCell, { width: '30%', textAlign: 'right', fontWeight: 'bold', color: '#4F46E5' }]}>
                         {formatDisplayNumber(normInfo.norm, { decimals: 4, separator: numberFormat })}
                       </Text>
                     </View>
@@ -1009,15 +942,9 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
               </View>
             </View>
 
-            {/* TOPSIS Step 2: Solusi Ideal Positif & Negatif */}
             <View wrap={false}>
               <Text style={styles.sectionSubTitle}>Langkah 2: Solusi Ideal Positif (A+) dan Solusi Ideal Negatif (A-)</Text>
-              <View style={styles.formulaCard}>
-                <Text style={styles.formulaTitle}>Formulasi Solusi Ideal:</Text>
-                <Text style={styles.formulaEquation}>
-                  Benefit: A+ = max(y_ij), A- = min(y_ij)   |   Cost: A+ = min(y_ij), A- = max(y_ij)
-                </Text>
-              </View>
+              <PdfTopsisIdealFormula />
 
               <View style={styles.table}>
                 <View style={[styles.tableRow, styles.tableRowHeader]}>
@@ -1048,10 +975,10 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
                           </View>
                         )}
                       </View>
-                      <Text style={[styles.tableCell, { width: '25%', textAlign: 'right', fontFamily: 'Courier', color: '#047857', fontWeight: 'bold' }]}>
+                      <Text style={[styles.tableCell, { width: '25%', textAlign: 'right', color: '#047857', fontWeight: 'bold' }]}>
                         {formatDisplayNumber(aPlus, { decimals: 4, separator: numberFormat })}
                       </Text>
-                      <Text style={[styles.tableCell, { width: '25%', textAlign: 'right', fontFamily: 'Courier', color: '#BE123C', fontWeight: 'bold' }]}>
+                      <Text style={[styles.tableCell, { width: '25%', textAlign: 'right', color: '#BE123C', fontWeight: 'bold' }]}>
                         {formatDisplayNumber(aMinus, { decimals: 4, separator: numberFormat })}
                       </Text>
                     </View>
@@ -1060,15 +987,9 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
               </View>
             </View>
 
-            {/* TOPSIS Step 3: Jarak Euclidean & Kedekatan Relatif Ci */}
             <View wrap={false}>
               <Text style={styles.sectionSubTitle}>Langkah 3: Jarak Euclidean (D+, D-) dan Kedekatan Relatif (Ci)</Text>
-              <View style={styles.formulaCard}>
-                <Text style={styles.formulaTitle}>Formulasi Kedekatan Relatif:</Text>
-                <Text style={styles.formulaEquation}>
-                  D+ = √(∑(y_ij - A+j)²),  D- = √(∑(y_ij - A-j)²),  C_i = D- / (D+ + D-)
-                </Text>
-              </View>
+              <PdfTopsisDistancesFormula />
 
               <View style={styles.table}>
                 <View style={[styles.tableRow, styles.tableRowHeader]}>
@@ -1095,7 +1016,7 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
                             width: '10%',
                             textAlign: 'center',
                             fontWeight: 'bold',
-                            color: isRank1 ? '#047857' : '#334155',
+                            color: isRank1 ? '#047857' : '#0F172A',
                           },
                         ]}
                       >
@@ -1113,10 +1034,10 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
                       >
                         {row.alternativeName}
                       </Text>
-                      <Text style={[styles.tableCell, { width: '20%', textAlign: 'right', fontFamily: 'Courier' }]}>
+                      <Text style={[styles.tableCell, { width: '20%', textAlign: 'right' }]}>
                         {dist ? formatDisplayNumber(dist.dPlus, { decimals: 4, separator: numberFormat }) : '-'}
                       </Text>
-                      <Text style={[styles.tableCell, { width: '20%', textAlign: 'right', fontFamily: 'Courier' }]}>
+                      <Text style={[styles.tableCell, { width: '20%', textAlign: 'right' }]}>
                         {dist ? formatDisplayNumber(dist.dMinus, { decimals: 4, separator: numberFormat }) : '-'}
                       </Text>
                       <Text
@@ -1125,9 +1046,9 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
                           {
                             width: '20%',
                             textAlign: 'right',
-                            fontFamily: 'Courier',
                             fontWeight: 'bold',
-                            color: isRank1 ? '#047857' : '#4F46E5',
+                            color: isRank1 ? '#047857' : '#0F172A',
+                            fontSize: 8.5,
                           },
                         ]}
                       >
@@ -1141,38 +1062,39 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
           </View>
         )}
 
-        {/* ===================================================================
-            BAB: METODE AHP (ANALYTIC HIERARCHY PROCESS)
-        ==================================================================== */}
         {showAhp && payload.ahpData && (
           <View wrap={false}>
             <View style={styles.chapterHeader}>
               <Text style={styles.chapterTitle}>
-                Bab {chapterCounter++}: Analytic Hierarchy Process (AHP Saaty)
+                Bab {chapterCounter++}: Metode Analytic Hierarchy Process (AHP)
               </Text>
               <Text style={[styles.chapterTag, { backgroundColor: '#F3E8FF', color: '#7E22CE' }]}>
-                Pembobotan Kriteria
+                Struktur Hierarki
               </Text>
             </View>
             <Text style={styles.sectionDescription}>
-              Metode AHP digunakan untuk menguji konsistensi preferensi berpasangan antar kriteria dan menurunkan vektor prioritas matematis berbasis nilai eigen maksimum.
+              Metode AHP digunakan untuk memvalidasi konsistensi logika pembobotan antar kriteria melalui matriks perbandingan berpasangan (pairwise comparison) skala Saaty 1-9.
             </Text>
 
-            {/* AHP Pairwise Table */}
             <Text style={styles.sectionSubTitle}>1. Matriks Perbandingan Berpasangan (Pairwise Matrix)</Text>
             <View style={styles.table}>
               <View style={[styles.tableRow, styles.tableRowHeader]}>
                 <Text style={[styles.tableCellHeader, { width: '25%' }]}>Kriteria</Text>
-                {payload.criteria.map((c) => (
-                  <Text
+                {payload.criteria.map((c, idx) => (
+                  <View
                     key={c.id}
                     style={[
                       styles.tableCellHeader,
-                      { width: `${75 / critCount}%`, textAlign: 'center' },
+                      { width: `${75 / critCount}%`, alignItems: 'center', padding: 2 },
                     ]}
                   >
-                    {c.name.slice(0, 8)}
-                  </Text>
+                    <Text style={{ fontSize: 8, fontWeight: 'bold', color: '#0F172A' }}>
+                      C{idx + 1}
+                    </Text>
+                    <Text style={{ fontSize: 6.2, color: '#475569', textAlign: 'center' }}>
+                      ({c.name})
+                    </Text>
+                  </View>
                 ))}
               </View>
               {payload.criteria.map((cRow, i) => (
@@ -1181,7 +1103,7 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
                   style={[styles.tableRow, i % 2 === 1 ? styles.tableRowAlternate : {}]}
                 >
                   <Text style={[styles.tableCell, { width: '25%', fontWeight: 'bold' }]}>
-                    {cRow.name}
+                    C{i + 1}: {cRow.name}
                   </Text>
                   {payload.criteria.map((_, j) => {
                     const val = payload.ahpData!.pairwiseMatrix[i]?.[j] ?? 1;
@@ -1193,8 +1115,8 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
                           {
                             width: `${75 / critCount}%`,
                             textAlign: 'center',
-                            fontFamily: 'Courier',
-                            fontSize: 7,
+                            fontSize: 8,
+                            color: '#0F172A',
                           },
                         ]}
                       >
@@ -1218,10 +1140,9 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
                         {
                           width: `${75 / critCount}%`,
                           textAlign: 'center',
-                          fontFamily: 'Courier',
                           fontWeight: 'bold',
                           color: '#4338CA',
-                          fontSize: 7,
+                          fontSize: 8,
                         },
                       ]}
                     >
@@ -1232,14 +1153,8 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
               </View>
             </View>
 
-            {/* AHP Consistency Summary */}
             <Text style={styles.sectionSubTitle}>2. Uji Konsistensi Logika Saaty</Text>
-            <View style={styles.formulaCard}>
-              <Text style={styles.formulaTitle}>Formulasi Konsistensi Saaty:</Text>
-              <Text style={styles.formulaEquation}>
-                CI = (λ_max - n) / (n - 1)   |   CR = CI / RI   (Konsisten jika CR ≤ 0.10)
-              </Text>
-            </View>
+            <PdfAhpConsistencyFormula />
 
             <View style={styles.table}>
               <View style={[styles.tableRow, styles.tableRowHeader]}>
@@ -1250,13 +1165,13 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
                 <Text style={[styles.tableCellHeader, { width: '20%', textAlign: 'center' }]}>Status Evaluasi</Text>
               </View>
               <View style={styles.tableRow}>
-                <Text style={[styles.tableCell, { width: '20%', textAlign: 'center', fontFamily: 'Courier', fontWeight: 'bold' }]}>
+                <Text style={[styles.tableCell, { width: '20%', textAlign: 'center', fontWeight: 'bold' }]}>
                   {formatDisplayNumber(payload.ahpData.consistency.lambdaMax, { decimals: 4, separator: numberFormat })}
                 </Text>
-                <Text style={[styles.tableCell, { width: '20%', textAlign: 'center', fontFamily: 'Courier' }]}>
+                <Text style={[styles.tableCell, { width: '20%', textAlign: 'center' }]}>
                   {formatDisplayNumber(payload.ahpData.consistency.ci, { decimals: 4, separator: numberFormat })}
                 </Text>
-                <Text style={[styles.tableCell, { width: '20%', textAlign: 'center', fontFamily: 'Courier' }]}>
+                <Text style={[styles.tableCell, { width: '20%', textAlign: 'center' }]}>
                   {formatDisplayNumber(payload.ahpData.consistency.ri, { decimals: 2, separator: numberFormat })}
                 </Text>
                 <Text
@@ -1265,7 +1180,6 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
                     {
                       width: '20%',
                       textAlign: 'center',
-                      fontFamily: 'Courier',
                       fontWeight: 'bold',
                       color: payload.ahpData.consistency.isConsistent ? '#047857' : '#BE123C',
                     },
@@ -1289,14 +1203,11 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
           </View>
         )}
 
-        {/* ===================================================================
-            BAB: KOMPARASI MULTI-METODE (JIKA DIPILIH / AKTIF)
-        ==================================================================== */}
         {showComparison && payload.comparisonData && (
           <View wrap={false}>
             <View style={styles.chapterHeader}>
               <Text style={styles.chapterTitle}>
-                Bab {chapterCounter++}: Analisis Komparasi Multi-Metode
+                Bab {chapterCounter++}: Sintesis & Analisis Komparasi Multi-Metode
               </Text>
               <Text style={[styles.chapterTag, { backgroundColor: '#D1FAE5', color: '#047857' }]}>
                 Cross-Method Consensus
@@ -1306,7 +1217,6 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
               Tabel komparasi komprehensif menampilkan ranking side-by-side antar metode, analisis pergeseran peringkat (rank shift), dan tingkat konsensus keputusan.
             </Text>
 
-            {/* Side-by-side comparison table */}
             <View style={styles.table}>
               <View style={[styles.tableRow, styles.tableRowHeader]}>
                 <Text style={[styles.tableCellHeader, { width: '30%' }]}>Alternatif</Text>
@@ -1346,17 +1256,17 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
                       {row.alternativeName} {isConsensus ? '★' : ''}
                     </Text>
                     {payload.comparisonData!.activeMethods.includes('saw') && (
-                      <Text style={[styles.tableCell, { width: '17%', textAlign: 'center', fontSize: 7 }]}>
+                      <Text style={[styles.tableCell, { width: '17%', textAlign: 'center', fontSize: 7.5 }]}>
                         #{row.saw.rank} ({formatDisplayNumber(row.saw.score, { decimals: 3, separator: numberFormat })})
                       </Text>
                     )}
                     {payload.comparisonData!.activeMethods.includes('wp') && (
-                      <Text style={[styles.tableCell, { width: '17%', textAlign: 'center', fontSize: 7 }]}>
+                      <Text style={[styles.tableCell, { width: '17%', textAlign: 'center', fontSize: 7.5 }]}>
                         #{row.wp.rank} ({formatDisplayNumber(row.wp.score, { decimals: 3, separator: numberFormat })})
                       </Text>
                     )}
                     {payload.comparisonData!.activeMethods.includes('topsis') && (
-                      <Text style={[styles.tableCell, { width: '17%', textAlign: 'center', fontSize: 7 }]}>
+                      <Text style={[styles.tableCell, { width: '17%', textAlign: 'center', fontSize: 7.5 }]}>
                         #{row.topsis.rank} ({formatDisplayNumber(row.topsis.score, { decimals: 3, separator: numberFormat })})
                       </Text>
                     )}
@@ -1378,7 +1288,6 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
               })}
             </View>
 
-            {/* Shift & Sensitivity Analysis Box */}
             <View style={styles.infoCard}>
               <Text style={styles.infoCardTitle}>Analisis Stabilitas & Dinamika Ranking:</Text>
               <Text style={styles.infoCardBody}>
@@ -1389,9 +1298,6 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
           </View>
         )}
 
-        {/* ===================================================================
-            BAB: KESIMPULAN & REKOMENDASI EKSEKUTIF
-        ==================================================================== */}
         <View wrap={false}>
           <View style={styles.chapterHeader}>
             <Text style={styles.chapterTitle}>
@@ -1405,9 +1311,6 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
           </View>
         </View>
 
-        {/* ===================================================================
-            FOOTER TIAP HALAMAN (FIXED)
-        ==================================================================== */}
         <View style={styles.footer} fixed>
           <Text style={styles.footerCopyright}>
             © {currentYear} DecisiGraph - Sistem Pendukung Keputusan Multi-Kriteria

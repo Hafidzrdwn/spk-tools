@@ -365,10 +365,10 @@ export function generateReportConclusion(
   const scoreFormatted = formatDisplayNumber(winner.score, { decimals: 4, separator });
 
   const resolvedMethods = config?.selectedMethods || [payload.method || 'SAW'];
-  const methodName =
+  const methodLabel =
     resolvedMethods.length === 1
-      ? getMethodFullName(resolvedMethods[0])
-      : `pada cakupan metode (${resolvedMethods.map((m) => getMethodFullName(m)).join(', ')})`;
+      ? resolvedMethods[0]
+      : resolvedMethods.join(', ');
 
   let strengthSummary = '';
   if (winnerAlt && criteria.length > 0) {
@@ -419,7 +419,7 @@ export function generateReportConclusion(
       ? ` dengan selisih skor ${formatDisplayNumber(winner.score - sortedRankings[1].score, { decimals: 4, separator })} atas runner-up (${sortedRankings[1].alternativeName})`
       : '';
 
-  return `Berdasarkan evaluasi komputasi metode ${methodName}, alternatif "${winner.alternativeName}" terpilih sebagai rekomendasi keputusan terbaik (Peringkat #1) dengan skor preferensi akhir sebesar ${scoreFormatted}${marginNote}${strengthSummary}. Hasil perhitungan kuantitatif ini merefleksikan performa optimal dibandingkan ${otherCount} alternatif lainnya yang dievaluasi.${consensusNote}`;
+  return `Berdasarkan evaluasi komputasi metode ${methodLabel}, alternatif "${winner.alternativeName}" terpilih sebagai rekomendasi keputusan terbaik (Peringkat #1) dengan skor preferensi akhir sebesar ${scoreFormatted}${marginNote}${strengthSummary}. Hasil perhitungan kuantitatif ini merefleksikan performa optimal dibandingkan ${otherCount} alternatif lainnya yang dievaluasi.${consensusNote}`;
 }
 
 export function buildComprehensiveReport(options: BuildReportOptions): ReportPayload {
