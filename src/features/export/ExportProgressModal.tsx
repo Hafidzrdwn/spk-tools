@@ -81,7 +81,6 @@ export const ExportProgressModal: React.FC<ExportProgressModalProps> = ({
           </div>
         )}
 
-        {/* Stages Checklist preview */}
         {!error && (
           <div className="w-full bg-slate-50/80 rounded-xl p-3 mb-5 border border-slate-200/60 text-left text-xs space-y-1.5">
             <div className="flex items-center gap-2">
@@ -91,27 +90,26 @@ export const ExportProgressModal: React.FC<ExportProgressModalProps> = ({
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <span className={`w-2 h-2 rounded-full ${clampedProgress >= 55 ? 'bg-emerald-500' : clampedProgress >= 25 ? 'bg-indigo-500 animate-pulse' : 'bg-slate-300'}`} />
-              <span className={clampedProgress >= 55 ? 'text-slate-800 font-medium' : 'text-slate-400'}>
-                2. Penyusunan Tabel Matematis & KaTeX
+              <span className={`w-2 h-2 rounded-full ${clampedProgress >= 45 ? 'bg-emerald-500' : clampedProgress >= 25 ? 'bg-indigo-500 animate-pulse' : 'bg-slate-300'}`} />
+              <span className={clampedProgress >= 45 ? 'text-slate-800 font-medium' : 'text-slate-400'}>
+                2. Sintesis Analisis Narasi & Rekomendasi Eksekutif
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <span className={`w-2 h-2 rounded-full ${clampedProgress >= 90 ? 'bg-emerald-500' : clampedProgress >= 55 ? 'bg-indigo-500 animate-pulse' : 'bg-slate-300'}`} />
-              <span className={clampedProgress >= 90 ? 'text-slate-800 font-medium' : 'text-slate-400'}>
-                3. Kompilasi Biner Dokumen PDF
+              <span className={`w-2 h-2 rounded-full ${clampedProgress >= 70 ? 'bg-emerald-500' : clampedProgress >= 45 ? 'bg-indigo-500 animate-pulse' : 'bg-slate-300'}`} />
+              <span className={clampedProgress >= 70 ? 'text-slate-800 font-medium' : 'text-slate-400'}>
+                3. Penyusunan Layout Dokumen & Formula KaTeX
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <span className={`w-2 h-2 rounded-full ${clampedProgress >= 100 ? 'bg-emerald-500' : clampedProgress >= 90 ? 'bg-indigo-500 animate-pulse' : 'bg-slate-300'}`} />
+              <span className={`w-2 h-2 rounded-full ${clampedProgress >= 100 ? 'bg-emerald-500' : clampedProgress >= 70 ? 'bg-indigo-500 animate-pulse' : 'bg-slate-300'}`} />
               <span className={clampedProgress >= 100 ? 'text-slate-800 font-medium' : 'text-slate-400'}>
-                4. Mengirimkan Berkas Unduhan ke Perangkat
+                4. Kompilasi Biner Dokumen PDF & Unduhan
               </span>
             </div>
           </div>
         )}
 
-        {/* Action button if error or completed */}
         {(error || isCompleted) && (
           <Button
             variant={error ? 'secondary' : 'primary'}

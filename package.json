@@ -13,6 +13,7 @@
     "comments:clean": "node scripts/manage-comments.mjs --clean"
   },
   "dependencies": {
+    "@google/genai": "^2.30.0",
     "@hookform/resolvers": "^3.9.0",
     "@react-pdf/renderer": "^4.9.0",
     "clsx": "^2.1.0",

@@ -242,5 +242,45 @@ describe('Export PDF Report Module', () => {
     const element = React.createElement(DecisiPdfReport, { payload });
     expect(element).toBeDefined();
   });
+
+  it('berhasil memuat dan merender narasi eksekutif AI pada payload laporan PDF', async () => {
+    const { generateFallbackNarrative } = await import('@/services/ai');
+
+    const aiNarrative = generateFallbackNarrative({
+      projectTitle: 'Pemilihan Vendor Pengadaan',
+      criteria: dummyCriteria,
+      alternatives: dummyAlternatives,
+      activeMethods: ['saw', 'wp', 'topsis'],
+      rankings: {
+        saw: [
+          { alternativeId: 'a1', alternativeName: 'Vendor Alpha', score: 0.87, rank: 1 },
+          { alternativeId: 'a2', alternativeName: 'Vendor Beta', score: 0.82, rank: 2 },
+          { alternativeId: 'a3', alternativeName: 'Vendor Gamma', score: 0.75, rank: 3 },
+        ],
+        wp: [
+          { alternativeId: 'a1', alternativeName: 'Vendor Alpha', score: 0.35, rank: 1 },
+          { alternativeId: 'a3', alternativeName: 'Vendor Gamma', score: 0.33, rank: 2 },
+          { alternativeId: 'a2', alternativeName: 'Vendor Beta', score: 0.32, rank: 3 },
+        ],
+      },
+    });
+
+    const payload = generateReport({
+      projectTitle: 'Pemilihan Vendor Pengadaan',
+      criteria: dummyCriteria,
+      alternatives: dummyAlternatives,
+      primaryMethod: 'SAW',
+      scope: 'ALL',
+      aiNarrative,
+    });
+
+    expect(payload.aiNarrative).toBeDefined();
+    expect(payload.aiNarrative?.sectionA_rankingShifts).toContain('Vendor Beta');
+    expect(payload.aiNarrative?.sectionB_methodValidity).toContain('Tidak');
+    expect(payload.aiNarrative?.sectionC_recommendations).toContain('Vendor Alpha');
+
+    const element = React.createElement(DecisiPdfReport, { payload });
+    expect(element).toBeDefined();
+  });
 });
 

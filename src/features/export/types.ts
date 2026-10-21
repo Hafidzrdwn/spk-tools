@@ -2,6 +2,7 @@ import type { MethodId, Criterion, Alternative } from '@/types/domain';
 import type { MethodResult, RankingRow } from '@/core/math/types';
 import type { ComparisonResult, CompareMethod } from '@/core/math/compareRankings';
 import type { ConsistencyResult } from '@/core/math/ahp-consistency';
+import type { AiExecutiveNarrative } from '@/services/ai';
 
 export type ExportScope = 'CURRENT' | 'ALL' | 'CUSTOM';
 
@@ -11,6 +12,7 @@ export interface ExportReportConfig {
   includeStory: boolean;
   includeAhp: boolean;
   includeExecutiveSummary: boolean;
+  includeAiNarrative?: boolean;
 }
 
 export interface SawStepData {
@@ -84,6 +86,7 @@ export interface ReportPayload {
 
   primaryRanking?: RankingRow[];
   conclusionText?: string;
+  aiNarrative?: AiExecutiveNarrative;
 
   method: MethodId;
   result: MethodResult;

@@ -248,6 +248,61 @@ const styles = StyleSheet.create({
     textAlign: 'justify',
   },
 
+  aiSectionContainer: {
+    marginTop: 10,
+    marginBottom: 6,
+  },
+  aiCard: {
+    backgroundColor: '#F8FAFC',
+    borderWidth: 0.8,
+    borderColor: '#CBD5E1',
+    borderRadius: 3.5,
+    padding: 8,
+    marginBottom: 8,
+  },
+  aiCardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 5,
+    paddingBottom: 3,
+    borderBottomWidth: 0.6,
+    borderBottomColor: '#E2E8F0',
+  },
+  aiCardTitle: {
+    fontSize: 8.8,
+    fontWeight: 'bold',
+    color: '#0F172A',
+  },
+  aiCardBadge: {
+    fontSize: 6.8,
+    fontWeight: 'bold',
+    color: '#4338CA',
+    backgroundColor: '#EEF2FF',
+    paddingVertical: 1,
+    paddingHorizontal: 4,
+    borderRadius: 2,
+  },
+  aiCardText: {
+    fontSize: 8,
+    color: '#1E293B',
+    lineHeight: 1.45,
+    textAlign: 'justify',
+  },
+  aiMetaBadgeRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 2,
+    paddingTop: 4,
+    borderTopWidth: 0.5,
+    borderTopColor: '#E2E8F0',
+  },
+  aiMetaText: {
+    fontSize: 6.8,
+    color: '#64748B',
+  },
+
   footer: {
     position: 'absolute',
     bottom: 18,
@@ -270,6 +325,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
+
+function renderNarrativeParagraphs(content: string, textStyle: any) {
+  if (!content) return null;
+  const paragraphs = content.split(/\n\n+/).filter((p) => p.trim().length > 0);
+  return paragraphs.map((p, idx) => (
+    <Text key={idx} style={[textStyle, idx > 0 ? { marginTop: 4 } : {}]}>
+      {p.trim()}
+    </Text>
+  ));
+}
 
 export interface DecisiPdfReportProps {
   payload: ReportPayload;
@@ -1293,6 +1358,75 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
               <Text style={styles.infoCardBody}>
                 {payload.comparisonData.result.explanation ||
                   'Evaluasi multi-metode menunjukkan konsistensi yang baik pada urutan alternatif prioritas.'}
+              </Text>
+            </View>
+          </View>
+        )}
+
+        {payload.aiNarrative && (
+          <View style={styles.aiSectionContainer}>
+            <View style={styles.chapterHeader}>
+              <Text style={styles.chapterTitle}>
+                Bab {chapterCounter++}: Analisis Eksekutif & Rekomendasi Manajerial
+              </Text>
+              <Text
+                style={[
+                  styles.chapterTag,
+                  payload.aiNarrative.source === 'gemini'
+                    ? { backgroundColor: '#EDE9FE', color: '#6D28D9' }
+                    : { backgroundColor: '#E0F2FE', color: '#0369A1' },
+                ]}
+              >
+                {payload.aiNarrative.source === 'gemini'
+                  ? `Sintesis AI (${payload.aiNarrative.modelUsed || 'Gemini Flash'})`
+                  : 'Sintesis Presisi Terverifikasi'}
+              </Text>
+            </View>
+
+            <Text style={styles.sectionDescription}>
+              Analisis komparatif mendalam mengenai dinamika pergeseran peringkat, evaluasi keabsahan matematis, dan rekomendasi langkah manajerial strategis bagi pengambil keputusan.
+            </Text>
+
+            <View style={styles.aiCard} wrap={false}>
+              <View style={styles.aiCardHeader}>
+                <Text style={styles.aiCardTitle}>
+                  A. Analisis Pergeseran Peringkat & Karakteristik Metode
+                </Text>
+                <Text style={styles.aiCardBadge}>Dinamika Ranking</Text>
+              </View>
+              {renderNarrativeParagraphs(payload.aiNarrative.sectionA_rankingShifts, styles.aiCardText)}
+            </View>
+
+            <View style={styles.aiCard} wrap={false}>
+              <View style={styles.aiCardHeader}>
+                <Text style={styles.aiCardTitle}>
+                  B. Evaluasi Keabsahan Ilmiah (Apakah Ada Metode Yang Salah?)
+                </Text>
+                <Text style={[styles.aiCardBadge, { backgroundColor: '#D1FAE5', color: '#047857' }]}>
+                  Validitas Prosedural
+                </Text>
+              </View>
+              {renderNarrativeParagraphs(payload.aiNarrative.sectionB_methodValidity, styles.aiCardText)}
+            </View>
+
+            <View style={styles.aiCard} wrap={false}>
+              <View style={styles.aiCardHeader}>
+                <Text style={styles.aiCardTitle}>
+                  C. Rekomendasi Pengambil Keputusan & Rencana Aksi
+                </Text>
+                <Text style={[styles.aiCardBadge, { backgroundColor: '#FEF3C7', color: '#B45309' }]}>
+                  Panduan Manajerial
+                </Text>
+              </View>
+              {renderNarrativeParagraphs(payload.aiNarrative.sectionC_recommendations, styles.aiCardText)}
+            </View>
+
+            <View style={styles.aiMetaBadgeRow}>
+              <Text style={styles.aiMetaText}>
+                Mode: {payload.aiNarrative.source === 'gemini' ? `Google ${payload.aiNarrative.modelUsed || 'Gemini Flash'} (Token-Optimized)` : 'Deterministic Multi-Method Engine'}
+              </Text>
+              <Text style={styles.aiMetaText}>
+                Latensi: {payload.aiNarrative.latencyMs} ms | Dibuat: {payload.aiNarrative.generatedAt ? formatIndonesianDate(payload.aiNarrative.generatedAt) : '-'}
               </Text>
             </View>
           </View>

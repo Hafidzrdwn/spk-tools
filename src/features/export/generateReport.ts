@@ -17,6 +17,7 @@ import type {
   ComparisonStepData,
   ReportPayload,
 } from './types';
+import type { AiExecutiveNarrative } from '@/services/ai';
 import { formatDisplayNumber } from '@/utils/numberFormat';
 
 export interface ProjectStateSubset {
@@ -37,6 +38,7 @@ export interface BuildReportOptions {
   storyNarrative?: string;
   cachedResult?: MethodResult;
   cachedComparisonResult?: ReturnType<typeof compareRankings>;
+  aiNarrative?: AiExecutiveNarrative;
 }
 
 export function formatIndonesianDate(isoString: string): string {
@@ -563,6 +565,7 @@ export function buildComprehensiveReport(options: BuildReportOptions): ReportPay
     comparisonData,
     primaryRanking,
     conclusionText: '',
+    aiNarrative: options.aiNarrative,
     method: primaryMethod,
     result: effectiveResult,
     comparisonResult: options.cachedComparisonResult || comparisonData?.result,
