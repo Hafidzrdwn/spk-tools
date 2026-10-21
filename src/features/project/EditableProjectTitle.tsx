@@ -108,7 +108,7 @@ export const EditableProjectTitle: React.FC<EditableProjectTitleProps> = ({
       title="Klik untuk mengubah nama proyek"
       aria-label="Ubah nama proyek"
     >
-      <span className="text-xs sm:text-sm font-semibold text-slate-800 group-hover:text-accent-primary transition-colors truncate max-w-35 sm:max-w-xs border-b border-dashed border-slate-300 group-hover:border-accent-primary/60 pb-px">
+      <span className="text-xs sm:text-sm font-semibold text-slate-800 group-hover:text-accent-primary transition-colors truncate max-w-27.5 xs:max-w-[150px] sm:max-w-47.5 md:max-w-55 lg:max-w-67.5 border-b border-dashed border-slate-300 group-hover:border-accent-primary/60 pb-px">
         {activeTitle}
       </span>
       <span className="inline-flex items-center justify-center w-4 h-4 rounded bg-slate-200/70 group-hover:bg-accent-primary/10 text-slate-400 group-hover:text-accent-primary transition-colors shrink-0">

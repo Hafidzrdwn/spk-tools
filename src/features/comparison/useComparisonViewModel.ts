@@ -9,7 +9,7 @@ import {
   type ComparisonResult,
   type CompareMethod,
 } from '@/core/math/compareRankings';
-import type { Criterion, Alternative } from '@/types/domain';
+import type { Criterion, Alternative, DecisiProjectState } from '@/types/domain';
 
 export interface ComparisonViewModel {
   criteria: Criterion[];
@@ -20,12 +20,19 @@ export interface ComparisonViewModel {
   toggleMethod: (method: CompareMethod) => void;
   comparison: ComparisonResult;
   loadShiftDemoCase: () => void;
+  isDemoActive: boolean;
+  savedUserState: DecisiProjectState | null;
+  revertToUserData: () => void;
 }
 
 export function useComparisonViewModel(): ComparisonViewModel {
   const criteria = useNormalizedCriteria();
   const alternatives = useProjectStore((state) => state.alternatives);
+  const projectTitle = useProjectStore((state) => state.title);
   const loadProjectState = useProjectStore((state) => state.loadProjectState);
+
+  const [savedUserState, setSavedUserState] = useState<DecisiProjectState | null>(null);
+  const [isDemoActive, setIsDemoActive] = useState<boolean>(false);
 
   const [selectedMethods, setSelectedMethods] = useState<CompareMethod[]>([
     'saw',
@@ -92,9 +99,18 @@ export function useComparisonViewModel(): ComparisonViewModel {
   }, [methodRankings, criteria, alternatives, hasData, selectedMethods]);
 
   const loadShiftDemoCase = useCallback(() => {
+    if (!isDemoActive && criteria.length > 0) {
+      setSavedUserState({
+        title: projectTitle,
+        activeMethod: 'COMPARE',
+        criteria,
+        alternatives,
+      });
+    }
+    setIsDemoActive(true);
     loadProjectState({
       title: 'Studi Kasus Pergeseran Peringkat (SAW vs TOPSIS)',
-      activeMethod: 'SAW',
+      activeMethod: 'COMPARE',
       criteria: [
         { id: 'c1', name: 'Kapasitas', type: 'BENEFIT', weight: 70, normalizedWeight: 0.7 },
         { id: 'c2', name: 'Efisiensi', type: 'BENEFIT', weight: 15, normalizedWeight: 0.15 },
@@ -118,7 +134,15 @@ export function useComparisonViewModel(): ComparisonViewModel {
         },
       ],
     });
-  }, [loadProjectState]);
+  }, [isDemoActive, criteria, projectTitle, alternatives, loadProjectState]);
+
+  const revertToUserData = useCallback(() => {
+    if (savedUserState) {
+      loadProjectState(savedUserState);
+      setSavedUserState(null);
+      setIsDemoActive(false);
+    }
+  }, [savedUserState, loadProjectState]);
 
   return {
     criteria,
@@ -129,6 +153,9 @@ export function useComparisonViewModel(): ComparisonViewModel {
     toggleMethod,
     comparison,
     loadShiftDemoCase,
+    isDemoActive,
+    savedUserState,
+    revertToUserData,
   };
 }
 

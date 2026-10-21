@@ -10,6 +10,9 @@ const VALID_METHOD_MAP: Record<string, MethodId> = {
   ahp: 'AHP',
   compare: 'COMPARE',
   comparison: 'COMPARE',
+  evaluation: 'EVALUATION',
+  eval: 'EVALUATION',
+  analisis: 'EVALUATION',
   auto: 'AUTO',
   story: 'AUTO',
 };

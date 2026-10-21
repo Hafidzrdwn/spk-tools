@@ -39,6 +39,12 @@ export const ROUTES: RouteTab[] = [
     description: 'Evaluasi Komparatif & Analisis Pergeseran Peringkat (SAW, WP, TOPSIS)',
   },
   {
+    id: 'EVALUATION',
+    label: 'Evaluasi',
+    badge: 'Analysis',
+    description: 'Evaluasi Hasil Keputusan & Decision Analysis (Spearman, Sensitivitas, Skenario, Goal Seeking)',
+  },
+  {
     id: 'AUTO',
     label: 'Story to Matrix',
     badge: 'Parser',

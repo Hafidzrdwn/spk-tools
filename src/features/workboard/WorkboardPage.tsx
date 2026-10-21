@@ -21,6 +21,7 @@ const WpTab = lazy(() => import('@/features/wp/WpTab'));
 const TopsisTab = lazy(() => import('@/features/topsis/TopsisTab'));
 const AhpTab = lazy(() => import('@/features/ahp/AhpTab'));
 const ComparisonTab = lazy(() => import('@/features/comparison/ComparisonTab'));
+const EvaluationTab = lazy(() => import('@/features/evaluation/EvaluationTab'));
 const StoryToMatrixTab = lazy(() => import('@/features/story-to-matrix/StoryToMatrixTab'));
 
 import TemplateSelectorModal from '@/components/layout/TemplateSelectorModal';
@@ -39,6 +40,7 @@ import { storyTourDefinition } from '@/core/tour/storyTourSteps';
 import { useTourStore } from '@/store/useTourStore';
 
 const TourRunner = lazy(() => import('@/features/tour/TourRunner'));
+import DocumentLoaderModal from '@/features/document-loader/DocumentLoaderModal';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import type { MethodId } from '@/types/domain';
 
@@ -73,6 +75,8 @@ export const WorkboardPage: React.FC = () => {
   const isSharedMatrixCollapsed = useUiStore((s) => s.isSharedMatrixCollapsed);
   const toggleSharedMatrix = useUiStore((s) => s.toggleSharedMatrix);
   const openBackupModal = useUiStore((s) => s.openBackupModal);
+  const isDocLoaderOpen = useUiStore((s) => s.isDocLoaderOpen);
+  const closeDocLoader = useUiStore((s) => s.closeDocLoader);
   const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
 
   const hasSeenWelcome = useTourStore((s) => s.hasSeenWelcome);
@@ -259,6 +263,8 @@ export const WorkboardPage: React.FC = () => {
                   <AhpTab />
                 ) : activeTab === 'COMPARE' ? (
                   <ComparisonTab />
+                ) : activeTab === 'EVALUATION' ? (
+                  <EvaluationTab />
                 ) : (
                   <StoryToMatrixTab />
                 )}
@@ -268,20 +274,22 @@ export const WorkboardPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Modal Multi-Template Kasus */}
       <TemplateSelectorModal
         isOpen={isTemplateModalOpen}
         onClose={() => setIsTemplateModalOpen(false)}
         onSelect={(tpl) => loadProjectState(tpl.state)}
       />
 
-      {/* Modal Sambutan & Panduan Awal */}
       <WelcomeModal
         isOpen={isWelcomeOpen}
         onClose={closeWelcome}
       />
 
-      {/* Interactive Tour Engine Runner */}
+      <DocumentLoaderModal
+        isOpen={isDocLoaderOpen}
+        onClose={closeDocLoader}
+      />
+
       {activeTourId && (
         <Suspense fallback={null}>
           <TourRunner

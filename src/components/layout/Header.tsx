@@ -43,18 +43,18 @@ export const Header: React.FC<HeaderProps> = ({
         className
       )}
     >
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-2.5 md:gap-4">
-        <div className="flex items-center justify-between md:justify-start gap-2 sm:gap-3 shrink-0">
+      <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-2.5 md:gap-3 min-w-0">
+        <div className="flex items-center justify-between md:justify-start gap-2 sm:gap-3 min-w-0 shrink">
           <Link
             to="/"
             onMouseEnter={prefetchRoute.landing}
             onFocus={prefetchRoute.landing}
-            className="m-0 p-0 text-inherit font-inherit inline-flex items-center cursor-pointer min-h-9"
+            className="m-0 p-0 text-inherit font-inherit inline-flex items-center cursor-pointer min-h-9 shrink-0"
             title="Kembali ke Beranda (Landing Page)"
           >
             <Logo size="responsive" showWordmark />
           </Link>
-          <div className="flex items-center gap-1.5 sm:gap-2 border-l border-slate-200/80 pl-2 sm:pl-3 min-w-0">
+          <div className="flex items-center gap-1.5 sm:gap-2 border-l border-slate-200/80 pl-2 sm:pl-3 min-w-0 shrink">
             <Badge variant="primary" size="sm" className="font-bold text-[10px] py-0 px-1.5 hidden md:inline-flex shrink-0">
               v1.1
             </Badge>
@@ -65,8 +65,8 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
 
-        <div className="flex flex-wrap sm:flex-nowrap items-center justify-between sm:justify-end gap-1.5 sm:gap-2 shrink-0">
-          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        <div className="flex flex-wrap items-center justify-start sm:justify-end gap-1.5 w-full md:w-auto shrink-0">
+          <div className="flex items-center gap-1.5 shrink-0 flex-wrap">
             <TourLauncherMenu />
 
             <Button
@@ -83,7 +83,7 @@ export const Header: React.FC<HeaderProps> = ({
             </Button>
           </div>
 
-          {actions && <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">{actions}</div>}
+          {actions && <div className="flex items-center gap-1.5 shrink-0 flex-wrap">{actions}</div>}
         </div>
       </div>
 
