@@ -128,8 +128,8 @@ describe('AI Executive Narrative & Recommendation Engine', () => {
   it('eradicates em dashes and normalizes text properly', async () => {
     const { sanitizeNarrativeText, CANDIDATE_MODELS } = await import('@/services/ai');
 
-    expect(CANDIDATE_MODELS).toContain('gemini-1.5-flash');
-    expect(CANDIDATE_MODELS).toContain('gemini-2.0-flash-exp');
+    expect(CANDIDATE_MODELS).toContain('gemini-3.8-flash');
+    expect(CANDIDATE_MODELS).toContain('gemini-3.5-flash-lite');
 
     const sampleWithEmDash = 'Metode SAW—menggunakan model aditif—mampu mengompensasi nilai rendah.';
     const cleaned = sanitizeNarrativeText(sampleWithEmDash);
