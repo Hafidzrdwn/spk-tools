@@ -14,7 +14,9 @@ export function computeRequestHash(request: AiNarrativeRequest): string {
     .map((a) => `${a.id}:${Object.entries(a.values).sort().map(([k, v]) => `${k}=${v}`).join(',')}`)
     .join('|');
   const methodKey = [...request.activeMethods].sort().join(',');
-  const rawKey = `${request.projectTitle}_${critKey}_${altKey}_${methodKey}_${request.budgetConstraint ?? ''}`;
+  const contextKey = `${request.contextMetadata?.institutionOrOrg ?? ''}_${request.contextMetadata?.targetStakeholder ?? ''}`;
+  const rawKey = `${request.projectTitle}_${critKey}_${altKey}_${methodKey}_${request.budgetConstraint ?? ''}_${contextKey}`;
+
 
   let hash = 0;
   for (let i = 0; i < rawKey.length; i++) {

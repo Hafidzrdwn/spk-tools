@@ -328,6 +328,55 @@ const styles = StyleSheet.create({
 
 function renderNarrativeParagraphs(content: string, textStyle: any) {
   if (!content) return null;
+  const lines = content.split('\n').map((l) => l.trim()).filter((l) => l.length > 0);
+  const hasNumberedList = lines.some((l) => /^\d+\.\s+/.test(l));
+
+  if (hasNumberedList) {
+    return lines.map((line, idx) => {
+      const match = line.match(/^(\d+)\.\s*(?:\[([^\]]+)\])?\s*:?\s*(.*)$/);
+      if (match) {
+        const num = match[1];
+        const stakeholder = match[2]?.trim();
+        const body = match[3]?.trim() || line;
+
+        return (
+          <View key={idx} style={{ flexDirection: 'row', alignItems: 'flex-start', marginTop: idx > 0 ? 3.5 : 1 }}>
+            <View
+              style={{
+                width: 13,
+                height: 13,
+                borderRadius: 6.5,
+                backgroundColor: '#EEF2FF',
+                borderWidth: 0.6,
+                borderColor: '#C7D2FE',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginRight: 5,
+                marginTop: 1,
+              }}
+            >
+              <Text style={{ fontSize: 6.5, fontWeight: 'bold', color: '#4338CA' }}>{num}</Text>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={textStyle}>
+                {stakeholder ? (
+                  <Text style={{ fontWeight: 'bold', color: '#312E81' }}>[{stakeholder}] </Text>
+                ) : null}
+                {body}
+              </Text>
+            </View>
+          </View>
+        );
+      }
+
+      return (
+        <Text key={idx} style={[textStyle, idx > 0 ? { marginTop: 4 } : {}]}>
+          {line}
+        </Text>
+      );
+    });
+  }
+
   const paragraphs = content.split(/\n\n+/).filter((p) => p.trim().length > 0);
   return paragraphs.map((p, idx) => (
     <Text key={idx} style={[textStyle, idx > 0 ? { marginTop: 4 } : {}]}>
@@ -335,6 +384,7 @@ function renderNarrativeParagraphs(content: string, textStyle: any) {
     </Text>
   ));
 }
+
 
 export interface DecisiPdfReportProps {
   payload: ReportPayload;
@@ -398,7 +448,23 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
 
           <Text style={styles.projectTitle}>{payload.projectTitle}</Text>
 
+          {payload.contextMetadata && (payload.contextMetadata.institutionOrOrg || payload.contextMetadata.targetStakeholder) && (
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 4 }}>
+              {payload.contextMetadata.institutionOrOrg && (
+                <Text style={{ fontSize: 7.8, color: '#4338CA', fontWeight: 'bold' }}>
+                  Lembaga: {payload.contextMetadata.institutionOrOrg}
+                </Text>
+              )}
+              {payload.contextMetadata.targetStakeholder && (
+                <Text style={{ fontSize: 7.8, color: '#6D28D9', fontWeight: 'bold' }}>
+                  • Pemangku Kepentingan: {payload.contextMetadata.targetStakeholder}
+                </Text>
+              )}
+            </View>
+          )}
+
           <View style={styles.methodBadgeRow}>
+
             {safeConfig.selectedMethods.map((m) => (
               <View key={m} style={styles.methodBadge}>
                 <Text style={styles.methodBadgeText}>{m}</Text>

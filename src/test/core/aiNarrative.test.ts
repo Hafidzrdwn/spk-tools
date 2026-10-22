@@ -141,4 +141,29 @@ describe('AI Executive Narrative & Recommendation Engine', () => {
     expect(cleanedDouble).not.toContain('--');
     expect(cleanedDouble).toContain('Program B - mengalami pergeseran ranking');
   });
+
+  it('incorporates case context metadata and formats numbered stakeholder recommendations', () => {
+    const contextualRequest: AiNarrativeRequest = {
+      ...requestMock,
+      contextMetadata: {
+        caseTitle: 'Pengadaan Infrastruktur Digital',
+        institutionOrOrg: 'Universitas Brawijaya',
+        targetStakeholder: 'Rektor & Dekan Fakultas',
+        domainContext: 'Pendidikan Tinggi',
+        rawNarrativeSummary: 'Pemilihan vendor infrastruktur smart campus.',
+      },
+    };
+
+    const prompt = buildGeminiPrompt(contextualRequest);
+    expect(prompt).toContain('Universitas Brawijaya');
+    expect(prompt).toContain('Rektor & Dekan Fakultas');
+    expect(prompt).toContain('Pendidikan Tinggi');
+
+    const fallback = generateFallbackNarrative(contextualRequest);
+    expect(fallback.sectionC_recommendations).toContain('[Rektor & Dekan Fakultas]');
+    expect(fallback.sectionC_recommendations).toContain('Universitas Brawijaya');
+    expect(fallback.sectionC_recommendations).toMatch(/^1\.\s+\[.+\]/m);
+    expect(fallback.sectionC_recommendations).toMatch(/^2\.\s+\[.+\]/m);
+  });
 });
+

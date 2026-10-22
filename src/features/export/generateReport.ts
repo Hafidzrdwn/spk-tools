@@ -1,5 +1,6 @@
 import Decimal from 'decimal.js';
-import type { MethodId, Criterion, Alternative } from '@/types/domain';
+import type { MethodId, Criterion, Alternative, CaseContextMetadata } from '@/types/domain';
+
 import type { MethodResult, RankingRow } from '@/core/math/types';
 import { calculateSAW } from '@/core/math/saw';
 import { calculateWP, calculateSafeWP, WpZeroGuardError } from '@/core/math/wp';
@@ -34,7 +35,9 @@ export interface BuildReportOptions {
   config?: Partial<ExportReportConfig>;
   criteria: Criterion[];
   alternatives: Alternative[];
+  contextMetadata?: CaseContextMetadata;
   customAhpMatrix?: number[][];
+
   storyNarrative?: string;
   cachedResult?: MethodResult;
   cachedComparisonResult?: ReturnType<typeof compareRankings>;
@@ -557,7 +560,9 @@ export function buildComprehensiveReport(options: BuildReportOptions): ReportPay
     config,
     criteria,
     alternatives,
+    contextMetadata: options.contextMetadata,
     sawData,
+
     wpData,
     topsisData,
     ahpData,

@@ -55,11 +55,21 @@ export const alternativeSchema = z.object({
   values: z.record(z.string(), z.number()),
 });
 
+export const caseContextMetadataSchema = z.object({
+  caseTitle: z.string().optional(),
+  institutionOrOrg: z.string().optional(),
+  targetStakeholder: z.string().optional(),
+  domainContext: z.string().optional(),
+  rawNarrativeSummary: z.string().optional(),
+}).optional();
+
 export const projectStatePersistedSchema = z.object({
-  title: z.string(),
-  activeMethod: z.enum(['SAW', 'WP', 'TOPSIS', 'AHP', 'AUTO', 'COMPARE']),
-  criteria: z.array(criterionSchema),
-  alternatives: z.array(alternativeSchema),
+  title: z.string().default('Proyek SPK Baru'),
+  activeMethod: z.enum(['SAW', 'WP', 'TOPSIS', 'AHP', 'AUTO', 'COMPARE', 'EVALUATION']).catch('SAW'),
+  criteria: z.array(criterionSchema).default([]),
+  alternatives: z.array(alternativeSchema).default([]),
+  contextMetadata: caseContextMetadataSchema,
 });
 
 export type ProjectStatePersisted = z.infer<typeof projectStatePersistedSchema>;
+

@@ -187,4 +187,57 @@ describe('AI Document Loader Module', () => {
     expect(result.alternatives[1].values[hargaId]).toBe(18000000);
     expect(result.alternatives[2].values[hargaId]).toBe(12500000);
   });
+
+  it('preserves context metadata and maps criteria codes to full descriptive names', () => {
+    const rawData: DocumentExtractionAiResponse = {
+      projectTitle: 'Pengadaan Lab Komputer Kampus',
+      contextMetadata: {
+        caseTitle: 'Pengadaan Lab Terpadu 2026',
+        institutionOrOrg: 'Universitas Indonesia',
+        targetStakeholder: 'Rektor & Tim Anggaran',
+        domainContext: 'Pendidikan Tinggi',
+        rawNarrativeSummary: 'Studi kasus pemilihan vendor laboratorium komputer terpadu.',
+      },
+      criteria: [
+        { code: 'C1', name: 'Biaya Pengadaan dan Lisensi', type: 'COST', weight: 40 },
+        { code: 'C2', name: 'Kualitas Spesifikasi Hardware', type: 'BENEFIT', weight: 60 },
+      ],
+      alternatives: [
+        {
+          code: 'A1',
+          name: 'Program Lab Alpha',
+          values: { C1: 250000000, C2: 92 },
+        },
+        {
+          code: 'A2',
+          name: 'Program Lab Beta',
+          values: { 'Biaya Pengadaan dan Lisensi': 220000000, 'Kualitas Spesifikasi Hardware': 85 },
+        },
+      ],
+    };
+
+    const payload: DocumentFilePayload = {
+      name: 'tender_lab.pdf',
+      size: 1024,
+      type: 'pdf',
+      mimeType: 'application/pdf',
+    };
+
+    const result = standardizeExtractedData(rawData, payload);
+
+    expect(result.contextMetadata).toBeDefined();
+    expect(result.contextMetadata?.institutionOrOrg).toBe('Universitas Indonesia');
+    expect(result.contextMetadata?.targetStakeholder).toBe('Rektor & Tim Anggaran');
+
+    const c1 = result.criteria.find((c) => c.name.includes('Biaya'));
+    const c2 = result.criteria.find((c) => c.name.includes('Kualitas'));
+
+    expect(c1).toBeDefined();
+    expect(c2).toBeDefined();
+    expect(result.alternatives[0].values[c1!.id]).toBe(250000000);
+    expect(result.alternatives[0].values[c2!.id]).toBe(92);
+    expect(result.alternatives[1].values[c1!.id]).toBe(220000000);
+    expect(result.alternatives[1].values[c2!.id]).toBe(85);
+  });
 });
+

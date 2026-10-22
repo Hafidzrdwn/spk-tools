@@ -39,11 +39,17 @@ export const EvaluationTab: React.FC = () => {
     setGoalSeekingCritId,
     goalSeekingResult,
     managerialSynthesis,
+    aiExecutiveNarrative,
+    isAiLoading,
+    aiError,
+    loadAiNarrative,
+    contextMetadata,
     loadCvMajuJayaCase,
     isDemoActive,
     savedUserState,
     revertToUserData,
   } = useEvaluationViewModel();
+
 
   const subNavItems: { id: EvaluationSubPanel; label: string; icon: React.FC<{ className?: string }> }[] = [
     { id: 'aspects', label: '1. Evaluasi 3 Aspek', icon: Scale },
@@ -176,12 +182,20 @@ export const EvaluationTab: React.FC = () => {
           )}
 
           {activePanel === 'managerial' && (
-            <ManagerialAiPanel synthesis={managerialSynthesis} />
+            <ManagerialAiPanel
+              synthesis={managerialSynthesis}
+              aiNarrative={aiExecutiveNarrative}
+              isAiLoading={isAiLoading}
+              aiError={aiError}
+              onRefreshAi={() => loadAiNarrative(true)}
+              contextMetadata={contextMetadata}
+            />
           )}
         </div>
       )}
     </div>
   );
 };
+
 
 export default EvaluationTab;

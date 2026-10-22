@@ -4,7 +4,7 @@ import { immer } from 'zustand/middleware/immer';
 import { nanoid } from 'nanoid';
 import { projectStatePersistedSchema } from '@/validators/matrixSchemas';
 import { toast } from 'sonner';
-import type { DecisiProjectState, Criterion, Alternative, MethodId } from '@/types/domain';
+import type { DecisiProjectState, Criterion, Alternative, MethodId, CaseContextMetadata } from '@/types/domain';
 
 export interface ProjectStore extends DecisiProjectState {
   addCriterion: (initialData?: Partial<Criterion>) => void;
@@ -18,6 +18,7 @@ export interface ProjectStore extends DecisiProjectState {
 
   setTitle: (title: string) => void;
   setActiveMethod: (method: MethodId) => void;
+  setContextMetadata: (metadata?: CaseContextMetadata) => void;
   loadProjectState: (state: DecisiProjectState) => void;
   resetProject: () => void;
 }
@@ -27,7 +28,9 @@ export const INITIAL_PROJECT_STATE: DecisiProjectState = {
   activeMethod: 'SAW',
   criteria: [],
   alternatives: [],
+  contextMetadata: undefined,
 };
+
 const defaultInitialState = INITIAL_PROJECT_STATE;
 
 export const useProjectStore = create<ProjectStore>()(
@@ -134,40 +137,57 @@ export const useProjectStore = create<ProjectStore>()(
         });
       },
 
+      setContextMetadata: (metadata) => {
+        set((state) => {
+          state.contextMetadata = metadata;
+        });
+      },
+
       loadProjectState: (newState) => {
         set((state) => {
           state.title = newState.title;
           state.activeMethod = newState.activeMethod;
           state.criteria = newState.criteria;
           state.alternatives = newState.alternatives;
+          state.contextMetadata = newState.contextMetadata;
         });
       },
 
       resetProject: () => {
-        useProjectStore.persist?.clearStorage();
+        if (typeof window !== 'undefined' && window.localStorage) {
+          window.localStorage.removeItem('decisigraph-project-state');
+        }
         set((state) => {
           state.title = defaultInitialState.title;
           state.activeMethod = defaultInitialState.activeMethod;
           state.criteria = JSON.parse(JSON.stringify(defaultInitialState.criteria));
           state.alternatives = JSON.parse(JSON.stringify(defaultInitialState.alternatives));
+          state.contextMetadata = undefined;
         });
       },
     })),
     {
       name: 'decisigraph-project-state',
       version: 1,
-      partialize: (state) => ({
+      partialize: (state): DecisiProjectState => ({
         title: state.title,
         activeMethod: state.activeMethod,
         criteria: state.criteria,
         alternatives: state.alternatives,
+        contextMetadata: state.contextMetadata,
       }),
+
       merge: (persistedState, currentState) => {
         if (!persistedState) {
           return currentState;
         }
 
-        const result = projectStatePersistedSchema.safeParse(persistedState);
+        const rawData =
+          persistedState && typeof persistedState === 'object' && 'state' in persistedState
+            ? (persistedState as { state: unknown }).state
+            : persistedState;
+
+        const result = projectStatePersistedSchema.safeParse(rawData);
         if (!result.success) {
           console.warn('Data tersimpan di localStorage tidak valid, mereset ke kondisi awal:', result.error);
           setTimeout(() => {
@@ -183,7 +203,7 @@ export const useProjectStore = create<ProjectStore>()(
           ...result.data,
         };
       },
-      migrate: (persistedState: unknown) => persistedState as ProjectStore,
+      migrate: (persistedState: unknown) => persistedState as DecisiProjectState,
     }
   )
 );

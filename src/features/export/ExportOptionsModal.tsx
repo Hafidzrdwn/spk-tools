@@ -4,11 +4,12 @@ import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
 import {
   CheckCircle2,
-  Sparkles,
   ShieldCheck,
   Key,
   ChevronDown,
   ChevronUp,
+  Bot,
+  Brain,
 } from 'lucide-react';
 import type { MethodId } from '@/types/domain';
 import type { ExportScope, ExportReportConfig } from './types';
@@ -379,7 +380,7 @@ export const ExportOptionsModal: React.FC<ExportOptionsModalProps> = ({
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="w-7 h-7 rounded-lg bg-indigo-600 text-white flex items-center justify-center shadow-xs">
-                <Sparkles className="w-4 h-4" />
+                <Bot className="w-4 h-4" />
               </div>
               <div>
                 <span className="text-xs font-bold text-slate-900 block">
@@ -408,7 +409,7 @@ export const ExportOptionsModal: React.FC<ExportOptionsModalProps> = ({
                 <div className="flex items-center gap-2">
                   {hasEffectiveKey ? (
                     <Badge variant="benefit" size="sm" className="gap-1 font-semibold">
-                      <Sparkles className="w-3 h-3 text-emerald-600" />
+                      <Brain className="w-3 h-3 text-emerald-600" />
                       Gemini Flash Aktif
                     </Badge>
                   ) : (
