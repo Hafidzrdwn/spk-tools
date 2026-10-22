@@ -418,13 +418,22 @@ export function generateReportConclusion(
     }
   }
 
-  const otherCount = Math.max(0, alternatives.length - 1);
+  const runnerUp = sortedRankings[1];
+  const marginVal = runnerUp ? Number((winner.score - runnerUp.score).toFixed(4)) : null;
   const marginNote =
-    sortedRankings.length > 1
-      ? ` dengan selisih skor ${formatDisplayNumber(winner.score - sortedRankings[1].score, { decimals: 4, separator })} atas runner-up (${sortedRankings[1].alternativeName})`
+    runnerUp && marginVal !== null
+      ? ` Keunggulan atas kandidat terdekat (${runnerUp.alternativeName}) memiliki margin skor ${formatDisplayNumber(marginVal, { decimals: 4, separator })}${marginVal < 0.05 ? ', yang mengindikasikan persaingan ketat sehingga memerlukan mitigasi parameter harga dan kualitas' : ', yang mencerminkan dominasi keunggulan komparatif yang meyakinkan'}.`
       : '';
 
-  return `Berdasarkan evaluasi komputasi metode ${methodLabel}, alternatif "${winner.alternativeName}" terpilih sebagai rekomendasi keputusan terbaik (Peringkat #1) dengan skor preferensi akhir sebesar ${scoreFormatted}${marginNote}${strengthSummary}. Hasil perhitungan kuantitatif ini merefleksikan performa optimal dibandingkan ${otherCount} alternatif lainnya yang dievaluasi.${consensusNote}`;
+  const stakeholderContext = payload.contextMetadata?.targetStakeholder
+    ? ` Bagi ${payload.contextMetadata.targetStakeholder}, eksekusi pilihan ini memberikan kepastian pemenuhan target program dengan alokasi anggaran paling efisien.`
+    : ' Bagi pengambil keputusan, pilihan ini meminimalkan risiko inefisiensi anggaran dan memaksimalkan utilitas program kerja.';
+
+  const contingencyAdvice = runnerUp
+    ? ` Sebagai langkah kehati-hatian operasional, ${runnerUp.alternativeName} direkomendasikan sebagai opsi cadangan resmi (Plan B) apabila terjadi kendala teknis atau pergeseran kebijakan anggaran mendadak.`
+    : '';
+
+  return `Berdasarkan evaluasi komprehensif metode ${methodLabel}, alternatif "${winner.alternativeName}" ditetapkan sebagai rekomendasi keputusan prioritas utama (Peringkat #1) dengan skor preferensi akhir ${scoreFormatted}. Alternatif ini terpilih secara rasional${strengthSummary}, menghasilkan perpaduan optimal antara ketercapaian target mutu dan efisiensi sumber daya.${marginNote}${consensusNote}${stakeholderContext}${contingencyAdvice}`;
 }
 
 export function buildComprehensiveReport(options: BuildReportOptions): ReportPayload {

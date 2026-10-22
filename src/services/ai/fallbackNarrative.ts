@@ -45,18 +45,17 @@ export function generateFallbackNarrative(request: AiNarrativeRequest): AiExecut
 
   if (hasShift) {
     sectionA =
-      `Kandidat ${topConsensus} kokoh menempati peringkat teratas lintas metode, sementara variasi posisi terjadi pada ${shiftAlternatives.slice(0, 3).join(', ')}. ` +
-      `Dinamika ini dipicu oleh formula matematis: metode SAW menerapkan penjumlahan terbobot linier yang mengizinkan keunggulan suatu kriteria menutupi kelemahan kriteria lain, sedangkan metode WP menerapkan perkalian eksponensial yang memberikan penalti tegas pada nilai kriteria rendah.`;
+      `Kandidat ${topConsensus} kokoh menempati peringkat teratas konsensus, sementara pergeseran posisi pada ${shiftAlternatives.slice(0, 3).join(', ')} merefleksikan trade-off manajerial yang nyata. ` +
+      `Perbedaan hasil antara metode agregasi linear (SAW) dan penalti multiplikatif (WP) terjadi karena alternatif tertentu unggul pada spesifikasi teknis namun terbebani biaya tinggi, sedangkan alternatif lainnya menawarkan efisiensi anggaran berimbang. Pimpinan disarankan mempertimbangkan prioritas antara penghematan biaya jangka pendek atau ketahanan mutu layanan jangka panjang.`;
   } else {
     sectionA =
       `Seluruh kandidat mempertahankan urutan peringkat yang identik dan stabil di seluruh metode komparasi (${activeMethods.map((m) => m.toUpperCase()).join(', ')}). ` +
-      `${topConsensus} secara konsisten menempati peringkat #1 berkat keunggulan terukur pada seluruh kriteria evaluasi tanpa terpengaruh perbedaan aksioma matematis antar metode.`;
+      `${topConsensus} secara konsisten menempati peringkat #1 berkat profil performa yang seimbang antara keunggulan manfaat dan efisiensi biaya, membuktikan ketahanannya dari berbagai sudut pandang evaluasi.`;
   }
 
   const sectionB =
-    `Tidak ada metode yang keliru. Seluruh metode komparasi terbukti valid dan dihitung sesuai kaidah prosedural yang benar. ` +
-    `Perbedaan urutan semata-mata berpijak pada asumsi agregasi matematis masing-masing algoritma, dan tidak ada peringkat absolut tunggal karena SPK dirancang sebagai instrumen pendukung keputusan manajerial.`;
-
+    `Tidak ada metode yang keliru. Perbedaan urutan antar metode bukanlah anomali, melainkan instrumen uji ketahanan keputusan (robustness check). ` +
+    `Evaluasi multi-metode menguji setiap opsi dari dua perspektif kritis: efisiensi berimbang agregat (SAW) serta seleksi ketat tanpa toleransi kelemahan kritis (WP), sehingga opsi yang bertahan di puncak terbukti objektif dan minim risiko bias.`;
 
   const avgRankList = alternatives
     .map((alt) => {
@@ -80,24 +79,32 @@ export function generateFallbackNarrative(request: AiNarrativeRequest): AiExecut
   const techTag = '[Tim Teknis / Panitia Pengadaan]';
   const auditTag = '[Tim Evaluasi & Audit Internal]';
 
-  let benefitCostNote = '';
-  if (primaryBenefit) {
-    benefitCostNote += ` dengan keunggulan pada kriteria ${primaryBenefit.name}`;
-  }
-  if (primaryCost) {
+  let causalReason = '';
+  if (primaryBenefit && primaryCost) {
     const costVal = alternatives.find((a) => a.name === topConsensus)?.values[primaryCost.id];
-    if (costVal !== undefined) {
-      benefitCostNote += ` serta efisiensi ${primaryCost.name} sebesar ${costVal}${primaryCost.unit ? ' ' + primaryCost.unit : ''}`;
-    }
+    const benefitVal = alternatives.find((a) => a.name === topConsensus)?.values[primaryBenefit.id];
+    const bStr = benefitVal !== undefined ? ` (skor: ${benefitVal}${primaryBenefit.unit ? ' ' + primaryBenefit.unit : ''})` : '';
+    const cStr = costVal !== undefined ? ` sebesar ${costVal}${primaryCost.unit ? ' ' + primaryCost.unit : ''}` : '';
+    causalReason = ` karena terbukti unggul dominan pada kriteria ${primaryBenefit.name}${bStr} dengan beban efisiensi ${primaryCost.name}${cStr}, sehingga memberikan rasio manfaat-biaya tertinggi dan risiko operasional paling terkendali bagi institusi`;
+  } else if (primaryBenefit) {
+    const benefitVal = alternatives.find((a) => a.name === topConsensus)?.values[primaryBenefit.id];
+    const bStr = benefitVal !== undefined ? ` sebesar ${benefitVal}${primaryBenefit.unit ? ' ' + primaryBenefit.unit : ''}` : '';
+    causalReason = ` karena unggul dominan pada kriteria prioritas ${primaryBenefit.name}${bStr} yang menjadi tolok ukur utama keberhasilan program`;
+  } else if (primaryCost) {
+    const costVal = alternatives.find((a) => a.name === topConsensus)?.values[primaryCost.id];
+    const cStr = costVal !== undefined ? ` sebesar ${costVal}${primaryCost.unit ? ' ' + primaryCost.unit : ''}` : '';
+    causalReason = ` karena menawarkan efisiensi anggaran paling optimal pada kriteria ${primaryCost.name}${cStr} yang melindungi likuiditas pembiayaan`;
+  } else {
+    causalReason = ` karena mencapai konsensus skor preferensi tertinggi secara konsisten lintas metode evaluasi`;
   }
 
   const planBAlt = avgRankList[1]?.name || 'alternatif peringkat kedua';
 
   const sectionC = [
-    `1. ${leaderTag}: Menetapkan ${topConsensus} sebagai keputusan prioritas utama pengadaan/eksekusi${benefitCostNote}.`,
-    `2. ${opTag}: Memanfaatkan urutan konsensus rata-rata (${consensusOrderText}) sebagai acuan alokasi pendanaan bertahap, dan memposisikan ${planBAlt} sebagai cadangan resmi (Plan B).`,
-    `3. ${techTag}: Melakukan verifikasi spesifikasi teknis dan negosiasi kontrak dengan vendor/pelaksana terpilih sebelum penandatanganan dokumen final.`,
-    `4. ${auditTag}: Menguji sensitivitas bobot pada pasangan kriteria dengan selisih skor tipis guna memitigasi risiko fluktuasi parameter operasional.`,
+    `1. ${leaderTag}: Menetapkan ${topConsensus} sebagai keputusan prioritas utama pengadaan/eksekusi${causalReason}.`,
+    `2. ${opTag}: Memanfaatkan urutan konsensus rata-rata (${consensusOrderText}) sebagai peta jalan alokasi anggaran bertahap, dan memposisikan ${planBAlt} sebagai cadangan resmi (Plan B) jika kuota pembiayaan mengalami penyesuaian.`,
+    `3. ${techTag}: Melakukan verifikasi spesifikasi teknis mendalam dan negosiasi jaminan layanan sebelum penandatanganan dokumen kontrak definitif.`,
+    `4. ${auditTag}: Menguji sensitivitas parameter biaya terhadap dinamika harga pasar guna memastikan stabilitas keputusan tetap kokoh sepanjang masa kontrak.`,
   ].join('\n');
 
   const latencyMs = Number((performance.now() - startTime).toFixed(1));
