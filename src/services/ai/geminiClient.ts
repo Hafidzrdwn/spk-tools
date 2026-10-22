@@ -57,18 +57,25 @@ export function setCustomGeminiApiKey(apiKey: string): void {
   }
 }
 
+export interface FetchAiNarrativeOptions {
+  bypassCache?: boolean;
+}
+
 export async function fetchAiExecutiveNarrative(
   request: AiNarrativeRequest,
-  overrideApiKey?: string
+  overrideApiKey?: string,
+  options?: FetchAiNarrativeOptions
 ): Promise<AiExecutiveNarrative> {
-  const cached = getCachedAiNarrative(request);
-  if (cached) {
-    return {
-      ...cached,
-      sectionA_rankingShifts: sanitizeNarrativeText(cached.sectionA_rankingShifts),
-      sectionB_methodValidity: sanitizeNarrativeText(cached.sectionB_methodValidity),
-      sectionC_recommendations: sanitizeNarrativeText(cached.sectionC_recommendations),
-    };
+  if (!options?.bypassCache) {
+    const cached = getCachedAiNarrative(request);
+    if (cached) {
+      return {
+        ...cached,
+        sectionA_rankingShifts: sanitizeNarrativeText(cached.sectionA_rankingShifts),
+        sectionB_methodValidity: sanitizeNarrativeText(cached.sectionB_methodValidity),
+        sectionC_recommendations: sanitizeNarrativeText(cached.sectionC_recommendations),
+      };
+    }
   }
 
   const apiKey = typeof overrideApiKey === 'string' ? overrideApiKey.trim() : getEffectiveGeminiApiKey();

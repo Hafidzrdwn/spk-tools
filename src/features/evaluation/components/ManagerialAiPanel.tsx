@@ -23,24 +23,34 @@ interface ParsedPoint {
 
 function parseRecommendationPoints(content: string): ParsedPoint[] {
   if (!content) return [];
-  const lines = content
+  const normalized = content.replace(/(?:^|\s+)(?=\d+\.\s)/g, '\n').trim();
+  const segments = normalized
     .split('\n')
     .map((l) => l.trim())
     .filter((l) => l.length > 0);
 
-  return lines.map((line) => {
-    const match = line.match(/^(\d+)\.\s*(?:\[([^\]]+)\])?\s*:?\s*(.*)$/);
-    if (match) {
-      return {
-        number: match[1],
-        stakeholder: match[2]?.trim() || null,
-        text: match[3]?.trim() || line,
-      };
+  return segments.map((seg, idx) => {
+    const numMatch = seg.match(/^(\d+)\.\s*(.*)$/s);
+    const num = numMatch ? numMatch[1] : null;
+    let body = numMatch ? numMatch[2].trim() : seg;
+
+    let stakeholder: string | null = null;
+    const startStakeholderMatch = body.match(/^\[([^\]]+)\]\s*:?\s*(.*)$/s);
+    if (startStakeholderMatch) {
+      stakeholder = startStakeholderMatch[1].trim();
+      body = startStakeholderMatch[2].trim();
+    } else {
+      const endStakeholderMatch = body.match(/^(.*?)\s*\[([^\]]+)\]\.?$/s);
+      if (endStakeholderMatch) {
+        stakeholder = endStakeholderMatch[2].trim();
+        body = endStakeholderMatch[1].trim();
+      }
     }
+
     return {
-      number: null,
-      stakeholder: null,
-      text: line.replace(/^[-*]\s*/, ''),
+      number: num || (segments.length > 1 ? String(idx + 1) : null),
+      stakeholder,
+      text: body.replace(/^[-*]\s*/, ''),
     };
   });
 }

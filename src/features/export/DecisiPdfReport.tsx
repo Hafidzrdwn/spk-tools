@@ -328,17 +328,30 @@ const styles = StyleSheet.create({
 
 function renderNarrativeParagraphs(content: string, textStyle: any) {
   if (!content) return null;
-  const lines = content.split('\n').map((l) => l.trim()).filter((l) => l.length > 0);
+  const normalized = content.replace(/(?:^|\s+)(?=\d+\.\s)/g, '\n').trim();
+  const lines = normalized.split('\n').map((l) => l.trim()).filter((l) => l.length > 0);
   const hasNumberedList = lines.some((l) => /^\d+\.\s+/.test(l));
 
   if (hasNumberedList) {
     return lines.map((line, idx) => {
-      const match = line.match(/^(\d+)\.\s*(?:\[([^\]]+)\])?\s*:?\s*(.*)$/);
-      if (match) {
-        const num = match[1];
-        const stakeholder = match[2]?.trim();
-        const body = match[3]?.trim() || line;
+      const numMatch = line.match(/^(\d+)\.\s*(.*)$/s);
+      const num = numMatch ? numMatch[1] : (lines.length > 1 ? String(idx + 1) : null);
+      let body = numMatch ? numMatch[2].trim() : line;
 
+      let stakeholder: string | null = null;
+      const startStakeholderMatch = body.match(/^\[([^\]]+)\]\s*:?\s*(.*)$/s);
+      if (startStakeholderMatch) {
+        stakeholder = startStakeholderMatch[1].trim();
+        body = startStakeholderMatch[2].trim();
+      } else {
+        const endStakeholderMatch = body.match(/^(.*?)\s*\[([^\]]+)\]\.?$/s);
+        if (endStakeholderMatch) {
+          stakeholder = endStakeholderMatch[2].trim();
+          body = endStakeholderMatch[1].trim();
+        }
+      }
+
+      if (num) {
         return (
           <View key={idx} style={{ flexDirection: 'row', alignItems: 'flex-start', marginTop: idx > 0 ? 3.5 : 1 }}>
             <View

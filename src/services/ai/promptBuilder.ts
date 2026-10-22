@@ -60,7 +60,7 @@ INSTRUKSI PENULISAN:
   
   "sectionB_methodValidity": "Pernyataan validitas ringkas (maksimal 2 kalimat): Nyatakan secara tegas bahwa kedua metode valid secara matematis karena berangkat dari aksioma komputasi yang berbeda, serta tidak ada peringkat absolut tunggal dalam SPK.",
   
-  "sectionC_recommendations": "Rekomendasi langkah aksi WAJIB dalam format POIN BERNOMOR (1., 2., 3., 4.), masing-masing 1-2 kalimat konkret dan mencantumkan peran pemangku kepentingan spesifik dalam kurung siku sesuai konteks dokumen (contoh: [Rektor / Pimpinan Lembaga], [Tim Anggaran / PIC Operasional], [Tim Pengadaan Teknis], [Tim Audit/Pakar]). Poin 1 wajib memuat rekomendasi prioritas utama alternatif teratas; Poin 2 urutan konsensus; Poin 3 mitigasi alternatif cadangan (Plan B); Poin 4 langkah verifikasi atau eksekusi sebelum kontrak."
+  "sectionC_recommendations": "Rekomendasi langkah aksi WAJIB dalam format POIN BERNOMOR (1., 2., 3., 4.). SETIAP POIN HARUS DITULIS DI BARIS BARU TERSENDIRI DENGAN ENTER/NEWLINE (\\n) (contoh:\\n1. [Rektor / Pimpinan Lembaga] ...\\n2. [Tim Anggaran / PIC Operasional] ...\\n3. [Tim Pengadaan Teknis] ...\\n4. [Tim Audit/Pakar] ...). Masing-masing 1-2 kalimat konkret dan mencantumkan peran pemangku kepentingan spesifik dalam kurung siku sesuai konteks dokumen. Poin 1 prioritas utama alternatif teratas; Poin 2 urutan konsensus; Poin 3 mitigasi cadangan (Plan B); Poin 4 langkah verifikasi sebelum kontrak. JANGAN gabungkan seluruh poin dalam satu kalimat bersambung tanpa jeda baris baru."
 }`;
 }
 

@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback, useEffect } from 'react';
+import { toast } from 'sonner';
 import { useProjectStore } from '@/store/useProjectStore';
 import { useNormalizedCriteria } from '@/store/selectors';
 import { calculateSAW } from '@/core/math/saw';
@@ -326,19 +327,28 @@ export function useEvaluationViewModel() {
         setAiError(null);
         return;
       }
+    } else {
+      setAiExecutiveNarrative(null);
+      toast.info('Menyusun ulang rekomendasi manajerial AI...', { id: 'ai-refresh' });
     }
 
     setIsAiLoading(true);
     setAiError(null);
 
     try {
-      const narrative = await fetchAiExecutiveNarrative(requestPayload);
+      const narrative = await fetchAiExecutiveNarrative(requestPayload, undefined, { bypassCache: forceRefresh });
       setAiExecutiveNarrative(narrative);
+      if (forceRefresh) {
+        toast.success('Rekomendasi manajerial berhasil diperbarui.', { id: 'ai-refresh' });
+      }
     } catch (err: unknown) {
       const errMsg = err instanceof Error ? err.message : String(err);
       setAiError(errMsg);
       const fallback = generateFallbackNarrative(requestPayload);
       setAiExecutiveNarrative(fallback);
+      if (forceRefresh) {
+        toast.error('Gagal menghubungi Gemini AI, menggunakan narasi deterministik lokal.', { id: 'ai-refresh' });
+      }
     } finally {
       setIsAiLoading(false);
     }
