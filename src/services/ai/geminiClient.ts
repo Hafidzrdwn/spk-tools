@@ -5,15 +5,24 @@ import { buildGeminiPrompt } from './promptBuilder';
 import { generateFallbackNarrative } from './fallbackNarrative';
 
 export const CANDIDATE_MODELS = [
-  'gemini-3.8-flash',
+  'gemini-2.5-flash-lite',
+  'gemini-2.5-flash',
   'gemini-3.5-flash-lite',
   'gemini-3.6-flash',
-  'gemini-3.5-flash',
-  'gemini-2.5-flash',
-  'gemini-2.5-flash-lite',
-  'gemini-flash-latest',
-  'gemini-2.5-pro',
 ] as const;
+
+export const AI_REQUEST_TIMEOUT_MS = 8000;
+
+export function withTimeout<T>(
+  promise: Promise<T>,
+  timeoutMs: number = AI_REQUEST_TIMEOUT_MS,
+  errorMessage = 'Permintaan AI melebihi batas waktu respons.'
+): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<T>((_, reject) => setTimeout(() => reject(new Error(errorMessage)), timeoutMs)),
+  ]);
+}
 
 export function sanitizeNarrativeText(text: string): string {
   if (!text) return '';
@@ -97,15 +106,18 @@ export async function fetchAiExecutiveNarrative(
 
     for (const model of CANDIDATE_MODELS) {
       try {
-        const response = await ai.models.generateContent({
-          model,
-          contents: prompt,
-          config: {
-            responseMimeType: 'application/json',
-            temperature: 0.2,
-            maxOutputTokens: 1000,
-          },
-        });
+        const response = await withTimeout(
+          ai.models.generateContent({
+            model,
+            contents: prompt,
+            config: {
+              responseMimeType: 'application/json',
+              temperature: 0.2,
+              maxOutputTokens: 1000,
+            },
+          }),
+          AI_REQUEST_TIMEOUT_MS
+        );
 
         const rawText = response?.text;
         if (!rawText) continue;

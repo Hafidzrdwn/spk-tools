@@ -1,7 +1,6 @@
 import { GoogleGenAI } from '@google/genai';
 import { nanoid } from 'nanoid';
-import { getEffectiveGeminiApiKey } from './geminiClient';
-import { CANDIDATE_MODELS } from './geminiClient';
+import { getEffectiveGeminiApiKey, CANDIDATE_MODELS, withTimeout, AI_REQUEST_TIMEOUT_MS } from './geminiClient';
 import type { Criterion, Alternative, CaseContextMetadata } from '@/types/domain';
 
 export interface ProcessedStoryResult {
@@ -356,15 +355,18 @@ export async function extractMatrixFromStoryText(
 
     for (const model of CANDIDATE_MODELS) {
       try {
-        const response = await ai.models.generateContent({
-          model,
-          contents: prompt,
-          config: {
-            responseMimeType: 'application/json',
-            temperature: 0.2,
-            maxOutputTokens: 2500,
-          },
-        });
+        const response = await withTimeout(
+          ai.models.generateContent({
+            model,
+            contents: prompt,
+            config: {
+              responseMimeType: 'application/json',
+              temperature: 0.2,
+              maxOutputTokens: 2500,
+            },
+          }),
+          AI_REQUEST_TIMEOUT_MS
+        );
 
         const rawText = response?.text;
         if (!rawText) continue;
