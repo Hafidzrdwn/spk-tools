@@ -19,7 +19,7 @@ import type {
   ReportPayload,
 } from './types';
 import type { AiExecutiveNarrative } from '@/services/ai';
-import { formatDisplayNumber } from '@/utils/numberFormat';
+import { formatDisplayNumber, formatValueWithUnit } from '@/utils/numberFormat';
 
 export interface ProjectStateSubset {
   title: string;
@@ -315,7 +315,7 @@ export function buildStoryStepData(
     narrativeText = alternatives
       .map((alt) => {
         const specs = criteria
-          .map((c) => `${c.name}: ${alt.values[c.id] ?? 0}${c.unit ? ` ${c.unit}` : ''}`)
+          .map((c) => `${c.name}: ${formatValueWithUnit(alt.values[c.id] ?? 0, c.unit)}`)
           .join(', ');
         return `Kandidat ${alt.name} memiliki profil spesifikasi: ${specs}.`;
       })

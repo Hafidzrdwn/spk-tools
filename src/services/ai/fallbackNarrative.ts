@@ -1,4 +1,5 @@
 import type { AiNarrativeRequest, AiExecutiveNarrative } from './types';
+import { formatValueWithUnit, formatCurrencyInNarrative } from '@/utils/numberFormat';
 
 export function generateFallbackNarrative(request: AiNarrativeRequest): AiExecutiveNarrative {
   const startTime = performance.now();
@@ -83,16 +84,16 @@ export function generateFallbackNarrative(request: AiNarrativeRequest): AiExecut
   if (primaryBenefit && primaryCost) {
     const costVal = alternatives.find((a) => a.name === topConsensus)?.values[primaryCost.id];
     const benefitVal = alternatives.find((a) => a.name === topConsensus)?.values[primaryBenefit.id];
-    const bStr = benefitVal !== undefined ? ` (skor: ${benefitVal}${primaryBenefit.unit ? ' ' + primaryBenefit.unit : ''})` : '';
-    const cStr = costVal !== undefined ? ` sebesar ${costVal}${primaryCost.unit ? ' ' + primaryCost.unit : ''}` : '';
+    const bStr = benefitVal !== undefined ? ` (skor: ${formatValueWithUnit(benefitVal, primaryBenefit.unit)})` : '';
+    const cStr = costVal !== undefined ? ` sebesar ${formatValueWithUnit(costVal, primaryCost.unit)}` : '';
     causalReason = ` karena terbukti unggul dominan pada kriteria ${primaryBenefit.name}${bStr} dengan beban efisiensi ${primaryCost.name}${cStr}, sehingga memberikan rasio manfaat-biaya tertinggi dan risiko operasional paling terkendali bagi institusi`;
   } else if (primaryBenefit) {
     const benefitVal = alternatives.find((a) => a.name === topConsensus)?.values[primaryBenefit.id];
-    const bStr = benefitVal !== undefined ? ` sebesar ${benefitVal}${primaryBenefit.unit ? ' ' + primaryBenefit.unit : ''}` : '';
+    const bStr = benefitVal !== undefined ? ` sebesar ${formatValueWithUnit(benefitVal, primaryBenefit.unit)}` : '';
     causalReason = ` karena unggul dominan pada kriteria prioritas ${primaryBenefit.name}${bStr} yang menjadi tolok ukur utama keberhasilan program`;
   } else if (primaryCost) {
     const costVal = alternatives.find((a) => a.name === topConsensus)?.values[primaryCost.id];
-    const cStr = costVal !== undefined ? ` sebesar ${costVal}${primaryCost.unit ? ' ' + primaryCost.unit : ''}` : '';
+    const cStr = costVal !== undefined ? ` sebesar ${formatValueWithUnit(costVal, primaryCost.unit)}` : '';
     causalReason = ` karena menawarkan efisiensi anggaran paling optimal pada kriteria ${primaryCost.name}${cStr} yang melindungi likuiditas pembiayaan`;
   } else {
     causalReason = ` karena mencapai konsensus skor preferensi tertinggi secara konsisten lintas metode evaluasi`;
@@ -110,9 +111,9 @@ export function generateFallbackNarrative(request: AiNarrativeRequest): AiExecut
   const latencyMs = Number((performance.now() - startTime).toFixed(1));
 
   return {
-    sectionA_rankingShifts: sectionA,
-    sectionB_methodValidity: sectionB,
-    sectionC_recommendations: sectionC,
+    sectionA_rankingShifts: formatCurrencyInNarrative(sectionA),
+    sectionB_methodValidity: formatCurrencyInNarrative(sectionB),
+    sectionC_recommendations: formatCurrencyInNarrative(sectionC),
     source: 'deterministic_fallback',
     generatedAt: new Date().toISOString(),
     latencyMs,

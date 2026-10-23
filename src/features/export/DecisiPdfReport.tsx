@@ -6,7 +6,7 @@ import {
   getMethodFullName,
   generateReportConclusion,
 } from './generateReport';
-import { formatDisplayNumber } from '@/utils/numberFormat';
+import { formatDisplayNumber, formatValueWithUnit } from '@/utils/numberFormat';
 import { useUiStore } from '@/store/useUiStore';
 import {
   PdfSawNormFormula,
@@ -671,7 +671,7 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
                 const specs = payload.criteria
                   .map(
                     (c) =>
-                      `${c.name}: ${formatDisplayNumber(alt.values[c.id] ?? 0, { decimals: 2, separator: numberFormat })}${c.unit ? ` ${c.unit}` : ''}`
+                      `${c.name}: ${formatValueWithUnit(alt.values[c.id] ?? 0, c.unit, { decimals: 2, separator: numberFormat })}`
                   )
                   .join(' | ');
                 return (

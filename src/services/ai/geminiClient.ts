@@ -3,6 +3,7 @@ import type { AiNarrativeRequest, AiExecutiveNarrative } from './types';
 import { getCachedAiNarrative, setCachedAiNarrative } from './aiCache';
 import { buildGeminiPrompt } from './promptBuilder';
 import { generateFallbackNarrative } from './fallbackNarrative';
+import { formatCurrencyInNarrative } from '@/utils/numberFormat';
 
 export const CANDIDATE_MODELS = [
   'gemini-2.5-flash-lite',
@@ -26,7 +27,7 @@ export function withTimeout<T>(
 
 export function sanitizeNarrativeText(text: string): string {
   if (!text) return '';
-  return text
+  const cleaned = text
     .replace(/[\u2014\u2013]|--/g, (match, offset, fullStr) => {
       const prevChar = fullStr[offset - 1] || '';
       const nextChar = fullStr[offset + match.length] || '';
@@ -39,6 +40,8 @@ export function sanitizeNarrativeText(text: string): string {
     .replace(/\s*,\s*/g, ', ')
     .replace(/\n{3,}/g, '\n\n')
     .trim();
+
+  return formatCurrencyInNarrative(cleaned);
 }
 
 export function getEffectiveGeminiApiKey(): string {

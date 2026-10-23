@@ -10,6 +10,7 @@ import {
   type ParserCasePreset,
 } from '@/core/parser';
 import { extractMatrixFromStoryText } from '@/services/ai';
+import { formatValueWithUnit } from '@/utils/numberFormat';
 import type { Criterion, Alternative, CaseContextMetadata } from '@/types/domain';
 
 export type StoryInputMode = 'auto' | 'formatted';
@@ -88,7 +89,7 @@ export function useStoryToMatrixViewModel() {
     if (currentAlternatives.length === 0) return '';
     return currentAlternatives
       .map((alt) => {
-        const parts = currentCriteria.map((c) => `${c.name}: ${alt.values[c.id] ?? 0}`);
+        const parts = currentCriteria.map((c) => `${c.name}: ${formatValueWithUnit(alt.values[c.id] ?? 0, c.unit)}`);
         return `Kandidat: ${alt.name}, ${parts.join(', ')}`;
       })
       .join('\n');
@@ -162,7 +163,7 @@ export function useStoryToMatrixViewModel() {
   const handleSelectTemplate = useCallback((preset: ParserCasePreset) => {
     const narrative = preset.state.alternatives
       .map((alt) => {
-        const parts = preset.state.criteria.map((c) => `${c.name}: ${alt.values[c.id] ?? 0}`);
+        const parts = preset.state.criteria.map((c) => `${c.name}: ${formatValueWithUnit(alt.values[c.id] ?? 0, c.unit)}`);
         return `Kandidat: ${alt.name}, ${parts.join(', ')}`;
       })
       .join('\n');
