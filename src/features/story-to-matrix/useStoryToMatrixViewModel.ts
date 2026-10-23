@@ -22,6 +22,8 @@ export function useStoryToMatrixViewModel() {
   const mode = useUiStore((s) => s.storyMode);
   const setMode = useUiStore((s) => s.setStoryMode);
 
+  const lastResetAt = useProjectStore((s) => s.lastResetAt);
+
   const [storyInputMode, setStoryInputMode] = useState<StoryInputMode>('auto');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [extractedTitle, setExtractedTitle] = useState<string>('');
@@ -30,6 +32,17 @@ export function useStoryToMatrixViewModel() {
   const [rawText, setRawText] = useState<string>(() => {
     if (typeof window !== 'undefined') {
       try {
+        const cur = useProjectStore.getState();
+        const isBlankProject =
+          cur.title === 'Proyek SPK Baru' &&
+          cur.criteria.length === 0 &&
+          cur.alternatives.length === 0 &&
+          !cur.contextMetadata;
+
+        if (isBlankProject) {
+          localStorage.removeItem('decisigraph_story_raw_text');
+          return '';
+        }
         return localStorage.getItem('decisigraph_story_raw_text') || '';
       } catch {
       }
@@ -39,9 +52,26 @@ export function useStoryToMatrixViewModel() {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      localStorage.setItem('decisigraph_story_raw_text', rawText);
+      if (rawText.trim()) {
+        localStorage.setItem('decisigraph_story_raw_text', rawText);
+      } else {
+        localStorage.removeItem('decisigraph_story_raw_text');
+      }
     }
   }, [rawText]);
+
+  useEffect(() => {
+    if (lastResetAt) {
+      setRawText('');
+      setPreviewAlternatives([]);
+      setTempCriteria([]);
+      setExtractedTitle('');
+      setContextMetadata(undefined);
+      setErrorMessage(null);
+      setIsCommitted(false);
+      setMode('story');
+    }
+  }, [lastResetAt, setMode]);
 
   const [previewAlternatives, setPreviewAlternatives] = useState<Alternative[]>([]);
   const [tempCriteria, setTempCriteria] = useState<Criterion[]>([]);

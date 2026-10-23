@@ -14,17 +14,9 @@ export interface StoryTextAreaProps {
   isAnalyzing?: boolean;
 }
 
-const PLACEHOLDER_AUTO = `Tempel atau ketik narasi studi kasus Anda di sini. Contoh:
+const PLACEHOLDER_AUTO = 'Tempel atau ketik narasi cerita, soal studi kasus, atau deskripsi usulan keputusan di sini...';
 
-HIMASIFO memiliki anggaran sebesar Rp15.000.000 untuk menentukan prioritas program kerja selama satu periode kepengurusan. Terdapat lima usulan kegiatan, yaitu seminar nasional teknologi dengan anggaran Rp5.000.000 dan target 200 peserta, pelatihan pengembangan web dengan anggaran Rp3.000.000 dan target 60 peserta, kompetisi inovasi mahasiswa dengan anggaran Rp4.500.000 dan target 100 peserta, pengabdian masyarakat dengan anggaran Rp2.500.000 dan target 80 peserta, serta malam keakraban mahasiswa dengan anggaran Rp6.000.000 dan target 150 peserta. Setiap kegiatan memiliki tingkat urgensi, manfaat bagi mahasiswa, kesesuaian dengan tujuan himpunan, dan tingkat kesulitan pelaksanaan yang berbeda.`;
-
-const PLACEHOLDER_FORMATTED = `Contoh format input teks terstruktur:
-Kandidat: Budi Santoso, Nilai Tes: 85, Pengalaman: 3 thn, Gaji: 5 jt
-Kandidat: Siti Aminah, Nilai Tes: 92, Pengalaman: 5 thn, Gaji: 7 jt
-Kandidat: Joko Widodo, Nilai Tes: 78, Pengalaman: 2 thn, Gaji: 4.5 jt
-
-Atau masukkan perbandingan preferensi:
-Pengalaman 3 kali lebih penting dari Gaji.`;
+const PLACEHOLDER_FORMATTED = 'Ketik teks terstruktur. Contoh:\nKandidat: Program A, Biaya: 50 jt, Kualitas: 85';
 
 export const MAX_STORY_CHARS = 5000;
 

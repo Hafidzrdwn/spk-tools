@@ -4,6 +4,7 @@ import { immer } from 'zustand/middleware/immer';
 import { nanoid } from 'nanoid';
 import { projectStatePersistedSchema } from '@/validators/matrixSchemas';
 import { toast } from 'sonner';
+import { useUiStore } from './useUiStore';
 import type { DecisiProjectState, Criterion, Alternative, MethodId, CaseContextMetadata } from '@/types/domain';
 
 export interface ProjectStore extends DecisiProjectState {
@@ -21,6 +22,7 @@ export interface ProjectStore extends DecisiProjectState {
   setContextMetadata: (metadata?: CaseContextMetadata) => void;
   loadProjectState: (state: DecisiProjectState) => void;
   resetProject: () => void;
+  lastResetAt?: number;
 }
 
 export const INITIAL_PROJECT_STATE: DecisiProjectState = {
@@ -155,7 +157,16 @@ export const useProjectStore = create<ProjectStore>()(
 
       resetProject: () => {
         if (typeof window !== 'undefined' && window.localStorage) {
-          window.localStorage.removeItem('decisigraph-project-state');
+          try {
+            window.localStorage.removeItem('decisigraph-project-state');
+            window.localStorage.removeItem('decisigraph_story_raw_text');
+          } catch {
+          }
+        }
+        try {
+          useUiStore.getState().setStoryHasExtracted(false);
+          useUiStore.getState().setStoryMode('story');
+        } catch {
         }
         set((state) => {
           state.title = defaultInitialState.title;
@@ -163,6 +174,7 @@ export const useProjectStore = create<ProjectStore>()(
           state.criteria = JSON.parse(JSON.stringify(defaultInitialState.criteria));
           state.alternatives = JSON.parse(JSON.stringify(defaultInitialState.alternatives));
           state.contextMetadata = undefined;
+          state.lastResetAt = Date.now();
         });
       },
     })),

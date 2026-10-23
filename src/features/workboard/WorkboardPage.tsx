@@ -277,7 +277,17 @@ export const WorkboardPage: React.FC = () => {
       <TemplateSelectorModal
         isOpen={isTemplateModalOpen}
         onClose={() => setIsTemplateModalOpen(false)}
-        onSelect={(tpl) => loadProjectState(tpl.state)}
+        onSelect={(tpl) => {
+          if (typeof window !== 'undefined') {
+            try {
+              localStorage.removeItem('decisigraph_story_raw_text');
+            } catch {
+            }
+          }
+          useUiStore.getState().setStoryHasExtracted(false);
+          useUiStore.getState().setStoryMode('story');
+          loadProjectState(tpl.state);
+        }}
       />
 
       <WelcomeModal

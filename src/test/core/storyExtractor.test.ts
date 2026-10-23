@@ -66,4 +66,25 @@ describe('Story-to-Matrix Intelligent Extractor', () => {
     expect(res.contextMetadata?.institutionOrOrg).toBe('HIMASIFO');
     expect(res.alternatives.length).toBe(5);
   });
+
+  it('resetProject membersihkan story raw text pada localStorage dan mereset story mode', async () => {
+    const { useProjectStore } = await import('@/store/useProjectStore');
+    const { useUiStore } = await import('@/store/useUiStore');
+
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('decisigraph_story_raw_text', 'Teks cerita lama yang tidak boleh tertinggal');
+    }
+    useUiStore.getState().setStoryMode('form');
+    useUiStore.getState().setStoryHasExtracted(true);
+
+    useProjectStore.getState().resetProject();
+
+    if (typeof localStorage !== 'undefined') {
+      expect(localStorage.getItem('decisigraph_story_raw_text')).toBeNull();
+    }
+    expect(useUiStore.getState().storyMode).toBe('story');
+    expect(useUiStore.getState().storyHasExtracted).toBe(false);
+    expect(useProjectStore.getState().criteria.length).toBe(0);
+    expect(useProjectStore.getState().alternatives.length).toBe(0);
+  });
 });
