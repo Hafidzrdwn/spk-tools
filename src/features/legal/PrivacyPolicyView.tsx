@@ -1,215 +1,125 @@
 import React from 'react';
-import { PrivacySecurityIllustration } from '@/components/illustrations';
-import { ShieldCheck, HardDrive, Database, Mail, Cpu, RefreshCw, Lock } from 'lucide-react';
-import Badge from '@/components/ui/Badge';
+import { PrivacyBoxMascot } from '@/components/illustrations';
 
 export const PrivacyPolicyView: React.FC = () => {
   return (
-    <div className="space-y-8 sm:space-y-10">
-      <section className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs p-6 sm:p-8 grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
-        <div className="md:col-span-7 space-y-3.5 text-left">
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-indigo-50 border border-indigo-200/70 text-indigo-700 text-xs font-semibold">
-            <Lock className="w-3.5 h-3.5" />
-            <span>Komitmen Transparansi Data</span>
-          </div>
+    <div className="space-y-10 sm:space-y-12 text-left">
+      <section className="border-b border-slate-200 pb-8 sm:pb-10 grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+        <div className="md:col-span-8 space-y-3">
+          <span className="text-xs font-semibold uppercase tracking-wider text-indigo-600">
+            Transparansi Data
+          </span>
 
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-            Kebijakan Privasi DecisiGraph
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight">
+            Kebijakan Privasi
           </h1>
 
-          <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-            DecisiGraph beroperasi dengan prinsip <strong>Local-First & Radical Transparency</strong>. 
-            Kami percaya bahwa analisis keputusan multi-kriteria Anda bersifat privat. 
-            Halaman ini menjelaskan secara terbuka apa saja yang diproses pada sistem, 
-            layanan pihak ketiga yang terhubung, dan bagaimana privasi Anda senantiasa terlindungi.
+          <p className="text-sm text-slate-600 leading-relaxed max-w-2xl">
+            DecisiGraph beroperasi dengan prinsip <strong>Local-First</strong>. Seluruh proses perhitungan 
+            dan matriks keputusan disimpan secara lokal di peramban Anda. Dokumen ini menjelaskan secara lugas 
+            apa saja yang diproses pada sistem, koneksi layanan eksternal, dan kendali data Anda.
           </p>
 
-          <div className="pt-2 flex flex-wrap items-center gap-2 text-xs text-slate-500">
-            <span className="font-medium text-slate-700">Terakhir diperbarui:</span>
-            <Badge variant="neutral" size="sm">23 Oktober 2026</Badge>
-            <span className="text-slate-300">&bull;</span>
-            <span className="font-medium text-emerald-700">Berlaku untuk Versi 1.1</span>
+          <div className="pt-1 text-xs text-slate-400">
+            Terakhir diperbarui: 23 Oktober 2026 &bull; Berlaku untuk Versi 1.1
           </div>
         </div>
 
-        <div className="md:col-span-5 flex justify-center">
-          <PrivacySecurityIllustration className="w-full max-w-xs sm:max-w-sm" />
+        <div className="md:col-span-4 flex justify-center md:justify-end">
+          <PrivacyBoxMascot className="w-48 sm:w-56" />
         </div>
       </section>
 
-      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
-        <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5">
-          <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-sm">
-            1
+      <section className="space-y-8 max-w-3xl">
+        <article className="space-y-2">
+          <div className="flex items-baseline gap-3">
+            <span className="font-mono text-xs font-bold text-indigo-600 shrink-0">01</span>
+            <h2 className="text-base font-bold text-slate-900">
+              Penyimpanan Data Lokal (Local Storage Browser)
+            </h2>
           </div>
-          <h2 className="text-xs font-bold text-slate-900">Local-First Storage</h2>
-          <p className="text-[11px] text-slate-600 leading-relaxed">
-            Data matriks, nama kandidat, dan bobot tersimpan di peramban Anda (localStorage). Tidak dikirim ke database kami.
+          <p className="text-sm text-slate-600 leading-relaxed pl-7">
+            Ketika Anda menginput kriteria, alternatif, nilai bobot, dan matriks keputusan untuk metode SAW, WP, TOPSIS, 
+            maupun AHP, seluruh data tersebut tersimpan eksklusif di dalam memori <em>Local Storage</em> peramban Anda. 
+            DecisiGraph tidak memiliki database privat di peladen untuk menyimpan proyek atau identitas pribadi Anda. 
+            Data Anda tetap berada di bawah kendali fisik perangkat Anda sendiri.
           </p>
-        </div>
+        </article>
 
-        <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5">
-          <div className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-sm">
-            2
+        <article className="space-y-2">
+          <div className="flex items-baseline gap-3">
+            <span className="font-mono text-xs font-bold text-indigo-600 shrink-0">02</span>
+            <h2 className="text-base font-bold text-slate-900">
+              Statistik Kunjungan &amp; Deduplikasi Alamat IP
+            </h2>
           </div>
-          <h2 className="text-xs font-bold text-slate-900">Tanpa Pelacak Iklan</h2>
-          <p className="text-[11px] text-slate-600 leading-relaxed">
-            Bebas cookie iklan pihak ketiga (seperti Facebook Pixel atau Google AdSense). Tidak ada pelacakan profil komersial.
+          <div className="space-y-2 text-sm text-slate-600 leading-relaxed pl-7">
+            <p>
+              Pada tab analitik dan komunitas, sistem menampilkan data agregat kunjungan, tipe peramban, dan sistem operasi pengguna secara transparan.
+            </p>
+            <p>
+              Untuk mencegah manipulasi angka kunjungan dan melindungi kuota layanan, sistem membuat hash teknis satu arah dari alamat IP per hari kalender. 
+              Alamat IP Anda tidak pernah disimpan dalam bentuk teks mentah yang dapat diidentifikasi secara pribadi, dan riwayat kunci deduplikasi lokal 
+              secara rutin dibersihkan melalui mekanisme <em>garbage collection</em> otomatis.
+            </p>
+          </div>
+        </article>
+
+        <article className="space-y-2">
+          <div className="flex items-baseline gap-3">
+            <span className="font-mono text-xs font-bold text-indigo-600 shrink-0">03</span>
+            <h2 className="text-base font-bold text-slate-900">
+              Ulasan Komunitas (Firebase Realtime Database)
+            </h2>
+          </div>
+          <p className="text-sm text-slate-600 leading-relaxed pl-7">
+            Jika Anda secara sukarela membagikan ulasan pada linimasa Komunitas, informasi yang tersimpan meliputi nama panggilan yang Anda tentukan, 
+            pilihan peran/profesi, rating bintang, dan pesan ulasan Anda. Data ini tersimpan di Firebase Realtime Database dan bersifat publik 
+            untuk dibaca oleh pengguna lain. Kami menghimbau untuk tidak menyertakan data sensitif atau kontak rahasia pada kolom ulasan publik.
           </p>
-        </div>
+        </article>
 
-        <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-2xs space-y-1.5 sm:col-span-2 lg:col-span-1">
-          <div className="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-sm">
-            3
+        <article className="space-y-2">
+          <div className="flex items-baseline gap-3">
+            <span className="font-mono text-xs font-bold text-indigo-600 shrink-0">04</span>
+            <h2 className="text-base font-bold text-slate-900">
+              Formulir Bantuan &amp; Laporan Kendala (Web3Forms API)
+            </h2>
           </div>
-          <h2 className="text-xs font-bold text-slate-900">Kendali Reset Total</h2>
-          <p className="text-[11px] text-slate-600 leading-relaxed">
-            Sekali klik tombol &quot;Reset Proyek&quot;, seluruh data studi kasus dan cache narasi langsung musnah dari peramban Anda.
+          <p className="text-sm text-slate-600 leading-relaxed pl-7">
+            Pengiriman laporan bug atau kendala teknis diteruskan ke email pengembang melalui Web3Forms API. 
+            Data yang dikirimkan meliputi alamat email yang Anda masukkan secara sukarela, teks kendala, dan lampiran tangkapan layar. 
+            Layanan ini dilengkapi proteksi bot honeypot dan jeda pengiriman (cooldown 60 detik) untuk mencegah penyalahgunaan.
           </p>
-        </div>
-      </section>
+        </article>
 
-      <section className="space-y-5 text-left">
-        <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-2xs space-y-3">
-          <div className="flex items-center gap-2.5 text-indigo-700">
-            <HardDrive className="w-5 h-5 shrink-0" />
+        <article className="space-y-2">
+          <div className="flex items-baseline gap-3">
+            <span className="font-mono text-xs font-bold text-indigo-600 shrink-0">05</span>
             <h2 className="text-base font-bold text-slate-900">
-              1. Penyimpanan Data Lokal (Local Storage Browser)
+              Pemrosesan Dokumen &amp; AI (Google Gemini GenAI)
             </h2>
           </div>
-          <div className="space-y-2 text-xs sm:text-sm text-slate-600 leading-relaxed">
-            <p>
-              Saat Anda menggunakan DecisiGraph untuk menghitung metode SAW, WP, TOPSIS, atau AHP, 
-              seluruh data input (nama alternatif, kriteria, nilai bobot, tipe benefit/cost, dan matriks perbandingan) 
-              disimpan secara eksklusif di dalam <strong>Local Storage</strong> peramban Anda.
-            </p>
-            <p>
-              Artinya, data tersebut berada di bawah kendali fisik perangkat Anda. Kami tidak memiliki salinan cadangan di peladen 
-              (*server-side*) DecisiGraph untuk proyek pribadi Anda. Jika Anda membuka aplikasi di komputer lain, 
-              data tidak akan otomatis sinkron kecuali Anda mengekspor file cadangan JSON menggunakan fitur <em>Project Backup</em>.
-            </p>
-          </div>
-        </div>
+          <p className="text-sm text-slate-600 leading-relaxed pl-7">
+            Fitur Story-to-Matrix dan Document Loader (unggah PDF, Word, Excel, teks) mengirimkan teks studi kasus ke Google Gemini API 
+            secara transit melalui koneksi aman HTTPS untuk dipetakan menjadi matriks keputusan. DecisiGraph tidak menyimpan dokumen Anda 
+            di server eksternal mana pun. Disarankan untuk tidak mengunggah dokumen yang memuat rahasia negara atau identitas perbankan rahasia.
+          </p>
+        </article>
 
-        <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-2xs space-y-3">
-          <div className="flex items-center gap-2.5 text-emerald-700">
-            <ShieldCheck className="w-5 h-5 shrink-0" />
+        <article className="space-y-2">
+          <div className="flex items-baseline gap-3">
+            <span className="font-mono text-xs font-bold text-indigo-600 shrink-0">06</span>
             <h2 className="text-base font-bold text-slate-900">
-              2. Statistik Penggunaan & Deduplikasi Kunjungan (Komunitas & Analitik)
+              Hak Kendali &amp; Penghapusan Data
             </h2>
           </div>
-          <div className="space-y-2 text-xs sm:text-sm text-slate-600 leading-relaxed">
-            <p>
-              Pada tab <strong>/analytics</strong> dan linimasa <strong>/review</strong>, DecisiGraph menampilkan data agregat 
-              transparan berupa total kunjungan harian, sistem operasi, dan peramban yang digunakan.
-            </p>
-            <ul className="list-disc pl-5 space-y-1.5 text-xs text-slate-600">
-              <li>
-                <strong>Deduplikasi Alamat IP:</strong> Untuk mencegah inflasi angka kunjungan palsu (spam reload) dan menjaga batas kuota layanan gratis, 
-                sistem mencatat hash teknis alamat IP untuk satu hari kalender. Kami tidak mengaitkan alamat IP Anda dengan identitas pribadi apa pun.
-              </li>
-              <li>
-                <strong>Pembersihan Otomatis (*Garbage Collection*):</strong> Riwayat kunci deduplikasi lokal dibersihkan secara berkala 
-                dari memori browser begitu melewati ambang batas tanggal hari aktif.
-              </li>
-              <li>
-                <strong>Bebas Fingerprinting Invasif:</strong> Kami tidak melakukan canvas fingerprinting, audio fingerprinting, atau pelacakan lintas domain.
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-2xs space-y-3">
-          <div className="flex items-center gap-2.5 text-blue-700">
-            <Database className="w-5 h-5 shrink-0" />
-            <h2 className="text-base font-bold text-slate-900">
-              3. Formulir Komunitas & Ulasan Pengguna (Firebase Realtime Database)
-            </h2>
-          </div>
-          <div className="space-y-2 text-xs sm:text-sm text-slate-600 leading-relaxed">
-            <p>
-              Jika Anda secara sukarela memberikan ulasan pada halaman Komunitas, informasi yang Anda kirimkan meliputi:
-            </p>
-            <ul className="list-disc pl-5 space-y-1 text-xs text-slate-600">
-              <li>Nama Tampilan (*Display Name*) yang Anda masukkan secara manual.</li>
-              <li>Peran / Profesi yang Anda pilih (misal: Mahasiswa, Dosen, Peneliti, Praktisi).</li>
-              <li>Tingkat kepuasan bintang (1–5 bintang) dan teks ulasan pengalaman Anda.</li>
-              <li>Waktu kirim (*timestamp*).</li>
-            </ul>
-            <p>
-              Data ini tersimpan pada Firebase Realtime Database dan bersifat publik untuk dibaca oleh komunitas pengguna lain. 
-              Mohon jangan menyertakan nomor telepon, kata sandi, atau data rahasia pada kolom ulasan publik.
-            </p>
-          </div>
-        </div>
-
-        <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-2xs space-y-3">
-          <div className="flex items-center gap-2.5 text-amber-700">
-            <Mail className="w-5 h-5 shrink-0" />
-            <h2 className="text-base font-bold text-slate-900">
-              4. Formulir Pelaporan Kendala & Bantuan (Web3Forms API)
-            </h2>
-          </div>
-          <div className="space-y-2 text-xs sm:text-sm text-slate-600 leading-relaxed">
-            <p>
-              Ketika Anda melaporkan bug atau kendala teknis melalui modal pengaduan dalam aplikasi, data yang Anda masukkan 
-              (email pengirim, ringkasan kendala, langkah reproduksi, dan tangkapan layar) diteruskan langsung ke kotak surat pengembang 
-              melalui layanan <strong>Web3Forms</strong>.
-            </p>
-            <p>
-              Formulir ini dilengkapi dengan <em>invisible bot honeypot</em> dan sistem jeda waktu (*cooldown* 60 detik) 
-              guna memitigasi serangan denial-of-service atau spamming. Alamat email Anda hanya digunakan untuk membalas tindak lanjut laporan kendala Anda.
-            </p>
-          </div>
-        </div>
-
-        <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-2xs space-y-3">
-          <div className="flex items-center gap-2.5 text-purple-700">
-            <Cpu className="w-5 h-5 shrink-0" />
-            <h2 className="text-base font-bold text-slate-900">
-              5. Pemrosesan Dokumen & Kecerdasan Buatan (Google Gemini API)
-            </h2>
-          </div>
-          <div className="space-y-2 text-xs sm:text-sm text-slate-600 leading-relaxed">
-            <p>
-              Fitur <strong>Story-to-Matrix</strong> dan <strong>AI Document Loader</strong> memungkinkan Anda mengunggah berkas 
-              (PDF, DOCX, XLSX, TXT) atau menempelkan narasi studi kasus. 
-            </p>
-            <ul className="list-disc pl-5 space-y-1.5 text-xs text-slate-600">
-              <li>
-                <strong>Pemrosesan Transit:</strong> Potongan teks dokumen dikirim secara aman (melalui protokol HTTPS terenkripsi) 
-                ke endpoint Google Gemini API untuk mengekstrak kriteria, bobot, dan alternatif keputusan.
-              </li>
-              <li>
-                <strong>Nol Penyimpanan Permanen:</strong> DecisiGraph tidak menyimpan berkas mentah Anda di server eksternal. 
-                Begitu hasil ekstraksi matriks diterima di browser, teks mentah hanya disimpan sementara di peramban Anda untuk keperluan sesi aktif.
-              </li>
-              <li>
-                <strong>Saran Kebijakan Berkas:</strong> Pengguna dihimbau untuk tidak mengunggah dokumen yang berisi rahasia militer/negara, 
-                rekam medis rahasia, atau data finansial berizin khusus.
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-2xs space-y-3">
-          <div className="flex items-center gap-2.5 text-rose-700">
-            <RefreshCw className="w-5 h-5 shrink-0" />
-            <h2 className="text-base font-bold text-slate-900">
-              6. Hak Pengguna & Prosedur Penghapusan Data
-            </h2>
-          </div>
-          <div className="space-y-2 text-xs sm:text-sm text-slate-600 leading-relaxed">
-            <p>
-              Karena data utama berada di browser Anda, Anda memiliki hak penuh untuk:
-            </p>
-            <ol className="list-decimal pl-5 space-y-1 text-xs text-slate-600">
-              <li>Mengekspor seluruh data proyek ke berkas JSON cadangan kapan saja.</li>
-              <li>Menghapus seluruh histori input dengan menekan tombol <strong>&quot;Reset Proyek&quot;</strong> pada menu aplikasi.</li>
-              <li>Membersihkan <em>Local Storage / Cookies</em> melalui menu Pengaturan Browser Anda untuk menghapus jejak permanen.</li>
-            </ol>
-          </div>
-        </div>
+          <p className="text-sm text-slate-600 leading-relaxed pl-7">
+            Anda dapat menghapus seluruh riwayat matriks, bobot, dan cache narasi kapan saja dengan mengklik tombol 
+            <strong> &quot;Reset Proyek&quot;</strong> pada menu aplikasi atau membersihkan riwayat situs pada peramban Anda. 
+            Anda juga dapat mengekspor cadangan berkas JSON mandiri untuk disimpan secara pribadi di perangkat Anda.
+          </p>
+        </article>
       </section>
     </div>
   );

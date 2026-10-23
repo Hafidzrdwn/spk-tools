@@ -8,8 +8,8 @@ export {
   DocumentLoaderSvgIcon,
 } from './FeatureIcons';
 export {
-  PrivacySecurityIllustration,
-  TermsLegalIllustration,
-  ChangelogTimelineIllustration,
-  AuthorAvatarIllustration,
+  PrivacyBoxMascot,
+  TermsBoxMascot,
+  ReleasesBoxMascot,
+  AuthorBoxMascot,
 } from './PageIllustrations';
