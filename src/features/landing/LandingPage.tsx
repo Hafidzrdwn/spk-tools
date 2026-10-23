@@ -14,6 +14,8 @@ import {
   RankShiftSvgIcon,
   StoryMatrixSvgIcon,
   FormalReportSvgIcon,
+  DecisionEvaluationSvgIcon,
+  DocumentLoaderSvgIcon,
 } from '@/components/illustrations';
 
 export type CoreMethodId = 'SAW' | 'WP' | 'TOPSIS' | 'AHP';
@@ -242,7 +244,7 @@ export const LandingPage: React.FC = () => {
               to="/board"
               onMouseEnter={() => prefetchRoute.board()}
               onFocus={() => prefetchRoute.board()}
-              className="hidden sm:inline-flex text-xs font-semibold text-slate-600 hover:text-slate-900 px-3 min-h-11 items-center rounded-lg hover:bg-slate-100 transition-colors"
+              className="hidden sm:inline-flex text-xs font-semibold text-slate-600 hover:text-slate-900 px-2.5 min-h-11 items-center rounded-lg hover:bg-slate-100 transition-colors"
             >
               Workboard
             </Link>
@@ -250,9 +252,25 @@ export const LandingPage: React.FC = () => {
               to="/review"
               onMouseEnter={prefetchRoute.review}
               onFocus={prefetchRoute.review}
-              className="text-xs font-semibold text-slate-600 hover:text-slate-900 px-2 sm:px-3 min-h-11 inline-flex items-center rounded-lg hover:bg-slate-100 transition-colors"
+              className="text-xs font-semibold text-slate-600 hover:text-slate-900 px-2 sm:px-2.5 min-h-11 inline-flex items-center rounded-lg hover:bg-slate-100 transition-colors"
             >
               Komunitas
+            </Link>
+            <Link
+              to="/releases"
+              onMouseEnter={prefetchRoute.releases}
+              onFocus={prefetchRoute.releases}
+              className="hidden md:inline-flex text-xs font-semibold text-slate-600 hover:text-slate-900 px-2.5 min-h-11 items-center rounded-lg hover:bg-slate-100 transition-colors"
+            >
+              Rilis
+            </Link>
+            <Link
+              to="/about"
+              onMouseEnter={prefetchRoute.about}
+              onFocus={prefetchRoute.about}
+              className="hidden md:inline-flex text-xs font-semibold text-slate-600 hover:text-slate-900 px-2.5 min-h-11 items-center rounded-lg hover:bg-slate-100 transition-colors"
+            >
+              Tentang
             </Link>
 
             <a
@@ -291,17 +309,12 @@ export const LandingPage: React.FC = () => {
         <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           {/* Left Column: Context & Primary CTAs (6 cols) */}
           <div className="lg:col-span-6 space-y-5 text-left">
-            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-slate-100 border border-slate-200 text-slate-700 text-xs font-medium">
-              <span className="w-1.5 h-1.5 rounded-full bg-indigo-600" />
-              <span>Sistem Pendukung Keputusan Multi-Metode</span>
-            </div>
-
-            <div className="space-y-3">
+            <div className="space-y-3.5">
               <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight wrap-break-word">
-                Evaluasi Alternatif Keputusan Secara Terukur & Objektif.
+                Evaluasi Alternatif Keputusan Secara Terukur &amp; Objektif.
               </h1>
               <p className="text-xs sm:text-sm text-slate-600 leading-relaxed wrap-break-word">
-                Bandingkan peringkat alternatif secara simultan melalui 4 metode matematis teruji: SAW, WP, TOPSIS, dan AHP. Dilengkapi inspeksi rumus KaTeX per sel matriks dan validasi konsistensi hierarki.
+                Platform Decision Intelligence modern yang memadukan kalkulasi matematis transparan (SAW, WP, TOPSIS, AHP) dengan kekuatan Generative AI untuk ekstraksi dokumen, simulasi sensitivitas, dan sintesis manajerial.
               </p>
             </div>
 
@@ -326,24 +339,24 @@ export const LandingPage: React.FC = () => {
                 onClick={() => navigate('/review')}
                 className="w-full sm:w-auto min-h-11 px-4 py-2.5 text-xs sm:text-sm font-medium border-slate-200 text-slate-700 hover:text-slate-900 justify-center"
               >
-                <span>Ulasan & Masukan</span>
+                <span>Ulasan &amp; Masukan</span>
               </Button>
             </div>
 
-            {/* Micro Feature Proof */}
-            <div className="pt-2 border-t border-slate-200/80 grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3 text-xs text-slate-600 font-medium">
-              <div className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
-                <span>Formula KaTeX per Sel</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
-                <span>Uji Konsistensi CR &lt; 0.1</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
-                <span>Laporan Siap Cetak (A4)</span>
-              </div>
+            {/* Micro Feature Proof Without Generic Dots */}
+            <div className="pt-2.5 border-t border-slate-200/80 flex flex-wrap items-center gap-2 text-xs text-slate-600">
+              <span className="px-2.5 py-1 rounded-md bg-slate-100 border border-slate-200/80 text-slate-700 font-medium text-[11px]">
+                Inspeksi Rumus KaTeX
+              </span>
+              <span className="px-2.5 py-1 rounded-md bg-slate-100 border border-slate-200/80 text-slate-700 font-medium text-[11px]">
+                Sensitivitas &amp; Goal Seeking
+              </span>
+              <span className="px-2.5 py-1 rounded-md bg-slate-100 border border-slate-200/80 text-slate-700 font-medium text-[11px]">
+                AI Document Loader
+              </span>
+              <span className="px-2.5 py-1 rounded-md bg-slate-100 border border-slate-200/80 text-slate-700 font-medium text-[11px]">
+                Laporan Eksekutif PDF
+              </span>
             </div>
           </div>
 
@@ -400,7 +413,9 @@ export const LandingPage: React.FC = () => {
                   <HeroDecisionIllustration activeMethod={activePreviewMethod} />
                   <div className="pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2 text-xs">
                     <div className="flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
+                      <span className="text-[10px] font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200/60 uppercase">
+                        Kasus
+                      </span>
                       <span className="font-semibold text-slate-800">{currentHeroSim.scenario}</span>
                     </div>
                     <button
@@ -764,7 +779,57 @@ export const LandingPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Capability 3: Story-to-Matrix Converter (5 cols) */}
+            {/* Capability 3: Decision Evaluation Hub & Sensitivitas (6 cols) */}
+            <div className="md:col-span-6 p-6 rounded-2xl bg-white border border-slate-200 shadow-2xs space-y-3 flex flex-col justify-between">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-mono font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200/60 inline-block">
+                    Evaluasi Keputusan v1.1
+                  </span>
+                  <DecisionEvaluationSvgIcon size={36} />
+                </div>
+                <h3 className="text-base font-bold text-slate-900">
+                  Sensitivitas Bobot &amp; Goal Seeking Terbalik
+                </h3>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  Uji ketahanan peringkat terhadap perubahan bobot kriteria secara interaktif. Algoritma Goal Seeking secara otomatis menghitung peningkatan skor minimal yang dibutuhkan kandidat runner-up untuk membalikkan posisi menjadi juara 1.
+                </p>
+              </div>
+
+              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex flex-wrap items-center justify-between gap-2 text-xs font-medium text-slate-700">
+                <span>Simulasi Skenario &amp; Kuadran Trade-off</span>
+                <Badge variant="primary" size="sm" className="font-mono text-[10px] bg-emerald-600 text-white">
+                  Spearman &rho; Analisis
+                </Badge>
+              </div>
+            </div>
+
+            {/* Capability 4: AI Document Loader & Causal Synthesis (6 cols) */}
+            <div className="md:col-span-6 p-6 rounded-2xl bg-white border border-slate-200 shadow-2xs space-y-3 flex flex-col justify-between">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-mono font-semibold text-purple-600 bg-purple-50 px-2 py-0.5 rounded border border-purple-200/60 inline-block">
+                    AI Document Engine v1.1
+                  </span>
+                  <DocumentLoaderSvgIcon size={36} />
+                </div>
+                <h3 className="text-base font-bold text-slate-900">
+                  Impor Dokumen (PDF/Word/Excel) &amp; Sintesis Manajerial
+                </h3>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  Unggah proposal TOR nyata atau lembar Excel untuk diekstrak menjadi matriks keputusan otomatis. Dilengkapi sintesis manajerial AI dengan penalaran kausal terstruktur untuk Leader, Operator, Technical, dan Audit.
+                </p>
+              </div>
+
+              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex flex-wrap items-center justify-between gap-2 text-xs font-medium text-slate-700">
+                <span>Dukungan PDF, DOCX, XLSX, TXT</span>
+                <Badge variant="neutral" size="sm" className="font-mono text-[10px]">
+                  Google Gemini GenAI
+                </Badge>
+              </div>
+            </div>
+
+            {/* Capability 5: Story-to-Matrix Converter (5 cols) */}
             <div className="md:col-span-5 p-6 rounded-2xl bg-white border border-slate-200 shadow-2xs space-y-3 flex flex-col justify-between">
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
@@ -777,17 +842,17 @@ export const LandingPage: React.FC = () => {
                   Konversi Kasus Narasi ke Matriks
                 </h3>
                 <p className="text-xs text-slate-600 leading-relaxed">
-                  Ubah narasi masalah keputusan, deskripsi kualitatif, atau dokumen studi kasus langsung menjadi struktur matriks kriteria dan alternatif yang siap dikalkulasi.
+                  Ubah narasi masalah keputusan kualitatif langsung menjadi struktur matriks kriteria dan alternatif siap kalkulasi dengan mode ganda (narasi bebas AI &amp; template standar).
                 </p>
               </div>
 
-              <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-[11px] text-slate-600 flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-indigo-600 shrink-0" />
-                <span>Otomatis memetakan nama kriteria, bobot persentase, dan tipe benefit/cost.</span>
+              <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-[11px] text-slate-700 font-medium flex items-center justify-between">
+                <span>Pemetakan Otomatis Benefit / Cost</span>
+                <span className="text-indigo-600 font-bold text-[10px]">Sinkronisasi Dua Arah</span>
               </div>
             </div>
 
-            {/* Capability 4: Formal PDF Documentation (7 cols) */}
+            {/* Capability 6: Formal PDF Documentation (7 cols) */}
             <div className="md:col-span-7 p-6 rounded-2xl bg-white border border-slate-200 shadow-2xs space-y-3 flex flex-col justify-between">
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
@@ -800,7 +865,7 @@ export const LandingPage: React.FC = () => {
                   Laporan Hasil Evaluasi PDF Siap Cetak (A4)
                 </h3>
                 <p className="text-xs text-slate-600 leading-relaxed">
-                  Unduh berkas PDF formal berstandar laporan manajerial atau sidang akademik. Mencakup matriks awal, normalisasi terperinci, grafik perankingan, dan ringkasan eksekutif.
+                  Unduh berkas PDF formal multi-bab berstandar laporan eksekutif atau sidang akademik. Mencakup matriks awal, normalisasi langkah matematis LaTeX, grafik perankingan, dan ringkasan eksekutif AI.
                 </p>
               </div>
 
@@ -809,7 +874,7 @@ export const LandingPage: React.FC = () => {
                   <span className="font-medium">Format PDF Berorientasi A4 Standar ISO</span>
                 </div>
                 <Badge variant="neutral" size="sm" className="font-mono text-[10px]">
-                  Tabel + Grafik + Ringkasan
+                  LaTeX Math + Multi-Metode
                 </Badge>
               </div>
             </div>
@@ -821,15 +886,35 @@ export const LandingPage: React.FC = () => {
           BOTTOM FOOTER STATUS BAR
       ========================================================================== */}
       <footer className="w-full px-4 sm:px-6 py-4 sm:py-3.5 border-t border-slate-200 bg-white/90 text-xs text-slate-500">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 text-center sm:text-left">
-          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-1.5 sm:gap-2 font-medium">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3 text-center sm:text-left">
+          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 font-medium">
             <span className="text-slate-700 font-semibold">&copy; {currentYear} DecisiGraph</span>
-            <Badge variant="primary" size="sm" className="text-[10px] py-0 px-1.5 font-bold">
-              v1.1
-            </Badge>
-            <span className="text-slate-300 hidden xs:inline">&bull;</span>
-            <span className="text-slate-500 hidden xs:inline">Platform Evaluasi SPK Terpadu</span>
+            <Link to="/releases" onMouseEnter={prefetchRoute.releases} className="hover:opacity-85">
+              <Badge variant="primary" size="sm" className="text-[10px] py-0 px-1.5 font-bold cursor-pointer">
+                v1.1
+              </Badge>
+            </Link>
+            <span className="text-slate-300 hidden sm:inline">&bull;</span>
+            <span className="text-slate-500">Platform Evaluasi SPK &amp; Decision Intelligence</span>
           </div>
+
+          <nav aria-label="Footer Nav" className="flex flex-wrap items-center justify-center gap-3 font-medium text-slate-600">
+            <Link to="/about" onMouseEnter={prefetchRoute.about} className="hover:text-indigo-600 transition-colors">
+              Tentang &amp; Bantuan
+            </Link>
+            <span className="text-slate-200">&bull;</span>
+            <Link to="/releases" onMouseEnter={prefetchRoute.releases} className="hover:text-indigo-600 transition-colors">
+              Catatan Rilis
+            </Link>
+            <span className="text-slate-200">&bull;</span>
+            <Link to="/privacy" onMouseEnter={prefetchRoute.privacy} className="hover:text-indigo-600 transition-colors">
+              Privasi
+            </Link>
+            <span className="text-slate-200">&bull;</span>
+            <Link to="/terms" onMouseEnter={prefetchRoute.terms} className="hover:text-indigo-600 transition-colors">
+              Ketentuan
+            </Link>
+          </nav>
 
           <div className="flex items-center justify-center gap-2 text-[11px] text-slate-500">
             <span className="text-slate-500 font-medium">Format Desimal:</span>

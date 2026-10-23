@@ -72,37 +72,38 @@ export const RankShiftSvgIcon: React.FC<IllustrationIconProps> = ({
         <stop offset="0%" stopColor="#10B981" />
         <stop offset="100%" stopColor="#047857" />
       </linearGradient>
-      <linearGradient id="shiftPillar3" x1="30" y1="26" x2="38" y2="40" gradientUnits="userSpaceOnUse">
-        <stop offset="0%" stopColor="#818CF8" />
-        <stop offset="100%" stopColor="#4F46E5" />
+      <linearGradient id="shiftPillar3" x1="30" y1="24" x2="38" y2="40" gradientUnits="userSpaceOnUse">
+        <stop offset="0%" stopColor="#6366F1" />
+        <stop offset="100%" stopColor="#4338CA" />
       </linearGradient>
     </defs>
-    {/* Base Platform */}
-    <ellipse cx="24" cy="40" rx="18" ry="4" fill="#F1F5F9" />
+    {/* Isometric Podium Base */}
+    <path d="M4 36L24 44L44 36L24 28Z" fill="#F1F5F9" stroke="#E2E8F0" strokeWidth="1.5" />
 
-    {/* Comparative 3D Pillars */}
-    <rect x="10" y="22" width="7" height="17" rx="2" fill="url(#shiftPillar1)" />
-    <rect x="20.5" y="14" width="7" height="25" rx="2" fill="url(#shiftPillar2)" />
-    <rect x="31" y="27" width="7" height="12" rx="2" fill="url(#shiftPillar3)" />
+    {/* Pillar 1 (Rank 2) */}
+    <path d="M10 24L18 20V34L10 38Z" fill="url(#shiftPillar1)" />
+    <path d="M18 20L22 22V36L18 34Z" fill="#312E81" />
+    <path d="M10 24L18 20L22 22L14 26Z" fill="#818CF8" />
 
-    {/* Delta Dynamics Trajectory Arrow */}
+    {/* Pillar 2 (Rank 1 - Champion) */}
+    <path d="M20 14L28 10V32L20 36Z" fill="url(#shiftPillar2)" />
+    <path d="M28 10L32 12V34L28 32Z" fill="#065F46" />
+    <path d="M20 14L28 10L32 12L24 16Z" fill="#34D399" />
+
+    {/* Pillar 3 (Rank 3) */}
+    <path d="M30 26L38 22V32L30 36Z" fill="url(#shiftPillar3)" />
+    <path d="M38 22L42 24V34L38 32Z" fill="#3730A3" />
+    <path d="M30 26L38 22L42 24L34 28Z" fill="#A5B4FC" />
+
+    {/* Dynamic Rank Shift Arc */}
     <path
-      d="M13 18C16 10 28 8 35 15"
-      stroke="#059669"
+      d="M14 18C16 8 30 6 32 10"
+      stroke="#F59E0B"
       strokeWidth="2"
       strokeLinecap="round"
       strokeDasharray="2 2"
     />
-    <path
-      d="M32 14L36 15L35 19"
-      stroke="#059669"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      transform="translate(0 5)"
-    />
-    {/* Star Indicator on Top Pillar */}
-    <circle cx="24" cy="15" r="3" fill="#F59E0B" />
+    <polygon points="32,6 36,10 31,12" fill="#F59E0B" />
   </svg>
 );
 
@@ -186,6 +187,69 @@ export const FormalReportSvgIcon: React.FC<IllustrationIconProps> = ({
     {/* Official Seal / Medallion */}
     <circle cx="33" cy="34" r="5" fill="#F59E0B" stroke="#D97706" strokeWidth="1" />
     <circle cx="33" cy="34" r="3" fill="#FEF3C7" />
-    <path d="M31 34V37M33 33L35 35" stroke="#D97706" strokeWidth="1" strokeLinecap="round" transform="translate(2 3)" />
+  </svg>
+);
+
+export const DecisionEvaluationSvgIcon: React.FC<IllustrationIconProps> = ({
+  size = 40,
+  className = '',
+  ...props
+}) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 48 48"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={`shrink-0 ${className}`}
+    {...props}
+  >
+    <defs>
+      <linearGradient id="evalGrad" x1="8" y1="8" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+        <stop offset="0%" stopColor="#10B981" />
+        <stop offset="100%" stopColor="#059669" />
+      </linearGradient>
+    </defs>
+    <rect x="6" y="6" width="36" height="36" rx="8" fill="#F0FDF4" stroke="#BBF7D0" strokeWidth="1.5" />
+    {/* Sliders / Target Seeking Rings */}
+    <circle cx="24" cy="24" r="12" stroke="#86EFAC" strokeWidth="2" strokeDasharray="3 3" />
+    <circle cx="24" cy="24" r="6" fill="#10B981" />
+    {/* Sensitivity Sliders */}
+    <line x1="12" y1="16" x2="36" y2="16" stroke="#CBD5E1" strokeWidth="2" strokeLinecap="round" />
+    <circle cx="28" cy="16" r="3" fill="#059669" />
+    <line x1="12" y1="32" x2="36" y2="32" stroke="#CBD5E1" strokeWidth="2" strokeLinecap="round" />
+    <circle cx="20" cy="32" r="3" fill="#4F46E5" />
+  </svg>
+);
+
+export const DocumentLoaderSvgIcon: React.FC<IllustrationIconProps> = ({
+  size = 40,
+  className = '',
+  ...props
+}) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 48 48"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={`shrink-0 ${className}`}
+    {...props}
+  >
+    <defs>
+      <linearGradient id="docAiGrad" x1="10" y1="8" x2="38" y2="40" gradientUnits="userSpaceOnUse">
+        <stop offset="0%" stopColor="#6366F1" />
+        <stop offset="100%" stopColor="#4F46E5" />
+      </linearGradient>
+    </defs>
+    <rect x="8" y="8" width="22" height="30" rx="3" fill="#FFFFFF" stroke="#CBD5E1" strokeWidth="1.5" />
+    <line x1="13" y1="14" x2="23" y2="14" stroke="#94A3B8" strokeWidth="2" strokeLinecap="round" />
+    <line x1="13" y1="19" x2="25" y2="19" stroke="#94A3B8" strokeWidth="2" strokeLinecap="round" />
+    <line x1="13" y1="24" x2="20" y2="24" stroke="#94A3B8" strokeWidth="2" strokeLinecap="round" />
+
+    {/* AI Brain Scanner Beam */}
+    <rect x="22" y="16" width="18" height="24" rx="4" fill="url(#docAiGrad)" filter="drop-shadow(0 2px 6px rgba(79, 70, 229, 0.3))" />
+    <circle cx="31" cy="28" r="4" fill="#FFFFFF" />
+    <path d="M26 28H28M34 28H36M31 23V25M31 31V33" stroke="#A5B4FC" strokeWidth="1.5" strokeLinecap="round" />
   </svg>
 );

@@ -4,4 +4,12 @@ export {
   RankShiftSvgIcon,
   StoryMatrixSvgIcon,
   FormalReportSvgIcon,
+  DecisionEvaluationSvgIcon,
+  DocumentLoaderSvgIcon,
 } from './FeatureIcons';
+export {
+  PrivacySecurityIllustration,
+  TermsLegalIllustration,
+  ChangelogTimelineIllustration,
+  AuthorAvatarIllustration,
+} from './PageIllustrations';

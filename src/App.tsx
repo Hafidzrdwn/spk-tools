@@ -6,6 +6,7 @@ import {
   WorkboardSkeleton,
   ReviewSkeleton,
   AnalyticsSkeleton,
+  LegalSkeleton,
 } from '@/components/ui/skeletons';
 import { trackPageView } from '@/services/firebase';
 
@@ -14,6 +15,12 @@ const WorkboardPage = lazy(() => import('@/features/workboard/WorkboardPage'));
 const ReviewsPage = lazy(() => import('@/features/community/ReviewsPage'));
 const AnalyticsPage = lazy(() => import('@/features/community/AnalyticsPage'));
 const CommunityLayout = lazy(() => import('@/features/community/CommunityLayout'));
+
+const LegalLayout = lazy(() => import('@/features/legal/LegalLayout'));
+const PrivacyPolicyView = lazy(() => import('@/features/legal/PrivacyPolicyView'));
+const TermsOfUseView = lazy(() => import('@/features/legal/TermsOfUseView'));
+const ReleasesView = lazy(() => import('@/features/releases/ReleasesView'));
+const AboutView = lazy(() => import('@/features/about/AboutView'));
 
 function PageViewTracker() {
   const location = useLocation();
@@ -66,8 +73,54 @@ export default function App() {
             </Suspense>
           }
         />
+
+        <Route
+          path="/privacy"
+          element={
+            <Suspense fallback={<LegalSkeleton />}>
+              <LegalLayout activeTab="privacy">
+                <PrivacyPolicyView />
+              </LegalLayout>
+            </Suspense>
+          }
+        />
+        <Route
+          path="/terms"
+          element={
+            <Suspense fallback={<LegalSkeleton />}>
+              <LegalLayout activeTab="terms">
+                <TermsOfUseView />
+              </LegalLayout>
+            </Suspense>
+          }
+        />
+        <Route
+          path="/releases"
+          element={
+            <Suspense fallback={<LegalSkeleton />}>
+              <LegalLayout activeTab="releases">
+                <ReleasesView />
+              </LegalLayout>
+            </Suspense>
+          }
+        />
+        <Route
+          path="/about"
+          element={
+            <Suspense fallback={<LegalSkeleton />}>
+              <LegalLayout activeTab="about">
+                <AboutView />
+              </LegalLayout>
+            </Suspense>
+          }
+        />
+
         <Route path="/workboard" element={<Navigate to="/board" replace />} />
         <Route path="/community" element={<Navigate to="/review" replace />} />
+        <Route path="/changelog" element={<Navigate to="/releases" replace />} />
+        <Route path="/version" element={<Navigate to="/releases" replace />} />
+        <Route path="/policy" element={<Navigate to="/privacy" replace />} />
+        <Route path="/tos" element={<Navigate to="/terms" replace />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <Toaster richColors position="top-right" />

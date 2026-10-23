@@ -1,4 +1,3 @@
-
 export const prefetchRoute = {
   landing: () => {
     import('@/features/landing/LandingPage');
@@ -19,6 +18,22 @@ export const prefetchRoute = {
   analytics: () => {
     import('@/features/community/CommunityLayout');
     import('@/features/community/AnalyticsPage');
+  },
+  privacy: () => {
+    import('@/features/legal/LegalLayout');
+    import('@/features/legal/PrivacyPolicyView');
+  },
+  terms: () => {
+    import('@/features/legal/LegalLayout');
+    import('@/features/legal/TermsOfUseView');
+  },
+  releases: () => {
+    import('@/features/legal/LegalLayout');
+    import('@/features/releases/ReleasesView');
+  },
+  about: () => {
+    import('@/features/legal/LegalLayout');
+    import('@/features/about/AboutView');
   },
 };
 
