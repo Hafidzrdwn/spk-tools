@@ -35,7 +35,7 @@ export const TermsOfUseView: React.FC = () => {
           Batasan Hasil Matematis SPK (Pernyataan Penting)
         </h2>
         <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
-          DecisiGraph adalah instrumen perangkat lunak sistem pendukung keputusan (*Decision Support System*) 
+          DecisiGraph adalah instrumen perangkat lunak sistem pendukung keputusan 
           berbasis formula matematis formal (SAW, WP, TOPSIS, AHP) dan asistensi AI. 
           Hasil perankingan dan skor adalah instrumen rekomendasi analitis objektif, bukan penetapan mutlak yang mengikat secara hukum 
           maupun manajerial. Keputusan final pengadaan, alokasi anggaran, atau kebijakan tetap berada sepenuhnya di tangan pengambil keputusan manusia.

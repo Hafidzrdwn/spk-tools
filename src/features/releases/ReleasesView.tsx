@@ -99,7 +99,7 @@ export const ReleasesView: React.FC = () => {
 
             <div className="space-y-3 pt-1 text-sm text-slate-700">
               <div className="space-y-1">
-                <h3 className="font-bold text-slate-900 text-xs uppercase tracking-wider text-slate-500">
+                <h3 className="font-bold text-slate-900 text-xs uppercase tracking-wider">
                   Fitur Unggulan v1.1:
                 </h3>
                 <ul className="list-disc pl-5 space-y-1.5 text-xs text-slate-600 leading-relaxed">

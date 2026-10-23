@@ -201,8 +201,8 @@ export const DocumentDropzone: React.FC<DocumentDropzoneProps> = ({
         </p>
         <ul className="list-disc list-inside space-y-0.5 text-slate-600 pl-1">
           <li>Dokumen dengan format tabel atau poin perbandingan akan diekstrak dengan tingkat akurasi tertinggi.</li>
-          <li>Pastikan dokumen PDF bukan hasil scan foto murni tanpa lapisan teks (*OCR*).</li>
-          <li>Kriteria pengeluaran (*Harga, Biaya, Waktu*) otomatis dipetakan sebagai <strong>Cost</strong>, dan kriteria keunggulan (*Kualitas, RAM*) dipetakan sebagai <strong>Benefit</strong>.</li>
+          <li>Pastikan dokumen PDF bukan hasil scan foto murni tanpa lapisan teks.</li>
+          <li>Kriteria pengeluaran otomatis dipetakan sebagai <strong>Cost</strong>, dan kriteria keunggulan dipetakan sebagai <strong>Benefit</strong>.</li>
         </ul>
       </div>
     </div>

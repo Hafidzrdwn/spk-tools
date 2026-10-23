@@ -713,7 +713,7 @@ export const LandingPage: React.FC = () => {
               Kapabilitas Teknis & Standar Transparansi
             </h2>
             <p className="text-xs sm:text-sm text-slate-500">
-              Dirancang untuk menghilangkan asumsi tertutup (*black-box*) dalam proses pengambilan keputusan multi-kriteria.
+              Dirancang untuk menghilangkan asumsi tertutup dalam proses pengambilan keputusan multi-kriteria.
             </p>
           </div>
 

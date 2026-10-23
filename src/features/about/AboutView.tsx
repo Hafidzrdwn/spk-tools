@@ -52,7 +52,7 @@ export const AboutView: React.FC = () => {
 
           <p className="text-sm text-slate-600 leading-relaxed max-w-2xl">
             Pengembang di balik DecisiGraph. Platform ini dibangun atas komitmen terhadap transparansi 
-            proses pengambilan keputusan (*explainable decision systems*): memadukan ketelitian kalkulasi 
+            proses pengambilan keputusan: memadukan ketelitian kalkulasi 
             matematis multi-kriteria dengan keleluasaan asistensi kecerdasan buatan.
           </p>
 
@@ -96,10 +96,10 @@ export const AboutView: React.FC = () => {
           <p>
             DecisiGraph berakar dari pengalaman praktis menghadapi persoalan sistem pendukung keputusan (SPK). 
             Sering kali, perhitungan manual di spreadsheet rawan kekeliruan logika dan sulit diaudit oleh orang lain, 
-            sementara alat bantu otomatis yang ada cenderung tertutup (*black-box*).
+            sementara alat bantu otomatis yang ada cenderung tertutup.
           </p>
           <p>
-            Aplikasi ini dirancang dengan prinsip keterlacakan penuh (*traceability*): setiap angka normalisasi, 
+            Aplikasi ini dirancang dengan prinsip keterlacakan penuh: setiap angka normalisasi, 
             bobot preferensi, dan hasil perankingan dapat ditelusuri rumusnya secara presisi, 
             sekaligus diperkaya dengan sintesis kecerdasan buatan untuk membantu interpretasi manajerial.
           </p>
@@ -176,7 +176,7 @@ export const AboutView: React.FC = () => {
             onClick={handleOpenWhatsApp}
             className="w-full sm:w-auto text-xs font-semibold min-h-11 px-6 justify-center bg-slate-900 hover:bg-slate-800 text-white"
           >
-            Buka Chat WhatsApp (082141068404)
+            Kirim ke WhatsApp
           </Button>
 
           <Button
