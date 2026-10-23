@@ -6,12 +6,8 @@ import ExtractedPreviewTable from './components/ExtractedPreviewTable';
 import AhpPromptModal from './components/AhpPromptModal';
 import TemplatePickerModal from './components/TemplatePickerModal';
 import Card, { CardContent } from '@/components/ui/Card';
-import Button from '@/components/ui/Button';
-import { FileUp } from 'lucide-react';
-import { useUiStore } from '@/store/useUiStore';
 
 export const StoryToMatrixTab: React.FC = () => {
-  const openDocLoader = useUiStore((s) => s.openDocLoader);
   const {
     mode, setMode, rawText, setRawText, previewAlternatives,
     criteria, unmatchedCriteria, detectedComparisons, isAhpPromptOpen,
@@ -19,6 +15,7 @@ export const StoryToMatrixTab: React.FC = () => {
     errorMessage, isCommitted, handleParse, handleCommit,
     handleSelectTemplate, generateNarrativeFromState, redirectToAhp,
     PARSER_CASE_PRESETS,
+    storyInputMode, setStoryInputMode, isAnalyzing, contextMetadata,
   } = useStoryToMatrixViewModel();
 
   const handleSwitchToStory = () => {
@@ -40,26 +37,17 @@ export const StoryToMatrixTab: React.FC = () => {
   return (
     <div className="space-y-6">
       <Card className="bg-linear-to-r from-indigo-500/10 via-purple-500/5 to-transparent border-indigo-200/80">
-        <CardContent className="p-3.5 sm:p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+        <CardContent className="p-3.5 sm:p-4 flex items-center justify-between gap-3 sm:gap-4">
           <div className="flex items-start gap-3 min-w-0">
             <div className="min-w-0">
               <span className="text-xs font-bold text-indigo-900 uppercase tracking-wide leading-tight">
                 Story-to-Matrix Intelligent Parser
               </span>
               <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-                Konversi teks narasi kasus menjadi matriks keputusan kuantitatif secara otomatis tanpa entri manual satu per satu.
+                Konversi narasi cerita atau studi kasus menjadi matriks keputusan terstruktur secara otomatis tanpa entri manual.
               </p>
             </div>
           </div>
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={openDocLoader}
-            className="text-xs font-bold border-indigo-200 text-indigo-700 bg-white hover:bg-indigo-50/80 shrink-0 gap-1.5 shadow-2xs cursor-pointer"
-          >
-            <FileUp className="w-3.5 h-3.5 text-accent-primary" />
-            <span>Unggah Dokumen (PDF/Word)</span>
-          </Button>
         </CardContent>
       </Card>
 
@@ -79,6 +67,9 @@ export const StoryToMatrixTab: React.FC = () => {
             onParse={handleParse}
             onOpenTemplates={() => setIsTemplatePickerOpen(true)}
             errorMessage={errorMessage}
+            storyInputMode={storyInputMode}
+            onChangeMode={setStoryInputMode}
+            isAnalyzing={isAnalyzing}
           />
         </div>
       ) : (
@@ -90,6 +81,7 @@ export const StoryToMatrixTab: React.FC = () => {
             onCommit={handleCommit}
             onBackToEdit={() => setMode('story')}
             isCommitted={isCommitted}
+            contextMetadata={contextMetadata}
           />
         </div>
       )}

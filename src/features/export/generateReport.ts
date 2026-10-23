@@ -74,7 +74,7 @@ export function getMethodFullName(method: MethodId | 'COMPARE' | 'AUTO'): string
     case 'AHP':
       return 'Analytic Hierarchy Process (AHP)';
     case 'AUTO':
-      return 'Story-to-Matrix Heuristic Parser';
+      return 'Story-to-Matrix (Analisis Cerita Kasus)';
     case 'COMPARE':
       return 'Komparasi Multi-Metode (SAW, WP & TOPSIS)';
     default:

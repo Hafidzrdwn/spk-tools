@@ -637,9 +637,22 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
                 Bab {chapterCounter++}: Narasi Cerita Kasus & Pemetaan Entitas (Story-to-Matrix)
               </Text>
               <Text style={[styles.chapterTag, { backgroundColor: '#F3E8FF', color: '#7E22CE' }]}>
-                Heuristik NLP
+                Pemetaan Kasus
               </Text>
             </View>
+
+            {payload.contextMetadata && (payload.contextMetadata.institutionOrOrg || payload.contextMetadata.targetStakeholder) && (
+              <View style={[styles.infoCard, { backgroundColor: '#F0FDF4', borderColor: '#BBF7D0', marginBottom: 6 }]}>
+                <Text style={[styles.infoCardTitle, { color: '#166534' }]}>Konteks Kasus Teridentifikasi:</Text>
+                <Text style={[styles.infoCardBody, { color: '#14532D' }]}>
+                  {[
+                    payload.contextMetadata.institutionOrOrg ? `Organisasi: ${payload.contextMetadata.institutionOrOrg}` : null,
+                    payload.contextMetadata.targetStakeholder ? `Pemangku Kepentingan: ${payload.contextMetadata.targetStakeholder}` : null,
+                    payload.contextMetadata.domainContext ? `Konteks: ${payload.contextMetadata.domainContext}` : null,
+                  ].filter(Boolean).join(' • ')}
+                </Text>
+              </View>
+            )}
 
             <View style={styles.infoCard}>
               <Text style={styles.infoCardTitle}>Transkrip Narasi Cerita Masukan:</Text>
