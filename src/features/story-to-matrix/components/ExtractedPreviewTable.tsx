@@ -1,9 +1,9 @@
 import React from 'react';
-import type { Criterion, Alternative } from '@/types/domain';
+import type { Criterion, Alternative, CaseContextMetadata } from '@/types/domain';
 import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
 import Card, { CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
-import { Check, Edit3, AlertTriangle, TableProperties } from 'lucide-react';
+import { Check, Edit3, AlertTriangle, TableProperties, Building2 } from 'lucide-react';
 
 export interface ExtractedPreviewTableProps {
   criteria: Criterion[];
@@ -12,6 +12,7 @@ export interface ExtractedPreviewTableProps {
   onCommit: () => void;
   onBackToEdit: () => void;
   isCommitted: boolean;
+  contextMetadata?: CaseContextMetadata;
 }
 
 export const ExtractedPreviewTable: React.FC<ExtractedPreviewTableProps> = ({
@@ -21,6 +22,7 @@ export const ExtractedPreviewTable: React.FC<ExtractedPreviewTableProps> = ({
   onCommit,
   onBackToEdit,
   isCommitted,
+  contextMetadata,
 }) => {
   if (alternatives.length === 0) {
     return (
@@ -73,6 +75,25 @@ export const ExtractedPreviewTable: React.FC<ExtractedPreviewTableProps> = ({
       </CardHeader>
 
       <CardContent className="p-4 space-y-3">
+        {contextMetadata?.institutionOrOrg && (
+          <div className="p-2.5 rounded-lg bg-indigo-50/70 border border-indigo-100 flex flex-wrap items-center gap-2 text-xs text-indigo-950">
+            <Badge variant="neutral" size="sm" className="bg-indigo-100 text-indigo-800 border-indigo-200 font-bold flex items-center gap-1">
+              <Building2 className="w-3 h-3" />
+              <span>{contextMetadata.institutionOrOrg}</span>
+            </Badge>
+            {contextMetadata.targetStakeholder && (
+              <span className="text-[11px] text-indigo-700">
+                Pemangku Kepentingan: <strong>{contextMetadata.targetStakeholder}</strong>
+              </span>
+            )}
+            {contextMetadata.caseTitle && (
+              <span className="text-[11px] text-slate-500 hidden sm:inline">
+                • {contextMetadata.caseTitle}
+              </span>
+            )}
+          </div>
+        )}
+
         {unmatchedCriteria.length > 0 && (
           <div className="p-2.5 rounded-lg bg-amber-50/90 border border-amber-200 text-xs text-amber-800 flex items-center gap-2">
             <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />

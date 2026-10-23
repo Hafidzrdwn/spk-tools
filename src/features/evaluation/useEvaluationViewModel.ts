@@ -1,4 +1,5 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
+import { toast } from 'sonner';
 import { useProjectStore } from '@/store/useProjectStore';
 import { useNormalizedCriteria } from '@/store/selectors';
 import { calculateSAW } from '@/core/math/saw';
@@ -28,6 +29,14 @@ import {
   type AnalysisMethod,
 } from '@/core/analysis';
 
+import {
+  fetchAiExecutiveNarrative,
+  generateFallbackNarrative,
+  getCachedAiNarrative,
+  type AiExecutiveNarrative,
+  type AiNarrativeRequest,
+} from '@/services/ai';
+
 import type { DecisiProjectState } from '@/types/domain';
 
 export type EvaluationSubPanel = 'aspects' | 'sensitivity' | 'whatif' | 'managerial';
@@ -36,6 +45,7 @@ export function useEvaluationViewModel() {
   const criteria = useNormalizedCriteria();
   const alternatives = useProjectStore((state) => state.alternatives);
   const projectTitle = useProjectStore((state) => state.title);
+  const contextMetadata = useProjectStore((state) => state.contextMetadata);
   const loadProjectState = useProjectStore((state) => state.loadProjectState);
 
   const [savedUserState, setSavedUserState] = useState<DecisiProjectState | null>(null);
@@ -43,6 +53,11 @@ export function useEvaluationViewModel() {
 
   const [activePanel, setActivePanel] = useState<EvaluationSubPanel>('aspects');
   const [spearmanMethodB, setSpearmanMethodB] = useState<AnalysisMethod>('wp');
+
+  const [aiExecutiveNarrative, setAiExecutiveNarrative] = useState<AiExecutiveNarrative | null>(null);
+  const [isAiLoading, setIsAiLoading] = useState<boolean>(false);
+  const [aiError, setAiError] = useState<string | null>(null);
+
 
   const [whatIfAltId, setWhatIfAltId] = useState<string>('');
   const [whatIfCritId, setWhatIfCritId] = useState<string>('');
@@ -286,11 +301,71 @@ export function useEvaluationViewModel() {
     }
   }, [savedUserState, loadProjectState]);
 
+  const requestPayload: AiNarrativeRequest | null = useMemo(() => {
+    if (!hasData || !methodRankings) return null;
+    return {
+      projectTitle,
+      criteria,
+      alternatives,
+      activeMethods: ['saw', 'wp', 'topsis'],
+      rankings: {
+        saw: sawRankings,
+        wp: wpRankings,
+        topsis: topsisRankings,
+      },
+      contextMetadata,
+    };
+  }, [hasData, methodRankings, projectTitle, criteria, alternatives, sawRankings, wpRankings, topsisRankings, contextMetadata]);
+
+  const loadAiNarrative = useCallback(async (forceRefresh = false) => {
+    if (!requestPayload) return;
+
+    if (!forceRefresh) {
+      const cached = getCachedAiNarrative(requestPayload);
+      if (cached) {
+        setAiExecutiveNarrative(cached);
+        setAiError(null);
+        return;
+      }
+    } else {
+      setAiExecutiveNarrative(null);
+      toast.info('Menyusun ulang rekomendasi manajerial AI...', { id: 'ai-refresh' });
+    }
+
+    setIsAiLoading(true);
+    setAiError(null);
+
+    try {
+      const narrative = await fetchAiExecutiveNarrative(requestPayload, undefined, { bypassCache: forceRefresh });
+      setAiExecutiveNarrative(narrative);
+      if (forceRefresh) {
+        toast.success('Rekomendasi manajerial berhasil diperbarui.', { id: 'ai-refresh' });
+      }
+    } catch (err: unknown) {
+      const errMsg = err instanceof Error ? err.message : String(err);
+      setAiError(errMsg);
+      const fallback = generateFallbackNarrative(requestPayload);
+      setAiExecutiveNarrative(fallback);
+      if (forceRefresh) {
+        toast.error('Gagal menghubungi Gemini AI, menggunakan narasi deterministik lokal.', { id: 'ai-refresh' });
+      }
+    } finally {
+      setIsAiLoading(false);
+    }
+  }, [requestPayload]);
+
+  useEffect(() => {
+    if (activePanel === 'managerial' && hasData && !aiExecutiveNarrative && !isAiLoading) {
+      loadAiNarrative(false);
+    }
+  }, [activePanel, hasData, aiExecutiveNarrative, isAiLoading, loadAiNarrative]);
+
   return {
     hasData,
     criteria,
     alternatives,
     projectTitle,
+    contextMetadata,
     activePanel,
     setActivePanel,
     spearmanMethodB,
@@ -317,6 +392,10 @@ export function useEvaluationViewModel() {
     setGoalSeekingCritId,
     goalSeekingResult,
     managerialSynthesis,
+    aiExecutiveNarrative,
+    isAiLoading,
+    aiError,
+    loadAiNarrative,
     evaluationPayload,
     loadCvMajuJayaCase,
     isDemoActive,
@@ -324,3 +403,4 @@ export function useEvaluationViewModel() {
     revertToUserData,
   };
 }
+

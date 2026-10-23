@@ -1,4 +1,6 @@
-import type { Criterion, Alternative } from '@/types/domain';
+import type { Criterion, Alternative, CaseContextMetadata } from '@/types/domain';
+
+export type { CaseContextMetadata };
 
 export type DocumentFileType = 'pdf' | 'docx' | 'txt' | 'md' | 'csv' | 'json' | 'unknown';
 
@@ -29,6 +31,7 @@ export interface DocumentLoaderError {
 }
 
 export interface ExtractedRawCriterion {
+  code?: string;
   name: string;
   type: 'BENEFIT' | 'COST';
   weight?: number;
@@ -37,13 +40,16 @@ export interface ExtractedRawCriterion {
 }
 
 export interface ExtractedRawAlternative {
+  code?: string;
   name: string;
   values: Record<string, number>;
+  description?: string;
 }
 
 export interface DocumentExtractionAiResponse {
   projectTitle: string;
   projectDescription?: string;
+  contextMetadata?: CaseContextMetadata;
   criteria: ExtractedRawCriterion[];
   alternatives: ExtractedRawAlternative[];
   summary?: string;
@@ -54,6 +60,7 @@ export interface DocumentExtractionAiResponse {
 export interface ProcessedDocumentResult {
   projectTitle: string;
   projectDescription?: string;
+  contextMetadata?: CaseContextMetadata;
   criteria: Criterion[];
   alternatives: Alternative[];
   sourceFile: {
@@ -65,3 +72,4 @@ export interface ProcessedDocumentResult {
   confidenceScore: number;
   modelUsed?: string;
 }
+

@@ -1,5 +1,6 @@
 import Decimal from 'decimal.js';
-import type { MethodId, Criterion, Alternative } from '@/types/domain';
+import type { MethodId, Criterion, Alternative, CaseContextMetadata } from '@/types/domain';
+
 import type { MethodResult, RankingRow } from '@/core/math/types';
 import { calculateSAW } from '@/core/math/saw';
 import { calculateWP, calculateSafeWP, WpZeroGuardError } from '@/core/math/wp';
@@ -18,7 +19,7 @@ import type {
   ReportPayload,
 } from './types';
 import type { AiExecutiveNarrative } from '@/services/ai';
-import { formatDisplayNumber } from '@/utils/numberFormat';
+import { formatDisplayNumber, formatValueWithUnit } from '@/utils/numberFormat';
 
 export interface ProjectStateSubset {
   title: string;
@@ -34,7 +35,9 @@ export interface BuildReportOptions {
   config?: Partial<ExportReportConfig>;
   criteria: Criterion[];
   alternatives: Alternative[];
+  contextMetadata?: CaseContextMetadata;
   customAhpMatrix?: number[][];
+
   storyNarrative?: string;
   cachedResult?: MethodResult;
   cachedComparisonResult?: ReturnType<typeof compareRankings>;
@@ -71,7 +74,7 @@ export function getMethodFullName(method: MethodId | 'COMPARE' | 'AUTO'): string
     case 'AHP':
       return 'Analytic Hierarchy Process (AHP)';
     case 'AUTO':
-      return 'Story-to-Matrix Heuristic Parser';
+      return 'Story-to-Matrix (Analisis Cerita Kasus)';
     case 'COMPARE':
       return 'Komparasi Multi-Metode (SAW, WP & TOPSIS)';
     default:
@@ -312,7 +315,7 @@ export function buildStoryStepData(
     narrativeText = alternatives
       .map((alt) => {
         const specs = criteria
-          .map((c) => `${c.name}: ${alt.values[c.id] ?? 0}${c.unit ? ` ${c.unit}` : ''}`)
+          .map((c) => `${c.name}: ${formatValueWithUnit(alt.values[c.id] ?? 0, c.unit)}`)
           .join(', ');
         return `Kandidat ${alt.name} memiliki profil spesifikasi: ${specs}.`;
       })
@@ -415,13 +418,22 @@ export function generateReportConclusion(
     }
   }
 
-  const otherCount = Math.max(0, alternatives.length - 1);
+  const runnerUp = sortedRankings[1];
+  const marginVal = runnerUp ? Number((winner.score - runnerUp.score).toFixed(4)) : null;
   const marginNote =
-    sortedRankings.length > 1
-      ? ` dengan selisih skor ${formatDisplayNumber(winner.score - sortedRankings[1].score, { decimals: 4, separator })} atas runner-up (${sortedRankings[1].alternativeName})`
+    runnerUp && marginVal !== null
+      ? ` Keunggulan atas kandidat terdekat (${runnerUp.alternativeName}) memiliki margin skor ${formatDisplayNumber(marginVal, { decimals: 4, separator })}${marginVal < 0.05 ? ', yang mengindikasikan persaingan ketat sehingga memerlukan mitigasi parameter harga dan kualitas' : ', yang mencerminkan dominasi keunggulan komparatif yang meyakinkan'}.`
       : '';
 
-  return `Berdasarkan evaluasi komputasi metode ${methodLabel}, alternatif "${winner.alternativeName}" terpilih sebagai rekomendasi keputusan terbaik (Peringkat #1) dengan skor preferensi akhir sebesar ${scoreFormatted}${marginNote}${strengthSummary}. Hasil perhitungan kuantitatif ini merefleksikan performa optimal dibandingkan ${otherCount} alternatif lainnya yang dievaluasi.${consensusNote}`;
+  const stakeholderContext = payload.contextMetadata?.targetStakeholder
+    ? ` Bagi ${payload.contextMetadata.targetStakeholder}, eksekusi pilihan ini memberikan kepastian pemenuhan target program dengan alokasi anggaran paling efisien.`
+    : ' Bagi pengambil keputusan, pilihan ini meminimalkan risiko inefisiensi anggaran dan memaksimalkan utilitas program kerja.';
+
+  const contingencyAdvice = runnerUp
+    ? ` Sebagai langkah kehati-hatian operasional, ${runnerUp.alternativeName} direkomendasikan sebagai opsi cadangan resmi (Plan B) apabila terjadi kendala teknis atau pergeseran kebijakan anggaran mendadak.`
+    : '';
+
+  return `Berdasarkan evaluasi komprehensif metode ${methodLabel}, alternatif "${winner.alternativeName}" ditetapkan sebagai rekomendasi keputusan prioritas utama (Peringkat #1) dengan skor preferensi akhir ${scoreFormatted}. Alternatif ini terpilih secara rasional${strengthSummary}, menghasilkan perpaduan optimal antara ketercapaian target mutu dan efisiensi sumber daya.${marginNote}${consensusNote}${stakeholderContext}${contingencyAdvice}`;
 }
 
 export function buildComprehensiveReport(options: BuildReportOptions): ReportPayload {
@@ -557,7 +569,9 @@ export function buildComprehensiveReport(options: BuildReportOptions): ReportPay
     config,
     criteria,
     alternatives,
+    contextMetadata: options.contextMetadata,
     sawData,
+
     wpData,
     topsisData,
     ahpData,

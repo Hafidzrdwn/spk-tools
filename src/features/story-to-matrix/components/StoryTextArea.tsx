@@ -1,7 +1,7 @@
 import React from 'react';
 import Button from '@/components/ui/Button';
 import Card, { CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
-import { Play, RotateCcw, AlertCircle, FileText } from 'lucide-react';
+import { Play, RotateCcw, AlertCircle, FileText, Loader2, Sparkles, LayoutList } from 'lucide-react';
 
 export interface StoryTextAreaProps {
   value: string;
@@ -9,15 +9,14 @@ export interface StoryTextAreaProps {
   onParse: () => void;
   onOpenTemplates: () => void;
   errorMessage: string | null;
+  storyInputMode: 'auto' | 'formatted';
+  onChangeMode: (mode: 'auto' | 'formatted') => void;
+  isAnalyzing?: boolean;
 }
 
-const PLACEHOLDER_TEXT = `Contoh format input teks studi kasus:
-Kandidat: Budi Santoso, Nilai Tes: 85, Pengalaman: 3 thn, Gaji: 5 jt
-Kandidat: Siti Aminah, Nilai Tes: 92, Pengalaman: 5 thn, Gaji: 7 jt
-Kandidat: Joko Widodo, Nilai Tes: 78, Pengalaman: 2 thn, Gaji: 4.5 jt
+const PLACEHOLDER_AUTO = 'Tempel atau ketik narasi cerita, soal studi kasus, atau deskripsi usulan keputusan di sini...';
 
-Atau masukkan perbandingan preferensi Saaty:
-Pengalaman 3 kali lebih penting dari Gaji.`;
+const PLACEHOLDER_FORMATTED = 'Ketik teks terstruktur. Contoh:\nKandidat: Program A, Biaya: 50 jt, Kualitas: 85';
 
 export const MAX_STORY_CHARS = 5000;
 
@@ -27,6 +26,9 @@ export const StoryTextArea: React.FC<StoryTextAreaProps> = ({
   onParse,
   onOpenTemplates,
   errorMessage,
+  storyInputMode,
+  onChangeMode,
+  isAnalyzing = false,
 }) => {
   const isOverLimit = value.length > MAX_STORY_CHARS;
   const isNearLimit = value.length >= MAX_STORY_CHARS * 0.9;
@@ -43,34 +45,70 @@ export const StoryTextArea: React.FC<StoryTextAreaProps> = ({
               Input Cerita / Narasi Studi Kasus
             </CardTitle>
             <CardDescription className="text-xs text-slate-500 mt-0.5 leading-snug">
-              Ketik atau tempel teks kasus dengan format &quot;Kandidat: Nama, Kriteria: Nilai&quot;
+              {storyInputMode === 'auto'
+                ? 'Ketik atau tempel teks narasi bebas, soal cerita, atau deskripsi program kerja'
+                : 'Ketik teks dengan format "Kandidat: Nama, Kriteria: Nilai"'}
             </CardDescription>
           </div>
         </div>
 
-        <Button
-          variant="secondary"
-          size="md"
-          onClick={onOpenTemplates}
-          className="w-full sm:w-auto text-xs font-semibold cursor-pointer shrink-0 shadow-2xs h-9 px-3 flex items-center justify-center"
-        >
-          <span>Coba Contoh Template</span>
-        </Button>
+        <div className="flex items-center gap-2 self-start sm:self-auto">
+          {storyInputMode === 'formatted' && (
+            <Button
+              variant="secondary"
+              size="md"
+              onClick={onOpenTemplates}
+              className="text-xs font-semibold cursor-pointer shrink-0 shadow-2xs h-9 px-3 flex items-center justify-center"
+            >
+              <span>Contoh Template</span>
+            </Button>
+          )}
+        </div>
       </CardHeader>
 
       <CardContent className="p-4 space-y-3">
+        <div className="flex items-center gap-2 pb-1">
+          <div className="inline-flex p-1 rounded-xl bg-slate-100 border border-slate-200 text-xs font-medium">
+            <button
+              type="button"
+              onClick={() => onChangeMode('auto')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
+                storyInputMode === 'auto'
+                  ? 'bg-white text-indigo-900 font-bold shadow-2xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <Sparkles className="w-3.5 h-3.5 text-accent-primary" />
+              <span>Analisis Otomatis (Narasi Bebas)</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => onChangeMode('formatted')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
+                storyInputMode === 'formatted'
+                  ? 'bg-white text-indigo-900 font-bold shadow-2xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <LayoutList className="w-3.5 h-3.5 text-slate-500" />
+              <span>Format Standar (Template)</span>
+            </button>
+          </div>
+        </div>
+
         <div className="space-y-1.5">
           <textarea
-            rows={9}
+            rows={10}
             maxLength={MAX_STORY_CHARS}
             value={value}
+            disabled={isAnalyzing}
             onChange={(e) => onChange(e.target.value)}
-            placeholder={PLACEHOLDER_TEXT}
-            className={`w-full p-3.5 rounded-xl border bg-slate-50/50 font-mono text-xs text-slate-800 leading-relaxed focus:bg-white focus:outline-none focus:ring-2 transition-all resize-y ${
+            placeholder={storyInputMode === 'auto' ? PLACEHOLDER_AUTO : PLACEHOLDER_FORMATTED}
+            className={`w-full p-3.5 rounded-xl border bg-slate-50/50 font-sans text-xs text-slate-800 leading-relaxed focus:bg-white focus:outline-none focus:ring-2 transition-all resize-y ${
               isOverLimit
                 ? 'border-rose-300 focus:ring-rose-200 focus:border-rose-500'
                 : 'border-slate-200/90 focus:ring-accent-primary/40 focus:border-accent-primary'
-            }`}
+            } ${isAnalyzing ? 'opacity-60 cursor-not-allowed' : ''}`}
           />
           <div className="flex items-center justify-between text-[10px] sm:text-xs px-1 gap-2">
             <span className={`truncate ${isOverLimit ? 'text-rose-600 font-medium' : isNearLimit ? 'text-amber-600 font-medium' : 'text-slate-400'}`}>
@@ -96,7 +134,7 @@ export const StoryTextArea: React.FC<StoryTextAreaProps> = ({
           <div className="p-3 rounded-xl bg-rose-50/90 border border-rose-200 text-xs text-rose-800 flex items-start gap-2 animate-in fade-in duration-150">
             <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
             <div className="leading-relaxed">
-              <strong>Gagal Memproses Teks:</strong> {errorMessage}
+              <strong>Pemberitahuan:</strong> {errorMessage}
             </div>
           </div>
         )}
@@ -106,7 +144,7 @@ export const StoryTextArea: React.FC<StoryTextAreaProps> = ({
             variant="ghost"
             size="sm"
             onClick={() => onChange('')}
-            disabled={!value}
+            disabled={!value || isAnalyzing}
             className="text-xs text-slate-500 hover:text-slate-800"
           >
             <RotateCcw className="w-3.5 h-3.5 mr-1" /> Bersihkan
@@ -116,12 +154,22 @@ export const StoryTextArea: React.FC<StoryTextAreaProps> = ({
             variant="primary"
             size="sm"
             onClick={onParse}
-            disabled={!value.trim() || isOverLimit}
-            className="font-semibold shadow-xs cursor-pointer px-3 sm:px-4 text-xs"
+            disabled={!value.trim() || isOverLimit || isAnalyzing}
+            className="font-semibold shadow-xs cursor-pointer px-3 sm:px-4 text-xs gap-1.5"
           >
-            <Play className="w-3.5 h-3.5 mr-1.5 fill-white" />
-            <span className="hidden sm:inline">Parse Teks ke Matriks</span>
-            <span className="sm:hidden">Parse Matriks</span>
+            {isAnalyzing ? (
+              <>
+                <Loader2 className="w-3.5 h-3.5 animate-spin text-white" />
+                <span>Menganalisis Cerita...</span>
+              </>
+            ) : (
+              <>
+                <Play className="w-3.5 h-3.5 fill-white" />
+                <span>
+                  {storyInputMode === 'auto' ? 'Mulai Analisis Cerita' : 'Parse Teks Terformat'}
+                </span>
+              </>
+            )}
           </Button>
         </div>
       </CardContent>

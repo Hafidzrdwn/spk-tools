@@ -1,4 +1,4 @@
-import type { Criterion, Alternative } from '@/types/domain';
+import type { Criterion, Alternative, CaseContextMetadata } from '@/types/domain';
 import type { RankingRow } from '@/core/math/types';
 
 export type AiAnalysisMethod = 'saw' | 'wp' | 'topsis';
@@ -14,7 +14,9 @@ export interface AiNarrativeRequest {
     topsis?: RankingRow[];
   };
   budgetConstraint?: number;
+  contextMetadata?: CaseContextMetadata;
 }
+
 
 export interface AiExecutiveNarrative {
   sectionA_rankingShifts: string;

@@ -6,7 +6,7 @@ import {
   getMethodFullName,
   generateReportConclusion,
 } from './generateReport';
-import { formatDisplayNumber } from '@/utils/numberFormat';
+import { formatDisplayNumber, formatValueWithUnit } from '@/utils/numberFormat';
 import { useUiStore } from '@/store/useUiStore';
 import {
   PdfSawNormFormula,
@@ -328,6 +328,68 @@ const styles = StyleSheet.create({
 
 function renderNarrativeParagraphs(content: string, textStyle: any) {
   if (!content) return null;
+  const normalized = content.replace(/(?:^|\s+)(?=\d+\.\s)/g, '\n').trim();
+  const lines = normalized.split('\n').map((l) => l.trim()).filter((l) => l.length > 0);
+  const hasNumberedList = lines.some((l) => /^\d+\.\s+/.test(l));
+
+  if (hasNumberedList) {
+    return lines.map((line, idx) => {
+      const numMatch = line.match(/^(\d+)\.\s*(.*)$/s);
+      const num = numMatch ? numMatch[1] : (lines.length > 1 ? String(idx + 1) : null);
+      let body = numMatch ? numMatch[2].trim() : line;
+
+      let stakeholder: string | null = null;
+      const startStakeholderMatch = body.match(/^\[([^\]]+)\]\s*:?\s*(.*)$/s);
+      if (startStakeholderMatch) {
+        stakeholder = startStakeholderMatch[1].trim();
+        body = startStakeholderMatch[2].trim();
+      } else {
+        const endStakeholderMatch = body.match(/^(.*?)\s*\[([^\]]+)\]\.?$/s);
+        if (endStakeholderMatch) {
+          stakeholder = endStakeholderMatch[2].trim();
+          body = endStakeholderMatch[1].trim();
+        }
+      }
+
+      if (num) {
+        return (
+          <View key={idx} style={{ flexDirection: 'row', alignItems: 'flex-start', marginTop: idx > 0 ? 3.5 : 1 }}>
+            <View
+              style={{
+                width: 13,
+                height: 13,
+                borderRadius: 6.5,
+                backgroundColor: '#EEF2FF',
+                borderWidth: 0.6,
+                borderColor: '#C7D2FE',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginRight: 5,
+                marginTop: 1,
+              }}
+            >
+              <Text style={{ fontSize: 6.5, fontWeight: 'bold', color: '#4338CA' }}>{num}</Text>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={textStyle}>
+                {stakeholder ? (
+                  <Text style={{ fontWeight: 'bold', color: '#312E81' }}>[{stakeholder}] </Text>
+                ) : null}
+                {body}
+              </Text>
+            </View>
+          </View>
+        );
+      }
+
+      return (
+        <Text key={idx} style={[textStyle, idx > 0 ? { marginTop: 4 } : {}]}>
+          {line}
+        </Text>
+      );
+    });
+  }
+
   const paragraphs = content.split(/\n\n+/).filter((p) => p.trim().length > 0);
   return paragraphs.map((p, idx) => (
     <Text key={idx} style={[textStyle, idx > 0 ? { marginTop: 4 } : {}]}>
@@ -335,6 +397,7 @@ function renderNarrativeParagraphs(content: string, textStyle: any) {
     </Text>
   ));
 }
+
 
 export interface DecisiPdfReportProps {
   payload: ReportPayload;
@@ -398,7 +461,23 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
 
           <Text style={styles.projectTitle}>{payload.projectTitle}</Text>
 
+          {payload.contextMetadata && (payload.contextMetadata.institutionOrOrg || payload.contextMetadata.targetStakeholder) && (
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 4 }}>
+              {payload.contextMetadata.institutionOrOrg && (
+                <Text style={{ fontSize: 7.8, color: '#4338CA', fontWeight: 'bold' }}>
+                  Lembaga: {payload.contextMetadata.institutionOrOrg}
+                </Text>
+              )}
+              {payload.contextMetadata.targetStakeholder && (
+                <Text style={{ fontSize: 7.8, color: '#6D28D9', fontWeight: 'bold' }}>
+                  • Pemangku Kepentingan: {payload.contextMetadata.targetStakeholder}
+                </Text>
+              )}
+            </View>
+          )}
+
           <View style={styles.methodBadgeRow}>
+
             {safeConfig.selectedMethods.map((m) => (
               <View key={m} style={styles.methodBadge}>
                 <Text style={styles.methodBadgeText}>{m}</Text>
@@ -558,9 +637,22 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
                 Bab {chapterCounter++}: Narasi Cerita Kasus & Pemetaan Entitas (Story-to-Matrix)
               </Text>
               <Text style={[styles.chapterTag, { backgroundColor: '#F3E8FF', color: '#7E22CE' }]}>
-                Heuristik NLP
+                Pemetaan Kasus
               </Text>
             </View>
+
+            {payload.contextMetadata && (payload.contextMetadata.institutionOrOrg || payload.contextMetadata.targetStakeholder) && (
+              <View style={[styles.infoCard, { backgroundColor: '#F0FDF4', borderColor: '#BBF7D0', marginBottom: 6 }]}>
+                <Text style={[styles.infoCardTitle, { color: '#166534' }]}>Konteks Kasus Teridentifikasi:</Text>
+                <Text style={[styles.infoCardBody, { color: '#14532D' }]}>
+                  {[
+                    payload.contextMetadata.institutionOrOrg ? `Organisasi: ${payload.contextMetadata.institutionOrOrg}` : null,
+                    payload.contextMetadata.targetStakeholder ? `Pemangku Kepentingan: ${payload.contextMetadata.targetStakeholder}` : null,
+                    payload.contextMetadata.domainContext ? `Konteks: ${payload.contextMetadata.domainContext}` : null,
+                  ].filter(Boolean).join(' • ')}
+                </Text>
+              </View>
+            )}
 
             <View style={styles.infoCard}>
               <Text style={styles.infoCardTitle}>Transkrip Narasi Cerita Masukan:</Text>
@@ -579,7 +671,7 @@ export const DecisiPdfReport: React.FC<DecisiPdfReportProps> = ({
                 const specs = payload.criteria
                   .map(
                     (c) =>
-                      `${c.name}: ${formatDisplayNumber(alt.values[c.id] ?? 0, { decimals: 2, separator: numberFormat })}${c.unit ? ` ${c.unit}` : ''}`
+                      `${c.name}: ${formatValueWithUnit(alt.values[c.id] ?? 0, c.unit, { decimals: 2, separator: numberFormat })}`
                   )
                   .join(' | ');
                 return (

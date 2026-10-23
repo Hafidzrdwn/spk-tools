@@ -127,17 +127,20 @@ export const DocumentLoaderModal: React.FC<DocumentLoaderModalProps> = ({
     title: string;
     criteria: Criterion[];
     alternatives: Alternative[];
+    contextMetadata?: import('@/types/domain').CaseContextMetadata;
   }) => {
     loadProjectState({
       title: finalData.title,
       activeMethod: 'SAW',
       criteria: finalData.criteria,
       alternatives: finalData.alternatives,
+      contextMetadata: finalData.contextMetadata,
     });
 
-    toast.success('Matriks keputusan berhasil diimpor ke proyek aktif!');
+    toast.success('Matriks keputusan dan konteks studi kasus berhasil diimpor!');
     onClose();
   };
+
 
   return (
     <Dialog

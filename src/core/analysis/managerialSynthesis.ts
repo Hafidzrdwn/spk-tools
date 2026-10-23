@@ -25,15 +25,15 @@ export function synthesizeManagerialRecommendations(params: {
   const { winner, runnerUp, goalCongruence, spearmanRho, margin, crossovers, scenarios, goalSeeking } = params;
 
   const primaryActionPoints: string[] = [
-    `Memilih ${winner.alternativeName} sebagai keputusan prioritas utama pada kondisi operasional normal (skor preferensi: ${winner.score}).`,
+    `Memilih ${winner.alternativeName} sebagai keputusan prioritas utama karena menduduki puncak preferensi (${winner.score}) dengan keseimbangan optimal antara capaian mutu dan efisiensi biaya.`,
     goalCongruence.isCongruent
-      ? 'Mempertahankan standar kualitas dan keandalan yang menjadi keunggulan utama alternatif terpilih.'
-      : 'Memperketat pengawasan spesifikasi mutu untuk mengimbangi orientasi kriteria biaya.',
+      ? 'Mempertahankan standar kualitas dan keandalan tinggi yang menjadi faktor pembeda utama alternatif terpilih.'
+      : 'Memperketat pengawasan spesifikasi mutu untuk mengimbangi orientasi efisiensi biaya pada alternatif ini.',
   ];
 
   if (margin.isTight) {
     primaryActionPoints.push(
-      `Melakukan audit validasi historis dan konfirmasi penawaran karena keunggulan atas runner-up hanya berselisih tipis (${margin.absoluteGap}).`
+      `Melakukan audit validasi historis dan konfirmasi penawaran karena keunggulan atas runner-up hanya berselisih tipis (${margin.absoluteGap}), guna memastikan tidak ada deviasi harga di kemudian hari.`
     );
   }
 
@@ -65,7 +65,7 @@ export function synthesizeManagerialRecommendations(params: {
       alternativeId: winner.alternativeId,
       alternativeName: winner.alternativeName,
       score: winner.score,
-      statement: `Berdasarkan evaluasi multi-aspek dengan konsistensi peringkat ${spearmanRho.interpretation.toLowerCase()} (ρ = ${spearmanRho.rho}), ${winner.alternativeName} direkomendasikan sebagai pilihan terbaik.`,
+      statement: `Berdasarkan evaluasi multi-aspek dengan konsistensi peringkat ${spearmanRho.interpretation.toLowerCase()} (ρ = ${spearmanRho.rho}), ${winner.alternativeName} direkomendasikan sebagai pilihan terbaik karena menawarkan ketahanan nilai tertinggi dan meminimalkan trade-off risiko operasional.`,
       actionPoints: primaryActionPoints,
     },
     contingencyPlanB: {

@@ -1,5 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { formatDisplayNumber } from '@/utils/numberFormat';
+import {
+  formatDisplayNumber,
+  formatCurrency,
+  formatValueWithUnit,
+  formatCurrencyInNarrative,
+} from '@/utils/numberFormat';
 
 describe('formatDisplayNumber Utility', () => {
   describe('Pembersihan Bilangan Bulat Penuh Nol (Trailing Zeros Trimming)', () => {
@@ -49,6 +54,37 @@ describe('formatDisplayNumber Utility', () => {
       expect(formatDisplayNumber(-2.5, { separator: 'comma' })).toBe('-2,5');
       expect(formatDisplayNumber(-2.5, { separator: 'dot' })).toBe('-2.5');
       expect(formatDisplayNumber(-2.0, { separator: 'comma' })).toBe('-2');
+    });
+  });
+
+  describe('Format Mata Uang & Normalisasi Nominal Narasi', () => {
+    it('formatCurrency memformat nominal ke standar Rupiah Indonesia', () => {
+      expect(formatCurrency(2500000)).toBe('Rp 2.500.000');
+      expect(formatCurrency(15000000)).toBe('Rp 15.000.000');
+      expect(formatCurrency(0)).toBe('Rp 0');
+      expect(formatCurrency(null)).toBe('Rp 0');
+    });
+
+    it('formatValueWithUnit memformat nilai sesuai satuan kriteria', () => {
+      expect(formatValueWithUnit(2500000, 'Rp')).toBe('Rp 2.500.000');
+      expect(formatValueWithUnit(15000000, 'IDR')).toBe('Rp 15.000.000');
+      expect(formatValueWithUnit(200, 'Peserta')).toBe('200 Peserta');
+      expect(formatValueWithUnit(2500, 'Peserta')).toBe('2.500 Peserta');
+      expect(formatValueWithUnit(95, '%')).toBe('95%');
+    });
+
+    it('formatCurrencyInNarrative mengubah nominal mentah menjadi format rapi', () => {
+      const sample = 'Beban efisiensi Biaya sebesar 2500000 Rp, sehingga memberikan rasio terbaik.';
+      const res = formatCurrencyInNarrative(sample);
+      expect(res).toBe('Beban efisiensi Biaya sebesar Rp 2.500.000, sehingga memberikan rasio terbaik.');
+
+      const sample2 = 'HIMASIFO memiliki anggaran 15000000 dan target 200 peserta.';
+      const res2 = formatCurrencyInNarrative(sample2);
+      expect(res2).toBe('HIMASIFO memiliki anggaran sebesar Rp 15.000.000 dan target 200 peserta.');
+
+      const sample3 = 'Usulan kegiatan dengan anggaran sebesar Rp15.000.000.';
+      const res3 = formatCurrencyInNarrative(sample3);
+      expect(res3).toBe('Usulan kegiatan dengan anggaran sebesar Rp 15.000.000.');
     });
   });
 });

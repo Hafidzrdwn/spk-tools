@@ -40,48 +40,68 @@ export function inferCriterionType(name: string): CriterionType {
 export function buildDocumentExtractionPrompt(): string {
   return [
     'Anda adalah sistem AI ekstraktor dokumen evaluasi keputusan (Decision Support System / SPK) kelas dunia.',
-    'Tugas Anda adalah membaca seluruh konten dokumen (teks atau berkas PDF/Word) dan mengekstrak struktur matriks keputusan lengkap.',
+    'Tugas Anda adalah membaca seluruh konten dokumen (teks pengantar, narasi latar belakang, dan berkas tabel PDF/Word) untuk mengekstrak struktur matriks keputusan lengkap beserta konteks studi kasusnya.',
     '',
-    'Petunjuk Klasifikasi Kriteria:',
-    '1. Tentukan nama kriteria secara ringkas dan jelas.',
-    '2. Klasifikasikan tipe kriteria secara ketat sebagai "BENEFIT" atau "COST":',
-    '   - BENEFIT: Kriteria di mana semakin tinggi nilainya semakin baik (contoh: kualitas, performa, reputasi, garansi, efisiensi, kapasitas, keandalan, nilai, skor).',
-    '   - COST: Kriteria di mana semakin rendah nilainya semakin baik (contoh: harga, biaya beli, biaya operasional, konsumsi daya, waktu pengerjaan, tingkat cacat, jarak, resiko).',
-    '3. Bobot kriteria: Jika tertera persentase atau bobot numerik di dokumen, gunakan nilai tersebut. Jika tidak tertera, berikan estimasi bobot rasional yang bernilai positif.',
-    '4. Ekstrak satuan kriteria jika tersedia (contoh: Rp, Juta, %, Hari, Jam, Skor).',
+    'Petunjuk Pemahaman Teks Narasi & Pemetaan Nama:',
+    '1. BACA PARAGRAF TEKS SECARA MENYELURUH (bukan hanya sel tabel):',
+    '   - Dokumen sering kali hanya memuat kode singkat di tabel (misal "C1, C2, C3" atau "Program A, B, C", "Alternatif 1, 2"), sedangkan nama lengkapnya dijelaskan pada teks paragraf sebelum atau sesudah tabel.',
+    '2. Kriteria:',
+    '   - Jika tabel hanya menggunakan kode (misal "C1"), telusuri paragraf di mana kode tersebut didefinisikan (contoh: "Kriteria C1 adalah Biaya Operasional dan Perawatan").',
+    '   - Kembalikan NAMA LENGKAP deskriptif tersebut ke field "name", dan simpan kodenya di field "code" (contoh: code: "C1", name: "Biaya Operasional dan Perawatan"). JANGAN biarkan "name" hanya berupa "C1" jika nama lengkapnya ada di teks!',
+    '   - Klasifikasikan tipe kriteria secara ketat sebagai "BENEFIT" atau "COST":',
+    '     * BENEFIT: Semakin tinggi semakin baik (kualitas, akreditasi, reputasi, garansi, efisiensi, kapasitas, nilai, skor).',
+    '     * COST: Semakin rendah semakin baik (biaya beli, biaya operasional, waktu tempuh/lama, tingkat cacat, jarak, resiko).',
+    '   - Bobot kriteria: Gunakan bobot/persentase jika tertera di dokumen, atau estimasikan bobot rasional positif.',
+    '   - Satuan: Ekstrak satuan jika tertera (contoh: Rp, Juta, %, Hari, Jam, Skor).',
+    '3. Alternatif:',
+    '   - Jika tabel hanya memuat "Program A" atau "Alt 1", cari keterangan di paragraf tentang program atau entitas tersebut (contoh: "Program A (Revitalisasi Laboratorium Komputer)", "Kandidat B (PT Solusi Daya Nusantara)").',
+    '   - Kembalikan nama lengkap deskriptif tersebut ke field "name", dan simpan kodenya di field "code" (contoh: code: "A1", name: "Program Revitalisasi Laboratorium Komputer").',
+    '   - Nilai Matriks: Ekstrak angka murni untuk setiap kriteria (hilangkan satuan mata uang, tanda persen, atau teks tambahan).',
     '',
-    'Petunjuk Alternatif & Nilai Matriks:',
-    '1. Identifikasi setiap kandidat / produk / vendor / alternatif yang dievaluasi.',
-    '2. Untuk setiap alternatif, ekstrak nilai numerik murni untuk setiap kriteria.',
-    '   - Bersihkan teks satuan, tanda mata uang, atau persentase menjadi angka murni (contoh: "Rp 15.000.000" menjadi 15 atau 15000000, "85%" menjadi 85, "12 hari" menjadi 12).',
-    '3. Jika ada sel yang nilainya tidak disebutkan secara eksplisit di dokumen, berikan estimasi nilai median yang wajar dan catat dalam array warnings.',
+    'Petunjuk Ekstraksi Konteks Kasus & Stakeholder (contextMetadata):',
+    '1. Ekstrak latar belakang kasus ke dalam objek "contextMetadata":',
+    '   - "caseTitle": Judul spesifik studi kasus evaluasi.',
+    '   - "institutionOrOrg": Nama institusi, universitas, sekolah, rumah sakit, dinas, atau perusahaan tempat kasus ini berlangsung.',
+    '   - "targetStakeholder": Pihak pengambil keputusan atau pemangku kepentingan utama yang relevan (contoh: "Rektor & Tim Perencanaan Anggaran", "Direktur RS & Tim Pengadaan Medis", "Kepala Dinas & Pejabat Pembuat Komitmen (PPK)").',
+    '   - "domainContext": Bidang spesifik kasus (contoh: "Pendidikan Tinggi / Fasilitas Kampus", "Kesehatan & Logistik Medis", "Pengadaan IT", "Manufaktur").',
+    '   - "rawNarrativeSummary": Ringkasan 1-2 kalimat lugas mengenai latar belakang masalah dan tujuan evaluasi ini.',
     '',
     'Aturan Bahasa & Tipografi:',
     '1. Gunakan Bahasa Indonesia baku yang profesional.',
     '2. DILARANG menggunakan tanda pisah em dash ("—", "–", atau "--"). Gunakan tanda koma atau tanda hubung spasi (" - ").',
     '',
-    'Format Output Wajib (Strict JSON):',
+    'Format Output Wajib (Strict JSON tanpa tag markdown ```json):',
     '{',
     '  "projectTitle": "Judul Proyek atau Studi Kasus Evaluasi",',
     '  "projectDescription": "Deskripsi singkat mengenai perbandingan yang dilakukan",',
+    '  "contextMetadata": {',
+    '    "caseTitle": "Judul Studi Kasus Lengkap",',
+    '    "institutionOrOrg": "Nama Institusi / Organisasi / Kampus",',
+    '    "targetStakeholder": "Pihak Berwenang / Stakeholder (misal: Rektor & Wakil Rektor)",',
+    '    "domainContext": "Bidang Masalah",',
+    '    "rawNarrativeSummary": "Ringkasan latar belakang studi kasus dari teks dokumen"',
+    '  },',
     '  "criteria": [',
     '    {',
-    '      "name": "Nama Kriteria",',
+    '      "code": "C1",',
+    '      "name": "Nama Lengkap Kriteria (bukan sekadar kode)",',
     '      "type": "BENEFIT",',
     '      "weight": 25,',
     '      "unit": "Satuan",',
-    '      "description": "Penjelasan singkat kriteria"',
+    '      "description": "Penjelasan kriteria"',
     '    }',
     '  ],',
     '  "alternatives": [',
     '    {',
-    '      "name": "Nama Alternatif",',
+    '      "code": "A1",',
+    '      "name": "Nama Lengkap Alternatif (bukan sekadar kode)",',
     '      "values": {',
-    '        "Nama Kriteria": 85',
+    '        "C1": 85,',
+    '        "Nama Lengkap Kriteria": 85',
     '      }',
     '    }',
     '  ],',
-    '  "summary": "Ringkasan temuan dan kualitas kelengkapan data dalam dokumen",',
+    '  "summary": "Ringkasan kualitas dan kelengkapan data dalam dokumen",',
     '  "confidenceScore": 0.95,',
     '  "warnings": []',
     '}',
@@ -228,16 +248,21 @@ export function standardizeExtractedData(
     const altName = sanitizeNarrativeText(alt.name || `Alternatif ${idx + 1}`);
     const values: Record<string, number> = {};
 
-    criteria.forEach((crit) => {
+    criteria.forEach((crit, critIdx) => {
       let matchedVal: number | undefined;
 
       if (alt.values && typeof alt.values === 'object') {
+        const rawCrit = parsed.criteria[critIdx];
+        const critCode = rawCrit?.code ? rawCrit.code.toLowerCase().trim() : '';
+        const critNameLower = crit.name.toLowerCase().trim();
+
         for (const [key, val] of Object.entries(alt.values)) {
-          const lowerKey = key.toLowerCase();
+          const lowerKey = key.toLowerCase().trim();
           if (
-            lowerKey === crit.name.toLowerCase() ||
-            lowerKey.includes(crit.name.toLowerCase()) ||
-            crit.name.toLowerCase().includes(lowerKey)
+            (critCode && (lowerKey === critCode || lowerKey.startsWith(critCode + ':') || lowerKey.startsWith(critCode + ' '))) ||
+            lowerKey === critNameLower ||
+            lowerKey.includes(critNameLower) ||
+            critNameLower.includes(lowerKey)
           ) {
             const num = Number(val);
             if (!isNaN(num)) {
@@ -270,9 +295,20 @@ export function standardizeExtractedData(
     ? sanitizeNarrativeText(parsed.projectDescription)
     : undefined;
 
+  const contextMetadata = parsed.contextMetadata
+    ? {
+        caseTitle: parsed.contextMetadata.caseTitle ? sanitizeNarrativeText(parsed.contextMetadata.caseTitle) : undefined,
+        institutionOrOrg: parsed.contextMetadata.institutionOrOrg ? sanitizeNarrativeText(parsed.contextMetadata.institutionOrOrg) : undefined,
+        targetStakeholder: parsed.contextMetadata.targetStakeholder ? sanitizeNarrativeText(parsed.contextMetadata.targetStakeholder) : undefined,
+        domainContext: parsed.contextMetadata.domainContext ? sanitizeNarrativeText(parsed.contextMetadata.domainContext) : undefined,
+        rawNarrativeSummary: parsed.contextMetadata.rawNarrativeSummary ? sanitizeNarrativeText(parsed.contextMetadata.rawNarrativeSummary) : undefined,
+      }
+    : undefined;
+
   return {
     projectTitle,
     projectDescription,
+    contextMetadata,
     criteria,
     alternatives,
     sourceFile: {

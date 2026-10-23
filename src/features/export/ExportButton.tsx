@@ -107,6 +107,8 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
             if (config.selectedMethods.includes('WP')) activeMethodsList.push('wp');
             if (config.selectedMethods.includes('TOPSIS')) activeMethodsList.push('topsis');
 
+            const contextMetadata = useProjectStore.getState().contextMetadata;
+
             aiNarrative = await fetchAiExecutiveNarrative({
               projectTitle: title,
               criteria,
@@ -117,6 +119,7 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
                 wp: wpRes.finalRanking,
                 topsis: topsisRes.finalRanking,
               },
+              contextMetadata,
             });
           } catch (aiErr) {
             console.warn('AI synthesis fallback:', aiErr);
@@ -127,6 +130,8 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
         setProgress(50);
         setStageLabel('Menyusun struktur dokumen & tata letak bab matematis...');
 
+        const contextMetadata = useProjectStore.getState().contextMetadata;
+
         const payload = buildComprehensiveReport({
           projectTitle: title,
           scope,
@@ -134,8 +139,10 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
           config,
           criteria,
           alternatives,
+          contextMetadata,
           aiNarrative,
         });
+
 
         timerId = setInterval(() => {
           setProgress((prev) => {

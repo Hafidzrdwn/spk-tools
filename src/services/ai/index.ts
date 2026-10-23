@@ -6,3 +6,4 @@ export * from './geminiClient';
 export * from './documentLoaderTypes';
 export * from './documentFileReader';
 export * from './documentExtractorService';
+export * from './storyExtractorService';

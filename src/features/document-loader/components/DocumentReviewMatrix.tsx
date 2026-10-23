@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Check, ShieldCheck, AlertCircle, ArrowRight, RefreshCw, FileText } from 'lucide-react';
+import { Check, ShieldCheck, AlertCircle, ArrowRight, RefreshCw, FileText, Building2 } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
-import type { ProcessedDocumentResult } from '@/services/ai';
+import type { ProcessedDocumentResult, CaseContextMetadata } from '@/services/ai';
 import type { Criterion, Alternative, CriterionType } from '@/types/domain';
 
 export interface DocumentReviewMatrixProps {
@@ -11,9 +11,11 @@ export interface DocumentReviewMatrixProps {
     title: string;
     criteria: Criterion[];
     alternatives: Alternative[];
+    contextMetadata?: CaseContextMetadata;
   }) => void;
   onCancelOrUploadAgain: () => void;
 }
+
 
 export const DocumentReviewMatrix: React.FC<DocumentReviewMatrixProps> = ({
   data,
@@ -72,6 +74,7 @@ export const DocumentReviewMatrix: React.FC<DocumentReviewMatrixProps> = ({
       title: projectTitle.trim() || 'Proyek SPK dari Dokumen',
       criteria,
       alternatives,
+      contextMetadata: data.contextMetadata,
     });
   };
 
@@ -115,12 +118,44 @@ export const DocumentReviewMatrix: React.FC<DocumentReviewMatrixProps> = ({
         </div>
       </div>
 
+      {data.contextMetadata && (data.contextMetadata.institutionOrOrg || data.contextMetadata.targetStakeholder) && (
+        <div className="p-3 rounded-xl bg-indigo-50/70 border border-indigo-200/80 text-xs text-indigo-950 flex items-start gap-2.5">
+          <div className="w-5 h-5 rounded-md bg-indigo-200/80 text-indigo-800 flex items-center justify-center shrink-0 mt-0.5">
+            <Building2 className="w-3.5 h-3.5" />
+          </div>
+          <div className="flex-1 min-w-0 space-y-1">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="font-bold text-indigo-900">Konteks Kasus & Stakeholder:</span>
+              {data.contextMetadata.institutionOrOrg && (
+                <Badge variant="neutral" size="sm" className="bg-white/90 text-indigo-800 border-indigo-200 text-[10px] font-semibold">
+                  {data.contextMetadata.institutionOrOrg}
+                </Badge>
+              )}
+              {data.contextMetadata.targetStakeholder && (
+                <Badge variant="neutral" size="sm" className="bg-white/90 text-purple-800 border-purple-200 text-[10px] font-semibold">
+                  {data.contextMetadata.targetStakeholder}
+                </Badge>
+              )}
+            </div>
+            {data.contextMetadata.rawNarrativeSummary && (
+              <p className="text-[11px] text-indigo-900/80 line-clamp-2">
+                {data.contextMetadata.rawNarrativeSummary}
+              </p>
+            )}
+            <p className="text-[10px] text-indigo-600 font-medium">
+              *Tersimpan otomatis sebagai acuan rekomendasi manajerial pada ekspor laporan PDF.
+            </p>
+          </div>
+        </div>
+      )}
+
       {data.warnings && data.warnings.length > 0 && (
         <div className="p-3 rounded-xl bg-amber-50/80 border border-amber-200 text-xs text-amber-900 space-y-1">
           <p className="font-bold flex items-center gap-1.5 text-amber-950">
             <AlertCircle className="w-3.5 h-3.5 text-amber-600 shrink-0" />
             Catatan Penyesuaian Ekstraksi ({data.warnings.length}):
           </p>
+
           <ul className="list-disc list-inside space-y-0.5 text-slate-600 pl-1 text-[11px] max-h-24 overflow-y-auto">
             {data.warnings.map((warn, i) => (
               <li key={i}>{warn}</li>

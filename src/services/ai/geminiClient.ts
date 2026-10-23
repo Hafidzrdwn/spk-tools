@@ -3,21 +3,31 @@ import type { AiNarrativeRequest, AiExecutiveNarrative } from './types';
 import { getCachedAiNarrative, setCachedAiNarrative } from './aiCache';
 import { buildGeminiPrompt } from './promptBuilder';
 import { generateFallbackNarrative } from './fallbackNarrative';
+import { formatCurrencyInNarrative } from '@/utils/numberFormat';
 
 export const CANDIDATE_MODELS = [
-  'gemini-3.8-flash',
+  'gemini-2.5-flash-lite',
+  'gemini-2.5-flash',
   'gemini-3.5-flash-lite',
   'gemini-3.6-flash',
-  'gemini-3.5-flash',
-  'gemini-2.5-flash',
-  'gemini-2.5-flash-lite',
-  'gemini-flash-latest',
-  'gemini-2.5-pro',
 ] as const;
+
+export const AI_REQUEST_TIMEOUT_MS = 8000;
+
+export function withTimeout<T>(
+  promise: Promise<T>,
+  timeoutMs: number = AI_REQUEST_TIMEOUT_MS,
+  errorMessage = 'Permintaan AI melebihi batas waktu respons.'
+): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<T>((_, reject) => setTimeout(() => reject(new Error(errorMessage)), timeoutMs)),
+  ]);
+}
 
 export function sanitizeNarrativeText(text: string): string {
   if (!text) return '';
-  return text
+  const cleaned = text
     .replace(/[\u2014\u2013]|--/g, (match, offset, fullStr) => {
       const prevChar = fullStr[offset - 1] || '';
       const nextChar = fullStr[offset + match.length] || '';
@@ -30,6 +40,8 @@ export function sanitizeNarrativeText(text: string): string {
     .replace(/\s*,\s*/g, ', ')
     .replace(/\n{3,}/g, '\n\n')
     .trim();
+
+  return formatCurrencyInNarrative(cleaned);
 }
 
 export function getEffectiveGeminiApiKey(): string {
@@ -57,18 +69,25 @@ export function setCustomGeminiApiKey(apiKey: string): void {
   }
 }
 
+export interface FetchAiNarrativeOptions {
+  bypassCache?: boolean;
+}
+
 export async function fetchAiExecutiveNarrative(
   request: AiNarrativeRequest,
-  overrideApiKey?: string
+  overrideApiKey?: string,
+  options?: FetchAiNarrativeOptions
 ): Promise<AiExecutiveNarrative> {
-  const cached = getCachedAiNarrative(request);
-  if (cached) {
-    return {
-      ...cached,
-      sectionA_rankingShifts: sanitizeNarrativeText(cached.sectionA_rankingShifts),
-      sectionB_methodValidity: sanitizeNarrativeText(cached.sectionB_methodValidity),
-      sectionC_recommendations: sanitizeNarrativeText(cached.sectionC_recommendations),
-    };
+  if (!options?.bypassCache) {
+    const cached = getCachedAiNarrative(request);
+    if (cached) {
+      return {
+        ...cached,
+        sectionA_rankingShifts: sanitizeNarrativeText(cached.sectionA_rankingShifts),
+        sectionB_methodValidity: sanitizeNarrativeText(cached.sectionB_methodValidity),
+        sectionC_recommendations: sanitizeNarrativeText(cached.sectionC_recommendations),
+      };
+    }
   }
 
   const apiKey = typeof overrideApiKey === 'string' ? overrideApiKey.trim() : getEffectiveGeminiApiKey();
@@ -90,15 +109,18 @@ export async function fetchAiExecutiveNarrative(
 
     for (const model of CANDIDATE_MODELS) {
       try {
-        const response = await ai.models.generateContent({
-          model,
-          contents: prompt,
-          config: {
-            responseMimeType: 'application/json',
-            temperature: 0.2,
-            maxOutputTokens: 1000,
-          },
-        });
+        const response = await withTimeout(
+          ai.models.generateContent({
+            model,
+            contents: prompt,
+            config: {
+              responseMimeType: 'application/json',
+              temperature: 0.2,
+              maxOutputTokens: 1000,
+            },
+          }),
+          AI_REQUEST_TIMEOUT_MS
+        );
 
         const rawText = response?.text;
         if (!rawText) continue;
