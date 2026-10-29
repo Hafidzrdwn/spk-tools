@@ -88,13 +88,13 @@ export function buildStoryExtractionPrompt(storyText: string): string {
     '    "rawNarrativeSummary": "string"',
     '  },',
     '  "criteria": [',
-    '    { "code": "C1", "name": "AI Relevance & Implementation", "type": "BENEFIT", "weight": 25, "unit": "Skor 1-100" },',
+    '    { "code": "C1", "name": "Kriteria Utama", "type": "BENEFIT", "weight": 25, "unit": "Skor 1-100" },',
     '    { "code": "C2", "name": "Anggaran Biaya", "type": "COST", "weight": 20, "unit": "Rp" }',
     '  ],',
     '  "alternatives": [',
     '    {',
     '      "code": "A1",',
-    '      "name": "SirkularBali AI",',
+    '      "name": "Kandidat Opsi 1",',
     '      "values": {',
     '        "C1": 85,',
     '        "Anggaran Biaya": 5000000',
@@ -671,7 +671,7 @@ export function buildFallbackStoryResult(storyText: string): ProcessedStoryResul
     return generalResult;
   }
 
-  return extractDynamicFallback(normalizedText);
+  throw new Error('Ekstraksi tidak berhasil menemukan alternatif dan kriteria dari teks narasi. Harap sertakan nama kandidat alternatif dan aspek evaluasi secara spesifik, atau gunakan Format Standar.');
 }
 
 export async function extractMatrixFromStoryText(
@@ -685,10 +685,14 @@ export async function extractMatrixFromStoryText(
 
   const apiKey = typeof overrideApiKey === 'string' ? overrideApiKey.trim() : getEffectiveGeminiApiKey();
   if (!apiKey) {
-    return buildFallbackStoryResult(trimmed);
+    if (typeof overrideApiKey === 'string' && overrideApiKey === '') {
+      return buildFallbackStoryResult(trimmed);
+    }
+    throw new Error('Kunci API Google Gemini belum dikonfigurasi. Harap pasang kunci API di menu Pengaturan AI terlebih dahulu.');
   }
 
   const prompt = buildStoryExtractionPrompt(trimmed);
+  let lastErrorMsg = '';
 
   try {
     const ai = new GoogleGenAI({ apiKey });
@@ -701,7 +705,7 @@ export async function extractMatrixFromStoryText(
             contents: prompt,
             config: {
               responseMimeType: 'application/json',
-              temperature: 0.2,
+              temperature: 0.1,
               maxOutputTokens: 2500,
             },
           }),
@@ -720,12 +724,24 @@ export async function extractMatrixFromStoryText(
 
         const result = standardizeStoryResult(parsed);
         return result;
-      } catch {
+      } catch (err: unknown) {
+        lastErrorMsg = err instanceof Error ? err.message : String(err);
         continue;
       }
     }
-  } catch {
+  } catch (err: unknown) {
+    lastErrorMsg = err instanceof Error ? err.message : String(err);
   }
 
-  return buildFallbackStoryResult(trimmed);
+  const normalizedText = trimmed.replace(/[\u2014\u2013]|--/g, ' - ');
+  const heuristic = extractStructuredMcdmPattern(normalizedText) || extractActivityBudgetPattern(normalizedText) || extractGeneralCandidatesPattern(normalizedText);
+  if (heuristic && heuristic.alternatives.length >= 2) {
+    return heuristic;
+  }
+
+  throw new Error(
+    lastErrorMsg
+      ? `AI belum berhasil menganalisis narasi (${lastErrorMsg}). Harap pastikan narasi memuat minimal 2 kandidat alternatif dan kriteria nilai numerik yang jelas.`
+      : 'AI belum berhasil mengekstrak alternatif dan kriteria dari narasi. Harap lengkapi deskripsi atau gunakan Format Standar.'
+  );
 }
