@@ -87,4 +87,37 @@ describe('Story-to-Matrix Intelligent Extractor', () => {
     expect(useProjectStore.getState().criteria.length).toBe(0);
     expect(useProjectStore.getState().alternatives.length).toBe(0);
   });
+
+  it('mengekstrak studi kasus kompleks Bali DigiFest dengan 3 alternatif dan 6 kriteria berbobot secara akurat', async () => {
+    const baliDigiFestStory = `Pemilihan proyek MVP untuk lomba AI Web Innovation Challenge Bali DigiFest 2026 kategori Mahasiswa secara individu dalam batas waktu 8 hari (29 Oktober – 7 November 2026) mengevaluasi 3 Alternatif Proyek, yaitu A1 (SirkularBali AI – kategori Bali Smart Society) berupa web klasifikasi sampah berbasis Computer Vision serta manajemen angkut TPS3R dan kalkulator ESG, A2 (KriyaLokal AI – kategori Business & MSME Digitalization) berupa platform pembuat katalog digital budaya multi-bahasa dari input suara dan foto produk beserta RAG Chatbot untuk UMKM, serta A3 (AksaraDwipa AI – kategori Education & Smart Information Systems) berupa web evaluasi tulis tangan Aksara Bali di atas Canvas dengan OCR Vision dan tutor bahasa daerah. Penilaian menggunakan 6 Kriteria yang diadaptasi dari rubrik resmi Tahap 1 dengan total bobot 100% (1.00), meliputi: C1 (AI Relevance & Implementation) dengan bobot 0.25 (25%) bertipe Benefit yang menilai kedalaman integrasi AI pada fungsi utama; C2 (Problem Relevance & Impact) dengan bobot 0.20 (20%) bertipe Benefit yang menilai urgensi masalah nyata di Bali dan dampak solusinya; C3 (MVP Functionality & Reliability) dengan bobot 0.20 (20%) bertipe Benefit yang menilai kestabilan fungsi utama saat diuji langsung oleh juri; C4 (Innovation & Differentiation) dengan bobot 0.15 (15%) bertipe Benefit yang menilai keunikan produk dibanding solusi manual/existing; C5 (Technical Feasibility & Kecepatan Eksekusi Solo 8 Hari) dengan bobot 0.15 (15%) bertipe Benefit yang menilai kelayakan arsitektur serta ketercapaian pembuatan MVP + dokumentasi GitHub secara individu sebelum tenggat waktu; serta C6 (Risiko Error AI & Beban Kepatuhan/Kompleksitas Sistem) dengan bobot 0.05 (5%) bertipe Cost yang mengukur potensi kegagalan atau halusinasi model saat verifikasi teknis dan kerumitan pemenuhan syarat kelengkapan dokumen. Berdasarkan analisis kondisi pengerjaan dari nol dalam 8 hari oleh 1 orang, matriks nilai masing-masing alternatif pada skala 1–100 adalah: Alternatif A1 (SirkularBali AI) memperoleh skor C1 = 85, C2 = 92, C3 = 95, C4 = 78, C5 = 94, dan C6 = 20; Alternatif A2 (KriyaLokal AI) memperoleh skor C1 = 95, C2 = 90, C3 = 85, C4 = 88, C5 = 75, dan C6 = 55; sedangkan Alternatif A3 (AksaraDwipa AI) memperoleh skor C1 = 88, C2 = 85, C3 = 65, C4 = 95, C5 = 60, dan C6 = 80.`;
+
+    const result = await extractMatrixFromStoryText(baliDigiFestStory, '');
+
+    expect(result.alternatives.length).toBe(3);
+    expect(result.criteria.length).toBe(6);
+
+    const altNames = result.alternatives.map((a) => a.name);
+    expect(altNames.some((n) => n.includes('SirkularBali'))).toBe(true);
+    expect(altNames.some((n) => n.includes('KriyaLokal'))).toBe(true);
+    expect(altNames.some((n) => n.includes('AksaraDwipa'))).toBe(true);
+
+    const costCrit = result.criteria.find((c) => c.type === 'COST');
+    expect(costCrit).toBeDefined();
+    expect(costCrit?.name).toContain('C6');
+
+    const sumNorm = result.criteria.reduce((acc, c) => acc + c.normalizedWeight, 0);
+    expect(sumNorm).toBeCloseTo(1, 2);
+
+    const a1 = result.alternatives.find((a) => a.name.includes('SirkularBali'))!;
+    const c1 = result.criteria.find((c) => c.name.includes('C1'))!;
+    const c6 = result.criteria.find((c) => c.name.includes('C6'))!;
+    expect(a1.values[c1.id]).toBe(85);
+    expect(a1.values[c6.id]).toBe(20);
+
+    const a2 = result.alternatives.find((a) => a.name.includes('KriyaLokal'))!;
+    expect(a2.values[c1.id]).toBe(95);
+
+    const a3 = result.alternatives.find((a) => a.name.includes('AksaraDwipa'))!;
+    expect(a3.values[c1.id]).toBe(88);
+  });
 });
