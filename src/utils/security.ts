@@ -1,4 +1,3 @@
-
 export interface RateLimitConfig {
   cooldownSeconds: number;
   maxPerDay: number;
@@ -11,9 +10,13 @@ export interface RateLimitCheckResult {
   remainingDailyQuota?: number;
 }
 
+const inMemoryCooldownMap = new Map<string, number>();
+const inMemoryDailyCountMap = new Map<string, { count: number; date: string }>();
+
 export function sanitizeText(text: string, maxLength = 1000): string {
   if (!text) return '';
   return text
+    .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F-\u009F\u200B-\u200D\uFEFF]/g, '')
     .replace(/[<>]/g, '')
     .trim()
     .slice(0, maxLength);
@@ -29,7 +32,7 @@ export function isValidEmail(email: string): boolean {
 
 export function validateImageUpload(
   file: File,
-  maxSizeBytes = 5 * 1024 * 1024
+  maxSizeBytes = 2 * 1024 * 1024
 ): { valid: boolean; error?: string } {
   const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
   const ALLOWED_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.webp'];
@@ -57,6 +60,18 @@ export function validateImageUpload(
     };
   }
 
+  const dotParts = fileNameLower.split('.');
+  if (dotParts.length > 2) {
+    const dangerousExtensions = ['html', 'htm', 'php', 'js', 'exe', 'sh', 'bat', 'vbs'];
+    const hasDangerousMiddle = dotParts.slice(1, -1).some((part) => dangerousExtensions.includes(part));
+    if (hasDangerousMiddle) {
+      return {
+        valid: false,
+        error: 'Nama berkas terindikasi memiliki ekstensi ganda yang mencurigakan.',
+      };
+    }
+  }
+
   if (file.size > maxSizeBytes) {
     const maxMb = (maxSizeBytes / (1024 * 1024)).toFixed(0);
     return {
@@ -68,21 +83,41 @@ export function validateImageUpload(
   return { valid: true };
 }
 
-/**
- * Mengecek apakah pengiriman form diizinkan berdasarkan jeda waktu (cooldown)
- * dan kuota harian untuk mencegah spam dan stress-test pada API kuota terbatas (Web3Forms/Firebase).
- */
 export function checkRateLimit(
   actionKey: string,
   config: RateLimitConfig
 ): RateLimitCheckResult {
+  const now = Date.now();
+  const today = new Date().toISOString().slice(0, 10);
+
+  const memLastTime = inMemoryCooldownMap.get(actionKey);
+  if (typeof memLastTime === 'number') {
+    const memElapsed = Math.floor((now - memLastTime) / 1000);
+    if (memElapsed < config.cooldownSeconds) {
+      const waitSeconds = config.cooldownSeconds - memElapsed;
+      return {
+        allowed: false,
+        reason: `Mohon tunggu ${waitSeconds} detik lagi sebelum mengirim kembali.`,
+        remainingCooldownSeconds: waitSeconds,
+      };
+    }
+  }
+
+  const memDaily = inMemoryDailyCountMap.get(actionKey);
+  if (memDaily && memDaily.date === today && memDaily.count >= config.maxPerDay) {
+    return {
+      allowed: false,
+      reason: `Batas pengiriman formulir harian (${config.maxPerDay}x per hari) telah tercapai untuk mencegah spam.`,
+      remainingDailyQuota: 0,
+    };
+  }
+
   if (typeof window === 'undefined' || !window.localStorage) {
     return { allowed: true };
   }
 
   try {
     const storageKey = `rate_limit_${actionKey}`;
-    const today = new Date().toISOString().slice(0, 10);
     const rawData = localStorage.getItem(storageKey);
 
     if (!rawData) {
@@ -90,9 +125,7 @@ export function checkRateLimit(
     }
 
     const data: { lastTime: number; countToday: number; date: string } = JSON.parse(rawData);
-    const now = Date.now();
 
-    // 1. Cek jeda cooldown
     const elapsedSeconds = Math.floor((now - data.lastTime) / 1000);
     if (elapsedSeconds < config.cooldownSeconds) {
       const waitSeconds = config.cooldownSeconds - elapsedSeconds;
@@ -103,7 +136,6 @@ export function checkRateLimit(
       };
     }
 
-    // 2. Cek kuota harian
     const countToday = data.date === today ? data.countToday : 0;
     if (countToday >= config.maxPerDay) {
       return {
@@ -122,15 +154,19 @@ export function checkRateLimit(
   }
 }
 
-/**
- * Mencatat pengiriman form yang berhasil ke dalam localStorage
- */
 export function recordRateLimitSubmission(actionKey: string): void {
+  const now = Date.now();
+  const today = new Date().toISOString().slice(0, 10);
+
+  inMemoryCooldownMap.set(actionKey, now);
+  const currentMem = inMemoryDailyCountMap.get(actionKey);
+  const nextMemCount = currentMem && currentMem.date === today ? currentMem.count + 1 : 1;
+  inMemoryDailyCountMap.set(actionKey, { count: nextMemCount, date: today });
+
   if (typeof window === 'undefined' || !window.localStorage) return;
 
   try {
     const storageKey = `rate_limit_${actionKey}`;
-    const today = new Date().toISOString().slice(0, 10);
     const rawData = localStorage.getItem(storageKey);
 
     let countToday = 1;
@@ -148,7 +184,7 @@ export function recordRateLimitSubmission(actionKey: string): void {
     localStorage.setItem(
       storageKey,
       JSON.stringify({
-        lastTime: Date.now(),
+        lastTime: now,
         countToday,
         date: today,
       })

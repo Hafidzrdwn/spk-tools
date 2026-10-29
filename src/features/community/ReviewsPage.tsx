@@ -52,6 +52,7 @@ export const ReviewsPage: React.FC = () => {
   const [bugTitle, setBugTitle] = useState('');
   const [bugDescription, setBugDescription] = useState('');
   const [botHoneypot, setBotHoneypot] = useState('');
+  const [reviewHoneypot, setReviewHoneypot] = useState('');
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [bugErrors, setBugErrors] = useState<{
@@ -82,7 +83,7 @@ export const ReviewsPage: React.FC = () => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const validation = validateImageUpload(file, 5 * 1024 * 1024);
+    const validation = validateImageUpload(file, 2 * 1024 * 1024);
     if (!validation.valid) {
       toast.error(validation.error || 'Format berkas gambar tidak diizinkan demi keamanan.');
       if (fileInputRef.current) fileInputRef.current.value = '';
@@ -105,6 +106,14 @@ export const ReviewsPage: React.FC = () => {
 
   const handleSubmitReview = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (reviewHoneypot && reviewHoneypot.trim() !== '') {
+      toast.success('Terima kasih! Ulasan Anda berhasil diterbitkan.');
+      setReviewComment('');
+      setReviewerName('');
+      setReviewHoneypot('');
+      return;
+    }
 
     const rateCheck = checkRateLimit('community_review', { cooldownSeconds: 30, maxPerDay: 5 });
     if (!rateCheck.allowed) {
@@ -344,6 +353,18 @@ export const ReviewsPage: React.FC = () => {
               </CardHeader>
               <CardContent className="pt-4">
                 <form onSubmit={handleSubmitReview} className="space-y-4 text-xs">
+                  <div className="hidden" aria-hidden="true" style={{ display: 'none' }}>
+                    <label htmlFor="review-hp-input">Do not fill this</label>
+                    <input
+                      type="text"
+                      id="review-hp-input"
+                      name="reviewHoneypot"
+                      tabIndex={-1}
+                      autoComplete="off"
+                      value={reviewHoneypot}
+                      onChange={(e) => setReviewHoneypot(e.target.value)}
+                    />
+                  </div>
                   {/* Clean Interactive Star Rating Input */}
                   <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-center space-y-1.5">
                     <label className="text-[11px] font-semibold text-slate-700 block">

@@ -9,7 +9,6 @@ import {
 import Badge from '@/components/ui/Badge';
 import { formatRelativeTime } from '@/utils/dateFormatter';
 import {
-  BarChart3,
   Laptop,
   Smartphone,
   Tablet,
@@ -40,10 +39,7 @@ export const AnalyticsPage: React.FC = () => {
     return (
       <div className="space-y-6 animate-pulse" role="status" aria-label="Memuat statistik web...">
         <div className="space-y-1">
-          <div className="flex items-center gap-2">
-            <div className="w-5 h-5 rounded bg-indigo-200 shrink-0" />
-            <div className="w-64 sm:w-80 h-7 rounded bg-slate-300" />
-          </div>
+          <div className="w-64 sm:w-80 h-7 rounded bg-slate-300" />
           <div className="w-full max-w-md h-4 rounded bg-slate-200" />
         </div>
 
@@ -109,10 +105,10 @@ export const AnalyticsPage: React.FC = () => {
             <div className="w-20 h-5 rounded-full bg-emerald-100 shrink-0" />
           </div>
           <div className="space-y-2 overflow-x-auto">
-            <div className="w-full min-w-[340px] h-9 rounded bg-slate-100" />
-            <div className="w-full min-w-[340px] h-8 rounded bg-slate-50" />
-            <div className="w-full min-w-[340px] h-8 rounded bg-slate-50" />
-            <div className="w-full min-w-[340px] h-8 rounded bg-slate-50" />
+            <div className="w-full min-w-85 h-9 rounded bg-slate-100" />
+            <div className="w-full min-w-85 h-8 rounded bg-slate-50" />
+            <div className="w-full min-w-85 h-8 rounded bg-slate-50" />
+            <div className="w-full min-w-85 h-8 rounded bg-slate-50" />
           </div>
         </div>
       </div>
@@ -138,9 +134,8 @@ export const AnalyticsPage: React.FC = () => {
     <div className="space-y-6">
       {/* Page Title & Intro */}
       <div className="space-y-1">
-        <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
-          <BarChart3 className="w-5 h-5 text-indigo-600" />
-          <span>Statistik & Wawasan Penggunaan Web</span>
+        <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+          Statistik & Wawasan Penggunaan Web
         </h1>
         <p className="text-xs sm:text-sm text-slate-500">
           Metrik interaksi pengunjung dan volume akses pengguna pada sistem DecisiGraph yang tercatat secara real-time.

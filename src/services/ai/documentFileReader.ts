@@ -59,6 +59,11 @@ export async function readDocumentFile(file: File): Promise<DocumentFilePayload>
   }
 
   try {
+    const safeName = file.name
+      .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F-\u009F\u200B-\u200D\uFEFF]/g, '')
+      .replace(/[\\/]/g, '_')
+      .slice(0, 150);
+
     if (detectedType === 'pdf') {
       const buffer = await file.arrayBuffer();
       if (buffer.byteLength === 0) {
@@ -69,9 +74,19 @@ export async function readDocumentFile(file: File): Promise<DocumentFilePayload>
         };
         throw error;
       }
+      const headerBytes = new Uint8Array(buffer.slice(0, 4));
+      const isPdfHeader = headerBytes[0] === 0x25 && headerBytes[1] === 0x50 && headerBytes[2] === 0x44 && headerBytes[3] === 0x46;
+      if (!isPdfHeader) {
+        const error: DocumentLoaderError = {
+          code: 'UNSUPPORTED_FORMAT',
+          message: 'Berkas tidak memiliki struktur header berkas PDF yang valid.',
+          suggestion: 'Pastikan berkas adalah PDF asli dan bukan format lain yang diubah ekstensinya.',
+        };
+        throw error;
+      }
       const base64Data = arrayBufferToBase64(buffer);
       return {
-        name: file.name,
+        name: safeName,
         size: file.size,
         type: 'pdf',
         mimeType: 'application/pdf',
@@ -89,6 +104,16 @@ export async function readDocumentFile(file: File): Promise<DocumentFilePayload>
         };
         throw error;
       }
+      const headerBytes = new Uint8Array(buffer.slice(0, 4));
+      const isZipHeader = headerBytes[0] === 0x50 && headerBytes[1] === 0x4B && (headerBytes[2] === 0x03 || headerBytes[2] === 0x05 || headerBytes[2] === 0x07);
+      if (!isZipHeader) {
+        const error: DocumentLoaderError = {
+          code: 'UNSUPPORTED_FORMAT',
+          message: 'Berkas tidak memiliki struktur paket Word (.docx) yang valid.',
+          suggestion: 'Pastikan berkas adalah dokumen Word .docx asli.',
+        };
+        throw error;
+      }
 
       const result = await mammoth.extractRawText({ arrayBuffer: buffer });
       const text = (result.value || '').trim();
@@ -103,7 +128,7 @@ export async function readDocumentFile(file: File): Promise<DocumentFilePayload>
       }
 
       return {
-        name: file.name,
+        name: safeName,
         size: file.size,
         type: 'docx',
         mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
@@ -122,7 +147,7 @@ export async function readDocumentFile(file: File): Promise<DocumentFilePayload>
     }
 
     return {
-      name: file.name,
+      name: safeName,
       size: file.size,
       type: detectedType,
       mimeType: file.type || 'text/plain',

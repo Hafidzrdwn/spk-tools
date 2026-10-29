@@ -136,14 +136,27 @@ export async function submitReview(review: Omit<ReviewItem, 'id' | 'createdAt'>)
     throw new Error('Firebase Realtime Database belum terkonfigurasi. Pastikan kredensial Firebase telah dimasukkan ke file .env.');
   }
 
+  const cleanName = review.name ? review.name.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F-\u009F\u200B-\u200D\uFEFF]/g, '').replace(/[<>]/g, '').trim().slice(0, 60) : '';
+  const cleanComment = review.comment ? review.comment.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F-\u009F\u200B-\u200D\uFEFF]/g, '').replace(/[<>]/g, '').trim().slice(0, 1000) : '';
+  const cleanRole = review.role ? review.role.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F-\u009F\u200B-\u200D\uFEFF]/g, '').replace(/[<>]/g, '').trim().slice(0, 50) : 'Pengguna DecisiGraph';
+  const cleanEmail = review.email ? review.email.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F-\u009F\u200B-\u200D\uFEFF]/g, '').trim().slice(0, 100) : '';
+  const cleanRating = Math.max(1, Math.min(5, Math.round(Number(review.rating) || 5)));
+
+  if (!cleanName || cleanName.length === 0) {
+    throw new Error('Nama pengulas wajib diisi dan valid.');
+  }
+  if (!cleanComment || cleanComment.length < 5) {
+    throw new Error('Ulasan wajib diisi minimal 5 karakter.');
+  }
+
   const reviewsRef = ref(db, 'reviews');
   const newRef = push(reviewsRef);
   await set(newRef, {
-    name: review.name.trim(),
-    email: review.email?.trim() || '',
-    role: review.role?.trim() || 'Pengguna DecisiGraph',
-    rating: review.rating,
-    comment: review.comment.trim(),
+    name: cleanName,
+    email: cleanEmail,
+    role: cleanRole,
+    rating: cleanRating,
+    comment: cleanComment,
     createdAt: new Date().toISOString(),
   });
 

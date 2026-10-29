@@ -1,5 +1,5 @@
 import React, { useRef, useState, useCallback } from 'react';
-import { FileText, AlertCircle, FileSpreadsheet, Layers, CheckCircle2 } from 'lucide-react';
+import { FileText, AlertCircle, FileSpreadsheet } from 'lucide-react';
 import Badge from '@/components/ui/Badge';
 import { cn } from '@/utils/cn';
 import DocumentDropzoneIllustration from '@/components/ui/illustrations/DocumentDropzoneIllustration';
@@ -111,18 +111,18 @@ export const DocumentDropzone: React.FC<DocumentDropzoneProps> = ({
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center justify-center gap-1.5 pt-1">
-          <Badge variant="neutral" size="sm" className="font-mono text-[11px] gap-1 bg-slate-100 text-slate-700">
-            <FileText className="w-3 h-3 text-rose-500" /> PDF
+        <div className="flex flex-wrap items-center justify-center gap-1 sm:gap-1.5 pt-1 max-w-full">
+          <Badge variant="neutral" size="sm" className="font-mono text-[10px] sm:text-[11px] px-2 py-0.5 gap-1 bg-slate-100 text-slate-700 shrink-0 whitespace-nowrap">
+            <FileText className="w-3 h-3 text-rose-500 shrink-0" /> PDF
           </Badge>
-          <Badge variant="neutral" size="sm" className="font-mono text-[11px] gap-1 bg-slate-100 text-slate-700">
-            <FileText className="w-3 h-3 text-blue-500" /> Word (.docx)
+          <Badge variant="neutral" size="sm" className="font-mono text-[10px] sm:text-[11px] px-2 py-0.5 gap-1 bg-slate-100 text-slate-700 shrink-0 whitespace-nowrap">
+            <FileText className="w-3 h-3 text-blue-500 shrink-0" /> Word (.docx)
           </Badge>
-          <Badge variant="neutral" size="sm" className="font-mono text-[11px] gap-1 bg-slate-100 text-slate-700">
-            <FileSpreadsheet className="w-3 h-3 text-emerald-500" /> CSV / Tabel
+          <Badge variant="neutral" size="sm" className="font-mono text-[10px] sm:text-[11px] px-2 py-0.5 gap-1 bg-slate-100 text-slate-700 shrink-0 whitespace-nowrap">
+            <FileSpreadsheet className="w-3 h-3 text-emerald-500 shrink-0" /> CSV / Tabel
           </Badge>
-          <Badge variant="neutral" size="sm" className="font-mono text-[11px] gap-1 bg-slate-100 text-slate-700">
-            <FileText className="w-3 h-3 text-slate-500" /> TXT / Markdown
+          <Badge variant="neutral" size="sm" className="font-mono text-[10px] sm:text-[11px] px-2 py-0.5 gap-1 bg-slate-100 text-slate-700 shrink-0 whitespace-nowrap">
+            <FileText className="w-3 h-3 text-slate-500 shrink-0" /> TXT / Markdown
           </Badge>
         </div>
 
@@ -138,8 +138,7 @@ export const DocumentDropzone: React.FC<DocumentDropzoneProps> = ({
 
       <div className="p-3.5 rounded-xl bg-slate-50/80 border border-slate-200/70 space-y-2">
         <div className="flex items-center justify-between gap-2 flex-wrap">
-          <span className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
-            <Layers className="w-3.5 h-3.5 text-accent-primary" />
+          <span className="text-xs font-bold text-slate-700">
             Coba Cepat dengan Dokumen Studi Kasus Demo:
           </span>
           <span className="text-[11px] text-slate-500">Klik untuk memuat instan</span>
@@ -156,11 +155,11 @@ export const DocumentDropzone: React.FC<DocumentDropzoneProps> = ({
             disabled={disabled || isProcessing}
             className="p-2.5 rounded-lg border border-slate-200 bg-white hover:bg-indigo-50/60 hover:border-accent-primary/40 text-left transition-colors cursor-pointer group shadow-2xs"
           >
-            <div className="flex items-center justify-between mb-0.5">
-              <span className="text-xs font-semibold text-slate-800 group-hover:text-accent-primary">
+            <div className="flex flex-wrap items-center justify-between gap-1 mb-1">
+              <span className="text-xs font-semibold text-slate-800 group-hover:text-accent-primary truncate">
                 Pengadaan Laptop Kerja
               </span>
-              <Badge variant="primary" size="sm" className="text-[10px] py-0 px-1.5">
+              <Badge variant="primary" size="sm" className="text-[10px] py-0.5 px-1.5 shrink-0 whitespace-nowrap">
                 5 Kriteria • 4 Vendor
               </Badge>
             </div>
@@ -179,11 +178,11 @@ export const DocumentDropzone: React.FC<DocumentDropzoneProps> = ({
             disabled={disabled || isProcessing}
             className="p-2.5 rounded-lg border border-slate-200 bg-white hover:bg-indigo-50/60 hover:border-accent-primary/40 text-left transition-colors cursor-pointer group shadow-2xs"
           >
-            <div className="flex items-center justify-between mb-0.5">
-              <span className="text-xs font-semibold text-slate-800 group-hover:text-accent-primary">
+            <div className="flex flex-wrap items-center justify-between gap-1 mb-1">
+              <span className="text-xs font-semibold text-slate-800 group-hover:text-accent-primary truncate">
                 Seleksi Cloud VPS Server
               </span>
-              <Badge variant="secondary" size="sm" className="text-[10px] py-0 px-1.5">
+              <Badge variant="secondary" size="sm" className="text-[10px] py-0.5 px-1.5 shrink-0 whitespace-nowrap">
                 5 Kriteria • 4 Provider
               </Badge>
             </div>
@@ -195,8 +194,7 @@ export const DocumentDropzone: React.FC<DocumentDropzoneProps> = ({
       </div>
 
       <div className="p-3 rounded-xl bg-amber-50/60 border border-amber-200/60 text-[11px] text-amber-800 space-y-1">
-        <p className="font-bold flex items-center gap-1.5 text-amber-900">
-          <CheckCircle2 className="w-3.5 h-3.5 text-amber-600" />
+        <p className="font-bold text-amber-900">
           Tips untuk Akurasi Ekstraksi Optimal:
         </p>
         <ul className="list-disc list-inside space-y-0.5 text-slate-600 pl-1">

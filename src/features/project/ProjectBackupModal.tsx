@@ -112,6 +112,14 @@ export const ProjectBackupModal: React.FC<ProjectBackupModalProps> = ({
       return;
     }
 
+    if (file.size > 5 * 1024 * 1024) {
+      setValidationResult({
+        success: false,
+        error: 'Ukuran berkas melebihi batas keamanan maksimum 5 MB.',
+      });
+      return;
+    }
+
     const reader = new FileReader();
     reader.onload = (e) => {
       const content = e.target?.result as string;

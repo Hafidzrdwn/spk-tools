@@ -1,11 +1,20 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { FileUp } from 'lucide-react';
+import { FileUp, Sparkles } from 'lucide-react';
 import { prefetchRoute } from '@/services/routePrefetch';
 import { useUiStore } from '@/store/useUiStore';
+import { getEffectiveGeminiApiKey } from '@/services/ai';
 
 export const WorkboardTopBar: React.FC = () => {
   const openDocLoader = useUiStore((s) => s.openDocLoader);
+  const openAiConfig = useUiStore((s) => s.openAiConfig);
+  const aiKeyVersion = useUiStore((s) => s.aiKeyVersion);
+  const [hasAiKey, setHasAiKey] = useState(false);
+
+  useEffect(() => {
+    const key = getEffectiveGeminiApiKey();
+    setHasAiKey(Boolean(key && key.length > 0));
+  }, [aiKeyVersion]);
 
   return (
     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 px-3 sm:px-4 py-2.5 sm:py-3 bg-white/70 backdrop-blur-md rounded-xl border border-slate-200/80 shadow-2xs">
@@ -56,6 +65,23 @@ export const WorkboardTopBar: React.FC = () => {
         >
           <FileUp className="w-3.5 h-3.5 text-accent-primary shrink-0" />
           <span>Unggah Dokumen</span>
+        </button>
+
+        <button
+          type="button"
+          id="topbar-btn-ai-config"
+          onClick={openAiConfig}
+          title={hasAiKey ? 'Kunci Gemini AI Aktif - Klik untuk Ubah Konfigurasi' : 'Kunci Gemini AI Belum Diatur - Klik untuk Pasang API Key'}
+          className="min-h-8 px-2.5 sm:px-3 py-1 rounded-lg text-xs font-semibold text-slate-700 hover:text-indigo-700 bg-white hover:bg-indigo-50/70 border border-slate-200/90 hover:border-indigo-200 transition-all inline-flex items-center gap-1.5 cursor-pointer shrink-0 shadow-2xs"
+        >
+          <Sparkles className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
+          <span>Pengaturan AI</span>
+          <span
+            className={`w-2 h-2 rounded-full shrink-0 ${
+              hasAiKey ? 'bg-emerald-500 ring-2 ring-emerald-200' : 'bg-amber-400'
+            }`}
+            title={hasAiKey ? 'Kunci AI Aktif' : 'Kunci AI Belum Aktif'}
+          />
         </button>
       </div>
     </div>

@@ -6,11 +6,11 @@ import Badge from '@/components/ui/Badge';
 import DocumentMatrixIllustration from '@/components/ui/illustrations/DocumentMatrixIllustration';
 import { toast } from 'sonner';
 import { useProjectStore } from '@/store/useProjectStore';
+import { useUiStore } from '@/store/useUiStore';
 import {
   readDocumentFile,
   extractMatrixFromDocument,
   getEffectiveGeminiApiKey,
-  setCustomGeminiApiKey,
   type ProcessedDocumentResult,
   type DocumentLoaderError,
   type DocumentFilePayload,
@@ -34,6 +34,8 @@ export const DocumentLoaderModal: React.FC<DocumentLoaderModalProps> = ({
   onClose,
 }) => {
   const loadProjectState = useProjectStore((s) => s.loadProjectState);
+  const openAiConfig = useUiStore((s) => s.openAiConfig);
+  const aiKeyVersion = useUiStore((s) => s.aiKeyVersion);
 
   const [stage, setStage] = useState<ModalStage>('upload');
   const [currentFile, setCurrentFile] = useState<{ name: string; size: number } | null>(null);
@@ -42,15 +44,12 @@ export const DocumentLoaderModal: React.FC<DocumentLoaderModalProps> = ({
   const [extractedData, setExtractedData] = useState<ProcessedDocumentResult | null>(null);
 
   const [hasApiKey, setHasApiKey] = useState(false);
-  const [isApiKeyInputOpen, setIsApiKeyInputOpen] = useState(false);
-  const [apiKeyInput, setApiKeyInput] = useState('');
   const [lastAttemptedPayload, setLastAttemptedPayload] = useState<DocumentFilePayload | null>(null);
 
   useEffect(() => {
     if (isOpen) {
       const key = getEffectiveGeminiApiKey();
       setHasApiKey(Boolean(key && key.length > 0));
-      setApiKeyInput(key);
       if (stage === 'error' && !activeError) {
         setStage('upload');
       }
@@ -60,23 +59,18 @@ export const DocumentLoaderModal: React.FC<DocumentLoaderModalProps> = ({
         setCurrentFile(null);
         setActiveError(null);
         setExtractedData(null);
-        setIsApiKeyInputOpen(false);
       }, 200);
     }
   }, [isOpen]);
 
-  const handleSaveApiKey = () => {
-    const trimmed = apiKeyInput.trim();
-    setCustomGeminiApiKey(trimmed);
+  useEffect(() => {
     const key = getEffectiveGeminiApiKey();
-    setHasApiKey(Boolean(key && key.length > 0));
-    setIsApiKeyInputOpen(false);
-    toast.success(trimmed ? 'Kunci Gemini API berhasil disimpan di peramban.' : 'Kunci Gemini API dihapus.');
-
-    if (stage === 'error' && activeError?.code === 'API_KEY_MISSING' && lastAttemptedPayload) {
+    const hasKey = Boolean(key && key.length > 0);
+    setHasApiKey(hasKey);
+    if (stage === 'error' && activeError?.code === 'API_KEY_MISSING' && hasKey && lastAttemptedPayload) {
       executeExtraction(lastAttemptedPayload);
     }
-  };
+  }, [aiKeyVersion]);
 
   const executeExtraction = async (payload: DocumentFilePayload) => {
     setLastAttemptedPayload(payload);
@@ -182,51 +176,12 @@ export const DocumentLoaderModal: React.FC<DocumentLoaderModalProps> = ({
           <button
             type="button"
             id="btn-toggle-key-input"
-            onClick={() => setIsApiKeyInputOpen((prev) => !prev)}
+            onClick={openAiConfig}
             className="text-xs font-semibold text-accent-primary hover:underline cursor-pointer"
           >
-            {isApiKeyInputOpen ? 'Tutup Pengaturan Key' : hasApiKey ? 'Ubah API Key' : 'Pasang API Key Gemini'}
+            {hasApiKey ? 'Kelola Kunci AI' : 'Pasang API Key Gemini'}
           </button>
         </div>
-
-        {isApiKeyInputOpen && (
-          <div className="p-3 rounded-xl bg-indigo-50/60 border border-indigo-200/70 space-y-2 text-xs">
-            <div className="flex items-center justify-between">
-              <label htmlFor="modal-gemini-key-input" className="font-bold text-slate-800">
-                Google Gemini API Key
-              </label>
-              <a
-                href="https://aistudio.google.com/app/apikey"
-                target="_blank"
-                rel="noreferrer"
-                className="text-[11px] text-accent-primary hover:underline font-semibold"
-              >
-                Dapatkan Kunci Gratis di Google AI Studio ↗
-              </a>
-            </div>
-            <div className="flex items-center gap-2">
-              <input
-                type="password"
-                id="modal-gemini-key-input"
-                value={apiKeyInput}
-                onChange={(e) => setApiKeyInput(e.target.value)}
-                placeholder="Tempel AIzaSy... di sini"
-                className="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs font-mono focus:border-accent-primary focus:ring-1 focus:ring-accent-primary outline-hidden"
-              />
-              <Button
-                variant="primary"
-                size="sm"
-                onClick={handleSaveApiKey}
-                className="h-8 px-3 text-xs shrink-0"
-              >
-                <Check className="w-3.5 h-3.5 mr-1" /> Simpan
-              </Button>
-            </div>
-            <p className="text-[11px] text-slate-500">
-              Kunci API disimpan secara lokal di peramban Anda (localStorage) dan tidak pernah dikirim ke peladen eksternal.
-            </p>
-          </div>
-        )}
 
         {stage === 'upload' && (
           <DocumentDropzone

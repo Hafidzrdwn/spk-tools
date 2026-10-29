@@ -41,6 +41,7 @@ import { useTourStore } from '@/store/useTourStore';
 
 const TourRunner = lazy(() => import('@/features/tour/TourRunner'));
 import DocumentLoaderModal from '@/features/document-loader/DocumentLoaderModal';
+import AiConfigModal from '@/components/modals/AiConfigModal';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import type { MethodId } from '@/types/domain';
 
@@ -77,6 +78,8 @@ export const WorkboardPage: React.FC = () => {
   const openBackupModal = useUiStore((s) => s.openBackupModal);
   const isDocLoaderOpen = useUiStore((s) => s.isDocLoaderOpen);
   const closeDocLoader = useUiStore((s) => s.closeDocLoader);
+  const isAiConfigOpen = useUiStore((s) => s.isAiConfigOpen);
+  const closeAiConfig = useUiStore((s) => s.closeAiConfig);
   const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
 
   const hasSeenWelcome = useTourStore((s) => s.hasSeenWelcome);
@@ -298,6 +301,11 @@ export const WorkboardPage: React.FC = () => {
       <DocumentLoaderModal
         isOpen={isDocLoaderOpen}
         onClose={closeDocLoader}
+      />
+
+      <AiConfigModal
+        isOpen={isAiConfigOpen}
+        onClose={closeAiConfig}
       />
 
       {activeTourId && (
