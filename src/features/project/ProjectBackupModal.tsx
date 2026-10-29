@@ -361,7 +361,7 @@ export const ProjectBackupModal: React.FC<ProjectBackupModalProps> = ({
                     pilih file
                   </label>
                 </p>
-                <p className="text-[10px] text-slate-400 mt-0.5">Mendukung file .json hasil ekspor DecisiGraph dari dev maupun prod</p>
+                <p className="text-[10px] text-slate-400 mt-0.5">Mendukung file .json hasil ekspor DecisiGraph (maksimal 5 MB)</p>
               </div>
 
               {/* Paste JSON Textarea */}

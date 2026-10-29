@@ -635,7 +635,7 @@ export const ReviewsPage: React.FC = () => {
                   <div className="space-y-1">
                     <label className="font-semibold text-slate-700 flex items-center justify-between">
                       <span>Tangkapan Layar</span>
-                      <span className="text-[10px] text-slate-400 font-normal">(Opsional, maks 5MB)</span>
+                      <span className="text-[10px] text-slate-400 font-normal">(Opsional, maks. 2 MB)</span>
                     </label>
 
                     {!imagePreview ? (
@@ -645,7 +645,7 @@ export const ReviewsPage: React.FC = () => {
                       >
                         <Upload className="w-4 h-4 mx-auto text-slate-400 mb-1" />
                         <span className="text-xs font-medium text-slate-700 block">Lampirkan bukti gambar</span>
-                        <span className="text-[10px] text-slate-400">Format PNG, JPG, atau WebP</span>
+                        <span className="text-[10px] text-slate-400">Format PNG, JPG, atau WebP (maks. 2 MB)</span>
                       </div>
                     ) : (
                       <div className="relative rounded-lg border border-slate-200 p-2 bg-slate-50 flex items-center gap-3">

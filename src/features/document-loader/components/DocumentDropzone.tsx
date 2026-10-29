@@ -55,6 +55,11 @@ export const DocumentDropzone: React.FC<DocumentDropzoneProps> = ({
       return;
     }
 
+    if (file.size > 10 * 1024 * 1024) {
+      setDragError('Ukuran berkas melebihi batas maksimum 10 MB.');
+      return;
+    }
+
     onFileSelected(file);
   }, [disabled, isProcessing, onFileSelected]);
 
@@ -62,7 +67,13 @@ export const DocumentDropzone: React.FC<DocumentDropzoneProps> = ({
     setDragError(null);
     const files = e.target.files;
     if (files && files.length > 0) {
-      onFileSelected(files[0]);
+      const file = files[0];
+      if (file.size > 10 * 1024 * 1024) {
+        setDragError('Ukuran berkas melebihi batas maksimum 10 MB.');
+        if (e.target) e.target.value = '';
+        return;
+      }
+      onFileSelected(file);
     }
     if (e.target) {
       e.target.value = '';

@@ -76,7 +76,7 @@ export function validateImageUpload(
     const maxMb = (maxSizeBytes / (1024 * 1024)).toFixed(0);
     return {
       valid: false,
-      error: `Ukuran gambar terlalu besar. Maksimal ${maxMb}MB.`,
+      error: `Ukuran gambar terlalu besar. Maksimal ${maxMb} MB.`,
     };
   }
 
