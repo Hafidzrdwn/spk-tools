@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { AuthorBoxMascot } from '@/components/illustrations';
 import Button from '@/components/ui/Button';
-import { toast } from 'sonner';
 
 export const AboutView: React.FC = () => {
   const targetWaNumber = '6282141068404';
@@ -27,15 +26,6 @@ export const AboutView: React.FC = () => {
     const encoded = encodeURIComponent(finalMessage);
     const waUrl = ['https:', '', `wa.me/${targetWaNumber}`].join('/') + `?text=${encoded}`;
     window.open(waUrl, '_blank', 'noopener,noreferrer');
-  };
-
-  const handleCopyText = async () => {
-    try {
-      await navigator.clipboard.writeText(finalMessage);
-      toast.success('Format pesan WhatsApp berhasil disalin.');
-    } catch {
-      toast.error('Gagal menyalin teks.');
-    }
   };
 
   return (
@@ -174,18 +164,9 @@ export const AboutView: React.FC = () => {
             variant="primary"
             size="md"
             onClick={handleOpenWhatsApp}
-            className="w-full sm:w-auto text-xs font-semibold min-h-11 px-6 justify-center bg-slate-900 hover:bg-slate-800 text-white"
+            className="w-full sm:w-auto text-xs font-semibold min-h-11 px-6 justify-center shadow-2xs"
           >
             Kirim ke WhatsApp
-          </Button>
-
-          <Button
-            variant="secondary"
-            size="md"
-            onClick={handleCopyText}
-            className="w-full sm:w-auto text-xs font-semibold min-h-11 px-4 justify-center"
-          >
-            Salin Format Teks
           </Button>
         </div>
       </section>

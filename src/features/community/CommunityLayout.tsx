@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Home, LayoutDashboard } from 'lucide-react';
 import Logo from '@/components/layout/Logo';
+import Footer from '@/components/layout/Footer';
 import { prefetchRoute, scheduleAllRemainingPrefetch } from '@/services/routePrefetch';
 
 export interface CommunityLayoutProps {
@@ -19,7 +20,7 @@ export const CommunityLayout: React.FC<CommunityLayoutProps> = ({
   }, [activeTab]);
 
   return (
-    <div className="min-h-dvh w-full bg-surface bg-dot-grid text-slate-800 pb-16 antialiased">
+    <div className="min-h-dvh w-full bg-surface bg-dot-grid text-slate-800 flex flex-col justify-between antialiased overflow-x-hidden">
       <header className="sticky top-0 z-30 bg-white/90 backdrop-blur-xs border-b border-slate-200 px-3 sm:px-6 py-2 sm:py-2.5 shadow-2xs">
         <div className="max-w-6xl mx-auto flex items-center justify-between gap-1.5 sm:gap-4">
           <div className="flex items-center gap-1 sm:gap-2.5">
@@ -90,10 +91,11 @@ export const CommunityLayout: React.FC<CommunityLayoutProps> = ({
         </div>
       </header>
 
-      {/* Main Page Content */}
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 pt-6 w-full">
+      <main className="flex-1 max-w-6xl mx-auto px-4 sm:px-6 pt-6 pb-12 w-full">
         {children}
       </main>
+
+      <Footer />
     </div>
   );
 };

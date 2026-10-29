@@ -30,11 +30,16 @@ export const TermsOfUseView: React.FC = () => {
         </div>
       </section>
 
-      <section className="p-4 sm:p-5 rounded-xl border-l-4 border-slate-900 bg-slate-100/70 space-y-1.5 max-w-3xl">
-        <h2 className="text-xs font-bold uppercase tracking-wider text-slate-900">
-          Batasan Hasil Matematis SPK (Pernyataan Penting)
-        </h2>
-        <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
+      <section className="p-4 sm:p-5 rounded-2xl border border-slate-200/90 bg-white shadow-2xs space-y-2 max-w-3xl">
+        <div className="flex items-center gap-2">
+          <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200/60">
+            Pemberitahuan Penting
+          </span>
+          <h2 className="text-xs font-bold uppercase tracking-wider text-slate-700">
+            Batasan Hasil Matematis SPK
+          </h2>
+        </div>
+        <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
           DecisiGraph adalah instrumen perangkat lunak sistem pendukung keputusan 
           berbasis formula matematis formal (SAW, WP, TOPSIS, AHP) dan asistensi AI. 
           Hasil perankingan dan skor adalah instrumen rekomendasi analitis objektif, bukan penetapan mutlak yang mengikat secara hukum 
