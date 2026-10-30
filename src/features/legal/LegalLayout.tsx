@@ -11,6 +11,13 @@ export interface LegalLayoutProps {
   children: React.ReactNode;
 }
 
+const NEXT_PAGE_MAP: Record<LegalTabId, { path: string; label: string }> = {
+  privacy: { path: '/terms', label: 'Ketentuan' },
+  terms: { path: '/releases', label: 'Catatan Rilis' },
+  releases: { path: '/about', label: 'Tentang' },
+  about: { path: '/privacy', label: 'Privasi' },
+};
+
 export const LegalLayout: React.FC<LegalLayoutProps> = ({ activeTab, children }) => {
   const navItems: Array<{ id: LegalTabId; path: string; label: string }> = [
     { id: 'privacy', path: '/privacy', label: 'Privasi' },
@@ -19,46 +26,57 @@ export const LegalLayout: React.FC<LegalLayoutProps> = ({ activeTab, children })
     { id: 'about', path: '/about', label: 'Tentang & Bantuan' },
   ];
 
+  const nextPage = NEXT_PAGE_MAP[activeTab];
+
   return (
     <div className="min-h-dvh w-full bg-slate-50/70 text-slate-800 flex flex-col antialiased overflow-x-hidden">
       <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-xs border-b border-slate-200/80 px-3 sm:px-6 py-2 sm:py-2.5">
-        <div className="max-w-5xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-2 sm:gap-3">
-          <div className="flex items-center justify-between gap-2 min-w-0">
-            <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
-              <Link
-                to="/"
-                onMouseEnter={prefetchRoute.landing}
-                onFocus={prefetchRoute.landing}
-                className="flex items-center gap-1.5 hover:opacity-85 transition-opacity shrink-0"
-                title="DecisiGraph SPK"
-              >
-                <Logo size="sm" showWordmark />
-              </Link>
+        <div className="flex sm:hidden items-center justify-between gap-2 w-full">
+          <Link
+            to="/"
+            onMouseEnter={prefetchRoute.landing}
+            onFocus={prefetchRoute.landing}
+            className="flex items-center gap-1.5 hover:opacity-85 transition-opacity shrink-0"
+            title="DecisiGraph SPK"
+          >
+            <Logo size="sm" showWordmark />
+          </Link>
 
-              <span className="text-slate-200 hidden xs:inline">|</span>
+          <Link
+            to={nextPage.path}
+            className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-indigo-600 hover:text-indigo-800 bg-indigo-50/80 hover:bg-indigo-100 rounded-lg border border-indigo-200/60 transition-colors shrink-0"
+            title={`Lanjut ke ${nextPage.label}`}
+          >
+            <span>{nextPage.label}</span>
+            <span aria-hidden="true">&rarr;</span>
+          </Link>
+        </div>
 
-              <Link
-                to="/"
-                onMouseEnter={prefetchRoute.landing}
-                onFocus={prefetchRoute.landing}
-                className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold text-slate-600 hover:text-indigo-600 hover:bg-slate-100 rounded-lg transition-colors shrink-0"
-                title="Kembali ke Beranda"
-              >
-                <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                </svg>
-                <span>Beranda</span>
-              </Link>
-            </div>
+        <div className="hidden sm:flex flex-col md:flex-row md:items-center md:justify-between gap-2 sm:gap-3 max-w-5xl mx-auto w-full">
+          <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
+            <Link
+              to="/"
+              onMouseEnter={prefetchRoute.landing}
+              onFocus={prefetchRoute.landing}
+              className="flex items-center gap-1.5 hover:opacity-85 transition-opacity shrink-0"
+              title="DecisiGraph SPK"
+            >
+              <Logo size="sm" showWordmark />
+            </Link>
+
+            <span className="text-slate-200 hidden xs:inline">|</span>
 
             <Link
-              to="/board"
-              onMouseEnter={() => prefetchRoute.board()}
-              onFocus={() => prefetchRoute.board()}
-              className="inline-flex items-center gap-1 text-xs font-semibold text-indigo-600 hover:text-indigo-700 bg-indigo-50 hover:bg-indigo-100 px-2.5 py-1 rounded-lg transition-colors shrink-0 md:hidden"
-              title="Buka Workboard Evaluasi SPK"
+              to="/"
+              onMouseEnter={prefetchRoute.landing}
+              onFocus={prefetchRoute.landing}
+              className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold text-slate-600 hover:text-indigo-600 hover:bg-slate-100 rounded-lg transition-colors shrink-0"
+              title="Kembali ke Beranda"
             >
-              <span>Workboard</span>
+              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+              </svg>
+              <span>Beranda</span>
             </Link>
           </div>
 
@@ -86,7 +104,7 @@ export const LegalLayout: React.FC<LegalLayoutProps> = ({ activeTab, children })
               to="/board"
               onMouseEnter={() => prefetchRoute.board()}
               onFocus={() => prefetchRoute.board()}
-              className="hidden md:inline-flex text-xs font-semibold text-indigo-600 hover:text-indigo-700 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition-colors shrink-0 ml-1"
+              className="inline-flex text-xs font-semibold text-indigo-600 hover:text-indigo-700 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition-colors shrink-0 ml-1"
               title="Buka Workboard Evaluasi SPK"
             >
               Workboard

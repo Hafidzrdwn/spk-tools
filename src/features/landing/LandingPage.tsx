@@ -365,12 +365,12 @@ export const LandingPage: React.FC = () => {
           <div className="lg:col-span-6 w-full">
             <div className="bg-white rounded-xl border border-slate-200 shadow-2xs overflow-hidden">
               {/* Preview Header & View/Method Switcher */}
-              <div className="bg-slate-50 border-b border-slate-200 px-3 sm:px-4 py-2.5 flex flex-wrap items-center justify-between gap-2">
-                <div className="flex items-center bg-slate-200/70 p-0.5 rounded-lg text-xs font-medium">
+              <div className="bg-slate-50 border-b border-slate-200 px-3 sm:px-4 py-2.5 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2">
+                <div className="flex items-center w-full sm:w-auto bg-slate-200/70 p-0.5 rounded-lg text-xs font-medium">
                   <button
                     type="button"
                     onClick={() => setHeroTab('visual')}
-                    className={`min-h-7.5 px-3 py-1 rounded font-semibold transition-colors cursor-pointer ${
+                    className={`flex-1 sm:flex-initial text-center min-h-7.5 px-3 py-1 rounded font-semibold transition-colors cursor-pointer ${
                       heroTab === 'visual'
                         ? 'bg-white text-indigo-700 shadow-2xs'
                         : 'text-slate-600 hover:text-slate-900'
@@ -381,7 +381,7 @@ export const LandingPage: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setHeroTab('matrix')}
-                    className={`min-h-7.5 px-3 py-1 rounded font-semibold transition-colors cursor-pointer ${
+                    className={`flex-1 sm:flex-initial text-center min-h-7.5 px-3 py-1 rounded font-semibold transition-colors cursor-pointer ${
                       heroTab === 'matrix'
                         ? 'bg-white text-indigo-700 shadow-2xs'
                         : 'text-slate-600 hover:text-slate-900'
@@ -391,13 +391,13 @@ export const LandingPage: React.FC = () => {
                   </button>
                 </div>
 
-                <div className="flex items-center bg-slate-200/70 p-0.5 rounded-lg text-xs font-mono">
+                <div className="flex items-center w-full sm:w-auto bg-slate-200/70 p-0.5 rounded-lg text-xs font-mono">
                   {(['SAW', 'WP', 'TOPSIS', 'AHP'] as CoreMethodId[]).map((m) => (
                     <button
                       key={m}
                       type="button"
                       onClick={() => setActivePreviewMethod(m)}
-                      className={`min-h-7.5 px-2.5 py-1 rounded font-bold transition-colors cursor-pointer flex items-center justify-center ${
+                      className={`flex-1 sm:flex-initial text-center min-h-7.5 px-2.5 py-1 rounded font-bold transition-colors cursor-pointer flex items-center justify-center ${
                         activePreviewMethod === m
                           ? 'bg-white text-indigo-700 shadow-2xs'
                           : 'text-slate-600 hover:text-slate-900'

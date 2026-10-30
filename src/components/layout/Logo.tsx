@@ -46,7 +46,7 @@ export const Logo: React.FC<LogoProps> = ({
       <div
         className={cn(
           cfg.mark,
-          'shrink-0 rounded-control shadow-xs overflow-hidden flex items-center justify-center p-0.5 select-none'
+          'shrink-0 rounded-md sm:rounded-lg shadow-xs overflow-hidden flex items-center justify-center p-0.5 select-none'
         )}
         style={{ background: 'linear-gradient(135deg, #4F46E5 0%, #8B5CF6 100%)' }}
       >
