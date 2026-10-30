@@ -67,7 +67,7 @@ export const AiConfigModal: React.FC<AiConfigModalProps> = ({ isOpen, onClose })
         </div>
 
         <div className="space-y-1.5">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
             <label htmlFor="input-central-gemini-key" className="font-semibold text-slate-800">
               API Key Google Gemini
             </label>
@@ -75,9 +75,9 @@ export const AiConfigModal: React.FC<AiConfigModalProps> = ({ isOpen, onClose })
               href="https://aistudio.google.com/app/apikey"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[11px] font-medium text-indigo-600 hover:text-indigo-800 hover:underline"
+              className="text-[11px] font-medium text-indigo-600 hover:text-indigo-800 hover:underline self-start sm:self-auto"
             >
-              Dapatkan Kunci Gratis &nearr;
+              Dapatkan Kunci Gratis ↗
             </a>
           </div>
 

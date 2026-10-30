@@ -1,22 +1,17 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Dialog } from '@/components/ui/Dialog';
 import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
 import {
   CheckCircle2,
   ShieldCheck,
-  Key,
-  ChevronDown,
-  ChevronUp,
   Bot,
   Brain,
 } from 'lucide-react';
 import type { MethodId } from '@/types/domain';
 import type { ExportScope, ExportReportConfig } from './types';
-import {
-  getEffectiveGeminiApiKey,
-  setCustomGeminiApiKey,
-} from '@/services/ai';
+import { useUiStore } from '@/store/useUiStore';
+import { getEffectiveGeminiApiKey } from '@/services/ai';
 
 export interface ExportOptionsModalProps {
   isOpen: boolean;
@@ -47,17 +42,13 @@ export const ExportOptionsModal: React.FC<ExportOptionsModalProps> = ({
   const [includeStory, setIncludeStory] = useState<boolean>(true);
   const [includeAiNarrative, setIncludeAiNarrative] = useState<boolean>(true);
 
-  const [showApiKeySettings, setShowApiKeySettings] = useState<boolean>(false);
-  const [apiKeyInput, setApiKeyInput] = useState<string>(() => getEffectiveGeminiApiKey());
-  const [isSavedBadge, setIsSavedBadge] = useState<boolean>(false);
+  const openAiConfig = useUiStore((s) => s.openAiConfig);
+  const aiKeyVersion = useUiStore((s) => s.aiKeyVersion);
+  const [hasEffectiveKey, setHasEffectiveKey] = useState<boolean>(() => Boolean(getEffectiveGeminiApiKey()));
 
-  const hasEffectiveKey = Boolean(apiKeyInput.trim() || getEffectiveGeminiApiKey());
-
-  const handleSaveApiKey = () => {
-    setCustomGeminiApiKey(apiKeyInput.trim());
-    setIsSavedBadge(true);
-    setTimeout(() => setIsSavedBadge(false), 2000);
-  };
+  useEffect(() => {
+    setHasEffectiveKey(Boolean(getEffectiveGeminiApiKey()));
+  }, [aiKeyVersion]);
 
   const handleSelectPreset = (newScope: ExportScope) => {
     setScope(newScope);
@@ -182,7 +173,6 @@ export const ExportOptionsModal: React.FC<ExportOptionsModalProps> = ({
       }
     >
       <div className="space-y-5 py-2">
-        {/* Preset Selector */}
         <div>
           <label className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2 block">
             Pilihan Lingkup Ekspor (Preset)
@@ -250,7 +240,6 @@ export const ExportOptionsModal: React.FC<ExportOptionsModalProps> = ({
           </div>
         </div>
 
-        {/* Method Checklist */}
         <div className="bg-slate-50/80 rounded-xl p-3.5 border border-slate-200/80 space-y-3">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-slate-800">
@@ -295,13 +284,12 @@ export const ExportOptionsModal: React.FC<ExportOptionsModalProps> = ({
             })}
           </div>
 
-          {/* Additional Features (AHP & Story) */}
           <div className="pt-2 border-t border-slate-200/60 grid grid-cols-1 sm:grid-cols-2 gap-2">
             <label
               className={`flex items-start gap-2.5 p-2.5 rounded-lg border text-xs cursor-pointer transition-colors ${
                 includeAhp
-                  ? 'border-purple-300 bg-purple-50/40 text-purple-950'
-                  : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
+                  ? 'border-indigo-400/80 bg-indigo-50/50 text-indigo-950 font-medium'
+                  : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50/50'
               }`}
             >
               <input
@@ -311,7 +299,7 @@ export const ExportOptionsModal: React.FC<ExportOptionsModalProps> = ({
                   if (scope !== 'CUSTOM') setScope('CUSTOM');
                   setIncludeAhp(e.target.checked);
                 }}
-                className="mt-0.5 rounded text-purple-600 focus:ring-purple-500"
+                className="mt-0.5 rounded text-indigo-600 focus:ring-indigo-500"
               />
               <div>
                 <span className="font-bold block">AHP (Analytic Hierarchy Process)</span>
@@ -324,8 +312,8 @@ export const ExportOptionsModal: React.FC<ExportOptionsModalProps> = ({
             <label
               className={`flex items-start gap-2.5 p-2.5 rounded-lg border text-xs cursor-pointer transition-colors ${
                 includeStory
-                  ? 'border-amber-300 bg-amber-50/40 text-amber-950'
-                  : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
+                  ? 'border-indigo-400/80 bg-indigo-50/50 text-indigo-950 font-medium'
+                  : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50/50'
               }`}
             >
               <input
@@ -335,7 +323,7 @@ export const ExportOptionsModal: React.FC<ExportOptionsModalProps> = ({
                   if (scope !== 'CUSTOM') setScope('CUSTOM');
                   setIncludeStory(e.target.checked);
                 }}
-                className="mt-0.5 rounded text-amber-600 focus:ring-amber-500"
+                className="mt-0.5 rounded text-indigo-600 focus:ring-indigo-500"
               />
               <div>
                 <span className="font-bold block">Story-to-Matrix (Narasi Kasus)</span>
@@ -350,8 +338,8 @@ export const ExportOptionsModal: React.FC<ExportOptionsModalProps> = ({
             <label
               className={`flex items-center justify-between p-2.5 rounded-lg border text-xs cursor-pointer transition-colors ${
                 includeComparison && compareCandidates.length >= 2
-                  ? 'border-emerald-300 bg-emerald-50/50 text-emerald-950'
-                  : 'border-slate-200 bg-white text-slate-500'
+                  ? 'border-indigo-400/80 bg-indigo-50/50 text-indigo-950 font-medium'
+                  : 'border-slate-200 bg-white text-slate-500 hover:border-slate-300 hover:bg-slate-50/50'
               }`}
             >
               <div>
@@ -370,16 +358,16 @@ export const ExportOptionsModal: React.FC<ExportOptionsModalProps> = ({
                   if (scope !== 'CUSTOM') setScope('CUSTOM');
                   setIncludeComparison(e.target.checked);
                 }}
-                className="rounded text-emerald-600 focus:ring-emerald-500 disabled:opacity-40"
+                className="rounded text-indigo-600 focus:ring-indigo-500 disabled:opacity-40"
               />
             </label>
           </div>
         </div>
 
-        <div className="bg-linear-to-br from-indigo-50/70 via-purple-50/50 to-slate-50/80 rounded-xl p-3.5 border border-indigo-200/80 space-y-3">
+        <div className="bg-slate-50/80 rounded-xl p-3.5 border border-slate-200/90 space-y-3">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-indigo-600 text-white flex items-center justify-center shadow-xs">
+            <div className="flex items-center gap-2.5">
+              <div className="w-7 h-7 rounded-lg bg-indigo-50 border border-indigo-100 text-indigo-600 flex items-center justify-center shrink-0 shadow-2xs">
                 <Bot className="w-4 h-4" />
               </div>
               <div>
@@ -427,58 +415,17 @@ export const ExportOptionsModal: React.FC<ExportOptionsModalProps> = ({
 
                 <button
                   type="button"
-                  onClick={() => setShowApiKeySettings((v) => !v)}
-                  className="inline-flex items-center gap-1 text-[11px] font-semibold text-indigo-700 hover:text-indigo-800 transition-colors cursor-pointer"
+                  onClick={openAiConfig}
+                  className="text-[11px] font-semibold text-indigo-700 hover:text-indigo-800 hover:underline transition-colors cursor-pointer shrink-0"
                 >
-                  <Key className="w-3 h-3" />
-                  <span>{showApiKeySettings ? 'Tutup Pengaturan Key' : 'Atur API Key'}</span>
-                  {showApiKeySettings ? (
-                    <ChevronUp className="w-3 h-3" />
-                  ) : (
-                    <ChevronDown className="w-3 h-3" />
-                  )}
+                  {hasEffectiveKey ? 'Kelola Kunci AI ↗' : 'Atur Kunci AI ↗'}
                 </button>
               </div>
 
-              {showApiKeySettings && (
-                <div className="bg-white p-3 rounded-lg border border-slate-200 text-xs space-y-2 animate-in fade-in duration-200">
-                  <div className="flex items-center justify-between">
-                    <label className="font-semibold text-slate-800 text-[11px]">
-                      Google Gemini API Key (Peramban Lokal)
-                    </label>
-                    {isSavedBadge && (
-                      <span className="text-[10px] text-emerald-600 font-bold animate-in fade-in">
-                        Tersimpan di browser!
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="password"
-                      placeholder="Tempel AI Studio API Key (AIzaSy...)"
-                      value={apiKeyInput}
-                      onChange={(e) => setApiKeyInput(e.target.value)}
-                      className="flex-1 px-2.5 py-1.5 text-xs rounded-md border border-slate-300 focus:outline-hidden focus:ring-1 focus:ring-indigo-500"
-                    />
-                    <Button
-                      variant="primary"
-                      size="sm"
-                      onClick={handleSaveApiKey}
-                      className="text-xs shrink-0"
-                    >
-                      Simpan
-                    </Button>
-                  </div>
-                  <p className="text-[10px] text-slate-500 leading-relaxed">
-                    Kunci disimpan secara lokal di browser Anda (localStorage) dan TIDAK pernah dikirim ke server aplikasi atau database publik. Aman dan terisolasi untuk perangkat Anda.
-                  </p>
-                </div>
-              )}
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[11px] text-slate-600 bg-white/50 p-2 rounded-lg border border-slate-200/60">
-                <div className="flex items-start gap-1.5">
-                  <span className="w-4 h-4 rounded-full bg-indigo-100 text-indigo-700 font-bold text-[9px] flex items-center justify-center shrink-0 mt-0.5">
-                    A
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[11px] text-slate-600 bg-white p-2.5 rounded-lg border border-slate-200/80">
+                <div className="flex items-start gap-2">
+                  <span className="w-4 h-4 rounded-md bg-slate-100 border border-slate-200 text-slate-700 font-semibold text-[9px] flex items-center justify-center shrink-0 mt-0.5">
+                    1
                   </span>
                   <div>
                     <span className="font-semibold text-slate-800 block">Dinamika Ranking</span>
@@ -488,9 +435,9 @@ export const ExportOptionsModal: React.FC<ExportOptionsModalProps> = ({
                   </div>
                 </div>
 
-                <div className="flex items-start gap-1.5">
-                  <span className="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 font-bold text-[9px] flex items-center justify-center shrink-0 mt-0.5">
-                    B
+                <div className="flex items-start gap-2">
+                  <span className="w-4 h-4 rounded-md bg-slate-100 border border-slate-200 text-slate-700 font-semibold text-[9px] flex items-center justify-center shrink-0 mt-0.5">
+                    2
                   </span>
                   <div>
                     <span className="font-semibold text-slate-800 block">Validitas Ilmiah</span>
@@ -500,9 +447,9 @@ export const ExportOptionsModal: React.FC<ExportOptionsModalProps> = ({
                   </div>
                 </div>
 
-                <div className="flex items-start gap-1.5">
-                  <span className="w-4 h-4 rounded-full bg-amber-100 text-amber-700 font-bold text-[9px] flex items-center justify-center shrink-0 mt-0.5">
-                    C
+                <div className="flex items-start gap-2">
+                  <span className="w-4 h-4 rounded-md bg-slate-100 border border-slate-200 text-slate-700 font-semibold text-[9px] flex items-center justify-center shrink-0 mt-0.5">
+                    3
                   </span>
                   <div>
                     <span className="font-semibold text-slate-800 block">Aksi Manajerial</span>
@@ -516,7 +463,6 @@ export const ExportOptionsModal: React.FC<ExportOptionsModalProps> = ({
           )}
         </div>
 
-        {/* Live Chapter Preview */}
         <div>
           <div className="flex items-center justify-between mb-2">
             <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
@@ -530,7 +476,7 @@ export const ExportOptionsModal: React.FC<ExportOptionsModalProps> = ({
           <div className="bg-white rounded-xl border border-slate-200 divide-y divide-slate-100 max-h-48 overflow-y-auto text-xs p-1">
             {generatedChaptersPreview.map((chapter, idx) => (
               <div key={idx} className="p-2 flex items-center gap-2.5 text-slate-700 hover:bg-slate-50/80">
-                <span className="w-5 h-5 rounded-full bg-indigo-50 text-indigo-700 font-bold text-[10px] flex items-center justify-center shrink-0">
+                <span className="w-5 h-5 rounded-md bg-slate-100 border border-slate-200/60 text-slate-600 font-semibold text-[10px] flex items-center justify-center shrink-0">
                   {idx + 1}
                 </span>
                 <span className="truncate">{chapter}</span>

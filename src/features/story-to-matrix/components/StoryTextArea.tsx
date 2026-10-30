@@ -79,28 +79,30 @@ export const StoryTextArea: React.FC<StoryTextAreaProps> = ({
 
       <CardContent className="p-4 space-y-3">
         <div className="flex items-center gap-2 pb-1">
-          <div className="inline-flex p-1 rounded-xl bg-slate-100 border border-slate-200 text-xs font-medium">
+          <div className="grid grid-cols-2 sm:inline-flex w-full sm:w-auto p-1 rounded-xl bg-slate-100 border border-slate-200 text-xs font-medium">
             <button
               type="button"
               onClick={() => onChangeMode('auto')}
-              className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
+              className={`px-3 py-1.5 rounded-lg text-center transition-all cursor-pointer ${
                 storyInputMode === 'auto'
                   ? 'bg-white text-indigo-900 font-bold shadow-2xs'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              Analisis Otomatis (Narasi Bebas)
+              <span className="hidden sm:inline">Analisis Otomatis (Narasi Bebas)</span>
+              <span className="sm:hidden">Analisis AI</span>
             </button>
             <button
               type="button"
               onClick={() => onChangeMode('formatted')}
-              className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
+              className={`px-3 py-1.5 rounded-lg text-center transition-all cursor-pointer ${
                 storyInputMode === 'formatted'
                   ? 'bg-white text-indigo-900 font-bold shadow-2xs'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              Format Standar (Template)
+              <span className="hidden sm:inline">Format Standar (Template)</span>
+              <span className="sm:hidden">Format Standar</span>
             </button>
           </div>
         </div>

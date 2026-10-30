@@ -64,11 +64,11 @@ export const EvaluationTab: React.FC = () => {
         <CardContent className="p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
                 <span className="text-xs font-semibold text-indigo-900 uppercase tracking-wide">
                   Decision Evaluation & Analysis
                 </span>
-                <span className="text-[10px] bg-indigo-100 text-indigo-700 font-mono px-2 py-0.5 rounded-full font-bold">
+                <span className="text-[10px] bg-indigo-100 text-indigo-700 font-mono px-2 py-0.5 rounded-full font-bold shrink-0 whitespace-nowrap">
                   Decision Analysis Framework
                 </span>
               </div>
