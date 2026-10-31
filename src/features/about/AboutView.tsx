@@ -2,30 +2,67 @@ import React, { useState } from 'react';
 import { AuthorBoxMascot } from '@/components/illustrations';
 import Button from '@/components/ui/Button';
 
+function getTimeGreeting(): string {
+  const hour = new Date().getHours();
+  if (hour >= 4 && hour < 11) return 'Selamat pagi';
+  if (hour >= 11 && hour < 15) return 'Selamat siang';
+  if (hour >= 15 && hour < 18) return 'Selamat sore';
+  return 'Selamat malam';
+}
+
+function sanitizeText(text: string, maxLen: number): string {
+  return text
+    .replace(/[\u0000-\u001F\u007F-\u009F]/g, '')
+    .trim()
+    .slice(0, maxLen);
+}
+
 export const AboutView: React.FC = () => {
   const targetWaNumber = '6282141068404';
 
   const quickPresets = [
-    'Halo Mas Hafidz, saya ingin berdiskusi mengenai studi kasus SPK.',
-    'Halo Mas Hafidz, saya ada pertanyaan seputar penggunaan fitur DecisiGraph.',
-    'Halo Mas Hafidz, saya ingin memberi masukan/usulan fitur untuk rilis mendatang.',
-    'Halo Mas Hafidz, saya tertarik berkolaborasi dalam riset atau pengembangan SPK.',
+    'Saya ingin berdiskusi mengenai studi kasus SPK.',
+    'Saya ada pertanyaan seputar penggunaan fitur DecisiGraph.',
+    'Saya ingin memberi masukan/usulan fitur untuk rilis mendatang.',
+    'Saya tertarik berkolaborasi dalam riset atau pengembangan SPK.',
   ];
 
   const [selectedPreset, setSelectedPreset] = useState(quickPresets[0]);
   const [customNote, setCustomNote] = useState('');
   const [senderName, setSenderName] = useState('');
+  const [isCooldown, setIsCooldown] = useState(false);
 
-  const finalMessage = `${selectedPreset}${
-    customNote.trim() ? `\n\nCatatan tambahan:\n${customNote.trim()}` : ''
-  }${
-    senderName.trim() ? `\n\nSalam,\n${senderName.trim()}` : ''
-  }`;
+  const greeting = getTimeGreeting();
+  const cleanName = sanitizeText(senderName, 60);
+  const cleanNote = sanitizeText(customNote, 800);
+
+  const displayName = cleanName || '[Nama Anda]';
+  const displayNote = cleanNote || '[Catatan / Pertanyaan Anda]';
+
+  const finalMessage = [
+    `Halo Mas Hafidz, ${greeting}!`,
+    '',
+    `Topik: ${selectedPreset}`,
+    `Nama: ${displayName}`,
+    '',
+    'Catatan:',
+    displayNote,
+    '',
+    '-- Dikirim via DecisiGraph Platform',
+  ].join('\n');
 
   const handleOpenWhatsApp = () => {
+    if (isCooldown) return;
+    setIsCooldown(true);
+
     const encoded = encodeURIComponent(finalMessage);
-    const waUrl = ['https:', '', `wa.me/${targetWaNumber}`].join('/') + `?text=${encoded}`;
+    const waBase = ['https:', '', `wa.me/${targetWaNumber}`].join('/');
+    const waUrl = `${waBase}?text=${encoded}`;
     window.open(waUrl, '_blank', 'noopener,noreferrer');
+
+    setTimeout(() => {
+      setIsCooldown(false);
+    }, 3000);
   };
 
   return (
@@ -105,13 +142,13 @@ export const AboutView: React.FC = () => {
             Hubungi Hafidz via WhatsApp
           </h2>
           <p className="text-xs text-slate-500">
-            Pilih pesan cepat di bawah atau tulis pesan Anda untuk memulai percakapan langsung via WhatsApp (082141068404).
+            Pilih topik di bawah atau lengkapi identitas Anda untuk terhubung langsung ke kontak pengembang.
           </p>
         </div>
 
         <div className="space-y-3">
           <label className="block text-xs font-semibold text-slate-700">
-            Pilih Topik Percakapan Cepat:
+            Pilih Topik Percakapan:
           </label>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {quickPresets.map((preset, idx) => (
@@ -138,7 +175,8 @@ export const AboutView: React.FC = () => {
             </label>
             <input
               type="text"
-              placeholder="Nama Anda"
+              maxLength={60}
+              placeholder="Contoh: Budi Pratama"
               value={senderName}
               onChange={(e) => setSenderName(e.target.value)}
               className="w-full text-xs rounded-lg border border-slate-200 bg-white px-3 py-2 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-slate-900"
@@ -151,6 +189,7 @@ export const AboutView: React.FC = () => {
             </label>
             <input
               type="text"
+              maxLength={800}
               placeholder="Misal: kasus pemilihan vendor / skripsi"
               value={customNote}
               onChange={(e) => setCustomNote(e.target.value)}
@@ -159,15 +198,29 @@ export const AboutView: React.FC = () => {
           </div>
         </div>
 
-        <div className="pt-2 flex flex-col sm:flex-row items-center gap-3">
+        <div className="space-y-1.5 pt-1">
+          <div className="flex items-center justify-between text-xs">
+            <span className="font-semibold text-slate-700">Pratinjau Draf Pesan:</span>
+            <span className="text-[11px] text-indigo-600 font-medium">{greeting}</span>
+          </div>
+          <pre className="p-3 bg-slate-50 border border-slate-200/90 rounded-lg text-xs font-mono text-slate-700 whitespace-pre-wrap break-words leading-relaxed select-none">
+            {finalMessage}
+          </pre>
+        </div>
+
+        <div className="pt-1 flex flex-col sm:flex-row items-center gap-3">
           <Button
             variant="primary"
             size="md"
+            disabled={isCooldown}
             onClick={handleOpenWhatsApp}
-            className="w-full sm:w-auto text-xs font-semibold min-h-11 px-6 justify-center shadow-2xs"
+            className="w-full sm:w-auto text-xs font-semibold min-h-11 px-6 justify-center shadow-2xs cursor-pointer"
           >
-            Kirim ke WhatsApp
+            {isCooldown ? 'Membuka WhatsApp...' : 'Kirim ke WhatsApp'}
           </Button>
+          <span className="text-[11px] text-slate-400">
+            Tautan dibuka aman via tab baru.
+          </span>
         </div>
       </section>
     </div>
