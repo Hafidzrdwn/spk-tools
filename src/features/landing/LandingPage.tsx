@@ -4,7 +4,7 @@ import Logo from '@/components/layout/Logo';
 import Footer from '@/components/layout/Footer';
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
-import DecimalFormatToggle from '@/components/layout/DecimalFormatToggle';
+
 import MathFormula from '@/components/ui/MathFormula';
 import { useUiStore } from '@/store/useUiStore';
 import { prefetchRoute, scheduleAllRemainingPrefetch } from '@/services/routePrefetch';
@@ -199,7 +199,7 @@ const HERO_SIMULATIONS: Record<CoreMethodId, HeroSimulationData> = {
 
 export const LandingPage: React.FC = () => {
   const navigate = useNavigate();
-  const currentYear = new Date().getFullYear();
+
   const [activePreviewMethod, setActivePreviewMethod] = useState<CoreMethodId>('SAW');
   const [activeStudioMethod, setActiveStudioMethod] = useState<CoreMethodId>('SAW');
   const [heroTab, setHeroTab] = useState<'visual' | 'matrix'>('visual');

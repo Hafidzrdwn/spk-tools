@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { KeyRound, Check } from 'lucide-react';
+import { KeyRound } from 'lucide-react';
 import Dialog from '@/components/ui/Dialog';
-import Button from '@/components/ui/Button';
+
 import Badge from '@/components/ui/Badge';
 import DocumentMatrixIllustration from '@/components/ui/illustrations/DocumentMatrixIllustration';
 import { toast } from 'sonner';
@@ -215,7 +215,7 @@ export const DocumentLoaderModal: React.FC<DocumentLoaderModalProps> = ({
               setStage('upload');
             }}
             onUseDemo={() => handleLoadDemo('laptop')}
-            onConfigureApiKey={() => setIsApiKeyInputOpen(true)}
+            onConfigureApiKey={openAiConfig}
           />
         )}
 
