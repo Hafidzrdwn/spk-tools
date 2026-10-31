@@ -22,8 +22,8 @@ export const StoryToMatrixTab: React.FC = () => {
   }, [aiKeyVersion]);
 
   const {
-    mode, setMode, rawText, setRawText, previewAlternatives,
-    criteria, unmatchedCriteria, detectedComparisons, isAhpPromptOpen,
+    mode, setMode, rawText, setRawText, previewAlternatives, setPreviewAlternatives,
+    criteria, setTempCriteria, unmatchedCriteria, detectedComparisons, isAhpPromptOpen,
     setIsAhpPromptOpen, isTemplatePickerOpen, setIsTemplatePickerOpen,
     errorMessage, isCommitted, handleParse, handleCommit,
     handleSelectTemplate, generateNarrativeFromState, redirectToAhp,
@@ -112,6 +112,8 @@ export const StoryToMatrixTab: React.FC = () => {
             onBackToEdit={() => setMode('story')}
             isCommitted={isCommitted}
             contextMetadata={contextMetadata}
+            onUpdateCriteria={setTempCriteria}
+            onUpdateAlternatives={setPreviewAlternatives}
           />
         </div>
       )}

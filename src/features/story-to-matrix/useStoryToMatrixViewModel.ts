@@ -182,8 +182,9 @@ export function useStoryToMatrixViewModel() {
   }, [setMode]);
 
   return {
-    mode, setMode, rawText, setRawText, previewAlternatives,
+    mode, setMode, rawText, setRawText, previewAlternatives, setPreviewAlternatives,
     criteria: tempCriteria.length > 0 ? tempCriteria : criteria,
+    setTempCriteria,
     unmatchedCriteria, detectedComparisons, isAhpPromptOpen,
     setIsAhpPromptOpen, isTemplatePickerOpen, setIsTemplatePickerOpen,
     errorMessage, isCommitted, handleParse, handleCommit,
