@@ -2,7 +2,7 @@ import React from 'react';
 
 export const AnalyticsSkeleton: React.FC = () => {
   return (
-    <div className="min-h-dvh w-full bg-surface bg-dot-grid text-slate-800 pb-16 antialiased animate-pulse">
+    <div className="min-h-dvh w-full bg-surface bg-dot-grid text-slate-800 flex flex-col justify-between antialiased animate-pulse">
       <header className="sticky top-0 z-30 bg-white/90 backdrop-blur-xs border-b border-slate-200 px-3 sm:px-6 py-2 sm:py-2.5 shadow-2xs">
         <div className="max-w-6xl mx-auto flex items-center justify-between gap-1.5 sm:gap-4">
           <div className="flex items-center gap-1 sm:gap-2.5">
@@ -19,7 +19,7 @@ export const AnalyticsSkeleton: React.FC = () => {
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 pt-6 space-y-6 w-full">
+      <main className="flex-1 max-w-6xl mx-auto px-4 sm:px-6 pt-6 pb-12 space-y-6 w-full">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
             <div className="w-5 h-5 rounded bg-indigo-200 shrink-0" />
@@ -57,7 +57,7 @@ export const AnalyticsSkeleton: React.FC = () => {
             </div>
           </div>
 
-          {/* Device Breakdown (Right 5 Cols) */}
+          
           <div className="lg:col-span-5 p-4 sm:p-5 rounded-xl bg-white border border-slate-200/90 shadow-2xs space-y-4">
             <div className="space-y-1">
               <div className="w-40 sm:w-48 h-4 rounded bg-slate-300" />

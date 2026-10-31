@@ -2,14 +2,8 @@ export const prefetchRoute = {
   landing: () => {
     import('@/features/landing/LandingPage');
   },
-  board: (tab?: string) => {
+  board: (_tab?: string) => {
     import('@/features/workboard/WorkboardPage');
-    if (!tab || tab === 'saw') import('@/features/saw/SawTab');
-    if (tab === 'wp') import('@/features/wp/WpTab');
-    if (tab === 'topsis') import('@/features/topsis/TopsisTab');
-    if (tab === 'ahp') import('@/features/ahp/AhpTab');
-    if (tab === 'comparison') import('@/features/comparison/ComparisonTab');
-    if (tab === 'story') import('@/features/story-to-matrix/StoryToMatrixTab');
   },
   review: () => {
     import('@/features/community/CommunityLayout');

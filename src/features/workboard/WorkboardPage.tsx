@@ -1,5 +1,4 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import AppShell from '@/components/layout/AppShell';
 import Tabs from '@/components/ui/Tabs';
 import Card, { CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
@@ -12,17 +11,15 @@ import { ROUTES } from '@/app/routes';
 import CriteriaEditor from '@/features/shared/CriteriaEditor';
 import AlternativeEditor from '@/features/shared/AlternativeEditor';
 import MatrixInputGrid from '@/features/shared/MatrixInputGrid';
-import TabSkeleton from '@/components/ui/TabSkeleton';
 import WorkboardTopBar from '@/components/layout/WorkboardTopBar';
 import { scheduleAllRemainingPrefetch } from '@/services/routePrefetch';
-
-const SawTab = lazy(() => import('@/features/saw/SawTab'));
-const WpTab = lazy(() => import('@/features/wp/WpTab'));
-const TopsisTab = lazy(() => import('@/features/topsis/TopsisTab'));
-const AhpTab = lazy(() => import('@/features/ahp/AhpTab'));
-const ComparisonTab = lazy(() => import('@/features/comparison/ComparisonTab'));
-const EvaluationTab = lazy(() => import('@/features/evaluation/EvaluationTab'));
-const StoryToMatrixTab = lazy(() => import('@/features/story-to-matrix/StoryToMatrixTab'));
+import SawTab from '@/features/saw/SawTab';
+import WpTab from '@/features/wp/WpTab';
+import TopsisTab from '@/features/topsis/TopsisTab';
+import AhpTab from '@/features/ahp/AhpTab';
+import ComparisonTab from '@/features/comparison/ComparisonTab';
+import EvaluationTab from '@/features/evaluation/EvaluationTab';
+import StoryToMatrixTab from '@/features/story-to-matrix/StoryToMatrixTab';
 
 import TemplateSelectorModal from '@/components/layout/TemplateSelectorModal';
 import ResetProjectButton from '@/features/project/ResetProjectButton';
@@ -245,35 +242,22 @@ export const WorkboardPage: React.FC = () => {
           )}
         </Card>
 
-        {/* Tab-Specific Viewport with Spring Motion */}
-        <div data-tour-id="compute-section">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeTab}
-              initial={{ opacity: 0, y: 14, scale: 0.99 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -14, scale: 0.99 }}
-              transition={{ type: 'spring', stiffness: 350, damping: 26 }}
-            >
-              <Suspense fallback={<TabSkeleton />}>
-                {activeTab === 'SAW' ? (
-                  <SawTab />
-                ) : activeTab === 'WP' ? (
-                  <WpTab />
-                ) : activeTab === 'TOPSIS' ? (
-                  <TopsisTab />
-                ) : activeTab === 'AHP' ? (
-                  <AhpTab />
-                ) : activeTab === 'COMPARE' ? (
-                  <ComparisonTab />
-                ) : activeTab === 'EVALUATION' ? (
-                  <EvaluationTab />
-                ) : (
-                  <StoryToMatrixTab />
-                )}
-              </Suspense>
-            </motion.div>
-          </AnimatePresence>
+        <div data-tour-id="compute-section" key={activeTab} className="transition-opacity duration-150 ease-out">
+          {activeTab === 'SAW' ? (
+            <SawTab />
+          ) : activeTab === 'WP' ? (
+            <WpTab />
+          ) : activeTab === 'TOPSIS' ? (
+            <TopsisTab />
+          ) : activeTab === 'AHP' ? (
+            <AhpTab />
+          ) : activeTab === 'COMPARE' ? (
+            <ComparisonTab />
+          ) : activeTab === 'EVALUATION' ? (
+            <EvaluationTab />
+          ) : (
+            <StoryToMatrixTab />
+          )}
         </div>
       </div>
 

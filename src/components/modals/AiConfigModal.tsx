@@ -106,7 +106,7 @@ export const AiConfigModal: React.FC<AiConfigModalProps> = ({ isOpen, onClose })
         </div>
 
         <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200/80 text-[11px] text-slate-600 leading-relaxed">
-          Kunci disimpan secara lokal di peramban (localStorage) perangkat Anda dan dikirim langsung ke Google AI tanpa melalui server perantara.
+          Kunci disimpan secara lokal di peramban (localStorage) perangkat Anda dan dikirim langsung ke Google AI tanpa melalui server perantara / disimpan di server kami.
         </div>
 
         <div className="flex items-center justify-between pt-2 border-t border-slate-100">
